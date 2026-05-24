@@ -9,7 +9,22 @@
       "Bash(netstat -ano)",
       "Bash(findstr \":5173\")",
       "Bash(taskkill /PID 24320 /F)",
-      "PowerShell(Stop-Process -Id 24320 -Force -ErrorAction SilentlyContinue)"
+      "PowerShell(Stop-Process -Id 24320 -Force -ErrorAction SilentlyContinue)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)",
+      "Bash(cat vite.config.js)",
+      "Bash(cat vite.config.ts)",
+      "Bash(file public/icon-192.png)",
+      "Bash(powershell -Command \"\\(Get-Item 'public/icon-192.png'\\).Length; \\(Get-Item 'public/icon-512.png'\\).Length\")",
+      "Bash(node -e \"const {createCanvas} = require\\('canvas'\\); console.log\\('canvas ok'\\)\")",
+      "Bash(node -e \"require\\('sharp'\\); console.log\\('sharp ok'\\)\")",
+      "Bash(npm install *)",
+      "Bash(npx pwa-assets-generator *)",
+      "Bash(cmd /c \"dir /b\")",
+      "Bash(git config *)",
+      "Bash(git mv *)",
+      "Bash(echo \"exit: $?\")"
     ]
   }
 }
