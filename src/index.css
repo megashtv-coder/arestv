@@ -1,0 +1,121 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    @apply bg-gray-50 text-gray-800 antialiased;
+    font-family: 'DM Sans', system-ui, sans-serif;
+  }
+}
+
+@layer components {
+  .sidebar-item {
+    @apply flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer text-gray-500 text-sm font-medium transition-all duration-150 select-none;
+  }
+  .sidebar-item:hover {
+    @apply bg-gray-50 text-gray-700;
+  }
+  .sidebar-item.active {
+    @apply bg-blue-50 text-blue-600 font-semibold;
+  }
+  .card {
+    @apply bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden;
+  }
+  .btn {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-150 cursor-pointer select-none whitespace-nowrap;
+  }
+  .btn-primary {
+    @apply bg-blue-600 text-white hover:bg-blue-700 active:scale-95 shadow-sm hover:shadow-md;
+  }
+  .btn-outline {
+    @apply bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 hover:border-gray-300 active:scale-95;
+  }
+  .btn-danger {
+    @apply bg-red-50 text-red-600 border border-red-100 hover:bg-red-100 active:scale-95;
+  }
+  .btn-sm {
+    @apply px-3 py-1.5 text-xs;
+  }
+  .form-label {
+    @apply block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5;
+  }
+  .form-control {
+    @apply w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-800 outline-none transition-all duration-150 bg-white;
+  }
+  .form-control:focus {
+    @apply border-blue-400 ring-2 ring-blue-50;
+  }
+  .badge {
+    @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold;
+  }
+  .badge-paid { @apply bg-emerald-50 text-emerald-600; }
+  .badge-pending { @apply bg-amber-50 text-amber-600; }
+  .badge-overdue { @apply bg-red-50 text-red-600; }
+  .badge-draft { @apply bg-gray-100 text-gray-500; }
+  .stat-card {
+    @apply bg-white rounded-xl border border-gray-100 p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md cursor-default;
+  }
+  .table-th {
+    @apply text-xs font-bold text-gray-400 uppercase tracking-wide px-4 py-3 text-left;
+  }
+  .table-td {
+    @apply px-4 py-3 text-sm text-gray-600 border-b border-gray-50;
+  }
+  .icon-btn {
+    @apply w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-all duration-150 cursor-pointer;
+  }
+  .modal-overlay {
+    @apply fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4;
+  }
+  .modal {
+    @apply bg-white rounded-2xl shadow-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto animate-[modalIn_0.2s_ease];
+    @apply mx-2 sm:mx-0;
+  }
+  .toggle {
+    @apply relative w-10 h-[22px] rounded-full cursor-pointer transition-colors duration-200;
+  }
+  .toggle-knob {
+    @apply absolute top-[3px] left-[3px] w-4 h-4 bg-white rounded-full shadow transition-transform duration-200;
+  }
+  .skeleton {
+    @apply bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 bg-[length:200%_100%] animate-[shimmer_1.5s_infinite] rounded-lg;
+  }
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: translateY(-12px) scale(0.97); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+@keyframes toastIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: none; }
+}
+.toast-enter { animation: toastIn 0.3s ease; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: #d1d5db; }
+
+/* Dark mode — vetëm klasa custom, jo utility-t e Tailwind si selektorë */
+.dark body { @apply bg-gray-900 text-gray-100; }
+.dark .card { @apply bg-gray-800 border-gray-700; }
+.dark .btn-outline { @apply bg-gray-800 text-gray-300 border-gray-700 hover:bg-gray-700; }
+.dark .form-control { @apply bg-gray-800 border-gray-600 text-gray-200; }
+.dark .stat-card { @apply bg-gray-800 border-gray-700; }
+.dark .sidebar-item { @apply text-gray-400; }
+.dark .sidebar-item:hover { @apply bg-gray-700 text-gray-200; }
+.dark .sidebar-item.active { @apply bg-blue-900/50 text-blue-400; }
+.dark .table-td { @apply border-gray-700 text-gray-300; }
+.dark .table-th { @apply text-gray-500; }
+.dark .modal { @apply bg-gray-800; }
+.dark .form-label { @apply text-gray-400; }
+.dark .icon-btn { @apply text-gray-400 hover:bg-gray-700 hover:text-gray-200; }

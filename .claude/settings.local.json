@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run *)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(npx vite *)",
+      "PowerShell($lines = Get-Content \"C:\\\\Users\\\\enndy\\\\Downloads\\\\financeflow\\\\src\\\\data\\\\mockPayments.js\" -TotalCount 6; $lines; Write-Host \"---\"; $total = \\(Get-Content \"C:\\\\Users\\\\enndy\\\\Downloads\\\\financeflow\\\\src\\\\data\\\\mockPayments.js\" | Measure-Object -Line\\).Lines; Write-Host \"Total lines: $total\")",
+      "Bash(node -e ' *)",
+      "Bash(netstat -ano)",
+      "Bash(findstr \":5173\")",
+      "Bash(taskkill /PID 24320 /F)",
+      "PowerShell(Stop-Process -Id 24320 -Force -ErrorAction SilentlyContinue)"
+    ]
+  }
+}
