@@ -29,14 +29,26 @@ export function AppProvider({ children }) {
   const [sidebarCollapsed,setSidebarCollapsed]= useState(() => localStorage.getItem('xflow_sidebar') === 'true')
 
   /* ── Users & Auth ── */
-  const [users,        setUsers]        = useState(mockUsers)
+  // Load users from localStorage, but always merge back any base mockUsers that were deleted
+  const _loadedUsers = (() => {
+    try {
+      const saved = localStorage.getItem('xflow_users')
+      if (!saved) return mockUsers
+      const stored = JSON.parse(saved)
+      const storedIds = new Set(stored.map(u => u.id))
+      const missing = mockUsers.filter(u => !storedIds.has(u.id))
+      return missing.length ? [...stored, ...missing] : stored
+    } catch { return mockUsers }
+  })()
+
+  const [users,        setUsers]        = useState(_loadedUsers)
   const [currentUser,  setCurrentUser]  = useState(() => {
     try {
       const saved = localStorage.getItem('xflow_user')
       if (!saved) return null
       const parsed = JSON.parse(saved)
-      // Validate the saved user still exists and is active
-      const found = mockUsers.find(u => u.id === parsed.id && u.active !== false)
+      // Validate against the loaded users list (not just mockUsers)
+      const found = _loadedUsers.find(u => u.id === parsed.id && u.active !== false)
       return found || null
     } catch { return null }
   })
@@ -50,6 +62,11 @@ export function AppProvider({ children }) {
   const [tTransfers,  setTTransfers]  = useState([])
 
   const isTester = currentUser?.role === 'tester'
+
+  /* ── Persist users list to localStorage ── */
+  useEffect(() => {
+    localStorage.setItem('xflow_users', JSON.stringify(users))
+  }, [users])
 
   /* ── Persist current user to localStorage ── */
   useEffect(() => {

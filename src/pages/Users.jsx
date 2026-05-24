@@ -8,9 +8,10 @@ import { useApp } from '../context/AppContext'
 import { Modal, FormGroup, EmptyState } from '../components/UI'
 
 const ROLE_META = {
-  admin:  { label: 'Admin',  cls: 'bg-blue-50 text-blue-700 border border-blue-100',   icon: Shield },
+  admin:  { label: 'Admin',  cls: 'bg-blue-50 text-blue-700 border border-blue-100',       icon: Shield },
   editor: { label: 'Editor', cls: 'bg-emerald-50 text-emerald-700 border border-emerald-100', icon: Edit3 },
-  viewer: { label: 'Viewer', cls: 'bg-gray-100 text-gray-600 border border-gray-200',  icon: Eye },
+  viewer: { label: 'Viewer', cls: 'bg-gray-100 text-gray-600 border border-gray-200',      icon: Eye },
+  tester: { label: 'Tester', cls: 'bg-orange-50 text-orange-700 border border-orange-100', icon: Package },
 }
 
 const COLORS = ['#2563eb','#7c3aed','#059669','#d97706','#dc2626','#0891b2','#be185d','#0f766e']
@@ -100,7 +101,7 @@ function UserModal({ user, onClose }) {
       {/* Roli */}
       <FormGroup label="Roli *">
         <div className="flex gap-2">
-          {Object.entries(ROLE_META).map(([key, meta]) => {
+          {Object.entries(ROLE_META).filter(([key]) => key !== 'viewer').map(([key, meta]) => {
             const Icon = meta.icon
             return (
               <button key={key} type="button" onClick={() => set('role', key)}

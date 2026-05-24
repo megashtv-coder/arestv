@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { AppProvider, useApp } from './context/AppContext'
 import Login from './pages/Login'
 import Sidebar from './components/Sidebar'
@@ -7,34 +6,44 @@ import Dashboard from './pages/Dashboard'
 import Invoices from './pages/Invoices'
 import Customers from './pages/Customers'
 import ExpensesPage from './pages/Expenses'
+import Items from './pages/Items'
+import Payments from './pages/Payments'
 import Reports from './pages/Reports'
 import Settings from './pages/Settings'
+import Subscriptions from './pages/Subscriptions'
+import Suppliers from './pages/Suppliers'
+import UsersPage from './pages/Users'
 import { Toast, LoadingSkeleton } from './components/UI'
 
 function AppLayout() {
-  const { page, loading, toast, setToast, modal } = useApp()
+  const { page, loading, toast, setToast, modal, darkMode } = useApp()
 
   const PAGES = {
-    dashboard: Dashboard,
-    invoices:  Invoices,
-    customers: Customers,
-    expenses:  ExpensesPage,
-    reports:   Reports,
-    settings:  Settings,
+    dashboard:     Dashboard,
+    invoices:      Invoices,
+    customers:     Customers,
+    expenses:      ExpensesPage,
+    items:         Items,
+    payments:      Payments,
+    reports:       Reports,
+    settings:      Settings,
+    subscriptions: Subscriptions,
+    suppliers:     Suppliers,
+    users:         UsersPage,
   }
   const PageComponent = PAGES[page] || Dashboard
 
   return (
-    <div className="app flex min-h-screen bg-gray-50">
-      <Sidebar/>
-      <div className="flex-1 flex flex-col min-h-screen lg:ml-0">
-        <Header/>
-        <main className="flex-1 p-5 md:p-6 overflow-y-auto">
-          {loading ? <LoadingSkeleton/> : <PageComponent/>}
+    <div className={`app flex min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
+      <Sidebar />
+      <div className="flex-1 flex flex-col min-h-screen overflow-hidden">
+        <Header />
+        <main className={`flex-1 p-3 sm:p-5 md:p-6 overflow-y-auto ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
+          {loading ? <LoadingSkeleton /> : <PageComponent />}
         </main>
       </div>
 
-      {toast && <Toast msg={toast.msg} type={toast.type} onClose={() => setToast(null)}/>}
+      {toast && <Toast msg={toast.msg} type={toast.type} onClose={() => setToast(null)} />}
 
       {modal && (
         <div className="modal-overlay" onClick={e => e.target === e.currentTarget}>
@@ -46,29 +55,18 @@ function AppLayout() {
 }
 
 function AuthWrapper() {
-  // Persist login — lexon nga localStorage
-  const [authed, setAuthed] = useState(
-    () => localStorage.getItem('xflow_auth') === 'true'
-  )
+  const { users, setCurrentUser, currentUser } = useApp()
 
-  const handleLogin = () => {
-    localStorage.setItem('xflow_auth', 'true')
-    setAuthed(true)
+  if (!currentUser) {
+    return <Login users={users} onLogin={setCurrentUser} />
   }
-
-  const handleLogout = () => {
-    localStorage.removeItem('xflow_auth')
-    setAuthed(false)
-  }
-
-  if (!authed) return <Login onLogin={handleLogin}/>
-  return <AppLayout onLogout={handleLogout}/>
+  return <AppLayout />
 }
 
 export default function App() {
   return (
     <AppProvider>
-      <AuthWrapper/>
+      <AuthWrapper />
     </AppProvider>
   )
 }
