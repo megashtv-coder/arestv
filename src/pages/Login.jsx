@@ -1,77 +1,67 @@
 import { useState } from 'react'
-import { Eye, EyeOff, AlertCircle, Zap } from 'lucide-react'
+import { Eye, EyeOff, AlertCircle } from 'lucide-react'
 
-export default function Login({ users = [], onLogin }) {
-  const [username, setUsername] = useState('')
+export default function Login({ onLogin }) {
+  const [email, setEmail]       = useState('')
   const [password, setPassword] = useState('')
-  const [showPw,   setShowPw]   = useState(false)
-  const [loading,  setLoading]  = useState(false)
-  const [error,    setError]    = useState('')
+  const [showPw, setShowPw]     = useState(false)
+  const [loading, setLoading]   = useState(false)
+  const [error, setError]       = useState('')
 
   const submit = (e) => {
-    e?.preventDefault()
-    if (!username || !password) { setError('Plotëso të gjitha fushat.'); return }
+    if (e) e.preventDefault()
+    if (!email || !password) { setError('Plotëso të gjitha fushat.'); return }
     setLoading(true); setError('')
     setTimeout(() => {
       setLoading(false)
-      const user = users.find(
-        u => u.username === username.trim().toLowerCase() &&
-             u.password === password &&
-             u.active !== false
-      )
-      if (user) { onLogin(user) }
-      else { setError('Username ose fjalëkalim i gabuar.') }
-    }, 800)
+      if (password === 'demo1234') {
+        onLogin()
+      } else {
+        setError('Fjalëkalim i gabuar. Provo: demo1234')
+      }
+    }, 900)
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 flex items-center justify-center p-4">
-      {/* Grid pattern */}
-      <div className="absolute inset-0 opacity-[0.04]"
-        style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '28px 28px' }}
+    <div className="min-h-screen bg-gradient-to-br from-blue-600 via-blue-700 to-purple-700 flex items-center justify-center p-4">
+      <div className="absolute inset-0 opacity-10"
+        style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '32px 32px' }}
       />
-
       <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm p-8">
         {/* Logo */}
         <div className="flex items-center gap-3 mb-8">
-          <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-xl flex items-center justify-center text-white shadow-md">
-            <Zap size={20} strokeWidth={2.5} />
-          </div>
+          <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-lg">₣</div>
           <div>
-            <p className="text-lg font-black text-gray-900 leading-none tracking-tight">X-Flow</p>
+            <p className="text-lg font-bold text-gray-800 leading-none">XFlow</p>
             <p className="text-[10px] text-gray-400 tracking-widest uppercase mt-0.5">Menaxhimi Financiar</p>
           </div>
         </div>
 
         <h2 className="text-xl font-bold text-gray-800 mb-1">Mirë se erdhe!</h2>
-        <p className="text-sm text-gray-400 mb-6">Kyçu me llogarinë tënde</p>
+        <p className="text-sm text-gray-400 mb-6">Kyçu për të hyrë në panel</p>
 
+        {/* Form me autoComplete — Chrome ruan kredencialet */}
         <form onSubmit={submit} autoComplete="on">
-          {/* Username */}
           <div className="mb-4">
-            <label className="form-label" htmlFor="username">Username</label>
+            <label className="form-label">Email</label>
             <input
-              id="username"
-              name="username"
               className="form-control"
-              type="text"
+              type="email"
+              name="username"
               autoComplete="username"
-              value={username}
-              onChange={e => setUsername(e.target.value)}
-              placeholder="username..."
-              autoFocus
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              placeholder="email@kompania.ks"
             />
           </div>
 
-          {/* Password */}
           <div className="mb-5">
-            <label className="form-label" htmlFor="password">Fjalëkalimi</label>
+            <label className="form-label">Fjalëkalimi</label>
             <div className="relative">
               <input
-                id="password"
-                name="password"
                 className="form-control pr-10"
                 type={showPw ? 'text' : 'password'}
+                name="password"
                 autoComplete="current-password"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
@@ -87,7 +77,6 @@ export default function Login({ users = [], onLogin }) {
             </div>
           </div>
 
-          {/* Error */}
           {error && (
             <div className="flex items-center gap-2 bg-red-50 border border-red-100 text-red-600 text-xs font-medium rounded-lg px-3 py-2.5 mb-4">
               <AlertCircle size={14} className="flex-shrink-0" />
@@ -95,7 +84,6 @@ export default function Login({ users = [], onLogin }) {
             </div>
           )}
 
-          {/* Submit */}
           <button
             type="submit"
             className="btn btn-primary w-full justify-center py-2.5"
@@ -113,6 +101,10 @@ export default function Login({ users = [], onLogin }) {
           </button>
         </form>
 
+        <div className="mt-5 p-3 bg-blue-50 rounded-xl text-center">
+          <p className="text-xs text-blue-600 font-medium">Kredencialet demo:</p>
+          <p className="text-xs text-blue-500 mt-0.5 font-mono">demo@financeflow.ks / demo1234</p>
+        </div>
       </div>
     </div>
   )
