@@ -107,9 +107,9 @@ const MAPS = {
         fee,
         net:            amount - fee,
         date:           normalizeDate(row.date),
-        method:         (row.method         || 'Kesh').toString().trim(),
+        method:         normalizeMethod(row.method),
         depositAccount: (row.depositAccount  || '').toString().trim(),
-        depositedTo:    (row.depositedTo     || 'Enndy').toString().trim(),
+        depositedTo:    normalizeDepositedTo(row.depositedTo),
         reference:      (row.reference       || '').toString().trim(),
         notes:          (row.notes           || '').toString().trim(),
       }
@@ -151,12 +151,36 @@ const MAPS = {
 const COLORS = ['#2563eb','#7c3aed','#059669','#d97706','#dc2626','#0891b2','#be185d','#0f766e']
 
 /* ─── helpers ─── */
+function normalizeDepositedTo(v) {
+  if (!v) return 'Enndy'
+  const s = String(v).toLowerCase().trim()
+  if (s.includes('samki')) return 'Samki'
+  if (s.includes('enndy') || s.includes('endy')) return 'Enndy'
+  return String(v).trim()
+}
+
+function normalizeMethod(v) {
+  if (!v) return 'Kesh'
+  const s = String(v).toLowerCase().trim()
+  if (s.includes('paypal'))                             return 'PayPal'
+  if (s.includes('stripe'))                             return 'Stripe'
+  if (s.includes('bank') || s.includes('transfer') || s.includes('bankar')) return 'Transfer Bankar'
+  if (s.includes('western'))                            return 'Western Union'
+  if (s.includes('moneygram') || s.includes('money gram')) return 'Money Gram'
+  if (s.includes('ria'))                                return 'Ria'
+  if (s.includes('crypto') || s.includes('bitcoin'))   return 'Crypto'
+  if (s.includes('cash') || s.includes('kesh') || s.includes('online')) return 'Kesh'
+  return String(v).trim()
+}
+
 function normalizeStatus(v) {
-  if (!v) return 'unpaid'
+  if (!v) return 'pending'
   const s = String(v).toLowerCase().trim()
   if (s === 'paid' || s === 'paguar' || s === 'i paguar') return 'paid'
   if (s === 'overdue' || s === 'vonuar' || s === 'i vonuar') return 'overdue'
-  return 'unpaid'
+  if (s === 'draft' || s === 'skicë' || s === 'skice') return 'draft'
+  if (s === 'void' || s === 'anuluar') return 'void'
+  return 'pending'
 }
 
 function normalizeDate(v) {

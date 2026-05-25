@@ -94,21 +94,27 @@ export default function Dashboard() {
   const getType = name => customers.find(c => c.name === name)?.type || 'individual'
 
   /* ── KPI 1: Klientë aktivë ── */
+  // Fatura jo-void me subscriptionExpiry në të ardhmen (paguar ose jo)
   const activeClients = useMemo(() => {
     const names = new Set(
       invoices
-        .filter(i => i.subscriptionExpiry && i.subscriptionExpiry > today)
+        .filter(i =>
+          i.status !== 'void' &&
+          i.subscriptionExpiry &&
+          i.subscriptionExpiry > today
+        )
         .map(i => i.customer)
     )
     return names.size
   }, [invoices, today])
 
   /* ── KPI 2: Të ardhura totale viti aktual ── */
+  // Përdor payments (datën e pagesës), jo datën e faturës
   const yearRevenue = useMemo(() =>
-    invoices
-      .filter(i => i.status === 'paid' && i.date?.startsWith(thisYear))
-      .reduce((s, i) => s + i.amount, 0),
-    [invoices, thisYear]
+    payments
+      .filter(p => p.date?.startsWith(thisYear))
+      .reduce((s, p) => s + (p.amount || 0), 0),
+    [payments, thisYear]
   )
 
   /* ── KPI 3: Shpenzime viti aktual ── */
@@ -191,13 +197,13 @@ export default function Dashboard() {
           icon={UserCheck}  iconBg="#ecfdf5"  iconColor="#059669"
           label="Klientë aktivë"
           value={activeClients}
-          sub={`Abonime aktive sipas datës`}
+          sub={`Abonime të paguara aktive`}
         />
         <KpiCard
           icon={TrendingUp}  iconBg="#eff6ff"  iconColor="#2563eb"
           label={`Të ardhura ${thisYear}`}
           value={fmt(yearRevenue)}
-          sub={`Fatura të paguara këtë vit`}
+          sub={`Pagesa të pranuara ${thisYear}`}
         />
         <KpiCard
           icon={TrendingDown}  iconBg="#fef2f2"  iconColor="#dc2626"

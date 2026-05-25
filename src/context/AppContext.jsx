@@ -421,7 +421,10 @@ export function AppProvider({ children }) {
   }, [])
 
   const fmt = useCallback(
-    (amount) => currency.symbol + new Intl.NumberFormat('de-DE').format(amount),
+    (amount) => currency.symbol + new Intl.NumberFormat('de-DE', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(amount ?? 0),
     [currency]
   )
 

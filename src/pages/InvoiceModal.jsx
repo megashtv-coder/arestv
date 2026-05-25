@@ -299,28 +299,36 @@ function ItemRow({ item, products, onUpdate, onRemove, canRemove }) {
 
   return (
     <div
-      className="grid items-center gap-2 py-2.5 px-3 border-b border-gray-100 last:border-0 hover:bg-gray-50/50 transition-colors"
+      className="grid items-start gap-2 py-2.5 px-3 border-b border-gray-100 last:border-0 hover:bg-gray-50/50 transition-colors"
       style={{ gridTemplateColumns: '1fr 72px 100px 86px 28px' }}
     >
-      {/* Product combobox */}
-      <Combobox
-        options={products}
-        value={item.desc}
-        onChange={p => onUpdate({ desc: p.name, unitPrice: String(p.salePrice) })}
-        placeholder="Zgjedh ose shëno..."
-        getKey={p => p.id}
-        getLabel={p => p.name}
-        renderOption={p => (
-          <div className="flex items-center justify-between gap-2">
-            <span className="text-sm text-gray-800 truncate">{p.name}</span>
-            <span className="text-xs font-bold text-blue-600 flex-shrink-0">€{p.salePrice}</span>
-          </div>
-        )}
-      />
+      {/* Product combobox + description */}
+      <div className="flex flex-col gap-1 min-w-0">
+        <Combobox
+          options={products}
+          value={item.desc}
+          onChange={p => onUpdate({ desc: p.name, unitPrice: String(p.salePrice) })}
+          placeholder="Zgjedh ose shëno..."
+          getKey={p => p.id}
+          getLabel={p => p.name}
+          renderOption={p => (
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-sm text-gray-800 truncate">{p.name}</span>
+              <span className="text-xs font-bold text-blue-600 flex-shrink-0">€{p.salePrice}</span>
+            </div>
+          )}
+        />
+        <input
+          className="w-full text-xs text-gray-500 italic bg-transparent outline-none border-b border-dashed border-gray-200 focus:border-blue-300 px-1 py-0.5 placeholder-gray-300 transition-colors"
+          placeholder="Përshkrim (opsional)..."
+          value={item.note || ''}
+          onChange={e => onUpdate({ note: e.target.value })}
+        />
+      </div>
 
       {/* Sasia */}
       <input
-        className="form-control text-center text-sm px-1 py-1.5"
+        className="form-control text-center text-sm px-1 py-1.5 mt-0.5"
         type="number" min="0.01" step="1"
         value={item.qty}
         onChange={e => onUpdate({ qty: e.target.value })}
@@ -328,7 +336,7 @@ function ItemRow({ item, products, onUpdate, onRemove, canRemove }) {
 
       {/* Çmimi */}
       <input
-        className="form-control text-right text-sm px-2 py-1.5"
+        className="form-control text-right text-sm px-2 py-1.5 mt-0.5"
         type="number" min="0" step="0.01"
         value={item.unitPrice}
         onChange={e => onUpdate({ unitPrice: e.target.value })}
@@ -336,7 +344,7 @@ function ItemRow({ item, products, onUpdate, onRemove, canRemove }) {
       />
 
       {/* Line total */}
-      <div className={`text-right text-sm font-bold py-1.5 px-1 ${lineTotal > 0 ? 'text-gray-800' : 'text-gray-300'}`}>
+      <div className={`text-right text-sm font-bold py-1.5 px-1 mt-0.5 ${lineTotal > 0 ? 'text-gray-800' : 'text-gray-300'}`}>
         €{fmtN(lineTotal)}
       </div>
 
@@ -344,7 +352,7 @@ function ItemRow({ item, products, onUpdate, onRemove, canRemove }) {
       {canRemove ? (
         <button
           onClick={onRemove}
-          className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-red-50 text-gray-300 hover:text-red-400 transition-colors"
+          className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-red-50 text-gray-300 hover:text-red-400 transition-colors mt-0.5"
         >
           <X size={14} />
         </button>
@@ -383,11 +391,12 @@ export default function InvoiceModal({ initialData }) {
       return initialData.items.map(it => ({
         id:        Math.random(),
         desc:      it.desc  || '',
+        note:      it.note  || '',
         qty:       it.qty   ?? 1,
         unitPrice: it.price != null ? String(it.price) : '',
       }))
     }
-    return [{ id: Math.random(), desc: '', qty: 1, unitPrice: '' }]
+    return [{ id: Math.random(), desc: '', note: '', qty: 1, unitPrice: '' }]
   }
 
   const [lineItems,      setLineItems]      = useState(initLineItems)
@@ -413,7 +422,7 @@ export default function InvoiceModal({ initialData }) {
   const fmtN       = v => new Intl.NumberFormat('de-DE').format(v)
 
   /* ── Line item actions ── */
-  const addItem    = () => setLineItems(p => [...p, { id: Math.random(), desc: '', qty: 1, unitPrice: '' }])
+  const addItem    = () => setLineItems(p => [...p, { id: Math.random(), desc: '', note: '', qty: 1, unitPrice: '' }])
   const removeItem = id  => setLineItems(p => p.filter(it => it.id !== id))
   const updateItem = (id, patch) => {
     setLineItems(p => p.map(it => it.id === id ? { ...it, ...patch } : it))
@@ -467,6 +476,7 @@ export default function InvoiceModal({ initialData }) {
 
     const invoiceItems = validItems.map(it => ({
       desc:  it.desc.trim() || 'Shërbim',
+      note:  it.note?.trim() || '',
       qty:   Number(it.qty) || 1,
       price: Number(it.unitPrice),
     }))

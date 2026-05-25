@@ -27,7 +27,8 @@ function buildReminderMsg(inv) {
 
 /* ── compact invoice card (left panel list) ─────────── */
 function InvoiceListCard({ inv, selected, onClick }) {
-  const { fmt } = useApp()
+  const { fmt, customers } = useApp()
+  const isReseller = customers.find(c => c.name === inv.customer)?.type === 'reseller'
   const diff = inv.due
     ? Math.round((new Date(inv.due) - Date.now()) / 86_400_000)
     : null
@@ -53,7 +54,12 @@ function InvoiceListCard({ inv, selected, onClick }) {
     >
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0 flex-1">
-          <p className="font-semibold text-gray-800 text-sm truncate">{inv.customer}</p>
+          <div className="flex items-center gap-1.5 min-w-0">
+            <p className="font-semibold text-gray-800 text-sm truncate">{inv.customer}</p>
+            {isReseller && (
+              <span className="text-[9px] font-bold px-1 py-0.5 bg-purple-100 text-purple-600 rounded flex-shrink-0">R</span>
+            )}
+          </div>
           <p className="text-[11px] text-gray-400 mt-0.5">{inv.id} · {inv.date}</p>
         </div>
         <div className="text-right flex-shrink-0">
@@ -310,7 +316,10 @@ function InvoiceSidePanel({ invId, onClose }) {
                 {inv.items.map((item, i) => (
                   <tr key={i} className="border-b border-gray-100 hover:bg-gray-50/50">
                     <td className="px-3 py-2.5 text-center text-gray-400">{i + 1}</td>
-                    <td className="px-3 py-2.5 text-gray-700 font-medium">{item.desc}</td>
+                    <td className="px-3 py-2.5">
+                      <p className="text-gray-700 font-medium">{item.desc}</p>
+                      {item.note && <p className="text-xs text-gray-400 italic mt-0.5">{item.note}</p>}
+                    </td>
                     <td className="px-3 py-2.5 text-right text-gray-600">{item.qty}</td>
                     <td className="px-3 py-2.5 text-right text-gray-600">{fmt(item.price)}</td>
                     <td className="px-3 py-2.5 text-right font-bold text-gray-800">{fmt(item.qty * item.price)}</td>
@@ -604,6 +613,7 @@ export default function Invoices() {
 
   const [search,       setSearch]   = useState('')
   const [statusFilter, setStatus]   = useState('all')
+  const [typeFilter,   setTypeFilter]= useState('all')   // 'all' | 'reseller' | 'individual'
   const [page,         setPage]     = useState(1)
   const [perPage,      setPerPage]  = useState(50)
   const [sortField,    setSortField]= useState('id')
@@ -611,6 +621,9 @@ export default function Invoices() {
   const [preview,      setPreview]  = useState(null)
   const [viewMode,     setViewMode] = useState('table')
   const [importOpen,   setImportOpen] = useState(false)
+
+  const getCustomerType = name =>
+    customers.find(c => c.name === name)?.type || 'individual'
 
   function handleImportInvoices(rows) {
     setInvoices(prev => {
@@ -632,10 +645,13 @@ export default function Invoices() {
 
   const today = new Date().toISOString().slice(0, 10)
 
-  const filtered = invoices.filter(i =>
-    (statusFilter === 'all' || i.status === statusFilter) &&
-    (i.customer.toLowerCase().includes(search.toLowerCase()) || i.id.includes(search))
-  )
+  const filtered = invoices.filter(i => {
+    if (statusFilter !== 'all' && i.status !== statusFilter) return false
+    if (typeFilter === 'reseller'   && getCustomerType(i.customer) !== 'reseller')   return false
+    if (typeFilter === 'individual' && getCustomerType(i.customer) === 'reseller')    return false
+    if (search && !i.customer.toLowerCase().includes(search.toLowerCase()) && !i.id.includes(search)) return false
+    return true
+  })
 
   const toggleSort = field => {
     if (sortField === field) setSortDir(d => d === 'asc' ? 'desc' : 'asc')
@@ -708,6 +724,26 @@ export default function Invoices() {
                 className={`flex-shrink-0 text-xs px-2.5 py-1 rounded-full transition-colors ${
                   statusFilter === f.key
                     ? 'bg-blue-600 text-white'
+                    : 'text-gray-500 hover:bg-gray-100'
+                }`}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+          {/* Filter lloji klienti — panel anësor */}
+          <div className="flex gap-1 px-3 py-2 border-b border-gray-100 overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
+            {[
+              { key: 'all',        label: 'Të gjithë' },
+              { key: 'individual', label: '👤 Klientë' },
+              { key: 'reseller',   label: '🔄 Reseller' },
+            ].map(f => (
+              <button
+                key={f.key}
+                onClick={() => setTypeFilter(f.key)}
+                className={`flex-shrink-0 text-xs px-2.5 py-1 rounded-full transition-colors ${
+                  typeFilter === f.key
+                    ? 'bg-purple-600 text-white'
                     : 'text-gray-500 hover:bg-gray-100'
                 }`}
               >
@@ -860,6 +896,16 @@ export default function Invoices() {
           <option value="draft">Draft</option>
           <option value="void">Void</option>
         </select>
+
+        <select
+          className="bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 outline-none focus:border-blue-400 cursor-pointer"
+          value={typeFilter}
+          onChange={e => { setTypeFilter(e.target.value); setPage(1) }}
+        >
+          <option value="all">Të gjithë</option>
+          <option value="individual">👤 Klientë</option>
+          <option value="reseller">🔄 Reseller</option>
+        </select>
         <select
           className="bg-white border border-gray-200 rounded-lg px-2.5 py-2 text-sm text-gray-600 outline-none focus:border-blue-400 cursor-pointer"
           value={perPage}
@@ -933,7 +979,14 @@ export default function Invoices() {
                         onClick={() => setPreview(inv.id)}
                       >
                         <td className="table-td font-bold text-blue-600 text-sm">{inv.id}</td>
-                        <td className="table-td font-medium text-gray-800">{inv.customer}</td>
+                        <td className="table-td font-medium text-gray-800">
+                          <div className="flex items-center gap-1.5">
+                            {inv.customer}
+                            {getCustomerType(inv.customer) === 'reseller' && (
+                              <span className="text-[10px] font-bold px-1.5 py-0.5 bg-purple-100 text-purple-600 rounded-full flex-shrink-0">Reseller</span>
+                            )}
+                          </div>
+                        </td>
                         <td className="table-td text-gray-400 hidden md:table-cell">{inv.date}</td>
                         <td className={`table-td hidden lg:table-cell ${isOverdue ? 'text-red-500 font-semibold' : 'text-gray-400'}`}>
                           {inv.due}

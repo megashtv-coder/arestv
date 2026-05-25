@@ -158,15 +158,31 @@ export default function Payments() {
 
     setPayments(prev => [...prev, ...newPayments])
 
-    // Shëno faturat si të paguara nëse invoiceId përputhet
-    const paidInvoiceIds = new Set(newPayments.map(p => p.invoiceId).filter(Boolean))
-    if (paidInvoiceIds.size > 0) {
-      setInvoices(prev => prev.map(inv =>
-        paidInvoiceIds.has(inv.id) ? { ...inv, status: 'paid' } : inv
-      ))
+    if (newPayments.length === 0) {
+      showToast('Nuk ka pagesa të reja për të importuar.')
+      return
     }
 
-    showToast(`U importuan ${newPayments.length} pagesa${paidInvoiceIds.size ? ` · ${paidInvoiceIds.size} fatura u shënuan si të paguara` : ''} ✓`)
+    // Match VETËM me invoiceId direkt — shmang false positives
+    const paidByInvoiceId = new Set(
+      newPayments.map(p => (p.invoiceId || '').trim()).filter(Boolean)
+    )
+
+    let markedPaid = 0
+    setInvoices(prev => prev.map(inv => {
+      if (inv.status === 'paid') return inv
+      if (paidByInvoiceId.has(inv.id)) {
+        markedPaid++
+        return { ...inv, status: 'paid' }
+      }
+      // status i panjohur → konverto në 'pending'
+      if (!['draft','pending','overdue','paid','void'].includes(inv.status)) {
+        return { ...inv, status: 'pending' }
+      }
+      return inv
+    }))
+
+    showToast(`U importuan ${newPayments.length} pagesa · ${markedPaid} fatura u shënuan si të paguara ✓`)
   }
 
   const deletePayment = (p) => {
