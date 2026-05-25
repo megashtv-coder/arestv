@@ -123,6 +123,7 @@ export function AppProvider({ children }) {
   const prevItems     = useRef([])
   const prevPM        = useRef(null)
   const prevDA        = useRef(null)
+  const prevUsers     = useRef(null) // null = nuk është inicializuar ende nga Supabase
 
   /* ══════════════════════════════════════════════════════════
      NGARKIM fillestar nga Supabase (ose mockData nëse pa Supabase)
@@ -153,7 +154,8 @@ export function AppProvider({ children }) {
       supabase.from('items').select('data'),
       supabase.from('settings').select('key, value'),
       supabase.from('organizations').select('data'),
-    ]).then(([inv, cust, exp, pay, tran, vend, itm, sett, orgs]) => {
+      supabase.from('users').select('data'),
+    ]).then(([inv, cust, exp, pay, tran, vend, itm, sett, orgs, usrs]) => {
 
       const load = (res, fallback) => {
         const d = res.data?.length ? fromRows(res.data) : fallback
@@ -192,6 +194,26 @@ export function AppProvider({ children }) {
       // Organizations
       if (orgs?.data?.length) setOrganizations(fromRows(orgs.data))
 
+      // Users — Supabase është burimi kryesor; mergon me mockUsers për fushat bazë
+      if (usrs?.data?.length) {
+        const supaUsers = fromRows(usrs.data)
+        const merged = supaUsers.map(u => {
+          const base = mockUsers.find(m => m.id === u.id)
+          if (!base) return u
+          return { ...u, username: base.username, role: base.role, orgId: base.orgId, isSuperAdmin: base.isSuperAdmin }
+        })
+        const supaIds = new Set(supaUsers.map(u => u.id))
+        const missing = mockUsers.filter(u => !supaIds.has(u.id))
+        const finalUsers = missing.length ? [...merged, ...missing] : merged
+        setUsers(finalUsers)
+        prevUsers.current = finalUsers
+      } else {
+        // Tabela users është bosh — ngarko nga localStorage dhe push-o në Supabase
+        prevUsers.current = _loadedUsers
+        if (_loadedUsers.length)
+          supabase.from('users').upsert(_loadedUsers.map(u => ({ id: u.id, data: u }))).then()
+      }
+
       setDbLoading(false)
     }).catch(() => {
       // Fallback në rast gabimi rrjeti
@@ -202,8 +224,9 @@ export function AppProvider({ children }) {
       setTransfers(mockTransfers);      prevTransfers.current = mockTransfers
       setVendors(mockVendors);          prevVendors.current   = mockVendors
       setItems(mockItems);              prevItems.current     = mockItems
-      prevPM.current = defaultPaymentModes
-      prevDA.current = defaultDepositAccounts
+      prevPM.current   = defaultPaymentModes
+      prevDA.current   = defaultDepositAccounts
+      prevUsers.current = _loadedUsers  // fallback — mos sync-o deri sa të jetë online
       setDbLoading(false)
     })
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -235,6 +258,21 @@ export function AppProvider({ children }) {
     prevDA.current = depositAccounts
     supabase.from('settings').upsert({ key: 'depositAccounts', value: depositAccounts }).then()
   }, [depositAccounts, canSync])
+
+  // Sync users — kur ndryshojnë users (shto/edito/fshi), ruhen automatikisht në Supabase
+  useEffect(() => {
+    if (!supabase || isTester || prevUsers.current === null) return
+    if (prevUsers.current === users) return
+    const prev = prevUsers.current
+    const toUpsert = users.filter(u => {
+      const old = prev.find(x => x.id === u.id)
+      return !old || JSON.stringify(old) !== JSON.stringify(u)
+    })
+    const toDelete = prev.filter(u => !users.find(x => x.id === u.id))
+    prevUsers.current = users
+    if (toUpsert.length) supabase.from('users').upsert(toUpsert.map(d => ({ id: d.id, data: d }))).then()
+    if (toDelete.length) supabase.from('users').delete().in('id', toDelete.map(d => d.id)).then()
+  }, [users, isTester])
 
   // Sync organizations — ruhen nga super admin, pa kufizim org
   const prevOrgs = useRef(mockOrganizations)
