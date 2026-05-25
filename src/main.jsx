@@ -5,11 +5,15 @@ import './index.css'
 import { registerSW } from 'virtual:pwa-register'
 
 // Auto-update service worker — reload page when new version is ready
-registerSW({
+const updateSW = registerSW({
   onNeedRefresh() {
-    window.location.reload()
+    updateSW(true)
   },
   onOfflineReady() {},
+  onRegisteredSW(swUrl, r) {
+    // Kontrollo për update çdo 60 sekonda
+    if (r) setInterval(() => r.update(), 60 * 1000)
+  },
 })
 
 ReactDOM.createRoot(document.getElementById('root')).render(
