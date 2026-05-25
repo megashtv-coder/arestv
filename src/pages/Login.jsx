@@ -15,7 +15,7 @@ export default function Login({ users = [], onLogin }) {
     setTimeout(() => {
       setLoading(false)
       const user = users.find(
-        u => u.username === username.trim().toLowerCase() &&
+        u => u.username.toLowerCase() === username.trim().toLowerCase() &&
              u.password === password &&
              u.active !== false
       )
