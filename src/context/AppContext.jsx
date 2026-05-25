@@ -252,6 +252,54 @@ export function AppProvider({ children }) {
   }, [organizations, isSuperAdmin])
 
   /* ══════════════════════════════════════════════════════════
+     MIGRIM një-herësh: resellers + referredBy cleanup
+  ══════════════════════════════════════════════════════════ */
+  const migrationDone = useRef(false)
+  useEffect(() => {
+    if (dbLoading || customers.length === 0 || migrationDone.current) return
+    migrationDone.current = true
+
+    const RESELLERS = new Set([
+      'egzon gimolli', 'showtime', 'kitha', 'gmedia96#', 'bastri qukovci',
+      'luli 82', 'besnik refiku', 'egson stp', 'uni2005', 'kemmytv',
+      'arxhend zabeli', 'egzon pllana', 'juve87', 'clirim kokollari',
+      'drinitv', 'elton zale', 'kematv', 'ali tetova', 'isz90',
+      'promedia tv', 'monotv', 'pingtv', 'fresh tv', 'shkodran shabani',
+      'lizzaa', 'ares tv', 'luha65',
+    ])
+
+    // Grumbulloj emrat e të gjithë klientëve (për validimin e referredBy)
+    const validNames = new Set(
+      customers.map(c =>
+        (c.name || `${c.firstName || ''} ${c.lastName || ''}`).trim().toLowerCase()
+      )
+    )
+
+    let changed = false
+    const updated = customers.map(c => {
+      let u = c
+      const nameLow = (c.name || `${c.firstName || ''} ${c.lastName || ''}`).trim().toLowerCase()
+
+      // Vendos llojin reseller nëse emri është në listë
+      if (RESELLERS.has(nameLow) && c.type !== 'reseller') {
+        u = { ...u, type: 'reseller' }
+        changed = true
+      }
+
+      // Pastro referredBy nëse nuk është emër klienti valid
+      if (u.referredBy && !validNames.has(u.referredBy.trim().toLowerCase())) {
+        u = { ...u, referredBy: '' }
+        changed = true
+      }
+
+      return u
+    })
+
+    if (changed) setCustomers(updated)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dbLoading, customers.length])
+
+  /* ══════════════════════════════════════════════════════════
      Persist users & currentUser në localStorage
   ══════════════════════════════════════════════════════════ */
   useEffect(() => {
