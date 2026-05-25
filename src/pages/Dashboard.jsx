@@ -10,6 +10,8 @@ import {
 } from 'recharts'
 import { useApp } from '../context/AppContext'
 import InvoiceModal from './InvoiceModal'
+import { CustomerModal } from './Customers'
+import { ExpenseModal }  from './Expenses'
 
 const MONTH_LBL = ['Jan','Shk','Mar','Pri','Maj','Qer','Kor','Gus','Sht','Tet','Nën','Dhj']
 
@@ -60,7 +62,7 @@ function ChartTooltip({ active, payload, label }) {
 }
 
 export default function Dashboard() {
-  const { invoices, customers, expenses, payments, navigate, setModal, fmt, currentUser } = useApp()
+  const { invoices, customers, expenses, payments, navigate, setModal, closeModal, fmt, currentUser } = useApp()
   const [catFilter, setCatFilter] = useState('12m')
 
   const today    = new Date().toISOString().slice(0, 10)
@@ -148,7 +150,9 @@ export default function Dashboard() {
 
   const catTotal = catData.reduce((s, c) => s + c.value, 0)
 
-  const openInvoiceModal = () => setModal(<InvoiceModal />)
+  const openInvoiceModal  = () => setModal(<InvoiceModal />)
+  const openCustomerModal = () => setModal(<CustomerModal onClose={closeModal} />)
+  const openExpenseModal  = () => setModal(<ExpenseModal  onClose={closeModal} />)
 
   return (
     <div className="space-y-6">
@@ -169,8 +173,8 @@ export default function Dashboard() {
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
         {[
           { icon: FilePlus,    title: 'Krijo Faturë',  sub: 'Faturë e re shpejt',    action: openInvoiceModal },
-          { icon: UserPlus,    title: 'Shto Klient',   sub: 'Regjistro klient të ri', action: () => navigate('customers') },
-          { icon: ReceiptText, title: 'Shpenzim i ri', sub: 'Regjistro shpenzim',     action: () => navigate('expenses') },
+          { icon: UserPlus,    title: 'Shto Klient',   sub: 'Regjistro klient të ri', action: openCustomerModal },
+          { icon: ReceiptText, title: 'Shpenzim i ri', sub: 'Regjistro shpenzim',     action: openExpenseModal  },
         ].map(({ icon: Icon, title, sub, action }) => (
           <button key={title} onClick={action}
             className="text-left bg-white border border-gray-100 rounded-xl p-4 hover:border-blue-300 hover:bg-blue-50 transition-all duration-150 group hover:-translate-y-0.5 hover:shadow-md">

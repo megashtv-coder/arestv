@@ -60,7 +60,7 @@ function SlideSelect({ value, onChange, options, placeholder = 'Zgjidh llogarin�
 }
 
 /* ── Modal shpenzimi ── */
-function ExpenseModal({ expense, onClose }) {
+export function ExpenseModal({ expense, onClose }) {
   const { setExpenses, depositAccounts, showToast } = useApp()
   const isEdit = !!expense
   const today = new Date().toISOString().slice(0, 10)

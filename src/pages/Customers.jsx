@@ -65,7 +65,7 @@ function ReferredBySelect({ value, onChange, excludeId }) {
 /* ══════════════════════════════════════════════════════════
    Modal — shto / edito klient
 ══════════════════════════════════════════════════════════ */
-function CustomerModal({ customer, onClose }) {
+export function CustomerModal({ customer, onClose }) {
   const { setCustomers, showToast } = useApp()
   const isEdit = !!customer
 
