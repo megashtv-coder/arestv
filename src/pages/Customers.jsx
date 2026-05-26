@@ -9,6 +9,7 @@ import { useApp } from '../context/AppContext'
 import { Avatar, Modal, FormGroup, EmptyState } from '../components/UI'
 import { countries } from '../data/mockData'
 import ImportExcelModal, { downloadTemplate } from '../components/ImportExcelModal'
+import { ContactImportButton } from '../features/contacts'
 
 const COLORS = ['#2563eb','#7c3aed','#059669','#d97706','#dc2626','#0891b2','#be185d','#0f766e']
 
@@ -252,6 +253,20 @@ export function CustomerModal({ customer, onClose }) {
             onChange={e => set('lastName', e.target.value)}
             placeholder="p.sh. Krasniqi" />
         </FormGroup>
+      </div>
+
+      {/* 🆕 Contact Import */}
+      <div className="flex gap-2">
+        <ContactImportButton
+          variant="secondary"
+          onSelect={(contact) => {
+            set('firstName', contact.firstName)
+            set('lastName', contact.lastName)
+            set('phone', contact.phone)
+            showToast(`✓ Kontakti u importua: ${contact.firstName} ${contact.lastName}`)
+          }}
+          onError={(error) => setErr(error)}
+        />
       </div>
 
       {/* Telefon + Email */}
