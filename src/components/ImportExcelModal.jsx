@@ -277,7 +277,7 @@ function mergeInvoiceRows(rows) {
   })
 }
 
-function downloadTemplate(entity) {
+export function downloadTemplate(entity) {
   const map = MAPS[entity]
   const ws  = XLSX.utils.aoa_to_sheet(map.template)
   const wb  = XLSX.utils.book_new()

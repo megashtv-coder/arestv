@@ -25,7 +25,12 @@
       "Bash(git config *)",
       "Bash(git mv *)",
       "Bash(echo \"exit: $?\")",
-      "Bash(node \"C:\\\\Users\\\\enndy\\\\Desktop\\\\reimport_with_subscriptions.js\")"
+      "Bash(node \"C:\\\\Users\\\\enndy\\\\Desktop\\\\reimport_with_subscriptions.js\")",
+      "Bash(timeout 5 bash -c 'until curl -s http://localhost:5173 > /dev/null; do sleep 0.5; done')",
+      "mcp__Claude_in_Chrome__tabs_context_mcp",
+      "Bash(python3)",
+      "Bash(extract-text \"template_invoices \\(1\\).xlsx\")",
+      "Bash(pip install *)"
     ]
   }
 }

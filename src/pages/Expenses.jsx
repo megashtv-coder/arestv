@@ -6,7 +6,7 @@ import {
 import { useApp } from '../context/AppContext'
 import { EmptyState, Modal, FormGroup, Pagination } from '../components/UI'
 import { expenseTypes, depositedToOptions } from '../data/mockData'
-import ImportExcelModal from '../components/ImportExcelModal'
+import ImportExcelModal, { downloadTemplate } from '../components/ImportExcelModal'
 
 // sort/page defaults
 
@@ -336,6 +336,9 @@ export default function ExpensesPage() {
           <p className="text-sm text-gray-400 mt-0.5">Totali: {fmt(allTotal)}</p>
         </div>
         <div className="flex items-center gap-2 self-start sm:self-auto">
+          <button className="btn btn-outline btn-sm" onClick={() => downloadTemplate('expenses')} title="Shkarko shablonin Excel">
+            <FileSpreadsheet size={15}/> Template Excel
+          </button>
           <button className="btn btn-outline btn-sm" onClick={() => setImportOpen(true)}>
             <FileSpreadsheet size={15}/> Import Excel
           </button>

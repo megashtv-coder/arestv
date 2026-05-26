@@ -8,7 +8,7 @@ import {
 import { useApp } from '../context/AppContext'
 import { Avatar, Modal, FormGroup, EmptyState } from '../components/UI'
 import { countries } from '../data/mockData'
-import ImportExcelModal from '../components/ImportExcelModal'
+import ImportExcelModal, { downloadTemplate } from '../components/ImportExcelModal'
 
 const COLORS = ['#2563eb','#7c3aed','#059669','#d97706','#dc2626','#0891b2','#be185d','#0f766e']
 
@@ -551,6 +551,9 @@ export default function Customers() {
           <p className="text-sm text-gray-400 mt-0.5">{customers.length} klientë aktiv</p>
         </div>
         <div className="flex items-center gap-2 self-start sm:self-auto">
+          <button className="btn btn-outline btn-sm" onClick={() => downloadTemplate('customers')} title="Shkarko shablonin Excel">
+            <FileSpreadsheet size={15}/> Template Excel
+          </button>
           <button className="btn btn-outline btn-sm" onClick={() => setImportOpen(true)}>
             <FileSpreadsheet size={15}/> Import Excel
           </button>

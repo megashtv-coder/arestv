@@ -6,7 +6,7 @@ import {
 import { useApp } from '../context/AppContext'
 import { EmptyState, Pagination } from '../components/UI'
 import PaymentModal from './PaymentModal'
-import ImportExcelModal from '../components/ImportExcelModal'
+import ImportExcelModal, { downloadTemplate } from '../components/ImportExcelModal'
 
 // sort/page defaults
 
@@ -210,6 +210,9 @@ export default function Payments() {
             onClick={() => exportCSV(filtered, monthFilt !== 'all' ? monthFilt : '', partnerFilt, fmt)}
           >
             <Download size={14} /> Shkarko
+          </button>
+          <button className="btn btn-outline btn-sm gap-2" onClick={() => downloadTemplate('payments')} title="Shkarko shablonin Excel">
+            <Download size={14} /> Template Excel
           </button>
           <button className="btn btn-outline btn-sm gap-2" onClick={() => setImportOpen(true)}>
             <FileSpreadsheet size={14} /> Import Excel

@@ -8,7 +8,7 @@ import { useApp } from '../context/AppContext'
 import { StatusBadge, EmptyState, Pagination } from '../components/UI'
 import InvoiceModal from './InvoiceModal'
 import PaymentModal from './PaymentModal'
-import ImportExcelModal from '../components/ImportExcelModal'
+import ImportExcelModal, { downloadTemplate } from '../components/ImportExcelModal'
 
 const STATUS_ORDER = { overdue: 0, pending: 1, draft: 2, paid: 3, void: 4 }
 
@@ -854,6 +854,9 @@ export default function Invoices() {
             </button>
           </div>
           <button className="btn btn-outline btn-sm"><Download size={14}/>Eksporto</button>
+          <button className="btn btn-outline btn-sm" onClick={() => downloadTemplate('invoices')} title="Shkarko shablonin Excel">
+            <Download size={14}/>Template Excel
+          </button>
           <button className="btn btn-outline btn-sm" onClick={() => setImportOpen(true)}>
             <FileSpreadsheet size={14}/> Import Excel
           </button>
