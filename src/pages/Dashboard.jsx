@@ -170,9 +170,6 @@ export default function Dashboard() {
           <p className="text-sm text-gray-400 mt-0.5 hidden sm:block">Pasqyra financiare — {new Date().toLocaleDateString('sq-AL', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
           <p className="text-sm text-gray-400 mt-0.5 sm:hidden">{new Date().toLocaleDateString('sq-AL', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
         </div>
-        <button className="btn btn-primary self-start sm:self-auto" onClick={openInvoiceModal}>
-          <FilePlus size={16} /> Faturë e re
-        </button>
       </div>
 
       {/* ── Veprime të shpejta ── */}

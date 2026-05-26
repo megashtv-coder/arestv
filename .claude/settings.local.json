@@ -24,7 +24,8 @@
       "Bash(cmd /c \"dir /b\")",
       "Bash(git config *)",
       "Bash(git mv *)",
-      "Bash(echo \"exit: $?\")"
+      "Bash(echo \"exit: $?\")",
+      "Bash(node \"C:\\\\Users\\\\enndy\\\\Desktop\\\\reimport_with_subscriptions.js\")"
     ]
   }
 }
