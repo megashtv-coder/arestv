@@ -47,9 +47,10 @@ const MAPS = {
   invoices: {
     label: 'Fatura',
     fields: [
+      { key: 'invoiceId',         aliases: ['numri i fatures', 'invoice id', 'invoice number', 'id faturës', 'nr faturës', 'fatura'] },
       { key: 'customer',          aliases: ['klienti', 'customer', 'emri'] },
       { key: 'date',              aliases: ['data', 'date', 'data faturës'] },
-      { key: 'due',               aliases: ['skadenca', 'due', 'due date', 'data skadencës'] },
+      { key: 'due',               aliases: ['skadenca', 'due', 'due date', 'data skadencës', 'data per pagese'] },
       { key: 'amount',            aliases: ['shuma', 'amount', 'total', 'vlera'] },
       { key: 'status',            aliases: ['statusi', 'status', 'gjendje'] },
       { key: 'item',              aliases: ['produkti', 'shërbimi', 'item', 'përshkrimi', 'sherbimi'] },
