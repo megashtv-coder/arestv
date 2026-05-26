@@ -144,7 +144,7 @@ export function AppProvider({ children }) {
     }
 
     // Helper: merr TË GJITHA rreshtat duke paginuar (Supabase kthen max 1000 pa range)
-    const fetchAll = async (table, col = 'data') => {
+    const fetchAll = async (table, col = 'id,data') => {
       const PAGE = 1000
       let from = 0
       let all  = []
