@@ -95,6 +95,60 @@ export function AppProvider({ children }) {
   // Org aktuale (objekti i plotë)
   const currentOrg = organizations.find(o => o.id === currentOrgId) || null
 
+  /* ── Filter data by organization ── */
+  const filterByOrg = (data) => {
+    if (!currentOrgId) return []  // Nëse nuk ka user, asnjë të dhënë
+    if (isSuperAdmin) return data  // Superadmin sheh të gjithçka
+    // Filtro vetëm të dhënat e organizatës aktuale
+    return data.filter(item => (item.orgId === currentOrgId || !item.orgId))
+  }
+
+  /* ── Wrapper setters që automatikisht shtojnë orgId në të dhëna të reja ── */
+  const wrappedSetInvoices = useCallback((fn) => {
+    setInvoices(prev => {
+      const next = typeof fn === 'function' ? fn(prev) : fn
+      return Array.isArray(next)
+        ? next.map(item => ({ ...item, orgId: item.orgId || currentOrgId }))
+        : next
+    })
+  }, [currentOrgId])
+
+  const wrappedSetCustomers = useCallback((fn) => {
+    setCustomers(prev => {
+      const next = typeof fn === 'function' ? fn(prev) : fn
+      return Array.isArray(next)
+        ? next.map(item => ({ ...item, orgId: item.orgId || currentOrgId }))
+        : next
+    })
+  }, [currentOrgId])
+
+  const wrappedSetExpenses = useCallback((fn) => {
+    setExpenses(prev => {
+      const next = typeof fn === 'function' ? fn(prev) : fn
+      return Array.isArray(next)
+        ? next.map(item => ({ ...item, orgId: item.orgId || currentOrgId }))
+        : next
+    })
+  }, [currentOrgId])
+
+  const wrappedSetPayments = useCallback((fn) => {
+    setPayments(prev => {
+      const next = typeof fn === 'function' ? fn(prev) : fn
+      return Array.isArray(next)
+        ? next.map(item => ({ ...item, orgId: item.orgId || currentOrgId }))
+        : next
+    })
+  }, [currentOrgId])
+
+  const wrappedSetTransfers = useCallback((fn) => {
+    setTransfers(prev => {
+      const next = typeof fn === 'function' ? fn(prev) : fn
+      return Array.isArray(next)
+        ? next.map(item => ({ ...item, orgId: item.orgId || currentOrgId }))
+        : next
+    })
+  }, [currentOrgId])
+
   /* ── Data states — inicializohen bosh, mbushen nga Supabase / mockData ── */
   const [invoices,        setInvoices]        = useState([])
   const [customers,       setCustomers]       = useState([])
@@ -433,19 +487,26 @@ export function AppProvider({ children }) {
   /* ══════════════════════════════════════════════════════════
      Context value
   ══════════════════════════════════════════════════════════ */
+  // Determine which data to show (tester sandbox, filtered by org, or all for superadmin)
+  const contextInvoices  = isTester ? tInvoices   : filterByOrg(invoices)
+  const contextCustomers = isTester ? tCustomers  : filterByOrg(customers)
+  const contextExpenses  = isTester ? tExpenses   : filterByOrg(expenses)
+  const contextPayments  = isTester ? tPayments   : filterByOrg(payments)
+  const contextTransfers = isTester ? tTransfers  : filterByOrg(transfers)
+
   return (
     <AppContext.Provider value={{
       /* Tester user sheh izolim — nuk ndikon në të dhënat reale */
-      invoices:        isTester ? tInvoices   : invoices,
-      setInvoices:     isTester ? setTInvoices : setInvoices,
-      customers:       isTester ? tCustomers   : customers,
-      setCustomers:    isTester ? setTCustomers : setCustomers,
-      expenses:        isTester ? tExpenses    : expenses,
-      setExpenses:     isTester ? setTExpenses  : setExpenses,
-      payments:        isTester ? tPayments    : payments,
-      setPayments:     isTester ? setTPayments  : setPayments,
-      transfers:       isTester ? tTransfers   : transfers,
-      setTransfers:    isTester ? setTTransfers : setTransfers,
+      invoices:        contextInvoices,
+      setInvoices:     isTester ? setTInvoices : wrappedSetInvoices,
+      customers:       contextCustomers,
+      setCustomers:    isTester ? setTCustomers : wrappedSetCustomers,
+      expenses:        contextExpenses,
+      setExpenses:     isTester ? setTExpenses  : wrappedSetExpenses,
+      payments:        contextPayments,
+      setPayments:     isTester ? setTPayments  : wrappedSetPayments,
+      transfers:       contextTransfers,
+      setTransfers:    isTester ? setTTransfers : wrappedSetTransfers,
       /* Shared */
       items,           setItems,
       vendors,         setVendors,
