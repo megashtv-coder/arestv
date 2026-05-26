@@ -90,16 +90,6 @@ export const mockOrganizations = [
     createdAt: '2026-01-01',
     color: '#7c3aed',
   },
-  {
-    id: 'ORG-002',
-    name: 'MEGA N TV',
-    shortName: 'MEGA N',
-    description: 'Shërbime',
-    plan: 'pro',
-    status: 'active',
-    createdAt: '2026-01-15',
-    color: '#059669',
-  },
 ]
 
 export const mockUsers = [
