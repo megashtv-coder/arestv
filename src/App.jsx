@@ -16,6 +16,8 @@ import Subscriptions from './pages/Subscriptions'
 import Suppliers from './pages/Suppliers'
 import UsersPage from './pages/Users'
 import { Toast, LoadingSkeleton } from './components/UI'
+import { useEffect } from 'react'
+import AutoNotificationService from './services/AutoNotificationService'
 
 const ORG_PAGES = {
   dashboard:     Dashboard,
@@ -32,8 +34,26 @@ const ORG_PAGES = {
 }
 
 function OrgAppLayout() {
-  const { page, loading, toast, setToast, modal, darkMode } = useApp()
+  const { page, loading, toast, setToast, modal, darkMode, invoices, customers, showToast } = useApp()
   const PageComponent = ORG_PAGES[page] || Dashboard
+
+  // Check for pending auto-notifications when app loads
+  useEffect(() => {
+    // Get configured advance days from localStorage
+    const savedAdvanceDays = localStorage.getItem('xflow_notif_advance_days')
+    const advanceDays = savedAdvanceDays ? parseInt(savedAdvanceDays) : 7
+
+    const pending = AutoNotificationService.getPendingNotifications(invoices, customers, advanceDays)
+
+    if (pending.length > 0) {
+      console.log(`📬 Found ${pending.length} pending subscription notifications`)
+      // Auto-send notifications
+      const sentCount = AutoNotificationService.checkAndSendNotifications(invoices, customers, advanceDays)
+      if (sentCount > 0) {
+        showToast(`📱 ${sentCount} njoftim u dërgua nëpërmjet WhatsApp`, 'success')
+      }
+    }
+  }, [invoices, customers, showToast])
 
   return (
     <div className={`app flex min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Save, LogOut, Shield, Bell, Building2, Globe } from 'lucide-react'
+import { Save, LogOut, Shield, Bell, Building2, Globe, MessageCircle } from 'lucide-react'
 import { Toggle } from '../components/UI'
 import { useApp } from '../context/AppContext'
 
@@ -8,8 +8,22 @@ export default function Settings() {
   const [toggles, setToggles] = useState({
     emailNotif: true, smsNotif: false, autoInvoice: true,
     twofa: false, darkReports: false, weeklyDigest: true,
+    autoWhatsApp: true,
+  })
+  const [advanceDays, setAdvanceDays] = useState(() => {
+    const saved = localStorage.getItem('xflow_notif_advance_days')
+    return saved ? parseInt(saved) : 7
   })
   const tog = k => setToggles(p => ({ ...p, [k]: !p[k] }))
+
+  const handleSaveAdvanceDays = () => {
+    if (advanceDays < 0 || advanceDays > 90) {
+      showToast('Numri i ditëve duhet të jetë ndërmjet 0 dhe 90', 'error')
+      return
+    }
+    localStorage.setItem('xflow_notif_advance_days', advanceDays.toString())
+    showToast('Cilësimet e njoftimeve u ruajtën ✓', 'success')
+  }
 
   const handleLogout = () => {
     localStorage.removeItem('xflow_auth')
@@ -41,6 +55,12 @@ export default function Settings() {
         { label: 'Njoftime SMS', sub: 'SMS kur faturat janë pranë afatit', key: 'smsNotif' },
         { label: 'Fatura automatike', sub: 'Dërgo fatura automatikisht', key: 'autoInvoice' },
         { label: 'Raport javor', sub: 'Merr përmbledhje javore me email', key: 'weeklyDigest' },
+      ]
+    },
+    {
+      title: 'Njoftimet automatike WhatsApp', icon: MessageCircle,
+      rows: [
+        { label: 'Njoftime skadimi abonimesh', sub: 'Dërgo automatikisht WhatsApp kur abonimet skadojnë', key: 'autoWhatsApp' },
       ]
     },
     {
@@ -88,6 +108,41 @@ export default function Settings() {
             </div>
           </div>
         ))}
+
+        {/* Auto-notification configuration */}
+        {toggles.autoWhatsApp && (
+          <div>
+            <div className="flex items-center gap-2 mb-2 px-1">
+              <MessageCircle size={14} className="text-gray-400"/>
+              <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Konfigurimi i njoftimeve WhatsApp</p>
+            </div>
+            <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
+              <div className="px-5 py-3.5 border-b border-gray-50">
+                <div className="mb-3">
+                  <p className="text-sm font-semibold text-gray-800 mb-1">Dita më parë të dërgimit</p>
+                  <p className="text-xs text-gray-400 mb-3">Dërgimi i njoftimit kur mbesin X ditë deri sa skadon abonimit</p>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="number"
+                      min="0"
+                      max="90"
+                      value={advanceDays}
+                      onChange={(e) => setAdvanceDays(Math.max(0, Math.min(90, parseInt(e.target.value) || 0)))}
+                      className="w-20 px-3 py-2 border border-gray-300 rounded-lg text-sm font-semibold text-gray-800"
+                    />
+                    <span className="text-sm text-gray-600">ditë më parë</span>
+                    <button
+                      onClick={handleSaveAdvanceDays}
+                      className="ml-auto btn btn-primary btn-sm text-xs flex items-center gap-1"
+                    >
+                      <Save size={12}/>Ruaj
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Logout */}
         <div>
