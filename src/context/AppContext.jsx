@@ -477,7 +477,7 @@ export function AppProvider({ children }) {
     localStorage.setItem('xflow_representatives', JSON.stringify(representatives))
   }, [representatives])
 
-  /* ── Browser history management for page navigation ── */
+  /* ── Browser history management for page and modal navigation ── */
   useEffect(() => {
     // Sync page state with browser URL for back button support
     const url = new URL(window.location)
@@ -486,20 +486,42 @@ export function AppProvider({ children }) {
     } else {
       url.searchParams.delete('page')
     }
-    window.history.pushState({ page }, '', url.toString())
+    // Push new state only when page changes
+    window.history.pushState({ page, hasModal: !!modal }, '', url.toString())
   }, [page])
+
+  // Update current history entry when modal state changes without creating new entry
+  useEffect(() => {
+    if (!modal) return  // Only sync when modal is open
+    // Replace current state to include modal flag when modal opens
+    const url = new URL(window.location)
+    window.history.replaceState({ page, hasModal: true }, '', url.toString())
+  }, [modal, page])
 
   useEffect(() => {
     // Handle back button presses
     const handlePopState = (e) => {
-      const newPage = e.state?.page || new URL(window.location).searchParams.get('page') || 'dashboard'
-      setPage(newPage)
-      localStorage.setItem('xflow_page', newPage)
+      const state = e.state || {}
+
+      // If a modal is currently open, close it but stay on the same page
+      if (modal) {
+        setModal(null)
+        // Push state back to stay on current page (don't navigate)
+        const url = new URL(window.location)
+        window.history.pushState({ page, hasModal: false }, '', url.toString())
+      } else {
+        // No modal is open, navigate to previous page
+        const newPage = state.page || new URL(window.location).searchParams.get('page') || 'dashboard'
+        if (newPage !== page) {
+          setPage(newPage)
+          localStorage.setItem('xflow_page', newPage)
+        }
+      }
     }
 
     window.addEventListener('popstate', handlePopState)
     return () => window.removeEventListener('popstate', handlePopState)
-  }, [])
+  }, [modal, page])
 
   /* ── Logout ── */
   const logout = useCallback(() => {
