@@ -14,6 +14,7 @@ export default function CommunicationHistory() {
   const [filtered, setFiltered] = useState([])
   const [search, setSearch] = useState('')
   const [typeFilter, setTypeFilter] = useState('all')
+  const [statusFilter, setStatusFilter] = useState('all')
   const [page, setPage] = useState(1)
   const [stats, setStats] = useState(null)
   const [showConfirmClear, setShowConfirmClear] = useState(false)
@@ -34,6 +35,11 @@ export default function CommunicationHistory() {
       result = result.filter(m => m.type === typeFilter)
     }
 
+    // Filter by status
+    if (statusFilter !== 'all') {
+      result = result.filter(m => m.status === statusFilter)
+    }
+
     // Filter by search
     if (search) {
       const searchLower = search.toLowerCase()
@@ -47,7 +53,7 @@ export default function CommunicationHistory() {
 
     setFiltered(result)
     setPage(1)
-  }, [messages, typeFilter, search])
+  }, [messages, typeFilter, statusFilter, search])
 
   const loadMessages = () => {
     const logs = MessageLogService.getMessageLogs()
@@ -184,6 +190,19 @@ export default function CommunicationHistory() {
             <option value="telegram">✈️ Telegram</option>
             <option value="email">📧 Email</option>
             <option value="sms">📱 SMS</option>
+          </select>
+
+          {/* Status filter */}
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="px-3 py-2 border border-gray-200 rounded-lg bg-white text-sm font-semibold text-gray-600 outline-none focus:border-blue-400"
+          >
+            <option value="all">Të gjitha statuset</option>
+            <option value="prepared">⏳ Gati për dërgim</option>
+            <option value="sent">✓ Dërguar</option>
+            <option value="read">✓✓ Lexuar</option>
+            <option value="failed">✕ Dështoi</option>
           </select>
         </div>
       </div>
