@@ -29,7 +29,7 @@ function buildReminderMsg(inv) {
 }
 
 function buildInvoiceMsg(inv) {
-  return `Fatura per: ${inv.customer}\nData e abonimit: ${inv.date || '—'}\nData e skadimit te abonimit: ${inv.subscriptionExpiry || '—'}\nAfati i pageses: ${inv.due || '—'}`
+  return `Fatura per: ${inv.customer}\nData e abonimit: ${inv.date || '—'}\nData e skadimit te abonimit: ${inv.subscriptionExpiry || '—'}\nAfati i pageses: ${inv.due || '—'}\nPer pagese: €${inv.amount}`
 }
 
 /* ── compact invoice card (left panel list) ─────────── */
