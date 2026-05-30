@@ -1190,7 +1190,7 @@ export default function Invoices() {
                                         setOpenDropdown(null)
                                       }}
                                     >
-                                      <FileText size={14}/> Dërgo faturën
+                                      <FileText size={14}/> Dërgo faturën WA
                                     </a>
                                   )}
 
