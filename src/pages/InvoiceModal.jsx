@@ -1,11 +1,12 @@
 import { useState, useRef, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import {
-  FilePlus, Pencil, Search, ChevronDown, X, Plus, UserPlus, User, Users,
+  FilePlus, Pencil, Search, ChevronDown, X, Plus, UserPlus, User, Users, Smartphone,
 } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import { Modal, FormGroup } from '../components/UI'
 import { countries } from '../data/mockData'
+import { ContactImportButton } from '../features/contacts'
 
 /* ─────────────────────────────────────────────────────────────
    Responsive hook for mobile detection
@@ -591,22 +592,56 @@ export default function InvoiceModal({ initialData }) {
 
       {/* ── Klienti ── */}
       <FormGroup label="Klienti *">
-        <Combobox
-          options={customers}
-          value={form.customer}
-          onChange={c => set('customer', c.name)}
-          placeholder="Zgjedh klientin..."
-          getKey={c => c.id}
-          getLabel={c => c.name}
-          renderOption={c => (
-            <div>
-              <p className="text-sm font-semibold text-gray-800">{c.name}</p>
-              <p className="text-[11px] text-gray-400 mt-0.5">{[c.country, c.email].filter(Boolean).join(' · ')}</p>
-            </div>
-          )}
-          onAddNew={handleAddNewCustomer}
-          addNewLabel="Shto klient të ri"
-        />
+        <div className="flex items-center gap-2">
+          <div className="flex-1">
+            <Combobox
+              options={customers}
+              value={form.customer}
+              onChange={c => set('customer', c.name)}
+              placeholder="Zgjedh klientin..."
+              getKey={c => c.id}
+              getLabel={c => c.name}
+              renderOption={c => (
+                <div>
+                  <p className="text-sm font-semibold text-gray-800">{c.name}</p>
+                  <p className="text-[11px] text-gray-400 mt-0.5">{[c.country, c.email].filter(Boolean).join(' · ')}</p>
+                </div>
+              )}
+              onAddNew={handleAddNewCustomer}
+              addNewLabel="Shto klient të ri"
+            />
+          </div>
+          {/* Contact Import Button - Small Icon Only */}
+          <ContactImportButton
+            variant="outline"
+            className="!px-2 !py-2 !rounded-lg h-[38px] flex-shrink-0"
+            onSelect={(contact) => {
+              // Try to find existing customer by phone or name
+              const fullName = `${contact.firstName} ${contact.lastName}`.trim()
+              const existingCustomer = customers.find(c =>
+                c.name.toLowerCase() === fullName.toLowerCase() ||
+                (contact.phone && c.phone && c.phone.replace(/[\s\+\-()]/g, '') === contact.phone.replace(/[\s\+\-()]/g, ''))
+              )
+
+              if (existingCustomer) {
+                // Select existing customer
+                set('customer', existingCustomer.name)
+                showToast(`✓ ${existingCustomer.name} u zgjodh`)
+              } else {
+                // Offer to add as new customer
+                set('customer', fullName)
+                setAddingCustomer({
+                  name: fullName,
+                  phone: contact.phone || '',
+                })
+                showToast(`Kontakti u importua. Shtoje si klient nëse duhet.`)
+              }
+            }}
+            onError={(error) => {
+              showToast(`Gabim: ${error}`, 'error')
+            }}
+          />
+        </div>
       </FormGroup>
 
       {/* ── Referenti (Sales Person) ── */}
