@@ -1,7 +1,7 @@
-import { Search, Bell, Moon, Sun, Menu, ChevronDown, Zap } from 'lucide-react'
+import { Search, Bell, Moon, Sun, Menu, ChevronDown, Zap, Check } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import { currencies } from '../data/mockData'
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 const PAGE_TITLES = {
   dashboard:     'Dashboard',
@@ -23,9 +23,48 @@ export default function Header() {
     setSidebarOpen, invoices, navigate, currentUser,
   } = useApp()
   const [curOpen, setCurOpen] = useState(false)
+  const [notifOpen, setNotifOpen] = useState(false)
+  const [readNotifications, setReadNotifications] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem('xflow_read_notifications') || '{}')
+    } catch {
+      return {}
+    }
+  })
+  const notifRef = useRef(null)
+
+  // Persist read notifications to localStorage
+  useEffect(() => {
+    localStorage.setItem('xflow_read_notifications', JSON.stringify(readNotifications))
+  }, [readNotifications])
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (notifRef.current && !notifRef.current.contains(e.target)) {
+        setNotifOpen(false)
+      }
+    }
+    if (notifOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+      return () => document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [notifOpen])
 
   const today       = new Date().toISOString().slice(0, 10)
-  const notifyCount = invoices.filter(i => i.notifyDate && i.notifyDate <= today).length
+  const upcomingNotifications = invoices
+    .filter(i => i.notifyDate && i.notifyDate <= today)
+    .sort((a, b) => new Date(b.notifyDate) - new Date(a.notifyDate))
+
+  const unreadCount = upcomingNotifications.filter(i => !readNotifications[i.id]).length
+
+  const markAllAsRead = () => {
+    const newRead = { ...readNotifications }
+    upcomingNotifications.forEach(i => {
+      newRead[i.id] = true
+    })
+    setReadNotifications(newRead)
+  }
 
   const initials = currentUser
     ? currentUser.name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase()
@@ -74,21 +113,107 @@ export default function Header() {
         )}
       </div>
 
-      {/* Notifications bell */}
-      <button
-        className="icon-btn relative"
-        title={notifyCount > 0 ? `${notifyCount} njoftim abonimesh` : 'Njoftimet e abonimit'}
-        onClick={() => navigate('subscriptions')}
-      >
-        <Bell size={18} />
-        {notifyCount > 0 ? (
-          <span className="absolute -top-1 -right-1 min-w-[17px] h-[17px] bg-orange-500 rounded-full border-2 border-white flex items-center justify-center text-[9px] text-white font-bold px-0.5">
-            {notifyCount}
-          </span>
-        ) : (
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-gray-300 rounded-full border-2 border-white" />
+      {/* Notifications bell with dropdown */}
+      <div className="relative" ref={notifRef}>
+        <button
+          className="icon-btn relative"
+          title={unreadCount > 0 ? `${unreadCount} njoftim i palexuar` : 'Njoftimet e abonimit'}
+          onClick={() => setNotifOpen(v => !v)}
+        >
+          <Bell size={18} />
+          {unreadCount > 0 ? (
+            <span className="absolute -top-1 -right-1 min-w-[17px] h-[17px] bg-orange-500 rounded-full border-2 border-white flex items-center justify-center text-[9px] text-white font-bold px-0.5">
+              {unreadCount}
+            </span>
+          ) : (
+            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-gray-300 rounded-full border-2 border-white" />
+          )}
+        </button>
+
+        {/* Notifications dropdown */}
+        {notifOpen && (
+          <div className="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl shadow-lg z-50 max-h-96 flex flex-col">
+            {/* Header */}
+            <div className="p-4 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
+              <h3 className="font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
+                <Bell size={16} />
+                Njoftimet e Abonimit
+              </h3>
+              {unreadCount > 0 && (
+                <button
+                  onClick={markAllAsRead}
+                  className="text-xs font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 flex items-center gap-1"
+                >
+                  <Check size={14} />
+                  Lexoje të gjitha
+                </button>
+              )}
+            </div>
+
+            {/* Notifications list */}
+            <div className="overflow-y-auto flex-1">
+              {upcomingNotifications.length === 0 ? (
+                <div className="p-6 text-center">
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Nuk ka njoftime</p>
+                </div>
+              ) : (
+                upcomingNotifications.map(inv => {
+                  const isRead = readNotifications[inv.id]
+                  const daysLeft = Math.round((new Date(inv.notifyDate) - new Date(today)) / 86400000)
+
+                  return (
+                    <button
+                      key={inv.id}
+                      onClick={() => {
+                        setReadNotifications(p => ({ ...p, [inv.id]: true }))
+                        navigate('subscriptions')
+                      }}
+                      className={`w-full px-4 py-3 border-b border-gray-50 dark:border-gray-700 text-left hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors ${
+                        isRead ? 'opacity-60' : 'opacity-100 bg-blue-50/30 dark:bg-blue-900/10'
+                      }`}
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-semibold text-gray-800 dark:text-gray-100 truncate">
+                            {inv.customer}
+                          </p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                            Skadon: {inv.subscriptionExpiry}
+                          </p>
+                        </div>
+                        <div className={`text-xs font-semibold whitespace-nowrap flex-shrink-0 ${
+                          daysLeft < 0 ? 'text-red-600' :
+                          daysLeft === 0 ? 'text-red-600 font-bold' :
+                          'text-amber-600'
+                        }`}>
+                          {daysLeft < 0 ? `${Math.abs(daysLeft)} ditë më parë` :
+                           daysLeft === 0 ? 'Sot!' :
+                           `${daysLeft}d`}
+                        </div>
+                      </div>
+                    </button>
+                  )
+                })
+              )}
+            </div>
+
+            {/* Footer */}
+            {upcomingNotifications.length > 0 && (
+              <div className="p-3 border-t border-gray-100 dark:border-gray-700 text-center">
+                <button
+                  onClick={() => {
+                    navigate('subscriptions')
+                    setNotifOpen(false)
+                  }}
+                  className="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-semibold"
+                >
+                  Shiko të gjitha
+                </button>
+              </div>
+            )}
+          </div>
         )}
-      </button>
+      </div>
 
       {/* Dark mode toggle */}
       <button
