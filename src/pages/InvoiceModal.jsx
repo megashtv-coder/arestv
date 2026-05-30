@@ -380,7 +380,7 @@ function monthsToDays(m) {
    InvoiceModal
 ══════════════════════════════════════════════════════════ */
 export default function InvoiceModal({ initialData }) {
-  const { invoices, customers, setCustomers, items: products, setInvoices, showToast, closeModal } = useApp()
+  const { invoices, customers, setCustomers, items: products, setInvoices, showToast, closeModal, representatives, setRepresentatives } = useApp()
 
   const isEdit = !!(initialData?.id)
   const due3d  = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10)
@@ -574,12 +574,15 @@ export default function InvoiceModal({ initialData }) {
       <FormGroup label="Referenti (Përfaqësuesi)">
         <Combobox
           options={[
-            // Get unique representatives from customers' "Referuar nga" field
-            ...Array.from(new Set(
-              customers
+            // Get unique representatives from:
+            // 1. Persistent representatives list
+            // 2. Customers' "Referuar nga" field
+            ...Array.from(new Set([
+              ...representatives,
+              ...customers
                 .filter(cust => cust.referredBy && cust.referredBy.trim())
                 .map(cust => cust.referredBy.trim())
-            )).map(ref => ({ id: ref, name: ref }))
+            ])).map(ref => ({ id: ref, name: ref }))
           ]}
           value={form.referent}
           onChange={ref => set('referent', typeof ref === 'string' ? ref : ref.name)}
@@ -589,7 +592,13 @@ export default function InvoiceModal({ initialData }) {
           renderOption={ref => (
             <span className="text-sm text-gray-800">{ref.name}</span>
           )}
-          onAddNew={name => set('referent', name)}
+          onAddNew={name => {
+            // Add new representative to persistent list if not already there
+            if (!representatives.includes(name)) {
+              setRepresentatives(prev => [...prev, name])
+            }
+            set('referent', name)
+          }}
           addNewLabel="Shto referent të ri"
         />
       </FormGroup>

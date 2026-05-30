@@ -161,6 +161,14 @@ export function AppProvider({ children }) {
   const [transfers,       setTransfers]       = useState([])
   const [vendors,         setVendors]         = useState([])
   const [items,           setItems]           = useState([])
+  const [representatives, setRepresentatives] = useState(() => {
+    try {
+      const saved = localStorage.getItem('xflow_representatives')
+      return saved ? JSON.parse(saved) : []
+    } catch {
+      return []
+    }
+  })
   const [paymentModes,    setPaymentModes]    = useState(defaultPaymentModes)
   const [depositAccounts, setDepositAccounts] = useState(defaultDepositAccounts)
 
@@ -464,6 +472,11 @@ export function AppProvider({ children }) {
     localStorage.setItem('xflow_sidebar', sidebarCollapsed)
   }, [sidebarCollapsed])
 
+  /* ── Representatives persistence ── */
+  useEffect(() => {
+    localStorage.setItem('xflow_representatives', JSON.stringify(representatives))
+  }, [representatives])
+
   /* ── Logout ── */
   const logout = useCallback(() => {
     setCurrentUser(null)
@@ -554,6 +567,7 @@ export function AppProvider({ children }) {
       /* Shared */
       items,           setItems,
       vendors,         setVendors,
+      representatives, setRepresentatives,
       paymentModes,    setPaymentModes,
       depositAccounts, setDepositAccounts,
       currency,        setCurrency,
