@@ -10,6 +10,7 @@ import { StatusBadge, EmptyState, Pagination } from '../components/UI'
 import InvoiceModal from './InvoiceModal'
 import PaymentModal from './PaymentModal'
 import ImportExcelModal, { downloadTemplate } from '../components/ImportExcelModal'
+import CustomerDetailsModal from './CustomerDetailsModal'
 
 const STATUS_ORDER = { overdue: 0, pending: 1, partial: 1.5, draft: 2, paid: 3, void: 4 }
 
@@ -288,7 +289,12 @@ function InvoiceSidePanel({ invId, onClose }) {
           <div className="flex flex-col sm:flex-row justify-between gap-4 sm:gap-6 px-6 pb-5">
             <div>
               <p className="text-[10px] text-gray-400 uppercase tracking-widest font-bold mb-1.5">Fatura për</p>
-              <p className="font-bold text-blue-700 text-base leading-tight">{inv.customer}</p>
+              <button
+                onClick={() => setSelectedCustomer(custObj)}
+                className="font-bold text-blue-700 text-base leading-tight hover:text-blue-900 hover:underline cursor-pointer transition-colors text-left"
+              >
+                {inv.customer}
+              </button>
               {inv.country && <p className="text-xs text-gray-500 mt-1">{inv.country}</p>}
               {inv.email   && <p className="text-xs text-gray-400 mt-0.5">{inv.email}</p>}
               {custObj?.phone && <p className="text-xs text-gray-400 mt-0.5">📞 {custObj.phone}</p>}
@@ -670,6 +676,7 @@ export default function Invoices() {
   const [viewMode,     setViewMode] = useState('table')
   const [importOpen,   setImportOpen] = useState(false)
   const [openDropdown, setOpenDropdown] = useState(null) // Track which row's dropdown is open
+  const [selectedCustomer, setSelectedCustomer] = useState(null) // Customer details modal
 
   const getCustomerType = name =>
     customers.find(c => c.name === name)?.type || 'individual'
@@ -850,6 +857,14 @@ export default function Invoices() {
             onClose={() => setPreview(null)}
           />
         </div>
+
+        {/* Customer Details Modal */}
+        {selectedCustomer && (
+          <CustomerDetailsModal
+            customer={selectedCustomer}
+            onClose={() => setSelectedCustomer(null)}
+          />
+        )}
       </div>
     )
   }
@@ -892,6 +907,14 @@ export default function Invoices() {
         </div>
 
         <KanbanBoard invoices={invoices} setPreview={setPreview} />
+
+        {/* Customer Details Modal */}
+        {selectedCustomer && (
+          <CustomerDetailsModal
+            customer={selectedCustomer}
+            onClose={() => setSelectedCustomer(null)}
+          />
+        )}
       </div>
     )
   }
@@ -1200,6 +1223,14 @@ export default function Invoices() {
           </>
         )}
       </div>
+
+      {/* Customer Details Modal */}
+      {selectedCustomer && (
+        <CustomerDetailsModal
+          customer={selectedCustomer}
+          onClose={() => setSelectedCustomer(null)}
+        />
+      )}
     </div>
   )
 }
