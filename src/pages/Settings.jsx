@@ -1,5 +1,5 @@
-import { useState, useRef } from 'react'
-import { Save, LogOut, Shield, Bell, Building2, Globe, MessageCircle, Download, Upload } from 'lucide-react'
+import { useState, useRef, useEffect } from 'react'
+import { Save, LogOut, Shield, Bell, Building2, Globe, MessageCircle, Download, Upload, Clock, Trash2 } from 'lucide-react'
 import { Toggle } from '../components/UI'
 import { useApp } from '../context/AppContext'
 import BackupService from '../services/BackupService'
@@ -18,7 +18,16 @@ export default function Settings() {
   })
   const [showRestoreConfirm, setShowRestoreConfirm] = useState(false)
   const [restoreData, setRestoreData] = useState(null)
+  const [autoBackups, setAutoBackups] = useState([])
+  const [showAutoBackupConfirm, setShowAutoBackupConfirm] = useState(false)
+  const [selectedAutoBackup, setSelectedAutoBackup] = useState(null)
   const tog = k => setToggles(p => ({ ...p, [k]: !p[k] }))
+
+  // Load auto-backups on mount
+  useEffect(() => {
+    const backups = BackupService.getAutoBackups()
+    setAutoBackups(backups)
+  }, [])
 
   const handleSaveAdvanceDays = () => {
     if (advanceDays < 0 || advanceDays > 90) {
@@ -86,6 +95,60 @@ export default function Settings() {
     } catch (error) {
       showToast('Gabim në rivendosjen e të dhënave', 'error')
     }
+  }
+
+  const handleRestoreAutoBackup = (index) => {
+    const result = BackupService.restoreFromAutoBackup(index)
+    if (!result.success) {
+      showToast(result.message, 'error')
+      return
+    }
+
+    setRestoreData(result.data)
+    setSelectedAutoBackup(index)
+    setShowAutoBackupConfirm(true)
+  }
+
+  const handleConfirmAutoBackupRestore = () => {
+    if (!restoreData) return
+
+    try {
+      setInvoices(restoreData.invoices)
+      setCustomers(restoreData.customers)
+      setItems(restoreData.items)
+      setPayments(restoreData.payments)
+      setExpenses(restoreData.expenses)
+
+      showToast('Auto-backup-i u rivendos me sukses ✓', 'success')
+      setShowAutoBackupConfirm(false)
+      setRestoreData(null)
+      setSelectedAutoBackup(null)
+    } catch (error) {
+      showToast('Gabim në rivendosjen e auto-backup-it', 'error')
+    }
+  }
+
+  const handleDeleteAutoBackup = (index) => {
+    const result = BackupService.deleteAutoBackup(index)
+    if (result.success) {
+      const backups = BackupService.getAutoBackups()
+      setAutoBackups(backups)
+      showToast(result.message, 'success')
+    } else {
+      showToast(result.message, 'error')
+    }
+  }
+
+  const formatBackupTime = (isoString) => {
+    const date = new Date(isoString)
+    return date.toLocaleString('sq-AL', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    })
   }
 
   const sections = [
@@ -272,6 +335,92 @@ export default function Settings() {
               </button>
               <button
                 onClick={handleConfirmRestore}
+                className="btn btn-danger btn-sm text-xs"
+              >
+                Po, rivendos
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Auto-backups */}
+        <div>
+          <div className="flex items-center gap-2 mb-2 px-1">
+            <Clock size={14} className="text-gray-400"/>
+            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Auto-backup-et (çdo 3 ore)</p>
+          </div>
+          <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
+            {autoBackups.length === 0 ? (
+              <div className="px-5 py-8 text-center">
+                <p className="text-sm text-gray-500">Nuk ka auto-backup-e ende</p>
+                <p className="text-xs text-gray-400 mt-1">Auto-backup-et do të krijohen automatikisht çdo 3 ore</p>
+              </div>
+            ) : (
+              <div className="divide-y divide-gray-100">
+                {autoBackups.map((backup, idx) => (
+                  <div key={idx} className="px-5 py-3.5 flex items-center justify-between hover:bg-gray-50 transition-colors">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-gray-800">
+                        Backup #{autoBackups.length - idx}
+                      </p>
+                      <p className="text-xs text-gray-400 mt-0.5">
+                        {formatBackupTime(backup.exportDate)}
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        {backup.data?.invoices?.length || 0} fatura • {backup.data?.customers?.length || 0} klientë
+                      </p>
+                    </div>
+                    <div className="flex gap-1.5 ml-3">
+                      <button
+                        onClick={() => handleRestoreAutoBackup(idx)}
+                        className="btn btn-outline btn-sm text-xs flex items-center gap-1"
+                      >
+                        <Upload size={12}/>Rivendos
+                      </button>
+                      <button
+                        onClick={() => handleDeleteAutoBackup(idx)}
+                        className="btn btn-outline btn-sm text-xs text-red-600 hover:bg-red-50 flex items-center gap-1"
+                      >
+                        <Trash2 size={12}/>
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Auto-backup restore confirmation */}
+        {showAutoBackupConfirm && restoreData && (
+          <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
+            <div className="mb-4">
+              <p className="text-sm font-semibold text-amber-900 mb-2">⚠️ Konfirmo Rivendosjen e Auto-Backup-it</p>
+              <p className="text-xs text-amber-800 mb-3">
+                Kjo do të zëvendësojë të gjitha të dhënat e tanishme:
+              </p>
+              <ul className="text-xs text-amber-800 space-y-1 mb-4">
+                <li>• Faturat: {restoreData.invoices?.length || 0}</li>
+                <li>• Klientët: {restoreData.customers?.length || 0}</li>
+                <li>• Produktet: {restoreData.items?.length || 0}</li>
+                <li>• Pagesat: {restoreData.payments?.length || 0}</li>
+                <li>• Shpenzimet: {restoreData.expenses?.length || 0}</li>
+              </ul>
+              <p className="text-xs text-red-600 font-semibold">Kjo nuk mund të rikthehej!</p>
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={() => {
+                  setShowAutoBackupConfirm(false)
+                  setRestoreData(null)
+                  setSelectedAutoBackup(null)
+                }}
+                className="btn btn-outline btn-sm text-xs"
+              >
+                Anulo
+              </button>
+              <button
+                onClick={handleConfirmAutoBackupRestore}
                 className="btn btn-danger btn-sm text-xs"
               >
                 Po, rivendos

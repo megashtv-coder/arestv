@@ -106,10 +106,114 @@ export function parseBackupFile(file) {
   })
 }
 
+// Auto-backup functions
+const AUTOBACKUP_KEY = 'xflow_autobackups'
+const MAX_AUTOBACKUPS = 5 // Keep last 5 auto-backups
+
+export function createAutoBackup(appState) {
+  try {
+    const backup = exportAllData(appState)
+    backup.isAutoBackup = true
+
+    // Get existing auto-backups
+    const backups = getAutoBackups()
+
+    // Add new backup to the list
+    backups.push(backup)
+
+    // Keep only the last MAX_AUTOBACKUPS
+    if (backups.length > MAX_AUTOBACKUPS) {
+      backups.shift() // Remove oldest
+    }
+
+    // Save to localStorage
+    localStorage.setItem(AUTOBACKUP_KEY, JSON.stringify(backups))
+
+    return { success: true, message: 'Auto-backup u kriju me sukses' }
+  } catch (error) {
+    console.error('Auto-backup creation error:', error)
+    return { success: false, message: 'Gabim në krijimin e auto-backup-it' }
+  }
+}
+
+export function getAutoBackups() {
+  try {
+    const stored = localStorage.getItem(AUTOBACKUP_KEY)
+    return stored ? JSON.parse(stored) : []
+  } catch (error) {
+    console.error('Error retrieving auto-backups:', error)
+    return []
+  }
+}
+
+export function getLatestAutoBackup() {
+  const backups = getAutoBackups()
+  return backups.length > 0 ? backups[backups.length - 1] : null
+}
+
+export function restoreFromAutoBackup(index) {
+  try {
+    const backups = getAutoBackups()
+    if (index < 0 || index >= backups.length) {
+      return { success: false, message: 'Backup-i nuk u gjet' }
+    }
+
+    const backup = backups[index]
+    const validation = validateBackupFile(backup)
+
+    if (!validation.valid) {
+      return { success: false, message: validation.error }
+    }
+
+    return {
+      success: true,
+      data: backup.data,
+      backup: backup,
+      message: 'Auto-backup u ngarkua me sukses',
+    }
+  } catch (error) {
+    console.error('Auto-backup restore error:', error)
+    return { success: false, message: 'Gabim në ngarkimin e auto-backup-it' }
+  }
+}
+
+export function deleteAutoBackup(index) {
+  try {
+    const backups = getAutoBackups()
+    if (index < 0 || index >= backups.length) {
+      return { success: false, message: 'Backup-i nuk u gjet' }
+    }
+
+    backups.splice(index, 1)
+    localStorage.setItem(AUTOBACKUP_KEY, JSON.stringify(backups))
+
+    return { success: true, message: 'Backup-i u fshi me sukses' }
+  } catch (error) {
+    console.error('Auto-backup delete error:', error)
+    return { success: false, message: 'Gabim në fshirjen e backup-it' }
+  }
+}
+
+export function clearAllAutoBackups() {
+  try {
+    localStorage.removeItem(AUTOBACKUP_KEY)
+    return { success: true, message: 'Të gjithë auto-backup-et u fshin' }
+  } catch (error) {
+    console.error('Error clearing auto-backups:', error)
+    return { success: false, message: 'Gabim në fshirjen e auto-backup-ave' }
+  }
+}
+
 export default {
   exportAllData,
   downloadBackup,
   validateBackupFile,
   importBackup,
   parseBackupFile,
+  createAutoBackup,
+  getAutoBackups,
+  getLatestAutoBackup,
+  restoreFromAutoBackup,
+  deleteAutoBackup,
+  clearAllAutoBackups,
 }

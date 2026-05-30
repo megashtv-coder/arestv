@@ -19,6 +19,7 @@ import CommunicationHistory from './pages/CommunicationHistory'
 import { Toast, LoadingSkeleton } from './components/UI'
 import { useEffect } from 'react'
 import AutoNotificationService from './services/AutoNotificationService'
+import BackupService from './services/BackupService'
 
 const ORG_PAGES = {
   dashboard:              Dashboard,
@@ -36,7 +37,7 @@ const ORG_PAGES = {
 }
 
 function OrgAppLayout() {
-  const { page, loading, toast, setToast, modal, darkMode, invoices, customers, showToast } = useApp()
+  const { page, loading, toast, setToast, modal, darkMode, invoices, customers, items, payments, expenses, users, showToast } = useApp()
   const PageComponent = ORG_PAGES[page] || Dashboard
 
   // Check for pending auto-notifications when app loads
@@ -56,6 +57,29 @@ function OrgAppLayout() {
       }
     }
   }, [invoices, customers, showToast])
+
+  // Auto-backup every 3 hours
+  useEffect(() => {
+    // Function to create backup
+    const createBackup = () => {
+      const appState = { invoices, customers, items, payments, expenses, users }
+      const result = BackupService.createAutoBackup(appState)
+      if (result.success) {
+        console.log('✅ Auto-backup created successfully')
+      } else {
+        console.error('Auto-backup failed:', result.message)
+      }
+    }
+
+    // Create backup immediately on app load
+    createBackup()
+
+    // Set up interval for every 3 hours (3 * 60 * 60 * 1000 milliseconds)
+    const backupInterval = setInterval(createBackup, 3 * 60 * 60 * 1000)
+
+    // Cleanup interval on unmount
+    return () => clearInterval(backupInterval)
+  }, [invoices, customers, items, payments, expenses, users])
 
   return (
     <div className={`app flex min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
