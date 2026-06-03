@@ -243,7 +243,11 @@ function BarazimiTab({ payments, expenses, fmt }) {
       setTrfTo(settlement.to)
       setTrfAmt(settlement.amount.toFixed(2))
     }
-    setTrfDate(now.toISOString().slice(0,10))
+    // Use selected month/quarter date, not today's date
+    const selectedDate = mode === 'month'
+      ? `${year}-${String(month).padStart(2,'0')}-01`
+      : `${year}-${String((quarter-1)*3+1).padStart(2,'0')}-01`
+    setTrfDate(selectedDate)
     setShowTrf(true)
   }
 
