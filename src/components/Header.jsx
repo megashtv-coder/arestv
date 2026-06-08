@@ -1,4 +1,4 @@
-import { Search, Bell, Moon, Sun, Menu, ChevronDown, Zap, Check } from 'lucide-react'
+import { Search, Bell, Moon, Sun, Menu, ChevronDown, Zap, Check, Plus, FileText, DollarSign } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import { currencies } from '../data/mockData'
 import { useState, useEffect, useRef } from 'react'
@@ -24,6 +24,7 @@ export default function Header() {
   } = useApp()
   const [curOpen, setCurOpen] = useState(false)
   const [notifOpen, setNotifOpen] = useState(false)
+  const [addOpen, setAddOpen] = useState(false)
   const [readNotifications, setReadNotifications] = useState(() => {
     try {
       return JSON.parse(localStorage.getItem('xflow_read_notifications') || '{}')
@@ -85,6 +86,41 @@ export default function Header() {
       <div className="hidden lg:flex items-center gap-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2 w-48 focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-50 transition-all flex-shrink-0">
         <Search size={14} className="text-gray-400 flex-shrink-0" />
         <input className="bg-transparent border-none outline-none text-sm text-gray-600 dark:text-gray-300 w-full placeholder-gray-400" placeholder="Kërko..." />
+      </div>
+
+      {/* Quick Add Button */}
+      <div className="relative flex-shrink-0">
+        <button
+          className="icon-btn bg-blue-600 text-white hover:bg-blue-700 rounded-lg p-2"
+          onClick={() => setAddOpen(v => !v)}
+          title="Shto element të ri"
+        >
+          <Plus size={18} />
+        </button>
+        {addOpen && (
+          <div className="absolute right-0 top-full mt-2 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-lg shadow-lg z-50 w-48 py-1">
+            <button
+              onClick={() => {
+                navigate('invoices')
+                setAddOpen(false)
+              }}
+              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+            >
+              <FileText size={16} />
+              Faturë e Re
+            </button>
+            <button
+              onClick={() => {
+                navigate('expenses')
+                setAddOpen(false)
+              }}
+              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+            >
+              <DollarSign size={16} />
+              Shpenzim i Ri
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Currency selector */}
