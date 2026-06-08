@@ -687,14 +687,17 @@ export default function Invoices() {
     customers.find(c => c.name === name)?.type || 'individual'
 
   function handleImportInvoices(rows) {
+    console.log('[Import] =============== STARTING IMPORT ===============')
     console.log('[Import] Received rows:', rows.length)
+    console.log('[Import] First row:', JSON.stringify(rows[0], null, 2))
 
     setInvoices(prev => {
-      console.log('[Import] Current invoices:', prev.length)
+      console.log('[Import] Current invoices in state:', prev.length)
 
       const existingIds = new Set(prev.map(i => i.id))
-      const news = rows.filter(r => !existingIds.has(r.id))
+      console.log('[Import] Existing IDs count:', existingIds.size)
 
+      const news = rows.filter(r => !existingIds.has(r.id))
       console.log('[Import] New invoices to add:', news.length)
 
       // riindekso IDs për të mos pasur konflikte
@@ -702,6 +705,7 @@ export default function Invoices() {
         const n = parseInt(i.id.replace('INV-','')) || 0
         return n > m ? n : m
       }, 0)
+      console.log('[Import] Max existing invoice number:', maxNum)
 
       const renumbered = news.map((r, i) => ({
         ...r,
@@ -709,10 +713,14 @@ export default function Invoices() {
       }))
 
       console.log('[Import] After renumbering:', renumbered.length)
-      console.log('[Import] First imported invoice:', renumbered[0])
+      if (renumbered.length > 0) {
+        console.log('[Import] First renumbered:', renumbered[0])
+        console.log('[Import] Last renumbered:', renumbered[renumbered.length - 1])
+      }
 
       const result = [...prev, ...renumbered]
-      console.log('[Import] Final total:', result.length)
+      console.log('[Import] Final total invoices:', result.length)
+      console.log('[Import] =============== IMPORT COMPLETE ===============')
 
       showToast(`U importuan ${renumbered.length} fatura`, 'success')
       return result
