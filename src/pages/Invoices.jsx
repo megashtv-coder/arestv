@@ -698,8 +698,6 @@ export default function Invoices() {
       const renumbered = news.map((r, i) => ({
         ...r,
         id: `INV-${String(maxNum + i + 1).padStart(6, '0')}`,
-        organizationId: currentOrg?.id || 'default', // Shto organizatën
-        organizationName: currentOrg?.name || 'MEGA N TV', // Shto emrin e organizatës
       }))
       showToast(`U importuan ${renumbered.length} fatura`, 'success')
       return [...prev, ...renumbered]
