@@ -102,8 +102,9 @@ export function AppProvider({ children }) {
     if (isSuperAdmin) return data  // Superadmin sheh të gjithçka
     if (!currentOrgId) return data  // Nëse nuk ka user, shfaq të gjitha (mockData)
 
-    // Filter by orgId - show items that match OR have no orgId (backward compat)
-    const filtered = data.filter(item => !item.orgId || item.orgId === currentOrgId)
+    // STRICT filtering: show ONLY items that belong to current org
+    // Items without orgId are NOT shown (security first)
+    const filtered = data.filter(item => item.orgId === currentOrgId)
     return filtered
   }
 
