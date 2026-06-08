@@ -1250,6 +1250,7 @@ export default function Invoices() {
                               <button
                                 className="icon-btn text-gray-400 hover:text-gray-600 hover:bg-gray-100"
                                 title="Veprimet"
+                                data-invoice-id={inv.id}
                                 onClick={e => {
                                   e.stopPropagation()
                                   setOpenDropdown(isDropdownOpen ? null : inv.id)
@@ -1258,9 +1259,17 @@ export default function Invoices() {
                                 <MoreVertical size={16}/>
                               </button>
 
-                              {/* Dropdown Menu */}
-                              {isDropdownOpen && (
-                                <div className="absolute right-0 top-full mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-2xl z-[9999] pointer-events-auto">
+                              {/* Dropdown Menu - using fixed to escape scroll container */}
+                              {isDropdownOpen && (() => {
+                                const buttonRect = document.querySelector(`[data-invoice-id="${inv.id}"]`)?.getBoundingClientRect()
+                                return (
+                                <div
+                                  className="fixed w-48 bg-white border border-gray-200 rounded-lg shadow-2xl z-[9999] pointer-events-auto"
+                                  style={{
+                                    top: buttonRect ? buttonRect.bottom + 5 : '0',
+                                    right: window.innerWidth - (buttonRect ? buttonRect.right : 0),
+                                  }}
+                                >
                                   <button
                                     className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 flex items-center gap-2 border-b border-gray-100"
                                     onClick={e => {
@@ -1359,7 +1368,8 @@ export default function Invoices() {
                                     <Trash2 size={14}/> Fshi
                                   </button>
                                 </div>
-                              )}
+                                )
+                              })()}
                             </div>
                           </div>
                         </td>
