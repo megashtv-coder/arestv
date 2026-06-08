@@ -3,7 +3,7 @@ import {
   Users, Mail, Phone, UserPlus, Search, X,
   Pencil, Monitor, Wifi, UserCheck, Globe, Filter,
   MessageCircle, Send, LayoutGrid, User, AlertTriangle, FileSpreadsheet,
-  ChevronDown,
+  ChevronDown, Trash2,
 } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import { Avatar, Modal, FormGroup, EmptyState } from '../components/UI'
@@ -376,21 +376,31 @@ export function CustomerModal({ customer, onClose }) {
 /* ══════════════════════════════════════════════════════════
    Karta e klientit
 ══════════════════════════════════════════════════════════ */
-function CustomerCard({ c, onEdit, fmt, isLatePayer }) {
+function CustomerCard({ c, onEdit, fmt, isLatePayer, onDelete, checked, onToggleSelect }) {
   const phone  = cleanPhone(c.phone)
   const isReseller = c.type === 'reseller'
 
   return (
     <div
-      className={`bg-white rounded-xl border p-5 hover:shadow-md transition-all duration-200 cursor-pointer group ${
+      className={`bg-white rounded-xl border p-5 hover:shadow-md transition-all duration-200 group ${
         isLatePayer
           ? 'border-orange-200 hover:border-orange-300'
           : 'border-gray-100 hover:border-blue-200'
-      }`}
+      } ${checked ? 'ring-2 ring-blue-400 bg-blue-50/50' : ''}`}
       onClick={() => onEdit(c)}
     >
       {/* Header */}
       <div className="flex items-start gap-3 mb-3">
+        <input
+          type="checkbox"
+          checked={checked}
+          onChange={(e) => {
+            e.stopPropagation()
+            onToggleSelect()
+          }}
+          className="w-5 h-5 rounded border-gray-300 text-blue-600 cursor-pointer mt-1 flex-shrink-0"
+          onClick={(e) => e.stopPropagation()}
+        />
         <Avatar name={c.name || c.firstName || '?'} color={c.color} size={44} />
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5 flex-wrap">
@@ -518,6 +528,14 @@ function CustomerCard({ c, onEdit, fmt, isLatePayer }) {
           >
             <Pencil size={13}/>
           </button>
+          {/* Delete */}
+          <button
+            className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-50 text-gray-400 hover:bg-red-50 hover:text-red-600 transition-colors opacity-0 group-hover:opacity-100"
+            onClick={e => { e.stopPropagation(); onDelete(c.id) }}
+            title="Fshi klientin"
+          >
+            <Trash2 size={13}/>
+          </button>
         </div>
       </div>
     </div>
@@ -533,6 +551,8 @@ export default function Customers() {
   const [typeFilt,      setTypeFilt]      = useState('all')
   const [countryFilt,   setCountryFilt]   = useState('all')
   const [importOpen,    setImportOpen]    = useState(false)
+  const [selected,      setSelected]      = useState(new Set())
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(null) // null | 'single' | 'multiple'
 
   function handleImportCustomers(rows) {
     setCustomers(prev => {
@@ -541,6 +561,46 @@ export default function Customers() {
       showToast(`U importuan ${news.length} klientë të rinj`, 'success')
       return [...prev, ...news]
     })
+  }
+
+  const handleDeleteCustomer = (customerId) => {
+    setSelected(new Set())
+    setShowDeleteConfirm({ type: 'single', id: customerId })
+  }
+
+  const handleConfirmDelete = () => {
+    if (showDeleteConfirm.type === 'single') {
+      const name = customers.find(c => c.id === showDeleteConfirm.id)?.name
+      setCustomers(prev => prev.filter(c => c.id !== showDeleteConfirm.id))
+      showToast(`Klienti "${name}" u fshi ✓`, 'success')
+    } else if (showDeleteConfirm.type === 'multiple') {
+      const count = selected.size
+      const names = customers.filter(c => selected.has(c.id)).map(c => c.name).join(', ')
+      setCustomers(prev => prev.filter(c => !selected.has(c.id)))
+      setSelected(new Set())
+      showToast(`${count} klientë u fshin ✓`, 'success')
+    }
+    setShowDeleteConfirm(null)
+  }
+
+  const toggleSelectCustomer = (customerId) => {
+    setSelected(prev => {
+      const newSelected = new Set(prev)
+      if (newSelected.has(customerId)) {
+        newSelected.delete(customerId)
+      } else {
+        newSelected.add(customerId)
+      }
+      return newSelected
+    })
+  }
+
+  const toggleSelectAll = () => {
+    if (selected.size === filtered.length) {
+      setSelected(new Set())
+    } else {
+      setSelected(new Set(filtered.map(c => c.id)))
+    }
   }
 
   const usedCountries = [...new Set(customers.map(c => c.country).filter(Boolean))]
@@ -639,6 +699,33 @@ export default function Customers() {
 
       {/* Filtrat */}
       <div className="flex flex-wrap items-center gap-2 mb-5">
+        {/* Select All Checkbox */}
+        {filtered.length > 0 && (
+          <div className="flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-3 py-2">
+            <input
+              type="checkbox"
+              checked={filtered.length > 0 && selected.size === filtered.length}
+              onChange={toggleSelectAll}
+              className="w-5 h-5 rounded border-gray-300 text-blue-600 cursor-pointer"
+              title="Zgjidh të gjithë"
+            />
+            <span className="text-xs text-gray-600 font-medium">
+              {selected.size > 0 ? `${selected.size} zgjedhur` : 'Zgjidh të gjithë'}
+            </span>
+          </div>
+        )}
+
+        {/* Delete Selected Button */}
+        {selected.size > 0 && (
+          <button
+            onClick={() => setShowDeleteConfirm({ type: 'multiple' })}
+            className="flex items-center gap-1.5 bg-red-50 border border-red-200 text-red-600 hover:bg-red-100 rounded-lg px-3 py-2 text-xs font-semibold transition-colors"
+          >
+            <Trash2 size={14}/>
+            Fshi {selected.size}
+          </button>
+        )}
+
         <div className="flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-3 py-2
                         focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-50 transition-all flex-1 min-w-[160px]">
           <Search size={14} className="text-gray-400 flex-shrink-0" />
@@ -698,8 +785,40 @@ export default function Customers() {
               onEdit={openEdit}
               fmt={fmt}
               isLatePayer={latePayerNames.has(c.name)}
+              onDelete={handleDeleteCustomer}
+              checked={selected.has(c.id)}
+              onToggleSelect={() => toggleSelectCustomer(c.id)}
             />
           ))}
+        </div>
+      )}
+
+      {/* Delete confirmation dialog */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl p-6 max-w-sm w-full">
+            <p className="text-sm font-bold text-gray-800 mb-2">Fshi {showDeleteConfirm.type === 'single' ? 'klientin' : 'klientët'}?</p>
+            <p className="text-xs text-gray-500 mb-4">
+              {showDeleteConfirm.type === 'single'
+                ? `Ai klient do të fshihet përgjithmonë.`
+                : `${selected.size} klientë do të fshihen përgjithmonë.`
+              }
+            </p>
+            <div className="flex gap-2 justify-end">
+              <button
+                onClick={() => setShowDeleteConfirm(null)}
+                className="btn btn-outline btn-sm text-xs"
+              >
+                Anulo
+              </button>
+              <button
+                onClick={handleConfirmDelete}
+                className="btn btn-danger btn-sm text-xs"
+              >
+                Po, fshi
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
