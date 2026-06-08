@@ -66,7 +66,11 @@
       "Bash(Invoke-WebRequest -Uri \"http://localhost:5173\" -UseBasicParsing)",
       "Bash(Select-Object -ExpandProperty StatusCode)",
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:5173)",
-      "Bash(node analyze_invoices.js)"
+      "Bash(node analyze_invoices.js)",
+      "Bash(Start-Sleep -Seconds 3)",
+      "Bash(Get-Content \"C:\\\\Users\\\\enndy\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Users-enndy-Downloads-financeflow\\\\92163b91-9035-4564-8582-b5da5f92a3ba\\\\tasks\\\\b2hbx8mz5.output\")",
+      "Bash(Select-Object -Last 50)",
+      "Bash(curl -s http://localhost:5173/)"
     ]
   }
 }

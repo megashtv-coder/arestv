@@ -174,6 +174,24 @@ export function AppProvider({ children }) {
     })
   }, [currentOrgId])
 
+  const wrappedSetUsers = useCallback((fn) => {
+    setUsers(prev => {
+      const next = typeof fn === 'function' ? fn(prev) : fn
+      if (!Array.isArray(next)) return next
+
+      // Assign orgId if missing (fallback safety)
+      const orgIdToUse = currentOrgId || 'default'
+      if (!currentOrgId) {
+        console.warn('⚠️ No currentOrgId set, using fallback!')
+      }
+
+      return next.map(item => ({
+        ...item,
+        orgId: item.orgId || orgIdToUse  // Use existing or assign current
+      }))
+    })
+  }, [currentOrgId])
+
   /* ── Data migration: Fix any invoices without orgId ── */
   const migrateOrgIds = (rawInvoices, orgId) => {
     if (!Array.isArray(rawInvoices)) return rawInvoices
@@ -211,6 +229,7 @@ export function AppProvider({ children }) {
   const [tExpenses,  setTExpenses]  = useState([])
   const [tPayments,  setTPayments]  = useState([])
   const [tTransfers, setTTransfers] = useState([])
+  const [tUsers,     setTUsers]     = useState([])
 
   /* ── Refs për diff-sync ── */
   const prevInvoices  = useRef([])
