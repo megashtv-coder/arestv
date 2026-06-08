@@ -284,9 +284,17 @@ function mergeInvoiceRows(rows) {
     if (!invoiceId) continue
 
     if (!invoiceMap[invoiceId]) {
-      // Create new invoice
+      // Create new invoice - store row data for later build
       invoiceMap[invoiceId] = {
-        ...row,
+        invoiceId: row.invoiceId,
+        customer: row.customer,
+        date: row.date,
+        due: row.due,
+        amount: row.amount,
+        status: row.status,
+        referent: row.referent,
+        subscriptionExpiry: row.subscriptionExpiry,
+        notifyDate: row.notifyDate,
         items: row.item ? [{
           desc: row.item || 'Shërbim',
           qty: parseInt(row.qty) || 1,
@@ -305,13 +313,7 @@ function mergeInvoiceRows(rows) {
 
   const invoices = Object.values(invoiceMap)
 
-  return invoices.map((inv, idx) => {
-    const obj = { ...inv }
-    delete obj.item
-    delete obj.qty
-    delete obj.price
-    return MAPS.invoices.build(obj, idx)
-  })
+  return invoices.map((inv, idx) => MAPS.invoices.build(inv, idx))
 }
 
 export function downloadTemplate(entity) {

@@ -51,7 +51,22 @@
       "Bash(curl -s http://localhost:5173)",
       "Bash(pkill -f \"npm run dev\")",
       "Bash(curl -s -I http://localhost:5173)",
-      "Bash(node -c src/data/mockInvoices.js)"
+      "Bash(node -c src/data/mockInvoices.js)",
+      "Bash(cd C:\\\\\\\\Users\\\\\\\\enndy\\\\\\\\Downloads\\\\\\\\financeflow)",
+      "mcp__Claude_in_Chrome__switch_browser",
+      "Bash(xargs grep -l \"Ngarko të dhëna\")",
+      "Bash(xargs grep -l \"ContactImportButton\\\\|export.*contact\")",
+      "Bash(mkdir -p \"C:\\\\Users\\\\enndy\\\\Downloads\\\\iptv-platform\\\\backend-api\\\\src\\\\{models,routes,controllers,middleware,config,utils}\")",
+      "Bash(mkdir -p \"C:\\\\Users\\\\enndy\\\\Downloads\\\\iptv-platform\\\\mobile-app\\\\lib\\\\{core,features,models,services,providers,widgets}\")",
+      "Bash(mkdir -p \"C:\\\\Users\\\\enndy\\\\Downloads\\\\iptv-platform\\\\admin-dashboard\\\\src\\\\{pages,components,services,hooks,utils}\")",
+      "Bash(mkdir -p \"C:\\\\Users\\\\enndy\\\\Downloads\\\\iptv-platform\\\\seller-dashboard\\\\src\\\\{pages,components,services,hooks,utils}\")",
+      "Bash(mkdir -p \"C:\\\\Users\\\\enndy\\\\Downloads\\\\iptv-platform\\\\mobile-app\\\\lib\\\\core\\\\{theme,router,constants}\")",
+      "Bash(mkdir -p \"C:\\\\Users\\\\enndy\\\\Downloads\\\\iptv-platform\\\\mobile-app\\\\lib\\\\features\\\\{splash,auth,home,live_tv,movies,series,replay,search,settings,player}\")",
+      "Bash(Start-Sleep -Seconds 4)",
+      "Bash(Invoke-WebRequest -Uri \"http://localhost:5173\" -UseBasicParsing)",
+      "Bash(Select-Object -ExpandProperty StatusCode)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:5173)",
+      "Bash(node analyze_invoices.js)"
     ]
   }
 }
