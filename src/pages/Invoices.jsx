@@ -999,7 +999,6 @@ export default function Invoices() {
   const paged = sorted.slice((page - 1) * perPage, page * perPage)
 
   /* Calculate stats */
-  const today = new Date().toISOString().slice(0, 10)
   const pendingValue = invoices
     .filter(i => i.status === 'pending')
     .reduce((sum, i) => sum + (i.amount || 0), 0)
