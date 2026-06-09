@@ -1,4 +1,3 @@
-import { supabase } from '../lib/supabase'
 import { useState } from 'react'
 import { Eye, EyeOff, AlertCircle, Zap } from 'lucide-react'
 
@@ -17,43 +16,17 @@ export default function Login({ users = [], onLogin }) {
   setError('')
 
   try {
-    console.log('🔐 Logging in with email:', username)
+    console.log('🔐 Logging in with username:', username)
 
-    // Login with Supabase auth
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: username,
-      password
-    })
+    // Find user in local users list
+    const user = users.find(u => u.username === username && u.password === password)
 
-    console.log('✅ Auth response:', { data, error })
-    if (error) throw new Error(error.message)
-
-    // Fetch user profile to get org_id
-    console.log('📋 Fetching profile for:', username)
-    const { data: profile, error: profileError } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('email', username)
-      .single()
-
-    console.log('✅ Profile response:', { profile, profileError })
-    if (profileError) throw new Error(profileError.message)
-
-    // Enhance Supabase user with required properties for AppContext compatibility
-    const enhancedUser = {
-      ...data.user,
-      id: data.user.id,
-      email: data.user.email,
-      username: data.user.email, // Use email as username for compatibility
-      name: data.user.user_metadata?.name || data.user.email.split('@')[0],
-      orgId: profile?.org_id,
-      role: profile?.role || 'user',
-      isSuperAdmin: false,
-      active: true
+    if (!user) {
+      throw new Error('Emri i përdoruesit ose fjalëkalimi i pasaktë')
     }
 
-    console.log('✅ Login successful, enhanced user:', enhancedUser)
-    onLogin(enhancedUser)
+    console.log('✅ Login successful:', user.username)
+    onLogin(user)
 
   } catch (err) {
     console.error('❌ Login error:', err)
