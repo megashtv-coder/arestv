@@ -128,22 +128,19 @@ function AuthWrapper() {
 
   if (!currentUser) {
     const handleLogin = (user) => {
-      // Create JWT-like token with org_id claim for RLS policies
-      const token = btoa(JSON.stringify({
-        sub: user.id,
-        email: user.username,
-        org_id: user.orgId,
-        is_superadmin: user.isSuperAdmin || false,
-        iat: Math.floor(Date.now() / 1000)
-      }))
+      try {
+        console.log('👤 handleLogin received user:', { id: user.id, email: user.email, orgId: user.orgId })
 
-      // Store token in localStorage for use in Supabase requests
-      localStorage.setItem('xflow_auth_token', token)
+        // Set user in AppContext (user object has orgId from Login.jsx)
+        setCurrentUser(user)
 
-      // Set user in AppContext
-      setCurrentUser(user)
-      // Create session in TenantContext
-      createSession(user, user.orgId)
+        // Create session in TenantContext with org_id
+        createSession(user, user.orgId)
+
+        console.log('✅ handleLogin complete')
+      } catch (err) {
+        console.error('❌ handleLogin error:', err)
+      }
     }
     return <Login users={users} onLogin={handleLogin} />
   }
