@@ -1,5 +1,6 @@
 import { AppProvider, useApp } from './context/AppContext'
 import { TenantProvider, useTenant } from './context/TenantContext'
+import { supabase } from './lib/supabase'
 import RoleBasedRouter from './components/RoleBasedRouter'
 import Login from './pages/Login'
 import Sidebar from './components/Sidebar'
@@ -17,7 +18,7 @@ import Suppliers from './pages/Suppliers'
 import UsersPage from './pages/Users'
 import CommunicationHistory from './pages/CommunicationHistory'
 import { Toast, LoadingSkeleton } from './components/UI'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import AutoNotificationService from './services/AutoNotificationService'
 import BackupService from './services/BackupService'
 
@@ -116,8 +117,55 @@ function OrgAppLayout() {
 function AuthWrapper() {
   const { users, setCurrentUser, currentUser } = useApp()
   const { createSession, loading: tenantLoading } = useTenant()
+  const [sessionLoading, setSessionLoading] = useState(true)
 
-  if (tenantLoading) {
+  // Check for existing Supabase session on mount
+  useEffect(() => {
+    const restoreSession = async () => {
+      try {
+        console.log('🔄 Checking for existing Supabase session...')
+
+        // Get current session
+        const { data: { session } } = await supabase.auth.getSession()
+
+        if (session?.user) {
+          console.log('✅ Session found, restoring user...')
+
+          // Fetch user profile to get org_id
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('email', session.user.email)
+            .single()
+
+          // Enhance user object
+          const enhancedUser = {
+            ...session.user,
+            username: session.user.email,
+            name: session.user.user_metadata?.name || session.user.email.split('@')[0],
+            orgId: profile?.org_id,
+            role: profile?.role || 'user',
+            isSuperAdmin: false,
+            active: true
+          }
+
+          console.log('✅ User restored:', enhancedUser.email)
+          setCurrentUser(enhancedUser)
+          createSession(enhancedUser, enhancedUser.orgId)
+        } else {
+          console.log('ℹ️ No active session')
+        }
+      } catch (err) {
+        console.error('❌ Session restore error:', err)
+      } finally {
+        setSessionLoading(false)
+      }
+    }
+
+    restoreSession()
+  }, [])
+
+  if (tenantLoading || sessionLoading) {
     return <div className="min-h-screen flex items-center justify-center bg-gray-900">
       <div className="text-center text-white">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
