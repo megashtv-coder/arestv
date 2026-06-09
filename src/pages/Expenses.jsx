@@ -341,15 +341,23 @@ export default function ExpensesPage() {
           <h2 className="text-xl font-bold text-gray-800">Shpenzimet</h2>
           <p className="text-sm text-gray-400 mt-0.5">Totali: {fmt(allTotal)}</p>
         </div>
-        <div className="flex items-center gap-2 self-start sm:self-auto">
-          <button className="btn btn-outline btn-sm" onClick={() => downloadTemplate('expenses')} title="Shkarko shablonin Excel">
-            <FileSpreadsheet size={15}/> Template Excel
+        <div className="flex items-center gap-1.5">
+          {/* Import */}
+          <button
+            className="w-9 h-9 flex items-center justify-center rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
+            onClick={() => setImportOpen(true)}
+            title="Importo Excel"
+          >
+            <FileSpreadsheet size={16}/>
           </button>
-          <button className="btn btn-outline btn-sm" onClick={() => setImportOpen(true)}>
-            <FileSpreadsheet size={15}/> Import Excel
-          </button>
-          <button className="btn btn-primary btn-sm" onClick={openAdd}>
-            <Plus size={15} /> Shpenzim i ri
+
+          {/* New Expense */}
+          <button
+            className="w-9 h-9 flex items-center justify-center rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors font-bold text-lg"
+            onClick={openAdd}
+            title="Shpenzim i ri"
+          >
+            +
           </button>
         </div>
       </div>

@@ -202,21 +202,32 @@ export default function Payments() {
           <h2 className="text-xl font-bold text-gray-800">Pagesat e Marra</h2>
           <p className="text-sm text-gray-400 mt-0.5">{payments.length} pagesa gjithsej</p>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex items-center gap-1.5">
+          {/* Export */}
           <button
-            className="btn btn-outline btn-sm gap-2"
+            className="w-9 h-9 flex items-center justify-center rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
             onClick={() => exportCSV(filtered, monthFilt !== 'all' ? monthFilt : '', partnerFilt, fmt)}
+            title="Eksporto"
           >
-            <Download size={14} /> Shkarko
+            <Download size={16}/>
           </button>
-          <button className="btn btn-outline btn-sm gap-2" onClick={() => downloadTemplate('payments')} title="Shkarko shablonin Excel">
-            <Download size={14} /> Template Excel
+
+          {/* Import */}
+          <button
+            className="w-9 h-9 flex items-center justify-center rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
+            onClick={() => setImportOpen(true)}
+            title="Importo Excel"
+          >
+            <FileSpreadsheet size={16}/>
           </button>
-          <button className="btn btn-outline btn-sm gap-2" onClick={() => setImportOpen(true)}>
-            <FileSpreadsheet size={14} /> Import Excel
-          </button>
-          <button className="btn btn-primary btn-sm gap-2" onClick={openNewPayment}>
-            <CreditCard size={14} /> Regjistro Pagesë
+
+          {/* New Payment */}
+          <button
+            className="w-9 h-9 flex items-center justify-center rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors font-bold text-lg"
+            onClick={openNewPayment}
+            title="Regjistro Pagesë"
+          >
+            +
           </button>
         </div>
       </div>
