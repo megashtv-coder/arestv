@@ -64,7 +64,7 @@ function accountLabel(code) {
 }
 
 /* ─── Modal shto / edito ─────────────────────────────────── */
-function ItemModal({ item, onClose }) {
+function ItemModal({ item, onClose, isFormPage }) {
   const { setItems, vendors, showToast, fmt } = useApp()
   const isEdit = !!item
 
@@ -562,6 +562,7 @@ export default function Items() {
               key={`modal-${editItemId || 'create'}`}
               item={editItem || undefined}
               onClose={() => navigate('items')}
+              isFormPage={true}
             />
           </FormPageWrapper>
         </div>

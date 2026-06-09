@@ -643,6 +643,7 @@ export default function ExpensesPage() {
             <ExpenseModal
               key={`modal-${editExpenseId || 'create'}`}
               expense={editExpense || undefined}
+              onClose={() => navigate('expenses')}
               isFormPage={true}
             />
           </FormPageWrapper>

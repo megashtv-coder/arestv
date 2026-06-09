@@ -698,6 +698,7 @@ export default function Invoices() {
         <InvoiceModal
           key={`modal-${editInvoiceId || 'create'}`}
           initialData={editInvoice || undefined}
+          onClose={() => navigate('invoices')}
           isFormPage={true}
         />
       </FormPageWrapper>

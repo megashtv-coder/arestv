@@ -516,6 +516,7 @@ export default function Payments() {
             <PaymentModal
               key={`modal-${editPaymentId || 'create'}`}
               payment={editPayment || undefined}
+              onClose={() => navigate('payments')}
               isFormPage={true}
             />
           </FormPageWrapper>

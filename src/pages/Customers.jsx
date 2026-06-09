@@ -949,6 +949,7 @@ export default function Customers() {
             <CustomerModal
               key={`modal-${editCustomerId || 'create'}`}
               customer={editCustomer || undefined}
+              onClose={() => navigate('customers')}
               isFormPage={true}
             />
           </FormPageWrapper>
