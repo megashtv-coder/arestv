@@ -705,7 +705,7 @@ export default function InvoiceModal({ initialData, isFormPage, onClose }) {
           <label className="form-label mb-0 text-sm sm:text-base font-bold">Artikujt</label>
           {/* Column labels */}
           <div
-            className="hidden sm:grid text-xs sm:text-xs text-gray-500 font-semibold uppercase tracking-wider gap-2 pr-2 sm:pr-9"
+            className="hidden sm:grid text-[16.5px] text-gray-600 font-bold uppercase tracking-wider gap-2 pr-2 sm:pr-9"
             style={{ gridTemplateColumns: '1fr 60px 80px 70px' }}
           >
             <span className="pl-2 sm:pl-3"></span>
@@ -802,7 +802,7 @@ export default function InvoiceModal({ initialData, isFormPage, onClose }) {
 
       {/* ── Notify date (Full width, highlight) ── */}
       <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 sm:p-4">
-        <FormGroup label="🔔 Njoftim rinovimi — data kur dërgojmë rikujtim">
+        <FormGroup label="🔔 Rikujtim për riabonimin">
           <input className="form-control text-base sm:text-sm bg-white" type="date" value={form.notifyDate} onChange={e => set('notifyDate', e.target.value)} />
           <p className="text-[10px] sm:text-[11px] text-gray-500 mt-1.5">Shfaqet në menunë "Abonimet" si rikujtim për klientin.</p>
         </FormGroup>
