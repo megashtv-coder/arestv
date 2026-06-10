@@ -99,23 +99,7 @@ export const mockUsers = [
   { id: 'USR-004', name: 'Test',  username: 'test',  password: 'test',     role: 'tester', orgId: 'ORG-001', active: true, createdAt: '2026-01-01', color: '#6b7280' },
 ]
 
-export const mockActivityLog = [
-  { id: 'LOG-001', userId: 'USR-001', userName: 'Enndy', action: 'Krijoi faturën INV-001 — Ardit Krasniqi €4.800',  module: 'Faturat',    timestamp: '2026-04-15T09:30:00' },
-  { id: 'LOG-002', userId: 'USR-002', userName: 'Belti', action: 'Shtoi klientin Blerim Hyseni',                     module: 'Klientët',   timestamp: '2026-04-16T11:20:00' },
-  { id: 'LOG-003', userId: 'USR-003', userName: 'Samki', action: 'Regjistroi shpenzimin EXP-008 — Trex €60',         module: 'Shpenzimet', timestamp: '2026-04-18T14:05:00' },
-  { id: 'LOG-004', userId: 'USR-001', userName: 'Enndy', action: 'Krijoi faturën INV-004 — Driton Morina €8.750',   module: 'Faturat',    timestamp: '2026-04-25T10:00:00' },
-  { id: 'LOG-005', userId: 'USR-002', userName: 'Belti', action: 'Ndryshoi statusin e INV-003 → Vonuar',             module: 'Faturat',    timestamp: '2026-05-19T09:15:00' },
-  { id: 'LOG-006', userId: 'USR-001', userName: 'Enndy', action: 'Shtoi furnitorin Predator',                        module: 'Furnitorët', timestamp: '2026-05-20T16:30:00' },
-  { id: 'LOG-007', userId: 'USR-003', userName: 'Samki', action: 'Regjistroi pagesën PAY-001 — Ardit Krasniqi €800',module: 'Pagesat',    timestamp: '2026-05-21T13:45:00' },
-  { id: 'LOG-008', userId: 'USR-001', userName: 'Enndy', action: 'Krijoi faturën INV-010 — Ardit Krasniqi €2.800',  module: 'Faturat',    timestamp: '2026-05-22T08:50:00' },
-  { id: 'LOG-009', userId: 'USR-002', userName: 'Belti', action: 'Shtoi klientin Filan Fisteku',                     module: 'Klientët',   timestamp: '2026-06-02T10:15:00' },
-  { id: 'LOG-010', userId: 'USR-003', userName: 'Samki', action: 'Regjistroi shpenzimin EXP-012 — Amazon €450',      module: 'Shpenzimet', timestamp: '2026-06-04T14:30:00' },
-  { id: 'LOG-011', userId: 'USR-001', userName: 'Enndy', action: 'Krijoi faturën INV-015 — Gani Saliu €5.500',       module: 'Faturat',    timestamp: '2026-06-05T11:20:00' },
-  { id: 'LOG-012', userId: 'USR-002', userName: 'Belti', action: 'Regjistroi pagesën PAY-005 — Filan Fisteku €1.200',module: 'Pagesat',    timestamp: '2026-06-07T09:45:00' },
-  { id: 'LOG-013', userId: 'USR-003', userName: 'Samki', action: 'Ndryshoi statusin e INV-012 → Paguar',              module: 'Faturat',    timestamp: '2026-06-08T16:00:00' },
-  { id: 'LOG-014', userId: 'USR-001', userName: 'Enndy', action: 'Shtoi produktin Netflix Premium — 3 Muaj',         module: 'Produktet', timestamp: '2026-06-09T13:30:00' },
-  { id: 'LOG-015', userId: 'USR-002', userName: 'Belti', action: 'Krijoi faturën INV-020 — Lulzim Haxhiu €3.200',    module: 'Faturat',    timestamp: '2026-06-10T08:25:00' },
-]
+export const mockActivityLog = []
 
 export { mockPayments } from './mockPayments.js'
 
