@@ -957,7 +957,7 @@ export default function Invoices() {
         </div>
 
         {/* Right: invoice side panel */}
-        <div className="flex-1 flex flex-col overflow-hidden max-w-2xl">
+        <div className="flex-1 flex flex-col overflow-hidden">
           <InvoiceSidePanel
             key={preview}
             invId={preview}
