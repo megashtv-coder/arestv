@@ -8,6 +8,7 @@ import {
 import { useApp } from '../context/AppContext'
 import { Avatar, Modal, FormGroup, EmptyState } from '../components/UI'
 import FormPageWrapper from '../components/FormPageWrapper'
+import CustomerDetailsModal from './CustomerDetailsModal'
 import { countries } from '../data/mockData'
 import ImportExcelModal, { downloadTemplate } from '../components/ImportExcelModal'
 import { ContactImportButton } from '../features/contacts'
@@ -590,6 +591,7 @@ export default function Customers() {
   const [importOpen,    setImportOpen]    = useState(false)
   const [selected,      setSelected]      = useState(new Set())
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(null) // null | 'single' | 'multiple'
+  const [selectedCustomer, setSelectedCustomer] = useState(null) // Customer for details modal
   const [currentPage,   setCurrentPage]   = useState(1)
   const ITEMS_PER_PAGE = 20
 
@@ -882,7 +884,7 @@ export default function Customers() {
               <CustomerCard
                 key={c.id}
                 c={c}
-                onEdit={openEdit}
+                onEdit={setSelectedCustomer}
                 fmt={fmt}
                 isLatePayer={latePayerNames.has(c.name)}
                 onDelete={handleDeleteCustomer}
@@ -973,6 +975,13 @@ export default function Customers() {
         </div>
       )}
 
+      {/* Customer Details Modal */}
+      {selectedCustomer && (
+        <CustomerDetailsModal
+          customer={selectedCustomer}
+          onClose={() => setSelectedCustomer(null)}
+        />
+      )}
     </div>
   )
 }

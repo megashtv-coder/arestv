@@ -3,8 +3,16 @@ import { X, Pencil, Save, XCircle } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 
 export default function CustomerDetailsModal({ customer, onClose }) {
-  const { customers, setCustomers, showToast } = useApp()
+  const { customers, setCustomers, showToast, invoices, payments } = useApp()
   const [isEditing, setIsEditing] = useState(false)
+
+  // Calculate customer stats
+  const customerInvoices = invoices.filter(i => i.customer === customer?.name) || []
+  const subscriptionCount = customerInvoices.length
+  const totalPaid = payments
+    .filter(p => p.customer === customer?.name)
+    .reduce((sum, p) => sum + (Number(p.amount) || 0), 0)
+  const referredCount = customers.filter(c => c.referredBy === customer?.name).length
   const [formData, setFormData] = useState({
     name: customer?.name || '',
     email: customer?.email || '',
@@ -181,6 +189,27 @@ export default function CustomerDetailsModal({ customer, onClose }) {
               </span>
             )}
           </div>
+
+          {/* Customer Statistics */}
+          {!isEditing && (
+            <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+              <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Statistika</p>
+              <div className="grid grid-cols-3 gap-3">
+                <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3 text-center">
+                  <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">{subscriptionCount}</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">Abonime</p>
+                </div>
+                <div className="bg-emerald-50 dark:bg-emerald-900/20 rounded-lg p-3 text-center">
+                  <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">€{Math.round(totalPaid)}</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">Paguar</p>
+                </div>
+                <div className="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-3 text-center">
+                  <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">{referredCount}</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">Referuar</p>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Footer */}
