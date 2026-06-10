@@ -1,6 +1,6 @@
 import {
   LayoutDashboard, FileText, Users as UsersIcon, Receipt, BarChart2,
-  Package, CreditCard, Settings, HelpCircle, ChevronRight, X, Bell,
+  Package, CreditCard, Settings, ChevronRight, X, Bell,
   Truck, Zap, ChevronLeft, UserCog, LogOut, MessageSquare,
 } from 'lucide-react'
 import { useApp } from '../context/AppContext'
@@ -119,12 +119,6 @@ export default function Sidebar() {
             <Settings size={18} className="flex-shrink-0" />
             {!sidebarCollapsed && <span>Cilësimet</span>}
           </div>
-
-          {!sidebarCollapsed && (
-            <div className="sidebar-item">
-              <HelpCircle size={18} /> <span>Ndihmë & Mbështetje</span>
-            </div>
-          )}
         </nav>
 
         {/* User card */}

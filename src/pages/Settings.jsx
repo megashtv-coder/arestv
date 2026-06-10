@@ -206,7 +206,9 @@ export default function Settings() {
       </div>
 
       <div className="max-w-2xl space-y-5">
-        {sections.map(({ title, icon: Icon, rows }) => (
+        {sections.map(({ title, icon: Icon, rows }) => {
+          const isLockedSection = title === 'Profili i kompanisë' || title === 'Gjuha & Rajoni'
+          return (
           <div key={title}>
             <div className="flex items-center gap-2 mb-2 px-1">
               <Icon size={14} className="text-gray-400"/>
@@ -221,6 +223,8 @@ export default function Settings() {
                   </div>
                   {row.key ? (
                     <Toggle on={toggles[row.key]} onToggle={() => tog(row.key)}/>
+                  ) : isLockedSection ? (
+                    <button className="btn btn-outline btn-sm text-xs opacity-50 cursor-not-allowed" disabled>Nuk mund të ndryshohet</button>
                   ) : (
                     <button className="btn btn-outline btn-sm text-xs">Ndrysho</button>
                   )}
@@ -228,7 +232,8 @@ export default function Settings() {
               ))}
             </div>
           </div>
-        ))}
+        )
+        })}
 
         {/* Auto-notification configuration */}
         {toggles.autoWhatsApp && (
