@@ -35,14 +35,20 @@ export default function Header() {
   })
   const notifRef = useRef(null)
 
-  // Handle search - filter invoices by customer name
-  const handleSearch = (value) => {
+  // Handle search - only navigate on Enter key, not on every character
+  const handleSearchInput = (value) => {
     setSearchInput(value)
-    if (value.trim()) {
-      // Find customer with matching name (case-insensitive)
-      const customer = customers.find(c => c.name.toLowerCase().includes(value.toLowerCase()))
+  }
+
+  const handleSearchSubmit = () => {
+    if (searchInput.trim()) {
+      // Find customer with exact name match or close match (case-insensitive)
+      const exactMatch = customers.find(c => c.name.toLowerCase() === searchInput.toLowerCase())
+      const partialMatch = customers.find(c => c.name.toLowerCase().includes(searchInput.toLowerCase()))
+      const customer = exactMatch || partialMatch
+
       if (customer) {
-        // Navigate to invoices with customer filter in URL
+        // Navigate to invoices with customer filter
         localStorage.setItem('xflow_invoice_search', customer.name)
         navigate('invoices')
       }
@@ -109,10 +115,10 @@ export default function Header() {
           className="bg-transparent border-none outline-none text-sm text-gray-600 dark:text-gray-300 w-full placeholder-gray-400"
           placeholder="Emri i klientit..."
           value={searchInput}
-          onChange={(e) => handleSearch(e.target.value)}
+          onChange={(e) => handleSearchInput(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
-              handleSearch(searchInput)
+              handleSearchSubmit()
             }
           }}
         />
