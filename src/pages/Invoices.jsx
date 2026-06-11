@@ -1303,6 +1303,7 @@ export default function Invoices() {
               <table className="w-full min-w-[500px]" style={{ position: 'relative' }}>
                 <thead className="sticky top-0 z-10">
                   <tr className="border-b-2 border-gray-100 bg-white">
+                    <th className="table-th hidden sm:table-cell">Data</th>
                     {[
                       { key: 'id',       label: 'ID',     cls: 'hidden sm:table-cell' },
                       { key: 'customer', label: 'Klienti',cls: '' },
@@ -1316,8 +1317,6 @@ export default function Invoices() {
                         </span>
                       </th>
                     ))}
-                    <th className="table-th hidden md:table-cell">Data</th>
-                    <th className="table-th hidden lg:table-cell">Afati</th>
                     <th className="table-th sm:table-cell lg:table-cell">Skadimi Abonimit</th>
                     <th className="table-th cursor-pointer select-none hover:text-blue-600"
                         onClick={() => toggleSort('amount')}>
@@ -1326,6 +1325,7 @@ export default function Invoices() {
                         <span className="text-[10px]">{sortField === 'amount' ? (sortDir === 'asc' ? '↑' : '↓') : <span className="text-gray-300">↕</span>}</span>
                       </span>
                     </th>
+                    <th className="table-th hidden lg:table-cell">Afati</th>
                     <th className="table-th cursor-pointer select-none hover:text-blue-600"
                         onClick={() => toggleSort('status')}>
                       <span className="flex items-center gap-1">
@@ -1359,6 +1359,7 @@ export default function Invoices() {
                         key={inv.id}
                         className={`hover:bg-blue-50/30 transition-colors group ${selected.has(inv.id) ? 'bg-blue-100' : ''}`}
                       >
+                        <td className="table-td text-gray-400 hidden sm:table-cell">{inv.date}</td>
                         <td className="table-td font-bold text-blue-600 text-sm hidden sm:table-cell cursor-pointer" onClick={() => setPreview(inv.id)}>{inv.id}</td>
                         <td className="table-td font-medium text-gray-800 cursor-pointer" onClick={() => setPreview(inv.id)}>
                           <div className="flex items-center gap-1.5">
@@ -1380,10 +1381,6 @@ export default function Invoices() {
                             <span className="text-gray-300 italic text-xs">-</span>
                           )}
                         </td>
-                        <td className="table-td text-gray-400 hidden md:table-cell">{inv.date}</td>
-                        <td className={`table-td hidden lg:table-cell ${isOverdue ? 'text-red-500 font-semibold' : 'text-gray-400'}`}>
-                          {inv.due}
-                        </td>
                         <td className="table-td text-blue-600 sm:table-cell lg:table-cell text-sm font-medium">
                           {inv.subscriptionExpiry ? (
                             <span className="px-2 py-1 bg-blue-50 rounded-full text-xs">
@@ -1394,6 +1391,9 @@ export default function Invoices() {
                           )}
                         </td>
                         <td className="table-td font-bold text-gray-800">{fmt(inv.amount)}</td>
+                        <td className={`table-td hidden lg:table-cell ${isOverdue ? 'text-red-500 font-semibold' : 'text-gray-400'}`}>
+                          {inv.due}
+                        </td>
                         <td className="table-td"><StatusBadge status={isOverdue && inv.status !== 'paid' && inv.status !== 'void' ? 'overdue' : inv.status}/></td>
                         <td className="table-td relative" onClick={e => e.stopPropagation()}>
                           <div className="flex items-center justify-end">
