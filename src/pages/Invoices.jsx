@@ -342,7 +342,7 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer }) {
                 <div className="flex items-center justify-between sm:justify-end gap-4">
                   <span className="text-gray-400">Afati i pagesës:</span>
                   <span className={`font-semibold w-24 text-right ${isOverdue ? 'text-red-500' : 'text-gray-700'}`}>
-                    {inv.due || '—'}
+{formatDate(inv.due)}
                   </span>
                 </div>
                 {inv.subscriptionExpiry && (
@@ -1307,7 +1307,7 @@ export default function Invoices() {
                   <div className="flex-1 min-w-0 cursor-pointer" onClick={() => setPreview(inv.id)}>
                     <p className="font-bold text-gray-800 text-sm truncate hover:text-blue-600 transition-colors">{inv.customer}</p>
                     <p className="text-xs font-bold text-blue-600 mt-0.5">
-                      {inv.subscriptionExpiry || '—'}
+{formatDate(inv.subscriptionExpiry)}
                     </p>
                   </div>
 
