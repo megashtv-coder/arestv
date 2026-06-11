@@ -94,7 +94,7 @@ export default function Payments() {
     invoices, setInvoices,
     closeModal,
     showToast, fmt,
-    page, navigate,
+    page, navigate, logActivity,
   } = useApp()
 
   const [search,      setSearch]    = useState('')
@@ -205,6 +205,7 @@ export default function Payments() {
     setInvoices(prev => prev.map(i =>
       i.id === p.invoiceId ? { ...i, status: 'pending' } : i
     ))
+    logActivity(`Fshiu pagesën ${p.id} — ${p.customer} €${Number(p.amount)}`, 'Pagesat')
     showToast('Pagesa u fshi. Fatura kaloi në pritje.')
     setDeletingId(null)
   }

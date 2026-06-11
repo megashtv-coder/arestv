@@ -87,7 +87,7 @@ export default function PaymentModal({ invoice, payment: editPayment, onClose, i
     invoices, setInvoices,
     setPayments, setExpenses,
     paymentModes, depositAccounts,
-    showToast, fmt,
+    showToast, fmt, logActivity,
   } = useApp()
 
   const { canUseDepositAccounts } = useFeatures()
@@ -167,6 +167,7 @@ export default function PaymentModal({ invoice, payment: editPayment, onClose, i
             }
           : p
       ))
+      logActivity(`Përditësoi pagesën ${editPayment.id} — ${editPayment.customer} €${Number(form.amount)}`, 'Pagesat')
       showToast(`Pagesa u përditësua! Neto: ${fmt(net)} ✓`)
       onClose()
       return
@@ -191,6 +192,7 @@ export default function PaymentModal({ invoice, payment: editPayment, onClose, i
 
     /* 1 — regjistro pagesën */
     setPayments(prev => [payment, ...prev])
+    logActivity(`Regjistroi pagesën ${payment.id} — ${selectedInv.customer} €${Number(form.amount)}`, 'Pagesat')
 
     /* 2 — kalkuloj shumin totale të paguar për këtë faturë */
     // Përfshirë pagesën e re që sapo u regjistrua

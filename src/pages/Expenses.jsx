@@ -63,7 +63,7 @@ function SlideSelect({ value, onChange, options, placeholder = 'Zgjidh llogarin�
 
 /* ── Modal shpenzimi ── */
 export function ExpenseModal({ expense, onClose, isFormPage }) {
-  const { setExpenses, depositAccounts, showToast, currentOrgId } = useApp()
+  const { setExpenses, depositAccounts, showToast, currentOrgId, logActivity } = useApp()
   const { canUsePartnerExpenseFields } = useFeatures()
   const isEdit = !!expense
   const today = new Date().toISOString().slice(0, 10)
@@ -86,9 +86,12 @@ export function ExpenseModal({ expense, onClose, isFormPage }) {
 
     if (isEdit) {
       setExpenses(prev => prev.map(e => e.id === expense.id ? payload : e))
+      logActivity(`Përditësoi shpenzimin ${expense.id} — ${form.type} €${Number(form.amount)}`, 'Shpenzimet')
       showToast('Shpenzimi u përditësua! ✓')
     } else {
-      setExpenses(prev => [{ ...payload, id: `EXP-${Date.now()}`, orgId: currentOrgId }, ...prev])
+      const newId = `EXP-${Date.now()}`
+      setExpenses(prev => [{ ...payload, id: newId, orgId: currentOrgId }, ...prev])
+      logActivity(`Regjistroi shpenzimin ${newId} — ${form.type} €${Number(form.amount)}`, 'Shpenzimet')
       showToast('Shpenzimi u regjistrua! ✓')
     }
     onClose()
@@ -254,9 +257,10 @@ export function ExpenseModal({ expense, onClose, isFormPage }) {
 
 /* ── Konfirmim fshirje ── */
 function DeleteConfirm({ exp, onClose }) {
-  const { setExpenses, showToast } = useApp()
+  const { setExpenses, showToast, logActivity } = useApp()
   const del = () => {
     setExpenses(prev => prev.filter(e => e.id !== exp.id))
+    logActivity(`Fshiu shpenzimin ${exp.id} — ${exp.type} €${Number(exp.amount)}`, 'Shpenzimet')
     showToast('Shpenzimi u fshi! ✓')
     onClose()
   }
@@ -278,7 +282,7 @@ function DeleteConfirm({ exp, onClose }) {
 
 /* ══════════════════════════════════════════════════════════ */
 export default function ExpensesPage() {
-  const { expenses, setExpenses, closeModal, fmt, showToast, page, navigate } = useApp()
+  const { expenses, setExpenses, closeModal, fmt, showToast, page, navigate, logActivity } = useApp()
 
   const [search,      setSearch]     = useState('')
   const [partnerFilt, setPartner]    = useState('all')

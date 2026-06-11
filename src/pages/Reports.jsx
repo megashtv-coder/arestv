@@ -180,7 +180,7 @@ function FinanciareTab({ invoices, expenses, fmt }) {
    TAB 2: Barazimi Enndy / Samki
 ══════════════════════════════════════════════════════════ */
 function BarazimiTab({ payments, expenses, fmt }) {
-  const { transfers, setTransfers } = useApp()
+  const { transfers, setTransfers, logActivity } = useApp()
   const now      = new Date()
   const [mode,   setMode]   = useState('month')
   const [year,   setYear]   = useState(now.getFullYear())
@@ -254,16 +254,24 @@ function BarazimiTab({ payments, expenses, fmt }) {
   const saveTrf = () => {
     const amt = parseFloat(trfAmt)
     if (!amt || amt <= 0 || trfFrom === trfTo) return
+    const trfId = 'TRF-' + Date.now()
     setTransfers(prev => [...prev, {
-      id: 'TRF-' + Date.now(), date: trfDate,
+      id: trfId, date: trfDate,
       from: trfFrom, to: trfTo, amount: amt, note: trfNote.trim(),
     }])
+    logActivity(`Regjistroi barazim ${trfId} — ${trfFrom} → ${trfTo} €${amt.toFixed(2)}`, 'Barazimet')
     setShowTrf(false)
     setTrfAmt('')
     setTrfNote('')
   }
 
-  const deleteTrf = (id) => setTransfers(prev => prev.filter(t => t.id !== id))
+  const deleteTrf = (id) => {
+    const trf = transfers.find(t => t.id === id)
+    setTransfers(prev => prev.filter(t => t.id !== id))
+    if (trf) {
+      logActivity(`Fshiu barazim ${id} — ${trf.from} → ${trf.to} €${trf.amount.toFixed(2)}`, 'Barazimet')
+    }
+  }
 
   const YEARS    = [2025, 2026, 2027]
   const QUARTERS = ['Q1 (Jan–Mar)', 'Q2 (Pri–Qer)', 'Q3 (Kor–Sht)', 'Q4 (Tet–Dhj)']

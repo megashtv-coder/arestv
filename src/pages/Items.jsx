@@ -65,7 +65,7 @@ function accountLabel(code) {
 
 /* ─── Modal shto / edito ─────────────────────────────────── */
 function ItemModal({ item, onClose, isFormPage }) {
-  const { setItems, vendors, showToast, fmt } = useApp()
+  const { setItems, vendors, showToast, fmt, logActivity } = useApp()
   const isEdit = !!item
 
   const empty = { name: '', salePrice: '', purchasePrice: '', account: salesAccounts[0].code, vendor: '' }
@@ -87,9 +87,12 @@ function ItemModal({ item, onClose, isFormPage }) {
 
     if (isEdit) {
       setItems(prev => prev.map(i => i.id === item.id ? payload : i))
+      logActivity(`Përditësoi produktin ${item.id} — ${form.name}`, 'Produktet')
       showToast('Produkti u përditësua me sukses! ✓')
     } else {
-      setItems(prev => [{ ...payload, id: `ITM-${Date.now()}` }, ...prev])
+      const newId = `ITM-${Date.now()}`
+      setItems(prev => [{ ...payload, id: newId }, ...prev])
+      logActivity(`Shtoi produktin ${newId} — ${form.name}`, 'Produktet')
       showToast('Produkti u shtua me sukses! ✓')
     }
     onClose()
@@ -212,9 +215,10 @@ function ItemModal({ item, onClose, isFormPage }) {
 
 /* ─── Konfirmim fshirje ──────────────────────────────────── */
 function DeleteConfirm({ item, onClose }) {
-  const { setItems, showToast } = useApp()
+  const { setItems, showToast, logActivity } = useApp()
   const del = () => {
     setItems(prev => prev.filter(i => i.id !== item.id))
+    logActivity(`Fshiu produktin ${item.id} — ${item.name}`, 'Produktet')
     showToast('Produkti u fshi! ✓', 'success')
     onClose()
   }

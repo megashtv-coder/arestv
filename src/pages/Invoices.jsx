@@ -670,7 +670,7 @@ export default function Invoices() {
     setModal, closeModal,
     showToast, fmt,
     currentOrgId, currentOrg,
-    page, navigate,
+    page, navigate, logActivity,
   } = useApp()
 
   // Detect if we're in form mode (page like "invoices:create" or "invoices:ID:edit")
@@ -790,7 +790,11 @@ export default function Invoices() {
 
   const handleDeleteSelected = () => {
     const count = selected.size
+    const deletedInvoices = invoices.filter(i => selected.has(i.id))
     setInvoices(prev => prev.filter(i => !selected.has(i.id)))
+    deletedInvoices.forEach(inv => {
+      logActivity(`Fshiu faturën ${inv.id} — ${inv.customer} €${inv.amount}`, 'Faturat')
+    })
     setSelected(new Set())
     setConfirmDelAll(false)
     showToast(`U fshihen ${count} fatura`, 'success')
