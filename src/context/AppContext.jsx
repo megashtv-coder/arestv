@@ -374,13 +374,14 @@ export function AppProvider({ children }) {
   useEffect(() => { if (canSync) diffSync('vendors',   vendors,   prevVendors,   currentOrgId) }, [vendors,   canSync])
   useEffect(() => { if (canSync) diffSync('items',     items,     prevItems,     currentOrgId) }, [items,     canSync])
 
-  // Sync activities to Supabase if available, with localStorage fallback
+  // Always save activities to localStorage, and also sync to Supabase if available
   useEffect(() => {
+    // Always persist to localStorage for immediate access on refresh
+    localStorage.setItem('xflow_activity_log', JSON.stringify(activityLog))
+
+    // Also sync to Supabase if available
     if (canSync && supabase) {
       diffSync('activities', activityLog, prevActivities, currentOrgId)
-    } else {
-      // Fallback: save to localStorage if Supabase isn't available
-      localStorage.setItem('xflow_activity_log', JSON.stringify(activityLog))
     }
   }, [activityLog, canSync])
 
