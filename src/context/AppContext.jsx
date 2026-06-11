@@ -252,10 +252,11 @@ export function AppProvider({ children }) {
       fetchAll('transfers'),
       fetchAll('vendors'),
       fetchAll('items'),
+      fetchAll('activities'),
       supabase.from('settings').select('key, value'),
       fetchAll('organizations'),
       fetchAll('users'),
-    ]).then(([inv, cust, exp, pay, tran, vend, itm, sett, orgs, usrs]) => {
+    ]).then(([inv, cust, exp, pay, tran, vend, itm, act, sett, orgs, usrs]) => {
 
       const load = (res, fallback) => {
         const d = res.data?.length ? fromRows(res.data) : fallback
@@ -323,6 +324,13 @@ export function AppProvider({ children }) {
         const toSeed = finalUsers.filter(u => !supaIds.has(u.id))
         if (toSeed.length)
           supabase.from('users').upsert(toSeed.map(u => ({ id: u.id, data: u }))).then()
+      }
+
+      // Activities — load from Supabase
+      {
+        const loadedActivities = act?.data?.length ? fromRows(act.data) : []
+        setActivityLog(loadedActivities)
+        prevActivities.current = loadedActivities
       }
 
       // MIGRATION: Ensure all records have orgId (critical for data isolation)
