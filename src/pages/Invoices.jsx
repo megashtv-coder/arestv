@@ -1313,19 +1313,11 @@ export default function Invoices() {
                 onClick={() => setPreview(inv.id)}
               >
                 <div className="grid grid-cols-3 gap-3 items-start">
-                  {/* Column 1: Customer + Due Date */}
+                  {/* Column 1: Customer + Subscription Expiry */}
                   <div className="min-w-0">
                     <p className="font-semibold text-gray-800 text-sm truncate">{inv.customer}</p>
-                    <p className="text-xs text-gray-500 mt-1">
-                      {inv.due ? (
-                        <>
-                          <span className={isOverdue ? 'text-red-600 font-semibold' : ''}>
-                            {inv.due}
-                          </span>
-                        </>
-                      ) : (
-                        <span className="text-gray-300">—</span>
-                      )}
+                    <p className="text-xs font-bold text-blue-600 mt-1">
+                      {inv.subscriptionExpiry ? inv.subscriptionExpiry : '—'}
                     </p>
                   </div>
 
