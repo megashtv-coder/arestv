@@ -326,13 +326,30 @@ export function AppProvider({ children }) {
           supabase.from('users').upsert(toSeed.map(u => ({ id: u.id, data: u }))).then()
       }
 
-      // Activities — load from Supabase and filter by current org
+      // Activities — merge localStorage and Supabase data
       {
-        const allActivities = act?.data?.length ? fromRows(act.data) : []
-        // Filter activities to only show those from current organization
-        const loadedActivities = currentOrgId ? allActivities.filter(a => a.orgId === currentOrgId) : []
-        setActivityLog(loadedActivities)
-        prevActivities.current = loadedActivities
+        const supabaseActivities = act?.data?.length ? fromRows(act.data) : []
+        // Filter Supabase activities by current org
+        const filteredSupabase = currentOrgId ? supabaseActivities.filter(a => a.orgId === currentOrgId) : []
+
+        // Keep activities from localStorage (they're more up-to-date for this session)
+        // and merge with any Supabase activities that aren't already in localStorage
+        const localActivities = activityLog || []
+        const localIds = new Set(localActivities.map(a => a.id))
+        const newFromSupabase = filteredSupabase.filter(a => !localIds.has(a.id))
+
+        // Merge: local activities + new activities from Supabase, sorted by timestamp
+        const mergedActivities = [...localActivities, ...newFromSupabase]
+          .sort((a, b) => new Date(b.timestamp || 0).getTime() - new Date(a.timestamp || 0).getTime())
+
+        // Only update if we got new activities from Supabase
+        if (newFromSupabase.length > 0) {
+          setActivityLog(mergedActivities)
+          prevActivities.current = mergedActivities
+        } else {
+          // Keep localStorage activities as-is
+          prevActivities.current = localActivities
+        }
       }
 
       // MIGRATION: Ensure all records have orgId (critical for data isolation)
