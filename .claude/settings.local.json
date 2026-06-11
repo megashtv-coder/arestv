@@ -75,7 +75,9 @@
       "Bash(git reset *)",
       "Bash(sort -k5 -h -r)",
       "Bash(vercel --prod)",
-      "Bash(vercel --prod --token=\"\")"
+      "Bash(vercel --prod --token=\"\")",
+      "Bash(xargs grep -l \"item-row\")",
+      "Bash(git fetch *)"
     ]
   }
 }

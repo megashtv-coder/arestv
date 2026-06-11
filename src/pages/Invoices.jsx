@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, lazy, Suspense } from 'react'
 import {
   FileText, Download, Pencil, Trash2, CreditCard,
   MessageCircle, Send, XCircle, X, MessageSquare,
@@ -11,7 +11,8 @@ import { StatusBadge, EmptyState, Pagination } from '../components/UI'
 import FormPageWrapper from '../components/FormPageWrapper'
 import InvoiceModal from './InvoiceModal'
 import PaymentModal from './PaymentModal'
-import ImportExcelModal, { downloadTemplate } from '../components/ImportExcelModal'
+import { downloadTemplate } from '../components/ImportExcelModal'
+const ImportExcelModal = lazy(() => import('../components/ImportExcelModal'))
 import CustomerDetailsModal from './CustomerDetailsModal'
 import MessageLogService from '../services/MessageLogService'
 
@@ -1149,11 +1150,13 @@ export default function Invoices() {
         </div>
       </div>
       {importOpen && (
-        <ImportExcelModal
-          entity="invoices"
-          onImport={handleImportInvoices}
-          onClose={() => setImportOpen(false)}
-        />
+        <Suspense fallback={null}>
+          <ImportExcelModal
+            entity="invoices"
+            onImport={handleImportInvoices}
+            onClose={() => setImportOpen(false)}
+          />
+        </Suspense>
       )}
 
       {/* Bulk delete confirmation modal */}

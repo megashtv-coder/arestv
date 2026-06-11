@@ -1,4 +1,4 @@
-import { useState, useRef, useMemo, useEffect } from 'react'
+import { useState, useRef, useMemo, useEffect, lazy, Suspense } from 'react'
 import {
   Receipt, Trash2, Plus, Search, X, RefreshCw,
   ChevronLeft, ChevronRight, Filter, Users, Wallet, FileSpreadsheet,
@@ -9,7 +9,8 @@ import { useFeatures } from '../features/useFeatures'
 import { EmptyState, Modal, FormGroup, Pagination } from '../components/UI'
 import FormPageWrapper from '../components/FormPageWrapper'
 import { expenseTypes, depositedToOptions, mockVendors } from '../data/mockData'
-import ImportExcelModal, { downloadTemplate } from '../components/ImportExcelModal'
+import { downloadTemplate } from '../components/ImportExcelModal'
+const ImportExcelModal = lazy(() => import('../components/ImportExcelModal'))
 
 // sort/page defaults
 
@@ -432,11 +433,13 @@ export default function ExpensesPage() {
         </div>
       </div>
       {importOpen && (
-        <ImportExcelModal
-          entity="expenses"
-          onImport={handleImportExpenses}
-          onClose={() => setImportOpen(false)}
-        />
+        <Suspense fallback={null}>
+          <ImportExcelModal
+            entity="expenses"
+            onImport={handleImportExpenses}
+            onClose={() => setImportOpen(false)}
+          />
+        </Suspense>
       )}
 
       {/* Stat cards */}

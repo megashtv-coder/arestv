@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, useEffect, memo } from 'react'
+import { useState, useMemo, useRef, useEffect, memo, lazy, Suspense } from 'react'
 import {
   Users, Mail, Phone, UserPlus, Search, X,
   Pencil, Monitor, Wifi, UserCheck, Globe, Filter,
@@ -10,7 +10,8 @@ import { Avatar, Modal, FormGroup, EmptyState } from '../components/UI'
 import FormPageWrapper from '../components/FormPageWrapper'
 import CustomerDetailsModal from './CustomerDetailsModal'
 import { countries } from '../data/mockData'
-import ImportExcelModal, { downloadTemplate } from '../components/ImportExcelModal'
+import { downloadTemplate } from '../components/ImportExcelModal'
+const ImportExcelModal = lazy(() => import('../components/ImportExcelModal'))
 import { ContactImportButton } from '../features/contacts'
 
 const COLORS = ['#2563eb','#7c3aed','#059669','#d97706','#dc2626','#0891b2','#be185d','#0f766e']
@@ -768,11 +769,13 @@ export default function Customers() {
         </div>
       </div>
       {importOpen && (
-        <ImportExcelModal
-          entity="customers"
-          onImport={handleImportCustomers}
-          onClose={() => setImportOpen(false)}
-        />
+        <Suspense fallback={null}>
+          <ImportExcelModal
+            entity="customers"
+            onImport={handleImportCustomers}
+            onClose={() => setImportOpen(false)}
+          />
+        </Suspense>
       )}
 
       {/* Mini stats */}

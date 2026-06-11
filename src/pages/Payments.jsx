@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, lazy, Suspense } from 'react'
 import {
   CreditCard, Download, Search, X, Filter,
   Pencil, Trash2, FileSpreadsheet, Plus,
@@ -8,7 +8,8 @@ import { formatDate } from '../utils/dateFormat'
 import { EmptyState, Pagination } from '../components/UI'
 import FormPageWrapper from '../components/FormPageWrapper'
 import PaymentModal from './PaymentModal'
-import ImportExcelModal, { downloadTemplate } from '../components/ImportExcelModal'
+import { downloadTemplate } from '../components/ImportExcelModal'
+const ImportExcelModal = lazy(() => import('../components/ImportExcelModal'))
 
 // sort/page defaults
 
@@ -270,11 +271,13 @@ export default function Payments() {
       </div>
 
       {importOpen && (
-        <ImportExcelModal
-          entity="payments"
-          onImport={handleImportPayments}
-          onClose={() => setImportOpen(false)}
-        />
+        <Suspense fallback={null}>
+          <ImportExcelModal
+            entity="payments"
+            onImport={handleImportPayments}
+            onClose={() => setImportOpen(false)}
+          />
+        </Suspense>
       )}
 
       {/* Filtrat */}
