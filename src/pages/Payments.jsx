@@ -4,6 +4,7 @@ import {
   Pencil, Trash2, FileSpreadsheet, Plus,
 } from 'lucide-react'
 import { useApp } from '../context/AppContext'
+import { formatDate } from '../utils/dateFormat'
 import { EmptyState, Pagination } from '../components/UI'
 import FormPageWrapper from '../components/FormPageWrapper'
 import PaymentModal from './PaymentModal'
@@ -348,7 +349,7 @@ export default function Payments() {
                 {/* Col 1: Customer + Payment Date + Invoice */}
                 <div className="flex-1 min-w-0 cursor-pointer" onClick={() => openEditPayment(p)}>
                   <p className="font-bold text-gray-800 text-sm truncate hover:text-blue-600 transition-colors">{p.customer}</p>
-                  <p className="text-xs text-gray-500 mt-0.5">{p.date}</p>
+                  <p className="text-xs text-gray-500 mt-0.5">{formatDate(p.date)}</p>
                   <p className="text-xs font-semibold text-blue-600">{p.invoiceId}</p>
                 </div>
 
@@ -483,7 +484,7 @@ export default function Payments() {
             <tbody className="divide-y divide-gray-50">
               {paged.map(p => (
                 <tr key={p.id} className="hover:bg-blue-50/20 transition-colors group">
-                  <td className="table-td text-gray-400 text-xs">{p.date}</td>
+                  <td className="table-td text-gray-400 text-xs">{formatDate(p.date)}</td>
                   <td className="table-td font-bold text-blue-600 text-xs">{p.invoiceId}</td>
                   <td className="table-td font-medium text-gray-800 text-xs max-w-[140px] truncate">{p.customer}</td>
                   <td className="table-td text-right font-semibold text-gray-700">{fmt(p.amount)}</td>

@@ -4,6 +4,7 @@ import {
   ChevronLeft, ChevronRight, Filter, Users, Wallet, FileSpreadsheet,
 } from 'lucide-react'
 import { useApp } from '../context/AppContext'
+import { formatDate } from '../utils/dateFormat'
 import { useFeatures } from '../features/useFeatures'
 import { EmptyState, Modal, FormGroup, Pagination } from '../components/UI'
 import FormPageWrapper from '../components/FormPageWrapper'
@@ -569,7 +570,7 @@ export default function ExpensesPage() {
                         </span>
                       )}
                     </div>
-                    <p className="text-xs text-gray-500 mt-0.5">{e.date}</p>
+                    <p className="text-xs text-gray-500 mt-0.5">{formatDate(e.date)}</p>
                     <p className="text-xs text-gray-600 mt-0.5">{e.vendor || '—'}</p>
                   </div>
 
@@ -683,7 +684,7 @@ export default function ExpensesPage() {
             <tbody className="divide-y divide-gray-50">
               {paged.map(e => (
                 <tr key={e.id} className="hover:bg-red-50/20 transition-colors group">
-                  <td className="table-td text-gray-400 text-xs">{e.date}</td>
+                  <td className="table-td text-gray-400 text-xs">{formatDate(e.date)}</td>
                   <td className="table-td">
                     <div className="flex items-center gap-2">
                       <span className="font-semibold text-gray-800 text-xs">{e.type}</span>

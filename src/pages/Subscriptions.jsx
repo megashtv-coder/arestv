@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, memo, useMemo } from 'react'
 import { Bell, MessageCircle, Send, Calendar, CheckCircle2, Loader2, AlertTriangle } from 'lucide-react'
 import { useApp } from '../context/AppContext'
+import { formatDate } from '../utils/dateFormat'
 
 /* ── Vetëm abonimi nga Korriku e tutje ── */
 const AUTO_FROM = '2026-07-01'
@@ -15,7 +16,7 @@ function addDays(dateStr, days) {
 
 function buildRenewalMsg(inv) {
   const firstName = (inv.customer || '').split(' ')[0]
-  return `Pershendetje ${firstName}!\nDeshironim t'ju kujtojme se abonimi juaj per TV skadon me date ${inv.subscriptionExpiry || '—'}.\nJu lutem na kontaktoni per rinovim.\nFaleminderit!\nMe respekt, PREDATOR - MEGA SH TV`
+  return `Pershendetje ${firstName}!\nDeshironim t'ju kujtojme se abonimi juaj per TV skadon me date ${formatDate(inv.subscriptionExpiry)}.\nJu lutem na kontaktoni per rinovim.\nFaleminderit!\nMe respekt, PREDATOR - MEGA SH TV`
 }
 
 /* Çelësi i localStorage ku ruajmë { invId: 'YYYY-MM-DD' } */
@@ -77,13 +78,13 @@ const SubRow = memo(function SubRow({ inv, phone, urgency, today, sentToday }) {
 
       {/* Data skadimit */}
       <td className="table-td">
-        <span className="font-semibold text-blue-700 text-sm">{inv.subscriptionExpiry || '—'}</span>
+        <span className="font-semibold text-blue-700 text-sm">{formatDate(inv.subscriptionExpiry)}</span>
       </td>
 
       {/* Data njoftimit */}
       <td className="table-td">
         <div>
-          <span className={`text-sm ${dateCls}`}>{inv.notifyDate}</span>
+          <span className={`text-sm ${dateCls}`}>{formatDate(inv.notifyDate)}</span>
           {daysLeft !== null && (
             <p className={`text-[11px] mt-0.5 ${
               daysLeft < 0  ? 'text-red-400' :
@@ -192,7 +193,7 @@ const Section = memo(function Section({ title, color, items, today, sentIds, ite
                   {/* Col 1: Customer + Expiry + Notify */}
                   <div className="flex-1 min-w-0">
                     <p className="font-bold text-gray-800 text-sm truncate">{inv.customer}</p>
-                    <p className="text-xs font-bold text-blue-600 mt-0.5">{inv.subscriptionExpiry || '—'}</p>
+                    <p className="text-xs font-bold text-blue-600 mt-0.5">{formatDate(inv.subscriptionExpiry)}</p>
                     <p className="text-xs font-bold text-red-600 mt-0.5">{inv.notifyDate || '—'}</p>
                   </div>
 

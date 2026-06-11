@@ -6,6 +6,7 @@ import {
   MoreVertical, Edit3,
 } from 'lucide-react'
 import { useApp } from '../context/AppContext'
+import { formatDate } from '../utils/dateFormat'
 import { StatusBadge, EmptyState, Pagination } from '../components/UI'
 import FormPageWrapper from '../components/FormPageWrapper'
 import InvoiceModal from './InvoiceModal'
@@ -25,8 +26,8 @@ function buildReminderMsg(inv) {
   const late = inv.status === 'overdue' ||
     (inv.due && inv.due < today && inv.status !== 'paid' && inv.status !== 'void')
   if (late)
-    return `Pershendetje ${firstName}!\nFatura juaj me vlere €${inv.amount} ka kaluar afatin e pageses (${inv.due}).\nJu lutem kryeni pagesen urgjentisht per te shmangur nderprerjene sherbimit tuaj.\nFaleminderit!\nMe respekt, PREDATOR - MEGA SH TV`
-  return `Pershendetje ${firstName}!\nFatura juaj me vlere €${inv.amount} eshte ne pritje te pageses deri me date ${inv.due}.\nJu lutem kryeni pagesen ne kohe.\nFaleminderit!\nMe respekt, PREDATOR - MEGA SH TV`
+    return `Pershendetje ${firstName}!\nFatura juaj me vlere €${inv.amount} ka kaluar afatin e pageses (${formatDate(inv.due)}).\nJu lutem kryeni pagesen urgjentisht per te shmangur nderprerjene sherbimit tuaj.\nFaleminderit!\nMe respekt, PREDATOR - MEGA SH TV`
+  return `Pershendetje ${firstName}!\nFatura juaj me vlere €${inv.amount} eshte ne pritje te pageses deri me date ${formatDate(inv.due)}.\nJu lutem kryeni pagesen ne kohe.\nFaleminderit!\nMe respekt, PREDATOR - MEGA SH TV`
 }
 
 function buildInvoiceMsg(inv) {
@@ -77,7 +78,7 @@ function InvoiceListCard({ inv, selected, onClick }) {
               <span className="text-[9px] font-bold px-1 py-0.5 bg-purple-100 text-purple-600 rounded flex-shrink-0">R</span>
             )}
           </div>
-          <p className="text-[11px] text-gray-400 mt-0.5">{inv.id} · {inv.date}</p>
+          <p className="text-[11px] text-gray-400 mt-0.5">{inv.id} · {formatDate(inv.date)}</p>
         </div>
         <div className="text-right flex-shrink-0">
           <p className="font-bold text-gray-800 text-sm">{fmt(inv.amount)}</p>
@@ -264,7 +265,7 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer }) {
       {isOverdue && canContact && (
         <div className="flex items-center justify-between gap-3 bg-red-50 border-b border-red-100 px-4 py-2">
           <div className="min-w-0">
-            <p className="text-xs font-semibold text-red-600">⚠ Fatura ka kaluar afatin e pagesës — {inv.due}</p>
+            <p className="text-xs font-semibold text-red-600">⚠ Fatura ka kaluar afatin e pagesës — {formatDate(inv.due)}</p>
             <p className="text-[11px] text-red-400 mt-0.5 truncate italic">"{buildReminderMsg(inv).slice(0, 90)}…"</p>
           </div>
           <a
@@ -335,7 +336,7 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer }) {
               <div className="space-y-1 text-xs">
                 <div className="flex items-center justify-between sm:justify-end gap-4">
                   <span className="text-gray-400">Data e faturës:</span>
-                  <span className="font-medium text-gray-700 w-24 text-right">{inv.date}</span>
+                  <span className="font-medium text-gray-700 w-24 text-right">{formatDate(inv.date)}</span>
                 </div>
                 <div className="flex items-center justify-between sm:justify-end gap-4">
                   <span className="text-gray-400">Afati i pagesës:</span>
@@ -346,7 +347,7 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer }) {
                 {inv.subscriptionExpiry && (
                   <div className="flex items-center justify-between sm:justify-end gap-4">
                     <span className="text-gray-400">Skadimi:</span>
-                    <span className="font-medium text-blue-700 w-24 text-right">{inv.subscriptionExpiry}</span>
+                    <span className="font-medium text-blue-700 w-24 text-right">{formatDate(inv.subscriptionExpiry)}</span>
                   </div>
                 )}
                 {inv.notifyDate && (
@@ -532,14 +533,14 @@ function KanbanCard({ inv, onOpen }) {
 
       {/* Dates */}
       <div className="flex items-center justify-between text-[11px] mb-3">
-        <span className="text-gray-400">Data: {inv.date}</span>
+        <span className="text-gray-400">Data: {formatDate(inv.date)}</span>
         {inv.due && (
           <span className={`font-semibold ${isOverdue ? 'text-red-500' : daysLeft !== null && daysLeft <= 3 ? 'text-amber-500' : 'text-gray-500'}`}>
             {isOverdue
               ? `Vonuar ${Math.abs(daysLeft || 0)}d`
               : daysLeft === 0 ? 'Sot skadon'
               : daysLeft === 1 ? 'Nesër skadon'
-              : `Afati: ${inv.due}`}
+              : `Afati: ${formatDate(inv.due)}`}
           </span>
         )}
       </div>
@@ -548,7 +549,7 @@ function KanbanCard({ inv, onOpen }) {
       {inv.subscriptionExpiry && (
         <div className="text-[11px] text-blue-500 mb-3 flex items-center gap-1">
           <span>🔄</span>
-          <span>Abonim deri: {inv.subscriptionExpiry}</span>
+          <span>Abonim deri: {formatDate(inv.subscriptionExpiry)}</span>
         </div>
       )}
 
@@ -1467,7 +1468,7 @@ export default function Invoices() {
                         key={inv.id}
                         className={`hover:bg-blue-50/30 transition-colors group ${selected.has(inv.id) ? 'bg-blue-100' : ''}`}
                       >
-                        <td className="table-td text-gray-400 hidden sm:table-cell">{inv.date}</td>
+                        <td className="table-td text-gray-400 hidden sm:table-cell">{formatDate(inv.date)}</td>
                         <td className="table-td font-bold text-blue-600 text-sm hidden sm:table-cell cursor-pointer" onClick={() => setPreview(inv.id)}>{inv.id}</td>
                         <td className="table-td font-medium text-gray-800 cursor-pointer" onClick={() => setPreview(inv.id)}>
                           <div className="flex items-center gap-1.5">
@@ -1492,7 +1493,7 @@ export default function Invoices() {
                         <td className="table-td text-blue-600 sm:table-cell lg:table-cell text-sm font-medium">
                           {inv.subscriptionExpiry ? (
                             <span className="px-2 py-1 bg-blue-50 rounded-full text-xs">
-                              {inv.subscriptionExpiry}
+                              {formatDate(inv.subscriptionExpiry)}
                             </span>
                           ) : (
                             <span className="text-gray-300 italic text-xs">-</span>
@@ -1500,7 +1501,7 @@ export default function Invoices() {
                         </td>
                         <td className="table-td font-bold text-gray-800">{fmt(inv.amount)}</td>
                         <td className={`table-td hidden lg:table-cell ${isOverdue ? 'text-red-500 font-semibold' : 'text-gray-400'}`}>
-                          {inv.due}
+                          {formatDate(inv.due)}
                         </td>
                         <td className="table-td"><StatusBadge status={isOverdue && inv.status !== 'paid' && inv.status !== 'void' ? 'overdue' : inv.status}/></td>
                         <td className="table-td relative" onClick={e => e.stopPropagation()}>
