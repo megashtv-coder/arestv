@@ -161,7 +161,7 @@ function ReferredBySelect({ value, onChange, excludeId }) {
    Modal — shto / edito klient
 ══════════════════════════════════════════════════════════ */
 export function CustomerModal({ customer, onClose, isFormPage }) {
-  const { setCustomers, showToast, representatives, setRepresentatives, currentOrgId } = useApp()
+  const { setCustomers, showToast, representatives, setRepresentatives, currentOrgId, logActivity } = useApp()
   const isEdit = !!customer
 
   const empty = {
@@ -229,9 +229,11 @@ export function CustomerModal({ customer, onClose, isFormPage }) {
 
     if (isEdit) {
       setCustomers(prev => prev.map(c => c.id === customer.id ? payload : c))
+      logActivity(`Përditësoi klientin ${fullName}`, 'Klientët')
       showToast('Klienti u përditësua! ✓')
     } else {
       setCustomers(prev => [payload, ...prev])
+      logActivity(`Shtoi klientin ${fullName}`, 'Klientët')
       showToast('Klienti u shtua me sukses! ✓')
     }
     // Always call onClose to close the form (handles both modal and form page modes)

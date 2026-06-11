@@ -438,7 +438,7 @@ function calculateSubscriptionExpiry(baseDate, months) {
    InvoiceModal
 ══════════════════════════════════════════════════════════ */
 export default function InvoiceModal({ initialData, isFormPage, onClose }) {
-  const { invoices, customers, setCustomers, items: products, setInvoices, showToast, closeModal, navigate, representatives, setRepresentatives } = useApp()
+  const { invoices, customers, setCustomers, items: products, setInvoices, showToast, closeModal, navigate, representatives, setRepresentatives, logActivity } = useApp()
 
   const isEdit = !!(initialData?.id)
   const due3d  = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10)
@@ -576,13 +576,16 @@ export default function InvoiceModal({ initialData, isFormPage, onClose }) {
 
     if (isEdit) {
       setInvoices(prev => prev.map(i => i.id === initialData.id ? { ...i, ...payload } : i))
+      logActivity(`Përditësoi faturën ${initialData.id} — ${form.customer} €${total}`, 'Faturat')
       showToast('Fatura u përditësua! ✓')
     } else {
+      const newId = generateNextInvoiceId()
       setInvoices(p => [{
         ...payload,
-        id:       generateNextInvoiceId(),
+        id:       newId,
         comments: [],
       }, ...p])
+      logActivity(`Krijoi faturën ${newId} — ${form.customer} €${total}`, 'Faturat')
       showToast('Fatura u krijua me sukses! ✓')
     }
     // Navigate back to invoices list after save
