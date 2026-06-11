@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from 'react'
 import {
   CreditCard, Download, Search, X, Filter,
-  Pencil, Trash2, FileSpreadsheet,
+  Pencil, Trash2, FileSpreadsheet, Plus,
 } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import { EmptyState, Pagination } from '../components/UI'
@@ -239,27 +239,27 @@ export default function Payments() {
           <p className="text-sm text-gray-400 mt-0.5">{payments.length} pagesa gjithsej</p>
         </div>
         <div className="flex items-center gap-1.5">
-          {/* Export */}
+          {/* Export - Hidden on mobile */}
           <button
-            className="w-9 h-9 flex items-center justify-center rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
+            className="hidden sm:flex w-9 h-9 items-center justify-center rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
             onClick={() => exportCSV(filtered, monthFilt !== 'all' ? monthFilt : '', partnerFilt, fmt)}
             title="Eksporto"
           >
             <Download size={16}/>
           </button>
 
-          {/* Import */}
+          {/* Import - Hidden on mobile */}
           <button
-            className="w-9 h-9 flex items-center justify-center rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
+            className="hidden sm:flex w-9 h-9 items-center justify-center rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
             onClick={() => setImportOpen(true)}
             title="Importo Excel"
           >
             <FileSpreadsheet size={16}/>
           </button>
 
-          {/* New Payment */}
+          {/* New Payment - Hidden on mobile (see FAB below) */}
           <button
-            className="w-9 h-9 flex items-center justify-center rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors font-bold text-lg"
+            className="hidden sm:flex w-9 h-9 items-center justify-center rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors font-bold text-lg"
             onClick={openNewPayment}
             title="Regjistro Pagesë"
           >
@@ -602,6 +602,14 @@ export default function Payments() {
         </div>
       )}
 
+      {/* Floating Action Button - Mobile only */}
+      <div
+        className="fab sm:hidden"
+        onClick={openNewPayment}
+        title="Regjistro Pagesë"
+      >
+        <Plus size={28}/>
+      </div>
     </div>
   )
 }
