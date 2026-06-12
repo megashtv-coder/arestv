@@ -1,7 +1,7 @@
 import {
   LayoutDashboard, FileText, Users as UsersIcon, Receipt, BarChart2,
   Package, CreditCard, Settings, ChevronRight, X, Bell,
-  Truck, Zap, ChevronLeft, UserCog, LogOut, MessageSquare,
+  Truck, TrendingUp, ChevronLeft, UserCog, LogOut, MessageSquare,
 } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import { useFeatures } from '../features/useFeatures'
@@ -55,7 +55,7 @@ export default function Sidebar() {
         {/* Logo */}
         <div className={`flex items-center border-b border-gray-100 dark:border-gray-800 h-12 sm:h-14 flex-shrink-0 ${sidebarCollapsed ? 'justify-center px-2' : 'gap-2 sm:gap-3 px-3 sm:px-4'}`}>
           <div className="w-7 h-7 sm:w-8 sm:h-8 bg-gradient-to-br from-red-500 to-red-700 rounded-lg flex items-center justify-center text-white flex-shrink-0 shadow-sm">
-            <Zap size={14} strokeWidth={2.5} />
+            <TrendingUp size={14} strokeWidth={2.5} />
           </div>
           {!sidebarCollapsed && (
             <div className="flex-1 min-w-0">
