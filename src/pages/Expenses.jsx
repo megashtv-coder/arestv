@@ -286,15 +286,16 @@ function DeleteConfirm({ exp, onClose }) {
 export default function ExpensesPage() {
   const { expenses, setExpenses, closeModal, fmt, showToast, page, navigate, logActivity } = useApp()
 
-  const [search,      setSearch]     = useState('')
-  const [partnerFilt, setPartner]    = useState('all')
-  const [typeFilt,    setType]       = useState('all')
-  const [recurFilt,   setRecurFilt]  = useState('all')
-  const [pg,          setPg]         = useState(1)
-  const [perPage,     setPerPage]    = useState(50)
-  const [sortField,   setSortField]  = useState('date')
-  const [sortDir,     setSortDir]    = useState('desc')
-  const [importOpen,  setImportOpen] = useState(false)
+  const [search,         setSearch]        = useState('')
+  const [partnerFilt,    setPartner]       = useState('all')
+  const [typeFilt,       setType]          = useState('all')
+  const [recurFilt,      setRecurFilt]     = useState('all')
+  const [pg,             setPg]            = useState(1)
+  const [perPage,        setPerPage]       = useState(50)
+  const [sortField,      setSortField]     = useState('date')
+  const [sortDir,        setSortDir]       = useState('desc')
+  const [importOpen,     setImportOpen]    = useState(false)
+  const [openDropdown,   setOpenDropdown]  = useState(null)
 
   // Detect if we're in form mode (page like "expenses:create" or "expenses:ID:edit")
   const pageMatch = page.split(':')
@@ -557,10 +558,7 @@ export default function ExpensesPage() {
       {/* Mobile Card View - Hidden on sm+ */}
       {paged.length > 0 && (
         <div className="sm:hidden space-y-2 mb-4">
-          {paged.map(e => {
-            const [openDropdown, setOpenDropdown] = useState(null)
-
-            return (
+          {paged.map(e => (
               <div key={e.id} className="bg-white border border-gray-200 rounded-lg p-3">
                 <div className="flex justify-between items-start gap-2">
                   {/* Col 1: Type + Date + Vendor */}
