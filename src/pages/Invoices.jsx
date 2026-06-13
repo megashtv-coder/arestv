@@ -79,7 +79,7 @@ function InvoiceListCard({ inv, selected, onClick }) {
               <span className="text-[9px] font-bold px-1 py-0.5 bg-purple-100 text-purple-600 rounded flex-shrink-0">R</span>
             )}
           </div>
-          <p className="text-[11px] text-gray-400 mt-0.5">{inv.id} · {formatDate(inv.date)}</p>
+          <p className="text-[11px] text-black dark:text-white mt-0.5">{inv.id} · {formatDate(inv.date)}</p>
         </div>
         <div className="text-right flex-shrink-0">
           <p className="font-bold text-gray-800 text-sm">{fmt(inv.amount)}</p>
