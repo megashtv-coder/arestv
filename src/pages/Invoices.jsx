@@ -1486,7 +1486,7 @@ export default function Invoices() {
                         </td>
                         <td className="table-td text-gray-600 hidden sm:table-cell text-sm">
                           {inv.referent ? (
-                            <span className="px-2 py-1 bg-red-50 text-red-600 rounded-full text-xs font-medium">
+                            <span className="px-2 py-1 bg-blue-50 text-blue-600 rounded-full text-xs font-medium">
                               {inv.referent}
                             </span>
                           ) : (
