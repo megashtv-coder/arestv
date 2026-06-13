@@ -23,17 +23,11 @@ export default function Sidebar() {
 
   // Load tasks from Supabase
   useEffect(() => {
-    if (!currentOrg?.id) {
-      setTasks([])
-      return
-    }
-
     const loadTasks = async () => {
       try {
         const { data, error } = await supabase
           .from('tasks')
           .select('*')
-          .eq('orgId', currentOrg.id)
 
         if (!error) {
           setTasks(data || [])
@@ -44,7 +38,7 @@ export default function Sidebar() {
     }
 
     loadTasks()
-  }, [currentOrg?.id])
+  }, [])
 
   const tasksDueBadge = tasks.filter(t => !t.completed && (t.reminderDate < today || t.reminderDate === today)).length
 

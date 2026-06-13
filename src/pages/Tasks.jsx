@@ -211,16 +211,10 @@ export default function Tasks() {
   const loadTasks = async () => {
     try {
       setLoading(true)
-      if (!currentOrg?.id) {
-        setTasks([])
-        setLoading(false)
-        return
-      }
 
       const { data, error } = await supabase
         .from('tasks')
         .select('*')
-        .eq('orgId', currentOrg.id)
         .order('reminderDate', { ascending: true })
 
       if (error) {
@@ -251,26 +245,24 @@ export default function Tasks() {
 
   const syncTaskToSupabase = async (task) => {
     try {
-      if (!currentOrg?.id) {
-        console.error('No org ID')
-        return false
-      }
-
       const taskData = {
         ...task,
-        orgId: currentOrg.id,
+        orgId: currentOrg?.id || 'default',
         updatedAt: new Date().toISOString(),
         createdAt: task.createdAt || new Date().toISOString(),
       }
 
+      console.log('Upserting task:', taskData)
+
       const { error } = await supabase
         .from('tasks')
-        .upsert(taskData, { onConflict: 'id' })
+        .upsert([taskData], { onConflict: 'id' })
 
       if (error) {
         console.error('Supabase upsert error:', error)
         throw error
       }
+      console.log('Task saved successfully')
       return true
     } catch (e) {
       console.error('Error syncing task:', e)
@@ -285,6 +277,7 @@ export default function Tasks() {
           local.push(task)
         }
         localStorage.setItem('xflow_tasks', JSON.stringify(local))
+        console.log('Task saved to localStorage')
       } catch {}
       return false
     }
