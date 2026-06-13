@@ -97,7 +97,7 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer }) {
     customers,
     payments, setPayments,
     setModal, closeModal,
-    showToast, fmt, logActivity,
+    showToast, fmt, logActivity, navigate,
   } = useApp()
 
   const inv = invoices.find(i => i.id === invId)
