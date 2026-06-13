@@ -29,8 +29,13 @@ export default function Sidebar() {
           .from('tasks')
           .select('*')
 
-        if (!error) {
-          setTasks(data || [])
+        if (!error && data) {
+          // Map lowercase reminderdate to camelCase for consistency
+          const formattedTasks = data.map(t => ({
+            ...t,
+            reminderDate: t.reminderdate,
+          }))
+          setTasks(formattedTasks)
         }
       } catch (e) {
         console.error('Error loading tasks for badge:', e)
