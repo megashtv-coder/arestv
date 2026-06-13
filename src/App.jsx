@@ -23,6 +23,7 @@ const Subscriptions = lazy(() => import('./pages/Subscriptions'))
 const Suppliers = lazy(() => import('./pages/Suppliers'))
 const UsersPage = lazy(() => import('./pages/Users'))
 const CommunicationHistory = lazy(() => import('./pages/CommunicationHistory'))
+const Tasks = lazy(() => import('./pages/Tasks'))
 
 const ORG_PAGES = {
   dashboard:              Dashboard,
@@ -37,6 +38,7 @@ const ORG_PAGES = {
   suppliers:             Suppliers,
   users:                 UsersPage,
   communicationHistory:  CommunicationHistory,
+  tasks:                 Tasks,
 }
 
 function OrgAppLayout() {

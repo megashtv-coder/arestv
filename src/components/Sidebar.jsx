@@ -1,7 +1,7 @@
 import {
   LayoutDashboard, FileText, Users as UsersIcon, Receipt, BarChart2,
   Package, CreditCard, Settings, ChevronRight, X, Bell,
-  Truck, TrendingUp, ChevronLeft, UserCog, LogOut, MessageSquare,
+  Truck, TrendingUp, ChevronLeft, UserCog, LogOut, MessageSquare, CheckSquare,
 } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import { useFeatures } from '../features/useFeatures'
@@ -22,6 +22,7 @@ export default function Sidebar() {
     { id: 'dashboard',     icon: LayoutDashboard, label: 'Dashboard' },
     { id: 'invoices',      icon: FileText,        label: 'Faturat',    badge: invoices.filter(i => i.status === 'pending' || i.status === 'overdue').length || null },
     { id: 'subscriptions', icon: Bell,            label: 'Abonimet',   badge: subNotifyCount || null, badgeColor: 'bg-orange-500' },
+    { id: 'tasks',         icon: CheckSquare,     label: 'Detyrat' },
     { id: 'customers',     icon: UsersIcon,       label: 'Klientët' },
     { id: 'items',         icon: Package,         label: 'Produktet' },
     { id: 'payments',      icon: CreditCard,      label: 'Pagesat' },
