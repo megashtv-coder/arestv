@@ -30,7 +30,7 @@ function SlideSelect({ value, onChange, options }) {
             key={opt}
             type="button"
             onClick={() => onChange(value === opt ? '' : opt)}
-            className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all whitespace-nowrap ${
+            className={`flex-shrink-0 px-6 py-2 rounded-full text-sm font-semibold border transition-all whitespace-nowrap min-w-[calc(50%-8px)] ${
               value === opt
                 ? 'bg-red-500 text-white border-red-500 shadow-sm'
                 : 'bg-white text-gray-600 border-gray-200 hover:border-red-300 hover:text-red-500'
