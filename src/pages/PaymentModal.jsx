@@ -361,17 +361,21 @@ export default function PaymentModal({ invoice, payment: editPayment, onClose, i
         />
       </FormGroup>
 
-      {/* Depozituar te — slide select - Only for organizations with feature enabled */}
+      {/* Depozituar te — dropdown - Only for organizations with feature enabled */}
       {canUseDepositAccounts && (
         <FormGroup label="Depozituar te">
-          <SlideSelect
+          <select
+            className="form-control"
             value={form.depositAccount}
-            onChange={v => set('depositAccount', v)}
-            options={depositAccounts}
-          />
-          {form.depositAccount && (
-            <p className="text-xs text-red-500 mt-1.5 font-medium">✓ {form.depositAccount}</p>
-          )}
+            onChange={e => set('depositAccount', e.target.value)}
+          >
+            <option value="">— Zgjidh llogarin —</option>
+            {depositAccounts.map(acc => (
+              <option key={acc} value={acc}>
+                💰 {acc}
+              </option>
+            ))}
+          </select>
         </FormGroup>
       )}
 
@@ -426,21 +430,17 @@ export default function PaymentModal({ invoice, payment: editPayment, onClose, i
         </div>
       )}
 
-      {/* Depozituar tek — dropdown - Only for organizations with feature enabled */}
+      {/* Depozituar tek — slide select (cards) - Only for organizations with feature enabled */}
       {canUseDepositAccounts && (
         <FormGroup label="Depozituar tek *">
-          <select
-            className="form-control"
+          <SlideSelect
             value={form.depositedTo}
-            onChange={e => set('depositedTo', e.target.value)}
-          >
-            <option value="">— Zgjidh ku depozitohet —</option>
-            {depositedToOptions.map(opt => (
-              <option key={opt} value={opt}>
-                👤 {opt}
-              </option>
-            ))}
-          </select>
+            onChange={v => set('depositedTo', v)}
+            options={depositedToOptions}
+          />
+          {form.depositedTo && (
+            <p className="text-xs text-red-500 mt-1.5 font-medium">✓ {form.depositedTo}</p>
+          )}
         </FormGroup>
       )}
 
