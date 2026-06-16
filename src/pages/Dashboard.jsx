@@ -346,7 +346,7 @@ export default function Dashboard() {
           <p className="text-sm font-bold text-gray-800">Shitje sipas muajit — 12 muaj</p>
           <div className="flex flex-wrap gap-3 text-[11px] text-gray-400">
             <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm bg-emerald-500 inline-block"/>Shitje {thisYear}</span>
-            <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm bg-emerald-300 inline-block"/>Shitje {prevYear}</span>
+            <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm bg-blue-500 inline-block"/>Shitje {prevYear}</span>
           </div>
         </div>
         <div className="px-2 py-4">
@@ -357,7 +357,7 @@ export default function Dashboard() {
               <YAxis tick={{ fontSize: 10, fill: '#9ca3af' }} axisLine={false} tickLine={false} tickFormatter={v => v >= 1000 ? v/1000+'k' : v} />
               <Tooltip content={<ChartTooltip />} />
               <Bar dataKey="sales"     name={`Shitje ${thisYear}`} fill="#10b981" radius={[3,3,0,0]} maxBarSize={22} />
-              <Bar dataKey="salesPrev" name={`Shitje ${prevYear}`} fill="#6ee7b7" radius={[3,3,0,0]} maxBarSize={22} />
+              <Bar dataKey="salesPrev" name={`Shitje ${prevYear}`} fill="#3b82f6" radius={[3,3,0,0]} maxBarSize={22} />
             </ComposedChart>
           </ResponsiveContainer>
         </div>
