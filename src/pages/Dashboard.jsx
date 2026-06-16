@@ -156,6 +156,25 @@ export default function Dashboard() {
 
   const catTotal = catData.reduce((s, c) => s + c.value, 0)
 
+  /* ── Shitje sipas muajit: krahasim me vitin 2025 ── */
+  const salesComparison = useMemo(() => {
+    const now = new Date()
+    const months = []
+    for (let i = 11; i >= 0; i--) {
+      const d    = new Date(now.getFullYear(), now.getMonth() - i, 1)
+      const yr   = d.getFullYear()
+      const mo   = d.getMonth()              // 0-indexed
+      const key  = `${yr}-${String(mo + 1).padStart(2, '0')}`
+      const prev = `${yr - 1}-${String(mo + 1).padStart(2, '0')}`
+      months.push({ key, prev, label: `${MONTH_LBL[mo]}'${String(yr).slice(2)}` })
+    }
+    return months.map(({ key, prev, label }) => ({
+      month:      label,
+      sales:      invoices.filter(i => i.date?.startsWith(key) && i.status !== 'void').reduce((s, i) => s + (i.amount || 0), 0),
+      salesPrev:  invoices.filter(i => i.date?.startsWith(prev) && i.status !== 'void').reduce((s, i) => s + (i.amount || 0), 0),
+    }))
+  }, [invoices])
+
   const openInvoiceModal  = () => setModal(<InvoiceModal />)
   const openCustomerModal = () => setModal(<CustomerModal onClose={closeModal} />)
   const openExpenseModal  = () => setModal(<ExpenseModal  onClose={closeModal} />)
@@ -318,6 +337,29 @@ export default function Dashboard() {
               </>
             )}
           </div>
+        </div>
+      </div>
+
+      {/* ── Shitje sipas muajit ── */}
+      <div className="card">
+        <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-4 border-b border-gray-50">
+          <p className="text-sm font-bold text-gray-800">Shitje sipas muajit — 12 muaj</p>
+          <div className="flex flex-wrap gap-3 text-[11px] text-gray-400">
+            <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm bg-emerald-500 inline-block"/>Shitje {thisYear}</span>
+            <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm bg-emerald-300 inline-block"/>Shitje {prevYear}</span>
+          </div>
+        </div>
+        <div className="px-2 py-4">
+          <ResponsiveContainer width="100%" height={220}>
+            <ComposedChart data={salesComparison} margin={{ top: 4, right: 8, left: -12, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" vertical={false} />
+              <XAxis dataKey="month" tick={{ fontSize: 10, fill: '#9ca3af' }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontSize: 10, fill: '#9ca3af' }} axisLine={false} tickLine={false} tickFormatter={v => v >= 1000 ? v/1000+'k' : v} />
+              <Tooltip content={<ChartTooltip />} />
+              <Bar dataKey="sales"     name={`Shitje ${thisYear}`} fill="#10b981" radius={[3,3,0,0]} maxBarSize={22} />
+              <Bar dataKey="salesPrev" name={`Shitje ${prevYear}`} fill="#6ee7b7" radius={[3,3,0,0]} maxBarSize={22} />
+            </ComposedChart>
+          </ResponsiveContainer>
         </div>
       </div>
 
