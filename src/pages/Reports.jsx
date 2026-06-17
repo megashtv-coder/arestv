@@ -748,6 +748,8 @@ const CHART_COLORS = ['#3b82f6','#7c3aed','#059669','#f59e0b','#dc2626','#0891b2
 
 function ShtetTab() {
   const { customers } = useApp()
+  const [page, setPage] = useState(1)
+  const perPage = 10
 
   const countryData = useMemo(() => {
     const map = {}
@@ -761,6 +763,8 @@ function ShtetTab() {
   }, [customers])
 
   const max = countryData[0]?.count || 1
+  const paged = countryData.slice((page - 1) * perPage, page * perPage)
+  const maxPages = Math.ceil(countryData.length / perPage)
 
   return (
     <div className="space-y-4">
@@ -774,8 +778,8 @@ function ShtetTab() {
           </div>
         </div>
         <div className="p-5">
-          <ResponsiveContainer width="100%" height={Math.max(200, countryData.length * 38)}>
-            <BarChart data={countryData} layout="vertical" margin={{ top: 0, right: 30, left: 100, bottom: 0 }} barSize={20}>
+          <ResponsiveContainer width="100%" height={Math.max(200, Math.min(countryData.length, 10) * 38)}>
+            <BarChart data={countryData.slice(0, 10)} layout="vertical" margin={{ top: 0, right: 30, left: 100, bottom: 0 }} barSize={20}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" horizontal={false}/>
               <XAxis type="number" tick={{ fontSize: 11, fill: '#9ca3af' }} axisLine={false} tickLine={false} allowDecimals={false}/>
               <YAxis type="category" dataKey="country" tick={{ fontSize: 11, fill: '#6b7280' }} axisLine={false} tickLine={false} width={95}/>
@@ -784,7 +788,7 @@ function ShtetTab() {
                 formatter={v => [v + ' klientë', 'Numri']}
               />
               <Bar dataKey="count" radius={[0, 6, 6, 0]}>
-                {countryData.map((entry, i) => (
+                {countryData.slice(0, 10).map((entry, i) => (
                   <Cell key={entry.country} fill={CHART_COLORS[i % CHART_COLORS.length]}/>
                 ))}
               </Bar>
@@ -807,12 +811,14 @@ function ShtetTab() {
             </tr>
           </thead>
           <tbody>
-            {countryData.map(({ country, count }, i) => (
+            {paged.map(({ country, count }, i) => {
+              const realIndex = (page - 1) * perPage + i
+              return (
               <tr key={country} className="hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition-colors border-b border-gray-50 dark:border-gray-700 last:border-0">
                 <td className="table-td w-10">
                   <span className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white"
-                    style={{ background: i===0?'#f59e0b':i===1?'#94a3b8':i===2?'#cd7c3d':'#e5e7eb', color: i>=3?'#6b7280':undefined }}>
-                    {i + 1}
+                    style={{ background: realIndex===0?'#f59e0b':realIndex===1?'#94a3b8':realIndex===2?'#cd7c3d':'#e5e7eb', color: realIndex>=3?'#6b7280':undefined }}>
+                    {realIndex + 1}
                   </span>
                 </td>
                 <td className="table-td">
@@ -820,7 +826,7 @@ function ShtetTab() {
                     <p className="text-sm font-semibold text-gray-700 dark:text-gray-300">{country}</p>
                     <div className="mt-1 h-1.5 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden w-36">
                       <div className="h-full rounded-full transition-all duration-700"
-                        style={{ width: `${(count / max) * 100}%`, background: CHART_COLORS[i % CHART_COLORS.length] }}/>
+                        style={{ width: `${(count / max) * 100}%`, background: CHART_COLORS[realIndex % CHART_COLORS.length] }}/>
                     </div>
                   </div>
                 </td>
@@ -831,9 +837,16 @@ function ShtetTab() {
                   </span>
                 </td>
               </tr>
-            ))}
+            )})}
           </tbody>
         </table>
+        <div className="px-5 py-3 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between text-xs">
+          <span className="text-gray-400">Faqja {page} e {maxPages}</span>
+          <div className="flex gap-2">
+            <button onClick={() => setPage(Math.max(1, page - 1))} disabled={page === 1} className="px-2 py-1 rounded border border-gray-200 dark:border-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">←</button>
+            <button onClick={() => setPage(Math.min(maxPages, page + 1))} disabled={page === maxPages} className="px-2 py-1 rounded border border-gray-200 dark:border-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">→</button>
+          </div>
+        </div>
       </div>
     </div>
   )
@@ -844,6 +857,8 @@ function ShtetTab() {
 ══════════════════════════════════════════════════════════ */
 function AbonentVjeterTab() {
   const { customers, invoices } = useApp()
+  const [page, setPage] = useState(1)
+  const perPage = 10
 
   const subscriberData = useMemo(() => {
     const today = new Date()
@@ -866,6 +881,9 @@ function AbonentVjeterTab() {
     const y = Math.floor(d / 365), m = Math.floor((d % 365) / 30)
     return m > 0 ? `${y} vit ${m} muaj` : `${y} vit`
   }
+
+  const paged = subscriberData.slice((page - 1) * perPage, page * perPage)
+  const maxPages = Math.ceil(subscriberData.length / perPage)
 
   return (
     <div className="space-y-4">
@@ -896,12 +914,14 @@ function AbonentVjeterTab() {
               </tr>
             </thead>
             <tbody>
-              {subscriberData.map((c, i) => (
+              {paged.map((c, i) => {
+                const realIndex = (page - 1) * perPage + i
+                return (
                 <tr key={c.id} className="hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition-colors border-b border-gray-50 dark:border-gray-700 last:border-0">
                   <td className="table-td w-10">
                     <span className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white"
-                      style={{ background: i===0?'#f59e0b':i===1?'#94a3b8':i===2?'#cd7c3d':'#e5e7eb', color: i>=3?'#6b7280':undefined }}>
-                      {i + 1}
+                      style={{ background: realIndex===0?'#f59e0b':realIndex===1?'#94a3b8':realIndex===2?'#cd7c3d':'#e5e7eb', color: realIndex>=3?'#6b7280':undefined }}>
+                      {realIndex + 1}
                     </span>
                   </td>
                   <td className="table-td">
@@ -922,14 +942,21 @@ function AbonentVjeterTab() {
                   </td>
                   <td className="table-td text-right">
                     <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
-                      i === 0 ? 'bg-amber-100 text-amber-700' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'
+                      realIndex === 0 ? 'bg-amber-100 text-amber-700' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'
                     }`}>{fmt(c.daysActive)}</span>
                   </td>
                   <td className="table-td text-right font-bold text-red-500">{c.invoiceCount}</td>
                 </tr>
-              ))}
+                )})}
             </tbody>
           </table>
+        </div>
+        <div className="px-5 py-3 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between text-xs">
+          <span className="text-gray-400">Faqja {page} e {maxPages}</span>
+          <div className="flex gap-2">
+            <button onClick={() => setPage(Math.max(1, page - 1))} disabled={page === 1} className="px-2 py-1 rounded border border-gray-200 dark:border-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">←</button>
+            <button onClick={() => setPage(Math.min(maxPages, page + 1))} disabled={page === maxPages} className="px-2 py-1 rounded border border-gray-200 dark:border-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">→</button>
+          </div>
         </div>
       </div>
     </div>
@@ -941,6 +968,8 @@ function AbonentVjeterTab() {
 ══════════════════════════════════════════════════════════ */
 function ReferuesitTab() {
   const { customers } = useApp()
+  const [page, setPage] = useState(1)
+  const perPage = 10
 
   const referralData = useMemo(() => {
     const map = {}
@@ -957,6 +986,8 @@ function ReferuesitTab() {
   const totalReferred  = referralData.reduce((s, r) => s + r.count, 0)
   const notReferred    = customers.filter(c => !(c.referredBy || '').trim()).length
   const topCount       = referralData[0]?.count || 1
+  const paged = referralData.slice((page - 1) * perPage, page * perPage)
+  const maxPages = Math.ceil(referralData.length / perPage)
 
   return (
     <div className="space-y-4">
@@ -987,12 +1018,14 @@ function ReferuesitTab() {
             <p className="text-sm font-bold text-gray-800 dark:text-gray-100">Renditja e referuesve</p>
           </div>
           <div className="divide-y divide-gray-50 dark:divide-gray-700">
-            {referralData.map(({ referrer, count, clients }, i) => (
+            {paged.map(({ referrer, count, clients }, i) => {
+              const realIndex = (page - 1) * perPage + i
+              return (
               <div key={referrer} className="px-5 py-4 hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition-colors">
                 <div className="flex items-center gap-3">
                   <span className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0"
-                    style={{ background: i===0?'#f59e0b':i===1?'#94a3b8':i===2?'#cd7c3d':'#6b7280' }}>
-                    {i + 1}
+                    style={{ background: realIndex===0?'#f59e0b':realIndex===1?'#94a3b8':realIndex===2?'#cd7c3d':'#6b7280' }}>
+                    {realIndex + 1}
                   </span>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-bold text-gray-800 dark:text-gray-100">{referrer}</p>
@@ -1011,10 +1044,17 @@ function ReferuesitTab() {
                 </div>
                 <div className="mt-2.5 ml-10 h-1.5 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
                   <div className="h-full rounded-full transition-all duration-700"
-                    style={{ width:`${(count/topCount)*100}%`, background: i===0?'#f59e0b':i===1?'#94a3b8':i===2?'#cd7c3d':'#6b7280' }}/>
+                    style={{ width:`${(count/topCount)*100}%`, background: realIndex===0?'#f59e0b':realIndex===1?'#94a3b8':realIndex===2?'#cd7c3d':'#6b7280' }}/>
                 </div>
               </div>
-            ))}
+            )})}
+          </div>
+          <div className="px-5 py-3 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between text-xs">
+            <span className="text-gray-400">Faqja {page} e {maxPages}</span>
+            <div className="flex gap-2">
+              <button onClick={() => setPage(Math.max(1, page - 1))} disabled={page === 1} className="px-2 py-1 rounded border border-gray-200 dark:border-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">←</button>
+              <button onClick={() => setPage(Math.min(maxPages, page + 1))} disabled={page === maxPages} className="px-2 py-1 rounded border border-gray-200 dark:border-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">→</button>
+            </div>
           </div>
         </div>
       )}
