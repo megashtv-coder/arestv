@@ -23,7 +23,7 @@ export default function Sidebar() {
   const subNotifyCount = invoices.filter(i =>
     i.notifyDate &&
     i.notifyDate >= SUB_FROM &&
-    i.notifyDate <= today &&
+    i.notifyDate === today &&
     i.status !== 'paid'
   ).length
 
