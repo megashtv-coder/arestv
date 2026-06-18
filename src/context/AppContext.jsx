@@ -646,7 +646,7 @@ export function AppProvider({ children }) {
     window.history.pushState({ page: p }, '', url.toString())
     setSidebarOpen(false)
     setLoading(true)
-    setTimeout(() => setLoading(false), 350)
+    setTimeout(() => setLoading(false), 80)
   }, [currentOrgId])
 
   const fmt = useCallback(
