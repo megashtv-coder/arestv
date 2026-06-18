@@ -28,7 +28,7 @@ export default function Header() {
   const [searchInput, setSearchInput] = useState('')
   const [readNotifications, setReadNotifications] = useState(() => {
     try {
-      return JSON.parse(localStorage.getItem('xflow_read_notifications') || '{}')
+      return JSON.parse(localStorage.getItem('arestv_read_notifications') || '{}')
     } catch {
       return {}
     }
@@ -49,7 +49,7 @@ export default function Header() {
 
       if (customer) {
         // Navigate to invoices with customer filter
-        localStorage.setItem('xflow_invoice_search', customer.name)
+        localStorage.setItem('arestv_invoice_search', customer.name)
         navigate('invoices')
       }
     }
@@ -57,12 +57,12 @@ export default function Header() {
 
   const handleSearchClear = () => {
     setSearchInput('')
-    localStorage.removeItem('xflow_invoice_search')
+    localStorage.removeItem('arestv_invoice_search')
   }
 
   // Persist read notifications to localStorage
   useEffect(() => {
-    localStorage.setItem('xflow_read_notifications', JSON.stringify(readNotifications))
+    localStorage.setItem('arestv_read_notifications', JSON.stringify(readNotifications))
   }, [readNotifications])
 
   // Close dropdown when clicking outside

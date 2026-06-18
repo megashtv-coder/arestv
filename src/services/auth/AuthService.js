@@ -82,8 +82,8 @@ class AuthService {
       clearInterval(this.refreshTimer)
     }
     this.currentSession = null
-    localStorage.removeItem('xflow_session')
-    localStorage.removeItem('xflow_user')
+    localStorage.removeItem('arestv_session')
+    localStorage.removeItem('arestv_user')
   }
 
   /**
@@ -92,7 +92,7 @@ class AuthService {
    */
   getSession() {
     if (!this.currentSession) {
-      const stored = localStorage.getItem('xflow_session')
+      const stored = localStorage.getItem('arestv_session')
       if (stored) {
         try {
           this.currentSession = JSON.parse(stored)
@@ -211,7 +211,7 @@ class AuthService {
   }
 
   _persistSession(session) {
-    localStorage.setItem('xflow_session', JSON.stringify(session))
+    localStorage.setItem('arestv_session', JSON.stringify(session))
   }
 
   _startSessionRefreshTimer() {

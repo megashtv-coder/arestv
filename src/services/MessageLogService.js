@@ -3,7 +3,7 @@
  * Tracks all messages sent to customers (WhatsApp, Telegram, Email, SMS, etc.)
  */
 
-const STORAGE_KEY = 'xflow_message_logs'
+const STORAGE_KEY = 'arestv_message_logs'
 
 /**
  * Add a message to the log

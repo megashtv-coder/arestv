@@ -10,7 +10,7 @@ export default function Settings() {
   const [editingField, setEditingField] = useState(null)
   const [editValue, setEditValue] = useState('')
   const [companyData, setCompanyData] = useState(() => {
-    const saved = localStorage.getItem('xflow_company_data')
+    const saved = localStorage.getItem('arestv_company_data')
     return saved ? JSON.parse(saved) : {
       companyName: 'XFlow Studio',
       email: 'info@xflow.ks',
@@ -27,7 +27,7 @@ export default function Settings() {
     autoWhatsApp: true,
   })
   const [advanceDays, setAdvanceDays] = useState(() => {
-    const saved = localStorage.getItem('xflow_notif_advance_days')
+    const saved = localStorage.getItem('arestv_notif_advance_days')
     return saved ? parseInt(saved) : 7
   })
   const [showRestoreConfirm, setShowRestoreConfirm] = useState(false)
@@ -45,7 +45,7 @@ export default function Settings() {
 
   // Save company data to localStorage when it changes
   useEffect(() => {
-    localStorage.setItem('xflow_company_data', JSON.stringify(companyData))
+    localStorage.setItem('arestv_company_data', JSON.stringify(companyData))
   }, [companyData])
 
   const handleSaveAdvanceDays = () => {
@@ -53,12 +53,12 @@ export default function Settings() {
       showToast('Numri i ditëve duhet të jetë ndërmjet 0 dhe 90', 'error')
       return
     }
-    localStorage.setItem('xflow_notif_advance_days', advanceDays.toString())
+    localStorage.setItem('arestv_notif_advance_days', advanceDays.toString())
     showToast('Cilësimet e njoftimeve u ruajtën ✓', 'success')
   }
 
   const handleLogout = () => {
-    localStorage.removeItem('xflow_auth')
+    localStorage.removeItem('arestv_auth')
     window.location.reload()
   }
 

@@ -55,7 +55,7 @@ function OrgAppLayout() {
   // Check for pending auto-notifications when app loads
   useEffect(() => {
     // Get configured advance days from localStorage
-    const savedAdvanceDays = localStorage.getItem('xflow_notif_advance_days')
+    const savedAdvanceDays = localStorage.getItem('arestv_notif_advance_days')
     const advanceDays = savedAdvanceDays ? parseInt(savedAdvanceDays) : 7
 
     const pending = AutoNotificationService.getPendingNotifications(invoices, customers, advanceDays)
@@ -73,7 +73,7 @@ function OrgAppLayout() {
   // Auto-backup every 3 hours (fixed schedule, not on every refresh)
   useEffect(() => {
     const BACKUP_INTERVAL_MS = 3 * 60 * 60 * 1000 // 3 hours
-    const LAST_BACKUP_KEY = 'xflow_last_backup_time'
+    const LAST_BACKUP_KEY = 'arestv_last_backup_time'
     const CHECK_INTERVAL_MS = 5 * 60 * 1000 // Check every 5 minutes
 
     // Function to check if it's time to backup and create if needed

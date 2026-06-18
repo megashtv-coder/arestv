@@ -234,7 +234,7 @@ export default function Tasks() {
       console.error('Error loading tasks:', e)
       // Fall back to localStorage
       try {
-        const saved = localStorage.getItem('xflow_tasks')
+        const saved = localStorage.getItem('arestv_tasks')
         if (saved) setTasks(JSON.parse(saved))
       } catch {}
     } finally {
@@ -245,7 +245,7 @@ export default function Tasks() {
   const saveTasks = async (newTasks) => {
     setTasks(newTasks)
     try {
-      localStorage.setItem('xflow_tasks', JSON.stringify(newTasks))
+      localStorage.setItem('arestv_tasks', JSON.stringify(newTasks))
     } catch (e) {
       console.error('Error saving to localStorage:', e)
     }

@@ -107,7 +107,7 @@ export function parseBackupFile(file) {
 }
 
 // Auto-backup functions
-const AUTOBACKUP_KEY = 'xflow_autobackups'
+const AUTOBACKUP_KEY = 'arestv_autobackups'
 const MAX_AUTOBACKUPS = 5 // Keep last 5 auto-backups
 
 export function createAutoBackup(appState) {

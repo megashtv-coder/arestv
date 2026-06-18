@@ -13,8 +13,8 @@ export class MultiTenantDebug {
    * Validate current session
    */
   static validateSession() {
-    const session = localStorage.getItem('xflow_session')
-    const user = localStorage.getItem('xflow_user')
+    const session = localStorage.getItem('arestv_session')
+    const user = localStorage.getItem('arestv_user')
 
     console.group('[MultiTenant Debug] Session Validation')
 
@@ -63,7 +63,7 @@ export class MultiTenantDebug {
    * Validate user in AppContext
    */
   static validateAppUser() {
-    const user = localStorage.getItem('xflow_user')
+    const user = localStorage.getItem('arestv_user')
 
     console.group('[MultiTenant Debug] App User Validation')
 
@@ -106,7 +106,7 @@ export class MultiTenantDebug {
     console.group('[MultiTenant Debug] Data Structure Validation')
 
     // Check invoices if available
-    const invoicesStr = localStorage.getItem('xflow_invoices')
+    const invoicesStr = localStorage.getItem('arestv_invoices')
     if (invoicesStr) {
       try {
         const invoices = JSON.parse(invoicesStr)
@@ -126,7 +126,7 @@ export class MultiTenantDebug {
     }
 
     // Check customers
-    const customersStr = localStorage.getItem('xflow_customers')
+    const customersStr = localStorage.getItem('arestv_customers')
     if (customersStr) {
       try {
         const customers = JSON.parse(customersStr)
@@ -207,7 +207,7 @@ export class MultiTenantDebug {
   static checkRoleBasedRouting() {
     console.group('[MultiTenant Debug] Role-Based Routing')
 
-    const session = localStorage.getItem('xflow_session')
+    const session = localStorage.getItem('arestv_session')
     if (!session) {
       console.error('❌ No session - user should see Login')
       console.groupEnd()

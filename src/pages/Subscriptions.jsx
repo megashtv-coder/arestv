@@ -20,7 +20,7 @@ function buildRenewalMsg(inv) {
 }
 
 /* Çelësi i localStorage ku ruajmë { invId: 'YYYY-MM-DD' } */
-const LS_KEY = 'xflow_wa_sent'
+const LS_KEY = 'arestv_wa_sent'
 
 function getSentMap() {
   try { return JSON.parse(localStorage.getItem(LS_KEY) || '{}') } catch { return {} }

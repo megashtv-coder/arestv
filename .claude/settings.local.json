@@ -79,7 +79,13 @@
       "Bash(xargs grep -l \"item-row\")",
       "Bash(git fetch *)",
       "Bash(grep -v \"formatDate\\\\|import\\\\|function\\\\|const\\\\|//\")",
-      "Bash(xargs wc -l)"
+      "Bash(xargs wc -l)",
+      "Bash(npm start *)",
+      "Skill(run)",
+      "Skill(run:*)",
+      "Bash(if [ ! -f \"C:\\\\Users\\\\enndy\\\\Downloads\\\\financeflow\\\\.claude\\\\launch.json\" ]; then mkdir -p \"C:\\\\Users\\\\enndy\\\\Downloads\\\\financeflow\\\\.claude\"; fi)",
+      "Bash(git remote *)",
+      "WebFetch(domain:arestv.vercel.app)"
     ]
   }
 }

@@ -14,7 +14,7 @@ export function TenantProvider({ children }) {
 
   // Initialize session from localStorage on mount
   useEffect(() => {
-    const savedSession = localStorage.getItem('xflow_session')
+    const savedSession = localStorage.getItem('arestv_session')
     if (savedSession) {
       try {
         setSession(JSON.parse(savedSession))
@@ -30,10 +30,10 @@ export function TenantProvider({ children }) {
     if (!session) return
 
     const handleActivity = () => {
-      const currentSession = JSON.parse(localStorage.getItem('xflow_session') || '{}')
+      const currentSession = JSON.parse(localStorage.getItem('arestv_session') || '{}')
       if (currentSession) {
         currentSession.lastActivity = Date.now()
-        localStorage.setItem('xflow_session', JSON.stringify(currentSession))
+        localStorage.setItem('arestv_session', JSON.stringify(currentSession))
       }
     }
 
@@ -75,7 +75,7 @@ export function TenantProvider({ children }) {
     }
 
     setSession(newSession)
-    localStorage.setItem('xflow_session', JSON.stringify(newSession))
+    localStorage.setItem('arestv_session', JSON.stringify(newSession))
     return newSession
   }
 
@@ -84,7 +84,7 @@ export function TenantProvider({ children }) {
    */
   const logout = () => {
     setSession(null)
-    localStorage.removeItem('xflow_session')
+    localStorage.removeItem('arestv_session')
   }
 
   /**
@@ -110,7 +110,7 @@ export function TenantProvider({ children }) {
     }
     const updated = { ...session, orgId: organizationId, lastActivity: Date.now() }
     setSession(updated)
-    localStorage.setItem('xflow_session', JSON.stringify(updated))
+    localStorage.setItem('arestv_session', JSON.stringify(updated))
   }
 
   const value = {
