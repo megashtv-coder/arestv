@@ -49,7 +49,7 @@ export default function Login({ users = [], onLogin }) {
             <Zap size={20} strokeWidth={2.5} />
           </div>
           <div>
-            <p className="text-lg font-black text-gray-900 leading-none tracking-tight">X-Flow</p>
+            <p className="text-lg font-black text-gray-900 leading-none tracking-tight">AresTV Flow</p>
             <p className="text-[10px] text-gray-400 tracking-widest uppercase mt-0.5">Menaxhimi Financiar</p>
           </div>
         </div>

@@ -105,9 +105,9 @@ export default function Header() {
       </button>
 
       <div className="flex items-center gap-2 flex-1 min-w-0">
-        <img src="/logo.svg" alt="X-Flow" className="w-6 h-6 sm:w-8 sm:h-8 flex-shrink-0" />
+        <img src="/logo.svg" alt="AresTV Flow" className="w-6 h-6 sm:w-8 sm:h-8 flex-shrink-0" />
         <h1 className="text-sm sm:text-base font-bold text-gray-800 dark:text-gray-100 truncate">
-          {PAGE_TITLES[page] || 'X-Flow'}
+          {PAGE_TITLES[page] || 'AresTV Flow'}
         </h1>
       </div>
 

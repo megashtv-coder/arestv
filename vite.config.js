@@ -28,8 +28,8 @@ export default defineConfig({
         ]
       },
       manifest: {
-        name: 'X-Flow — Menaxhimi Financiar',
-        short_name: 'X-Flow',
+        name: 'AresTV Flow — Menaxhimi Financiar',
+        short_name: 'AresTV Flow',
         description: 'App moderne për menaxhimin e financave dhe faturave',
         theme_color: '#2563eb',
         background_color: '#ffffff',

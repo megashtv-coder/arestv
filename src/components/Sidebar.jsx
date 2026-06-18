@@ -89,7 +89,7 @@ export default function Sidebar() {
           </div>
           {!sidebarCollapsed && (
             <div className="flex-1 min-w-0">
-              <div className="text-xs sm:text-sm font-black text-gray-900 dark:text-gray-100 leading-none tracking-tight">X-Flow</div>
+              <div className="text-xs sm:text-sm font-black text-gray-900 dark:text-gray-100 leading-none tracking-tight">AresTV Flow</div>
               <div className="text-[8px] sm:text-[10px] text-gray-400 dark:text-gray-500 tracking-widest uppercase mt-0.5 truncate">
                 {currentOrg?.shortName || 'Pro'}
               </div>

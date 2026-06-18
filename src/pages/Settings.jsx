@@ -12,8 +12,8 @@ export default function Settings() {
   const [companyData, setCompanyData] = useState(() => {
     const saved = localStorage.getItem('arestv_company_data')
     return saved ? JSON.parse(saved) : {
-      companyName: 'XFlow Studio',
-      email: 'info@xflow.ks',
+      companyName: 'AresTV Flow Studio',
+      email: 'info@arestv.ks',
       phone: '+383 44 100 200',
       address: 'Rruga Nënë Tereza 12, Prishtinë',
       language: 'Shqip (Kosovë)',
@@ -174,8 +174,8 @@ export default function Settings() {
     {
       title: 'Profili i kompanisë', icon: Building2,
       rows: [
-        { label: 'Emri i kompanisë', sub: 'XFlow Studio', type: 'field' },
-        { label: 'Email', sub: 'info@xflow.ks', type: 'field' },
+        { label: 'Emri i kompanisë', sub: 'AresTV Flow Studio', type: 'field' },
+        { label: 'Email', sub: 'info@arestv.ks', type: 'field' },
         { label: 'Telefon', sub: '+383 44 100 200', type: 'field' },
         { label: 'Adresa', sub: 'Rruga Nënë Tereza 12, Prishtinë', type: 'field' },
       ]

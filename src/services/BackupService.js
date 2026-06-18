@@ -32,7 +32,7 @@ export function downloadBackup(appState) {
     const link = document.createElement('a')
     const timestamp = new Date().toISOString().slice(0, 10)
     link.href = url
-    link.download = `xflow-backup-${timestamp}.json`
+    link.download = `arestv-backup-${timestamp}.json`
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
@@ -148,7 +148,7 @@ export function downloadAutoBackupToDisk(backup) {
     // Create timestamp for filename
     const now = new Date()
     const timestamp = now.toISOString().replace(/[:.]/g, '-').slice(0, -5) // Format: YYYY-MM-DDTHH-mm-ss
-    const filename = `xflow-autobackup-${timestamp}.json`
+    const filename = `arestv-autobackup-${timestamp}.json`
 
     // Create and trigger download
     const link = document.createElement('a')
