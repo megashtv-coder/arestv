@@ -15,8 +15,8 @@ import { formatDate } from '../utils/dateFormat'
 /* ─── konstante ─── */
 const MONTHS_SQ  = ['Jan','Shk','Mar','Pri','Maj','Qer','Kor','Gus','Sht','Tet','Nën','Dhj']
 const MONTHS_FULL = ['Janar','Shkurt','Mars','Prill','Maj','Qershor','Korrik','Gusht','Shtator','Tetor','Nëntor','Dhjetor']
-const PARTNERS   = ['Enndy', 'Samki']
-const P_COLOR    = { Enndy: '#7c3aed', Samki: '#059669' }
+const PARTNERS   = ['Enndy', 'Belti']
+const P_COLOR    = { Enndy: '#7c3aed', Belti: '#059669' }
 
 /* ── estimated 2025 client data (nuk kemi te dhena reale 2025) ── */
 const EST_CLIENTS_2025 = [0, 0, 3, 4, 5, 5, 5, 5, 5, 5, 5, 4]
@@ -178,7 +178,7 @@ function FinanciareTab({ invoices, expenses, fmt }) {
 }
 
 /* ══════════════════════════════════════════════════════════
-   TAB 2: Barazimi Enndy / Samki
+   TAB 2: Barazimi Enndy / Belti
 ══════════════════════════════════════════════════════════ */
 function BarazimiTab({ payments, expenses, fmt }) {
   const { transfers, setTransfers, logActivity } = useApp()
@@ -192,7 +192,7 @@ function BarazimiTab({ payments, expenses, fmt }) {
   /* transfer form state */
   const [showTrf, setShowTrf] = useState(false)
   const [trfFrom, setTrfFrom] = useState('Enndy')
-  const [trfTo,   setTrfTo]   = useState('Samki')
+  const [trfTo,   setTrfTo]   = useState('Belti')
   const [trfAmt,  setTrfAmt]  = useState('')
   const [trfDate, setTrfDate] = useState(now.toISOString().slice(0,10))
   const [trfNote, setTrfNote] = useState('')
@@ -233,8 +233,8 @@ function BarazimiTab({ payments, expenses, fmt }) {
     const diff = partnerData[0].net - fairShare
     if (Math.abs(diff) < 0.01) return null
     return diff > 0
-      ? { from:'Enndy', to:'Samki', amount: diff }
-      : { from:'Samki', to:'Enndy', amount: -diff }
+      ? { from:'Enndy', to:'Belti', amount: diff }
+      : { from:'Belti', to:'Enndy', amount: -diff }
   })()
 
   /* open form pre-filled from settlement */

@@ -125,7 +125,7 @@ const MAPS = {
     template: [
       ['Data','ID Faturës','Klienti','Shuma','Fee','Metoda','Llogaria','Depozituar tek','Referenca','Shënime'],
       ['2026-01-15','INV-001','Ardit Krasniqi','100','0','PayPal','PayPal - Megaenndy','Enndy','TXN-001-123456',''],
-      ['2026-01-16','INV-002','Blerim Hyseni','200','0','Transfer Bankar','Llogaria Banka','Samki','REF-002-789','Depozitim në llogari Samki'],
+      ['2026-01-16','INV-002','Blerim Hyseni','200','0','Transfer Bankar','Llogaria Banka','Belti','REF-002-789','Depozitim në llogari Belti'],
       ['2026-01-17','INV-003','Driton Morina','150','5','Stripe','Stripe - Megaenndy','Enndy','stripe_ch_123','Komisioni 5%'],
       ['2026-01-18','INV-004','Aleksander Dushku','500','10','PayPal','PayPal - Megaenndy','Enndy','TXN-004-654321','Premium payment'],
       ['2026-01-20','INV-001','Ardit Krasniqi','50','0','Kesh','Kesh - Enndy','Enndy','','Pagesa e dytë'],
@@ -166,8 +166,8 @@ const MAPS = {
       ['Data','Kategoria','Lloji','Furnitori','Paguaj nga','Referenca','Paguar nga','Shuma'],
       ['2026-01-15','Software','Blerje Krediti Predator','Predator','Kesh - Enndy','500 kredit','Enndy','800'],
       ['2026-01-16','Internet','Abonimit Internet','Albtelecom','Llogaria Bank','Pagesë mujore','Enndy','50'],
-      ['2026-01-17','Zyre','Qira e zyrës','Pronari i zyrës','Kesh - Enndy','Qira janar','Samki','600'],
-      ['2026-01-18','Hardware','Blerjë router','TP-Link','Kesh - Samki','Router wifi','Samki','120'],
+      ['2026-01-17','Zyre','Qira e zyrës','Pronari i zyrës','Kesh - Enndy','Qira janar','Belti','600'],
+      ['2026-01-18','Hardware','Blerjë router','TP-Link','Kesh - Belti','Router wifi','Belti','120'],
       ['2026-01-19','Marketing','Reklama Google','Google Ads','Llogaria Bank','Google Ads campaign','Enndy','250'],
     ],
     build: (row, idx) => ({
@@ -192,7 +192,7 @@ const COLORS = ['#2563eb','#7c3aed','#059669','#d97706','#dc2626','#0891b2','#be
 function normalizeDepositedTo(v) {
   if (!v) return 'Enndy'
   const s = String(v).toLowerCase().trim()
-  if (s.includes('samki')) return 'Samki'
+  if (s.includes('belti')) return 'Belti'
   if (s.includes('enndy') || s.includes('endy')) return 'Enndy'
   return String(v).trim()
 }

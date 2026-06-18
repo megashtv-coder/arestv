@@ -51,7 +51,7 @@ function exportCSV(payments, month, partner, fmt) {
   const totalNet   = payments.reduce((s, p) => s + p.net,    0)
   const totalFee   = payments.reduce((s, p) => s + p.fee,    0)
   const totalGross = payments.reduce((s, p) => s + p.amount, 0)
-  const samkiNet   = payments.filter(p => p.depositedTo === 'Samki').reduce((s, p) => s + p.net, 0)
+  const beltiNet   = payments.filter(p => p.depositedTo === 'Belti').reduce((s, p) => s + p.net, 0)
   const enndiNet   = payments.filter(p => p.depositedTo === 'Enndy').reduce((s, p) => s + p.net, 0)
   const halfProfit = totalNet / 2
 
@@ -64,7 +64,7 @@ function exportCSV(payments, month, partner, fmt) {
     [],
     ['=== NDARJA E FITIMIT ==='],
     ['Tek Enndy:',             enndiNet.toFixed(2)],
-    ['Tek Samki:',             samkiNet.toFixed(2)],
+    ['Tek Belti:',             beltiNet.toFixed(2)],
     ['50% secili (nga neto):', halfProfit.toFixed(2)],
   ]
 
@@ -163,7 +163,7 @@ export default function Payments() {
   const totalFee   = filtered.reduce((s, p) => s + p.fee,    0)
   const totalNet   = filtered.reduce((s, p) => s + p.net,    0)
   const enndiNet   = filtered.filter(p => p.depositedTo === 'Enndy').reduce((s, p) => s + p.net, 0)
-  const samkiNet   = filtered.filter(p => p.depositedTo === 'Samki').reduce((s, p) => s + p.net, 0)
+  const beltiNet   = filtered.filter(p => p.depositedTo === 'Belti').reduce((s, p) => s + p.net, 0)
 
   const openNewPayment  = ()  => navigate('payments:create')
   const openEditPayment = (p) => navigate(`payments:${p.id}:edit`)
@@ -314,7 +314,7 @@ export default function Payments() {
         >
           <option value="all">Të dy partnerët</option>
           <option value="Enndy">Tek Enndy</option>
-          <option value="Samki">Tek Samki</option>
+          <option value="Belti">Tek Belti</option>
         </select>
 
         <select
@@ -592,15 +592,15 @@ export default function Payments() {
               <p className="text-xs text-gray-400 mt-1">Pritshme 50%: {fmt(totalNet / 2)}</p>
             </div>
             <div className="bg-purple-50 rounded-xl py-4">
-              <p className="text-xs text-gray-400 mb-1">👤 Samki</p>
-              <p className="text-lg font-bold text-purple-600">{fmt(samkiNet)}</p>
+              <p className="text-xs text-gray-400 mb-1">👤 Belti</p>
+              <p className="text-lg font-bold text-purple-600">{fmt(beltiNet)}</p>
               <p className="text-xs text-gray-400 mt-1">Pritshme 50%: {fmt(totalNet / 2)}</p>
             </div>
           </div>
-          {Math.abs(enndiNet - samkiNet) > 0.01 && (
+          {Math.abs(enndiNet - beltiNet) > 0.01 && (
             <div className="mt-3 text-xs text-amber-600 bg-amber-50 rounded-lg px-4 py-2.5">
-              ⚖️ Diferenca mes partnerëve: <strong>{fmt(Math.abs(enndiNet - samkiNet))}</strong> —{' '}
-              {enndiNet > samkiNet ? 'Enndy' : 'Samki'} ka marrë më shumë këtë muaj.
+              ⚖️ Diferenca mes partnerëve: <strong>{fmt(Math.abs(enndiNet - beltiNet))}</strong> —{' '}
+              {enndiNet > beltiNet ? 'Enndy' : 'Belti'} ka marrë më shumë këtë muaj.
             </div>
           )}
         </div>

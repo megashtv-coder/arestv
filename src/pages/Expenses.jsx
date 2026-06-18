@@ -358,7 +358,7 @@ export default function ExpensesPage() {
   const total      = filtered.reduce((s, e) => s + e.amount, 0)
   const allTotal   = expenses.reduce((s, e) => s + e.amount, 0)
   const enndiTotal = expenses.filter(e => e.paidBy === 'Enndy').reduce((s, e) => s + e.amount, 0)
-  const samkiTotal = expenses.filter(e => e.paidBy === 'Samki').reduce((s, e) => s + e.amount, 0)
+  const beltiTotal = expenses.filter(e => e.paidBy === 'Belti').reduce((s, e) => s + e.amount, 0)
   const recurTotal = expenses.filter(e => e.recurring).reduce((s, e) => s + e.amount, 0)
 
   const openAdd    = ()  => navigate('expenses:create')
@@ -461,10 +461,10 @@ export default function ExpensesPage() {
         <div className="bg-white rounded-xl border border-gray-100 px-5 py-4">
           <div className="flex items-center gap-1.5 mb-1">
             <Users size={13} className="text-purple-400" />
-            <p className="text-xs text-gray-400 font-medium">Samki</p>
+            <p className="text-xs text-gray-400 font-medium">Belti</p>
           </div>
-          <p className="text-xl font-bold text-purple-600">- {fmt(samkiTotal)}</p>
-          <p className="text-xs text-gray-400 mt-0.5">{Math.round(samkiTotal/allTotal*100)||0}% e totalit</p>
+          <p className="text-xl font-bold text-purple-600">- {fmt(beltiTotal)}</p>
+          <p className="text-xs text-gray-400 mt-0.5">{Math.round(beltiTotal/allTotal*100)||0}% e totalit</p>
         </div>
         <div className="bg-white rounded-xl border border-gray-100 px-5 py-4">
           <div className="flex items-center gap-1.5 mb-1">
@@ -525,7 +525,7 @@ export default function ExpensesPage() {
           value={partnerFilt} onChange={e => { setPartner(e.target.value); setPg(1) }}>
           <option value="all">Të dy partnerët</option>
           <option value="Enndy">Enndy</option>
-          <option value="Samki">Samki</option>
+          <option value="Belti">Belti</option>
         </select>
 
         <select className="bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 outline-none focus:border-red-400 cursor-pointer max-w-[200px]"
@@ -735,7 +735,7 @@ export default function ExpensesPage() {
             <div className="hidden sm:flex items-center justify-between px-5 py-3 border-t border-gray-100 bg-gray-50/40 text-xs">
               <div className="flex gap-4 text-gray-400">
                 <span>Enndy: <span className="font-bold text-red-500">- {fmt(filtered.filter(e=>e.paidBy==='Enndy').reduce((s,e)=>s+e.amount,0))}</span></span>
-                <span>Samki: <span className="font-bold text-purple-600">- {fmt(filtered.filter(e=>e.paidBy==='Samki').reduce((s,e)=>s+e.amount,0))}</span></span>
+                <span>Belti: <span className="font-bold text-purple-600">- {fmt(filtered.filter(e=>e.paidBy==='Belti').reduce((s,e)=>s+e.amount,0))}</span></span>
               </div>
               <span className="font-semibold text-gray-500">
                 Total: <span className="text-red-500 font-bold">{fmt(total)}</span>
