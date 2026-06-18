@@ -341,7 +341,7 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer }) {
                 </div>
                 <div className="flex items-center justify-between sm:justify-end gap-4">
                   <span className="text-gray-400">Afati i pagesës:</span>
-                  <span className={`font-semibold w-24 text-right ${isOverdue ? 'text-blue-500' : 'text-gray-700'}`}>
+                  <span className={`font-semibold w-24 text-right ${isOverdue ? 'text-red-500' : 'text-gray-700'}`}>
 {formatDate(inv.due)}
                   </span>
                 </div>
@@ -536,7 +536,7 @@ function KanbanCard({ inv, onOpen }) {
       <div className="flex items-center justify-between text-[11px] mb-3">
         <span className="text-gray-400">Data: {formatDate(inv.date)}</span>
         {inv.due && (
-          <span className={`font-semibold ${isOverdue ? 'text-blue-500' : daysLeft !== null && daysLeft <= 3 ? 'text-amber-500' : 'text-gray-500'}`}>
+          <span className={`font-semibold ${isOverdue ? 'text-red-500' : daysLeft !== null && daysLeft <= 3 ? 'text-amber-500' : 'text-gray-500'}`}>
             {isOverdue
               ? `Vonuar ${Math.abs(daysLeft || 0)}d`
               : daysLeft === 0 ? 'Sot skadon'
@@ -564,7 +564,7 @@ function KanbanCard({ inv, onOpen }) {
             href={`https://wa.me/${rawPhone}?text=${msgEncoded}`}
             target="_blank" rel="noopener noreferrer"
             className={`w-7 h-7 flex items-center justify-center rounded-lg transition-colors ${
-              isOverdue ? 'bg-blue-50 text-blue-500 hover:bg-blue-100' : 'bg-green-50 text-green-500 hover:bg-green-100'
+              isOverdue ? 'bg-red-50 text-red-500 hover:bg-red-100' : 'bg-green-50 text-green-500 hover:bg-green-100'
             }`}
             title="WhatsApp"
           >
@@ -1520,7 +1520,7 @@ export default function Invoices() {
                           )}
                         </td>
                         <td className="table-td font-bold text-gray-800">{fmt(inv.amount)}</td>
-                        <td className={`table-td hidden lg:table-cell ${isOverdue ? 'text-blue-500 font-semibold' : 'text-gray-400'}`}>
+                        <td className={`table-td hidden lg:table-cell ${isOverdue ? 'text-red-500 font-semibold' : 'text-gray-400'}`}>
                           {formatDate(inv.due)}
                         </td>
                         <td className="table-td"><StatusBadge status={isOverdue && inv.status !== 'paid' && inv.status !== 'void' ? 'overdue' : inv.status}/></td>

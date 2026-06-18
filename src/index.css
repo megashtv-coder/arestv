@@ -53,7 +53,7 @@
   }
   .badge-paid { @apply bg-emerald-50 text-emerald-600; }
   .badge-pending { @apply bg-amber-50 text-amber-600; }
-  .badge-overdue { @apply bg-blue-50 text-blue-600; }
+  .badge-overdue { @apply bg-red-50 text-red-600; }
   .badge-draft { @apply bg-gray-100 text-gray-500; }
   .stat-card {
     @apply bg-white rounded-xl border border-gray-100 p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md cursor-default;
