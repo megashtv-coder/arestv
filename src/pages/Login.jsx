@@ -45,7 +45,7 @@ export default function Login({ users = [], onLogin }) {
       <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm p-8">
         {/* Logo */}
         <div className="flex items-center gap-3 mb-8">
-          <div className="w-10 h-10 bg-gradient-to-br from-red-500 to-red-700 rounded-xl flex items-center justify-center text-white shadow-md">
+          <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl flex items-center justify-center text-white shadow-md">
             <Zap size={20} strokeWidth={2.5} />
           </div>
           <div>
@@ -100,7 +100,7 @@ export default function Login({ users = [], onLogin }) {
 
           {/* Error */}
           {error && (
-            <div className="flex items-center gap-2 bg-red-50 border border-red-100 text-red-600 text-xs font-medium rounded-lg px-3 py-2.5 mb-4">
+            <div className="flex items-center gap-2 bg-blue-50 border border-blue-100 text-blue-600 text-xs font-medium rounded-lg px-3 py-2.5 mb-4">
               <AlertCircle size={14} className="flex-shrink-0" />
               {error}
             </div>

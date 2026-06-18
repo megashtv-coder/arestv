@@ -199,8 +199,8 @@ export default function Dashboard() {
           { icon: ReceiptText, title: 'Shpenzim i ri', sub: 'Regjistro shpenzim',     action: openExpenseModal  },
         ].map(({ icon: Icon, title, sub, action }) => (
           <button key={title} onClick={action}
-            className="text-left bg-white border border-gray-100 rounded-xl p-4 hover:border-red-300 hover:bg-red-50 transition-all duration-150 group hover:-translate-y-0.5 hover:shadow-md">
-            <Icon size={20} className="text-red-500 mb-2 group-hover:scale-110 transition-transform" />
+            className="text-left bg-white border border-gray-100 rounded-xl p-4 hover:border-blue-300 hover:bg-blue-50 transition-all duration-150 group hover:-translate-y-0.5 hover:shadow-md">
+            <Icon size={20} className="text-blue-500 mb-2 group-hover:scale-110 transition-transform" />
             <p className="text-xs sm:text-sm font-semibold text-gray-700">{title}</p>
             <p className="text-xs text-gray-400 mt-0.5 hidden sm:block">{sub}</p>
           </button>
@@ -226,7 +226,7 @@ export default function Dashboard() {
           label={`Shpenzime ${thisYear}`}
           value={fmt(yearExpenses)}
           sub={`Shpenzime të regjistruara`}
-          subColor="text-red-400"
+          subColor="text-blue-400"
         />
         <KpiCard
           icon={Clock}  iconBg="#fffbeb"  iconColor="#d97706"
@@ -259,9 +259,9 @@ export default function Dashboard() {
           <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-4 border-b border-gray-50">
             <p className="text-sm font-bold text-gray-800">Fluksi i të hyrave &amp; shpenzimeve — 12 muaj</p>
             <div className="flex flex-wrap gap-3 text-[11px] text-gray-400">
-              <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm bg-red-500 inline-block"/>Të ardhura {thisYear}</span>
-              <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm bg-red-400 inline-block"/>Shpenzime {thisYear}</span>
-              <span className="flex items-center gap-1.5"><span className="w-4 h-0.5 bg-red-300 inline-block border-t-2 border-dashed border-red-300"/>T.ardhura {prevYear}</span>
+              <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm bg-blue-500 inline-block"/>Të ardhura {thisYear}</span>
+              <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm bg-blue-400 inline-block"/>Shpenzime {thisYear}</span>
+              <span className="flex items-center gap-1.5"><span className="w-4 h-0.5 bg-blue-300 inline-block border-t-2 border-dashed border-blue-300"/>T.ardhura {prevYear}</span>
             </div>
           </div>
           <div className="px-2 py-4">
@@ -293,7 +293,7 @@ export default function Dashboard() {
                 <button key={f.key} onClick={() => setCatFilter(f.key)}
                   className={`flex-1 px-2 py-1 rounded-lg text-[11px] font-bold transition-all ${
                     catFilter === f.key
-                      ? 'bg-red-500 text-white shadow-sm'
+                      ? 'bg-blue-500 text-white shadow-sm'
                       : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
                   }`}>
                   {f.label}

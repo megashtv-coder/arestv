@@ -47,7 +47,7 @@ function SupplierModal({ supplier, onClose }) {
     <Modal
       title={
         <span className="flex items-center gap-2">
-          <Truck size={18} className="text-red-500" />
+          <Truck size={18} className="text-blue-500" />
           {isEdit ? `Edito — ${supplier.name}` : 'Furnitor i ri'}
         </span>
       }
@@ -62,7 +62,7 @@ function SupplierModal({ supplier, onClose }) {
       }
     >
       {err && (
-        <div className="text-xs text-red-500 bg-red-50 border border-red-100 rounded-lg px-3 py-2 mb-4">
+        <div className="text-xs text-blue-500 bg-blue-50 border border-blue-100 rounded-lg px-3 py-2 mb-4">
           {err}
         </div>
       )}
@@ -128,7 +128,7 @@ function SupplierCard({ vendor, onEdit, onDelete }) {
     <div className="bg-white rounded-xl border border-gray-100 p-5 hover:border-blue-200 hover:shadow-md transition-all duration-200 group flex flex-col gap-4">
       {/* Header */}
       <div className="flex items-center gap-3">
-        <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center text-white font-bold text-base flex-shrink-0 select-none">
+        <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-bold text-base flex-shrink-0 select-none">
           {initials}
         </div>
         <div className="flex-1 min-w-0">
@@ -138,14 +138,14 @@ function SupplierCard({ vendor, onEdit, onDelete }) {
         {/* Edit / Delete */}
         <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
           <button
-            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors"
+            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-blue-50 text-gray-400 hover:text-blue-500 transition-colors"
             onClick={() => onEdit(vendor)}
             title="Edito"
           >
             <Pencil size={14} />
           </button>
           <button
-            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors"
+            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-blue-50 text-gray-400 hover:text-blue-500 transition-colors"
             onClick={() => onDelete(vendor)}
             title="Fshi"
           >
@@ -169,7 +169,7 @@ function SupplierCard({ vendor, onEdit, onDelete }) {
         )}
 
         {hasLink ? (
-          <div className="flex items-center gap-2 text-sm text-red-500 truncate">
+          <div className="flex items-center gap-2 text-sm text-blue-500 truncate">
             <Link2 size={13} className="text-gray-400 flex-shrink-0" />
             <a
               href={vendor.panelLink.startsWith('http') ? vendor.panelLink : `https://${vendor.panelLink}`}
@@ -216,7 +216,7 @@ function SupplierCard({ vendor, onEdit, onDelete }) {
               href={vendor.panelLink.startsWith('http') ? vendor.panelLink : `https://${vendor.panelLink}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-red-50 text-red-500 text-xs font-semibold hover:bg-red-100 transition-colors"
+              className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-blue-50 text-blue-500 text-xs font-semibold hover:bg-blue-100 transition-colors"
               title="Hap panelin"
             >
               <ExternalLink size={13} />
@@ -232,7 +232,7 @@ function SupplierCard({ vendor, onEdit, onDelete }) {
             href={vendor.panelLink.startsWith('http') ? vendor.panelLink : `https://${vendor.panelLink}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-center gap-1.5 py-2 rounded-lg bg-red-50 text-red-500 text-xs font-semibold hover:bg-red-100 transition-colors w-full"
+            className="flex items-center justify-center gap-1.5 py-2 rounded-lg bg-blue-50 text-blue-500 text-xs font-semibold hover:bg-blue-100 transition-colors w-full"
           >
             <ExternalLink size={13} /> Hap panelin
           </a>
@@ -279,7 +279,7 @@ export default function Suppliers() {
 
       {/* Kërkimi */}
       <div className="flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-3 py-2
-                      focus-within:border-red-400 focus-within:ring-2 focus-within:ring-red-50
+                      focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-50
                       transition-all mb-6 w-full max-w-sm">
         <Search size={14} className="text-gray-400 flex-shrink-0" />
         <input

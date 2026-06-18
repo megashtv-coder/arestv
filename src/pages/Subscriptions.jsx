@@ -53,7 +53,7 @@ const SubRow = memo(function SubRow({ inv, phone, urgency, today, sentToday }) {
   const msg = encodeURIComponent(buildRenewalMsg(inv))
 
   const dateCls =
-    urgency === 'high'   ? 'text-red-600 font-bold' :
+    urgency === 'high'   ? 'text-blue-600 font-bold' :
     urgency === 'medium' ? 'text-amber-600 font-semibold' :
                            'text-gray-600'
 
@@ -66,7 +66,7 @@ const SubRow = memo(function SubRow({ inv, phone, urgency, today, sentToday }) {
       {/* Klienti */}
       <td className="table-td">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center text-xs font-bold text-red-500 flex-shrink-0">
+          <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-xs font-bold text-blue-500 flex-shrink-0">
             {inv.customer.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()}
           </div>
           <div>
@@ -78,7 +78,7 @@ const SubRow = memo(function SubRow({ inv, phone, urgency, today, sentToday }) {
 
       {/* Data skadimit */}
       <td className="table-td">
-        <span className="font-semibold text-red-600 text-sm">{formatDate(inv.subscriptionExpiry)}</span>
+        <span className="font-semibold text-blue-600 text-sm">{formatDate(inv.subscriptionExpiry)}</span>
       </td>
 
       {/* Data njoftimit */}
@@ -87,8 +87,8 @@ const SubRow = memo(function SubRow({ inv, phone, urgency, today, sentToday }) {
           <span className={`text-sm ${dateCls}`}>{formatDate(inv.notifyDate)}</span>
           {daysLeft !== null && (
             <p className={`text-[11px] mt-0.5 ${
-              daysLeft < 0  ? 'text-red-400' :
-              daysLeft === 0 ? 'text-red-500 font-bold' :
+              daysLeft < 0  ? 'text-blue-400' :
+              daysLeft === 0 ? 'text-blue-500 font-bold' :
               'text-gray-400'
             }`}>
               {daysLeft < 0  ? `${Math.abs(daysLeft)} ditë e kaluar` :
@@ -163,16 +163,16 @@ const Section = memo(function Section({ title, color, items, today, sentIds, ite
     <div className="mb-6">
       <div className="flex items-center gap-2 mb-3">
         <span className={`w-2.5 h-2.5 rounded-full ${
-          color === 'red'   ? 'bg-red-500' :
-          color === 'amber' ? 'bg-amber-400' : 'bg-red-400'
+          color === 'red'   ? 'bg-blue-500' :
+          color === 'amber' ? 'bg-amber-400' : 'bg-blue-400'
         }`} />
         <h3 className={`text-sm font-bold ${
-          color === 'red'   ? 'text-red-700' :
+          color === 'red'   ? 'text-blue-700' :
           color === 'amber' ? 'text-amber-700' : 'text-gray-600'
         }`}>{title}</h3>
         <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${
-          color === 'red'   ? 'bg-red-50 text-red-500' :
-          color === 'amber' ? 'bg-amber-50 text-amber-600' : 'bg-red-50 text-red-500'
+          color === 'red'   ? 'bg-blue-50 text-blue-500' :
+          color === 'amber' ? 'bg-amber-50 text-amber-600' : 'bg-blue-50 text-blue-500'
         }`}>{items.length}</span>
       </div>
 
@@ -193,8 +193,8 @@ const Section = memo(function Section({ title, color, items, today, sentIds, ite
                   {/* Col 1: Customer + Expiry + Notify */}
                   <div className="flex-1 min-w-0">
                     <p className="font-bold text-gray-800 text-sm truncate">{inv.customer}</p>
-                    <p className="text-xs font-bold text-red-500 mt-0.5">{formatDate(inv.subscriptionExpiry)}</p>
-                    <p className="text-xs font-bold text-red-600 mt-0.5">{formatDate(inv.notifyDate)}</p>
+                    <p className="text-xs font-bold text-blue-500 mt-0.5">{formatDate(inv.subscriptionExpiry)}</p>
+                    <p className="text-xs font-bold text-blue-600 mt-0.5">{formatDate(inv.notifyDate)}</p>
                   </div>
 
                   {/* Col 2: Amount + Product */}
@@ -206,7 +206,7 @@ const Section = memo(function Section({ title, color, items, today, sentIds, ite
                   {/* Col 3: Contact - Dropdown */}
                   <div className="relative flex-shrink-0">
                     <button
-                      className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 text-gray-600 hover:bg-red-500 hover:text-white transition-all"
+                      className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 text-gray-600 hover:bg-blue-500 hover:text-white transition-all"
                       onClick={() => setOpenDropdown(openDropdown === inv.id ? null : inv.id)}
                     >
                       ⋮
@@ -420,13 +420,13 @@ export default function Subscriptions() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
         <div>
           <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
-            <Bell size={20} className="text-red-500" />
+            <Bell size={20} className="text-blue-500" />
             Njoftimet e Abonimit
           </h2>
           <p className="text-sm text-gray-400 mt-0.5">
             {withNotify.length} abonim ·{' '}
             {totalPending > 0
-              ? <span className="text-red-500 font-semibold">{totalPending} kërkon vëmendje sot</span>
+              ? <span className="text-blue-500 font-semibold">{totalPending} kërkon vëmendje sot</span>
               : <span className="text-emerald-500 font-semibold">Gjithçka është e rregullt</span>
             }
           </p>
@@ -434,7 +434,7 @@ export default function Subscriptions() {
         <div className="flex items-center gap-3 flex-wrap">
           {/* Statusi i auto-dërgimit */}
           {autoStatus === 'sending' && (
-            <span className="flex items-center gap-1.5 text-xs text-red-500 bg-red-50 border border-red-100 px-3 py-1.5 rounded-full font-semibold">
+            <span className="flex items-center gap-1.5 text-xs text-blue-500 bg-blue-50 border border-blue-100 px-3 py-1.5 rounded-full font-semibold">
               <Loader2 size={13} className="animate-spin" /> Duke dërguar njoftime WA...
             </span>
           )}
@@ -449,7 +449,7 @@ export default function Subscriptions() {
             </span>
           )}
           {autoStatus === 'error' && (
-            <span className="flex items-center gap-1.5 text-xs text-red-600 bg-red-50 border border-red-100 px-3 py-1.5 rounded-full font-semibold">
+            <span className="flex items-center gap-1.5 text-xs text-blue-600 bg-blue-50 border border-blue-100 px-3 py-1.5 rounded-full font-semibold">
               <AlertTriangle size={13} /> Disa njoftime dështuan
             </span>
           )}
@@ -480,8 +480,8 @@ export default function Subscriptions() {
 
       {/* Summary stat cards */}
       <div className="grid grid-cols-3 gap-4 mb-6">
-        <div className="stat-card !border-l-4 !border-l-red-400">
-          <p className="text-3xl font-bold text-red-600">{urgent.length}</p>
+        <div className="stat-card !border-l-4 !border-l-blue-400">
+          <p className="text-3xl font-bold text-blue-600">{urgent.length}</p>
           <p className="text-xs text-gray-400 mt-1 font-medium">Duhen kontaktuar sot</p>
           {unsent > 0 && autoStatus !== 'no-api' && (
             <p className="text-[11px] text-amber-500 mt-1">{unsent} ende pa dërguar</p>
@@ -491,8 +491,8 @@ export default function Subscriptions() {
           <p className="text-3xl font-bold text-amber-500">{thisWeek.length}</p>
           <p className="text-xs text-gray-400 mt-1 font-medium">Këtë javë (7 ditë)</p>
         </div>
-        <div className="stat-card !border-l-4 !border-l-red-400">
-          <p className="text-3xl font-bold text-red-500">{future.length}</p>
+        <div className="stat-card !border-l-4 !border-l-blue-400">
+          <p className="text-3xl font-bold text-blue-500">{future.length}</p>
           <p className="text-xs text-gray-400 mt-1 font-medium">Ardhshme</p>
         </div>
       </div>
@@ -500,7 +500,7 @@ export default function Subscriptions() {
       {/* Empty state */}
       {withNotify.length === 0 ? (
         <div className="card flex flex-col items-center justify-center py-20 text-center">
-          <div className="w-16 h-16 rounded-2xl bg-red-50 flex items-center justify-center mb-4">
+          <div className="w-16 h-16 rounded-2xl bg-blue-50 flex items-center justify-center mb-4">
             <Bell size={28} className="text-blue-200" />
           </div>
           <p className="text-base font-semibold text-gray-500 mb-1">Nuk ka njoftime të konfigurura</p>

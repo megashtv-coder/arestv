@@ -112,7 +112,7 @@ export default function Header() {
       </div>
 
       {/* Search - hidden on mobile */}
-      <div className="hidden lg:flex items-center gap-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2 w-48 focus-within:border-red-400 focus-within:ring-2 focus-within:ring-red-50 transition-all flex-shrink-0">
+      <div className="hidden lg:flex items-center gap-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2 w-48 focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-50 transition-all flex-shrink-0">
         <Search size={14} className="text-gray-400 flex-shrink-0" />
         <input
           className="bg-transparent border-none outline-none text-sm text-gray-600 dark:text-gray-300 w-full placeholder-gray-400"
@@ -138,7 +138,7 @@ export default function Header() {
       {/* Quick Add Button - Context Aware */}
       <div className="relative flex-shrink-0">
         <button
-          className="icon-btn bg-red-500 text-white hover:bg-red-600 rounded-lg p-2"
+          className="icon-btn bg-blue-500 text-white hover:bg-blue-600 rounded-lg p-2"
           onClick={() => {
             // Get the base page (remove :create, :edit, etc)
             const basePage = page.split(':')[0]
@@ -206,7 +206,7 @@ export default function Header() {
                 className="w-full flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-left"
                 onClick={() => { setCurrency(c); setCurOpen(false) }}
               >
-                <span className="font-bold text-red-500 w-5">{c.symbol}</span>
+                <span className="font-bold text-blue-500 w-5">{c.symbol}</span>
                 <span className="text-gray-600 dark:text-gray-300">{c.name}</span>
               </button>
             ))}
@@ -243,7 +243,7 @@ export default function Header() {
               {unreadCount > 0 ? (
                 <button
                   onClick={markAllAsRead}
-                  className="text-xs font-semibold text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 flex items-center gap-1"
+                  className="text-xs font-semibold text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 flex items-center gap-1"
                 >
                   <Check size={14} />
                   Lexoje të gjitha
@@ -272,7 +272,7 @@ export default function Header() {
                         navigate('subscriptions')
                       }}
                       className={`w-full px-4 py-3 border-b border-gray-50 dark:border-gray-700 text-left hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors ${
-                        isRead ? 'opacity-60' : 'opacity-100 bg-red-50/30 dark:bg-red-800/10'
+                        isRead ? 'opacity-60' : 'opacity-100 bg-blue-50/30 dark:bg-blue-800/10'
                       }`}
                     >
                       <div className="flex items-start justify-between gap-2">
@@ -285,8 +285,8 @@ export default function Header() {
                           </p>
                         </div>
                         <div className={`text-xs font-semibold whitespace-nowrap flex-shrink-0 ${
-                          daysLeft < 0 ? 'text-red-600' :
-                          daysLeft === 0 ? 'text-red-600 font-bold' :
+                          daysLeft < 0 ? 'text-blue-600' :
+                          daysLeft === 0 ? 'text-blue-600 font-bold' :
                           'text-amber-600'
                         }`}>
                           {daysLeft < 0 ? `${Math.abs(daysLeft)} ditë më parë` :
@@ -308,7 +308,7 @@ export default function Header() {
                     navigate('subscriptions')
                     setNotifOpen(false)
                   }}
-                  className="text-sm text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 font-semibold"
+                  className="text-sm text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 font-semibold"
                 >
                   Shiko të gjitha
                 </button>

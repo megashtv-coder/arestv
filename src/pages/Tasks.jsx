@@ -54,7 +54,7 @@ function TaskModal({ task, onClose, onSave, customers }) {
                 setShowCustomerDropdown(true)
               }}
               onFocus={() => setShowCustomerDropdown(true)}
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
 
             {showCustomerDropdown && (
@@ -66,7 +66,7 @@ function TaskModal({ task, onClose, onSave, customers }) {
                     <button
                       key={idx}
                       onClick={() => handleSelectCustomer(c.name)}
-                      className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-red-50 border-b border-gray-100 last:border-b-0 transition-colors"
+                      className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-blue-50 border-b border-gray-100 last:border-b-0 transition-colors"
                     >
                       {c.name}
                     </button>
@@ -82,7 +82,7 @@ function TaskModal({ task, onClose, onSave, customers }) {
               type="date"
               value={formData.reminderDate}
               onChange={(e) => setFormData({ ...formData, reminderDate: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
@@ -92,7 +92,7 @@ function TaskModal({ task, onClose, onSave, customers }) {
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               placeholder="Përshkruaj detyrën..."
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 resize-none"
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
               rows="6"
             />
           </div>
@@ -100,7 +100,7 @@ function TaskModal({ task, onClose, onSave, customers }) {
           <div className="flex gap-2 pt-4">
             <button
               onClick={handleSubmit}
-              className="flex-1 px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-bold rounded-lg transition-colors"
+              className="flex-1 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-lg transition-colors"
             >
               Ruaj
             </button>
@@ -127,7 +127,7 @@ function TaskCard({ task, customers, onEdit, onDelete, onToggle }) {
       task.completed
         ? 'bg-gray-50 border-gray-100 opacity-60'
         : isOverdue
-        ? 'bg-red-50 border-red-200'
+        ? 'bg-blue-50 border-blue-200'
         : isToday
         ? 'bg-orange-50 border-orange-200'
         : 'bg-white border-gray-200 hover:border-gray-300'
@@ -135,7 +135,7 @@ function TaskCard({ task, customers, onEdit, onDelete, onToggle }) {
       <div className="flex items-start gap-3">
         <button
           onClick={() => onToggle(task.id)}
-          className="mt-1 flex-shrink-0 text-gray-400 hover:text-red-500 transition-colors"
+          className="mt-1 flex-shrink-0 text-gray-400 hover:text-blue-500 transition-colors"
           title="Mark complete"
         >
           {task.completed ? (
@@ -154,10 +154,10 @@ function TaskCard({ task, customers, onEdit, onDelete, onToggle }) {
               </div>
               <div className="flex items-center gap-1.5">
                 <Calendar size={14} className={`flex-shrink-0 ${
-                  isOverdue ? 'text-red-500' : isToday ? 'text-orange-500' : 'text-gray-400'
+                  isOverdue ? 'text-blue-500' : isToday ? 'text-orange-500' : 'text-gray-400'
                 }`} />
                 <p className={`text-xs font-semibold ${
-                  isOverdue ? 'text-red-600' : isToday ? 'text-orange-600' : 'text-gray-600'
+                  isOverdue ? 'text-blue-600' : isToday ? 'text-orange-600' : 'text-gray-600'
                 }`}>
                   {formatDate(task.reminderDate)}
                   {isOverdue && ' (VONUAR)'}
@@ -168,14 +168,14 @@ function TaskCard({ task, customers, onEdit, onDelete, onToggle }) {
             <div className="flex items-center gap-1 flex-shrink-0">
               <button
                 onClick={() => onEdit(task)}
-                className="icon-btn text-gray-400 hover:text-red-500 hover:bg-red-50"
+                className="icon-btn text-gray-400 hover:text-blue-500 hover:bg-blue-50"
                 title="Ndrysho"
               >
                 <Pencil size={14} />
               </button>
               <button
                 onClick={() => onDelete(task.id)}
-                className="icon-btn text-gray-400 hover:text-red-500 hover:bg-red-50"
+                className="icon-btn text-gray-400 hover:text-blue-500 hover:bg-blue-50"
                 title="Fshi"
               >
                 <Trash2 size={14} />
@@ -409,7 +409,7 @@ export default function Tasks() {
         </div>
         <button
           onClick={handleAddTask}
-          className="flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-bold rounded-lg transition-colors"
+          className="flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-lg transition-colors"
         >
           <Plus size={16} /> E Re
         </button>
@@ -420,7 +420,7 @@ export default function Tasks() {
           onClick={() => setFilterCompleted(!filterCompleted)}
           className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors ${
             filterCompleted
-              ? 'bg-red-100 text-red-600'
+              ? 'bg-blue-100 text-blue-600'
               : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
           }`}
         >
@@ -442,7 +442,7 @@ export default function Tasks() {
             {!filterCompleted && (
               <button
                 onClick={handleAddTask}
-                className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-sm font-bold rounded-lg transition-colors"
+                className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-sm font-bold rounded-lg transition-colors"
               >
                 Krijo Detyrë
               </button>

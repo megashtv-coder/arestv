@@ -379,7 +379,7 @@ export default function Settings() {
                 <li>• Pagesat: {restoreData.payments?.length || 0}</li>
                 <li>• Shpenzimet: {restoreData.expenses?.length || 0}</li>
               </ul>
-              <p className="text-xs text-red-600 font-semibold">Kjo nuk mund të rikthehej!</p>
+              <p className="text-xs text-blue-600 font-semibold">Kjo nuk mund të rikthehej!</p>
             </div>
             <div className="flex gap-2">
               <button
@@ -437,7 +437,7 @@ export default function Settings() {
                       </button>
                       <button
                         onClick={() => handleDeleteAutoBackup(idx)}
-                        className="btn btn-outline btn-sm text-xs text-red-600 hover:bg-red-50 flex items-center gap-1"
+                        className="btn btn-outline btn-sm text-xs text-blue-600 hover:bg-blue-50 flex items-center gap-1"
                       >
                         <Trash2 size={12}/>
                       </button>
@@ -464,7 +464,7 @@ export default function Settings() {
                 <li>• Pagesat: {restoreData.payments?.length || 0}</li>
                 <li>• Shpenzimet: {restoreData.expenses?.length || 0}</li>
               </ul>
-              <p className="text-xs text-red-600 font-semibold">Kjo nuk mund të rikthehej!</p>
+              <p className="text-xs text-blue-600 font-semibold">Kjo nuk mund të rikthehej!</p>
             </div>
             <div className="flex gap-2">
               <button
@@ -490,9 +490,9 @@ export default function Settings() {
         {/* Logout */}
         <div>
           <div className="flex items-center gap-2 mb-2 px-1">
-            <p className="text-xs font-bold text-red-400 uppercase tracking-widest">Zona e rrezikshme</p>
+            <p className="text-xs font-bold text-blue-400 uppercase tracking-widest">Zona e rrezikshme</p>
           </div>
-          <div className="bg-white rounded-xl border border-red-100 overflow-hidden">
+          <div className="bg-white rounded-xl border border-blue-100 overflow-hidden">
             <div className="flex items-center justify-between px-5 py-3.5">
               <div>
                 <p className="text-sm font-semibold text-gray-800">Dilni nga sistemi</p>

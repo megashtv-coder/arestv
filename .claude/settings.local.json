@@ -85,7 +85,8 @@
       "Skill(run:*)",
       "Bash(if [ ! -f \"C:\\\\Users\\\\enndy\\\\Downloads\\\\financeflow\\\\.claude\\\\launch.json\" ]; then mkdir -p \"C:\\\\Users\\\\enndy\\\\Downloads\\\\financeflow\\\\.claude\"; fi)",
       "Bash(git remote *)",
-      "WebFetch(domain:arestv.vercel.app)"
+      "WebFetch(domain:arestv.vercel.app)",
+      "Bash(xargs sed -i \"s/red-50/blue-50/g; s/red-100/blue-100/g; s/red-200/blue-200/g; s/red-300/blue-300/g; s/red-400/blue-400/g; s/red-500/blue-500/g; s/red-600/blue-600/g; s/red-700/blue-700/g; s/red-800/blue-800/g; s/red-900/blue-900/g\")"
     ]
   }
 }

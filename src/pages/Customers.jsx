@@ -123,7 +123,7 @@ function ReferredBySelect({ value, onChange, excludeId }) {
               <div
                 key={name}
                 className={`px-3 py-2 text-sm cursor-pointer flex items-center gap-2 transition-colors ${
-                  i === active ? 'bg-red-50 text-red-600' : 'hover:bg-gray-50 text-gray-700'
+                  i === active ? 'bg-blue-50 text-blue-600' : 'hover:bg-gray-50 text-gray-700'
                 }`}
                 onMouseDown={() => select(name)}
                 onMouseEnter={() => setActive(i)}
@@ -137,7 +137,7 @@ function ReferredBySelect({ value, onChange, excludeId }) {
           {/* Add new referrer option */}
           {query.trim() && (filtered.length === 0 || !filtered.includes(query.trim())) ? (
             <div
-              className={`px-3 py-2 text-sm cursor-pointer flex items-center gap-2 transition-colors hover:bg-red-50 text-red-500 hover:text-red-600 font-medium ${
+              className={`px-3 py-2 text-sm cursor-pointer flex items-center gap-2 transition-colors hover:bg-blue-50 text-blue-500 hover:text-blue-600 font-medium ${
                 filtered.length > 0 ? 'border-t border-gray-100' : ''
               }`}
               onMouseDown={() => select(query.trim())}
@@ -244,7 +244,7 @@ export function CustomerModal({ customer, onClose, isFormPage }) {
   const formContent = (
     <>
       {err && (
-        <div className="text-xs text-red-500 bg-red-50 border border-red-100 rounded-lg px-3 py-2 mb-4">
+        <div className="text-xs text-blue-500 bg-blue-50 border border-blue-100 rounded-lg px-3 py-2 mb-4">
           {err}
         </div>
       )}
@@ -255,8 +255,8 @@ export function CustomerModal({ customer, onClose, isFormPage }) {
           <button type="button" onClick={() => set('type', 'individual')}
             className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold border-2 transition-all ${
               !isReseller
-                ? 'border-red-500 bg-red-500 text-white shadow-sm'
-                : 'border-gray-200 bg-white text-gray-500 hover:border-red-300'
+                ? 'border-blue-500 bg-blue-500 text-white shadow-sm'
+                : 'border-gray-200 bg-white text-gray-500 hover:border-blue-300'
             }`}>
             <User size={15}/> Individual
           </button>
@@ -395,7 +395,7 @@ export function CustomerModal({ customer, onClose, isFormPage }) {
     <Modal
       title={
         <span className="flex items-center gap-2">
-          <UserPlus size={18} className="text-red-500" />
+          <UserPlus size={18} className="text-blue-500" />
           {isEdit ? `Edito — ${customer.firstName} ${customer.lastName}` : 'Klient i ri'}
         </span>
       }
@@ -427,7 +427,7 @@ const CustomerCard = memo(function CustomerCard({ c, onEdit, fmt, isLatePayer, o
         isLatePayer
           ? 'border-orange-200 hover:border-orange-300'
           : 'border-gray-100 hover:border-blue-200'
-      } ${checked ? 'ring-2 ring-red-400 bg-red-50/50' : ''}`}
+      } ${checked ? 'ring-2 ring-blue-400 bg-blue-50/50' : ''}`}
       onClick={() => onEdit(c)}
     >
       {/* Header */}
@@ -439,7 +439,7 @@ const CustomerCard = memo(function CustomerCard({ c, onEdit, fmt, isLatePayer, o
             e.stopPropagation()
             onToggleSelect()
           }}
-          className="w-5 h-5 rounded border-gray-300 text-red-500 cursor-pointer mt-1 flex-shrink-0"
+          className="w-5 h-5 rounded border-gray-300 text-blue-500 cursor-pointer mt-1 flex-shrink-0"
           onClick={(e) => e.stopPropagation()}
         />
         <Avatar name={c.name || c.firstName || '?'} color={c.color} size={44} />
@@ -464,7 +464,7 @@ const CustomerCard = memo(function CustomerCard({ c, onEdit, fmt, isLatePayer, o
         </div>
         {/* Type badge */}
         <span className={`flex-shrink-0 text-[10px] font-bold px-2 py-0.5 rounded-full ${
-          isReseller ? 'bg-purple-50 text-purple-600' : 'bg-red-50 text-red-500'
+          isReseller ? 'bg-purple-50 text-purple-600' : 'bg-blue-50 text-blue-500'
         }`}>
           {isReseller ? 'Reseller' : 'Individual'}
         </span>
@@ -525,7 +525,7 @@ const CustomerCard = memo(function CustomerCard({ c, onEdit, fmt, isLatePayer, o
       {/* Footer */}
       <div className="flex justify-between items-center pt-3 border-t border-gray-50">
         <div>
-          <p className="text-base font-bold text-red-500">{fmt(c.total)}</p>
+          <p className="text-base font-bold text-blue-500">{fmt(c.total)}</p>
           <p className="text-[10px] text-gray-400 uppercase tracking-wide">Totali</p>
         </div>
         <div className="text-right">
@@ -563,7 +563,7 @@ const CustomerCard = memo(function CustomerCard({ c, onEdit, fmt, isLatePayer, o
           )}
           {/* Edit */}
           <button
-            className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-50 text-gray-400 hover:bg-red-50 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100"
+            className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-50 text-gray-400 hover:bg-blue-50 hover:text-blue-500 transition-colors opacity-0 group-hover:opacity-100"
             onClick={e => { e.stopPropagation(); onEdit(c) }}
             title="Edito"
           >
@@ -571,7 +571,7 @@ const CustomerCard = memo(function CustomerCard({ c, onEdit, fmt, isLatePayer, o
           </button>
           {/* Delete */}
           <button
-            className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-50 text-gray-400 hover:bg-red-50 hover:text-red-600 transition-colors opacity-0 group-hover:opacity-100"
+            className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-50 text-gray-400 hover:bg-blue-50 hover:text-blue-600 transition-colors opacity-0 group-hover:opacity-100"
             onClick={e => { e.stopPropagation(); onDelete(c.id) }}
             title="Fshi klientin"
           >
@@ -760,7 +760,7 @@ export default function Customers() {
 
           {/* New Customer - Hidden on mobile (see FAB below) */}
           <button
-            className="hidden sm:flex w-9 h-9 items-center justify-center rounded-lg bg-red-500 text-white hover:bg-red-600 transition-colors font-bold text-lg"
+            className="hidden sm:flex w-9 h-9 items-center justify-center rounded-lg bg-blue-500 text-white hover:bg-blue-600 transition-colors font-bold text-lg"
             onClick={openAdd}
             title="Shto klient"
           >
@@ -785,7 +785,7 @@ export default function Customers() {
           <p className="text-xs text-gray-400 mt-0.5 font-medium">Klientë gjithsej</p>
         </div>
         <div className="bg-white rounded-xl border border-gray-100 px-5 py-4">
-          <p className="text-2xl font-bold text-red-500">{totalIndividuals}</p>
+          <p className="text-2xl font-bold text-blue-500">{totalIndividuals}</p>
           <p className="text-xs text-gray-400 mt-0.5 font-medium">Individualë</p>
         </div>
         <div className="bg-white rounded-xl border border-gray-100 px-5 py-4">
@@ -812,7 +812,7 @@ export default function Customers() {
               type="checkbox"
               checked={paginatedCustomers.length > 0 && paginatedCustomers.every(c => selected.has(c.id))}
               onChange={toggleSelectAll}
-              className="w-5 h-5 rounded border-gray-300 text-red-500 cursor-pointer"
+              className="w-5 h-5 rounded border-gray-300 text-blue-500 cursor-pointer"
               title="Zgjidh faqen"
             />
             <span className="text-xs text-gray-600 font-medium">
@@ -825,7 +825,7 @@ export default function Customers() {
         {selected.size > 0 && (
           <button
             onClick={() => setShowDeleteConfirm({ type: 'multiple' })}
-            className="flex items-center gap-1.5 bg-red-50 border border-red-200 text-red-600 hover:bg-red-100 rounded-lg px-3 py-2 text-xs font-semibold transition-colors"
+            className="flex items-center gap-1.5 bg-blue-50 border border-blue-200 text-blue-600 hover:bg-blue-100 rounded-lg px-3 py-2 text-xs font-semibold transition-colors"
           >
             <Trash2 size={14}/>
             Fshi {selected.size}
@@ -833,7 +833,7 @@ export default function Customers() {
         )}
 
         <div className="flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-3 py-2
-                        focus-within:border-red-400 focus-within:ring-2 focus-within:ring-red-50 transition-all flex-1 min-w-[160px]">
+                        focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-50 transition-all flex-1 min-w-[160px]">
           <Search size={14} className="text-gray-400 flex-shrink-0" />
           <input
             className="bg-transparent border-none outline-none text-sm text-gray-600 w-full placeholder-gray-400"
@@ -849,7 +849,7 @@ export default function Customers() {
         </div>
 
         <select
-          className="bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 outline-none focus:border-red-400 cursor-pointer"
+          className="bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 outline-none focus:border-blue-400 cursor-pointer"
           value={typeFilt} onChange={e => setTypeFilt(e.target.value)}
         >
           <option value="all">Të gjitha llojet</option>
@@ -858,7 +858,7 @@ export default function Customers() {
         </select>
 
         <select
-          className="bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 outline-none focus:border-red-400 cursor-pointer"
+          className="bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 outline-none focus:border-blue-400 cursor-pointer"
           value={countryFilt} onChange={e => setCountryFilt(e.target.value)}
         >
           <option value="all">Të gjitha shtetet</option>
@@ -927,7 +927,7 @@ export default function Customers() {
                       onClick={() => setCurrentPage(pageNum)}
                       className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                         currentPage === pageNum
-                          ? 'bg-red-500 text-white'
+                          ? 'bg-blue-500 text-white'
                           : 'border border-gray-200 text-gray-600 hover:bg-gray-50'
                       }`}
                     >

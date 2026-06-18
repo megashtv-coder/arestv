@@ -13,14 +13,14 @@ const STATUS_COLORS = {
   trial:    'bg-amber-50 text-amber-700 border border-amber-100',
 }
 const PLAN_COLORS = {
-  pro:   'bg-red-50 text-red-600',
+  pro:   'bg-blue-50 text-blue-600',
   basic: 'bg-gray-50 text-gray-600',
   free:  'bg-slate-50 text-slate-500',
 }
 const ORG_COLORS = ['#7c3aed','#2563eb','#059669','#d97706','#dc2626','#0891b2','#be185d','#0f766e']
 const ROLE_META = {
   admin:  { label: 'Admin',  cls: 'bg-purple-50 text-purple-700 border border-purple-100' },
-  editor: { label: 'Editor', cls: 'bg-red-50 text-red-600 border border-red-100' },
+  editor: { label: 'Editor', cls: 'bg-blue-50 text-blue-600 border border-blue-100' },
   viewer: { label: 'Viewer', cls: 'bg-gray-50 text-gray-500 border border-gray-200' },
   tester: { label: 'Tester', cls: 'bg-orange-50 text-orange-700 border border-orange-100' },
 }
@@ -52,7 +52,7 @@ function OrgModal({ org, onClose }) {
     <Modal
       title={
         <span className="flex items-center gap-2">
-          <Building2 size={18} className="text-red-500" />
+          <Building2 size={18} className="text-blue-500" />
           {isEdit ? 'Edito organizatën' : 'Organizatë e re'}
         </span>
       }
@@ -64,7 +64,7 @@ function OrgModal({ org, onClose }) {
         </>
       }
     >
-      {err && <div className="text-xs text-red-500 bg-red-50 border border-red-100 rounded-lg px-3 py-2 mb-4">{err}</div>}
+      {err && <div className="text-xs text-blue-500 bg-blue-50 border border-blue-100 rounded-lg px-3 py-2 mb-4">{err}</div>}
 
       <div className="grid grid-cols-2 gap-4">
         <FormGroup label="Emri i plotë *">
@@ -104,7 +104,7 @@ function OrgModal({ org, onClose }) {
           {ORG_COLORS.map(c => (
             <button key={c} type="button"
               onClick={() => set('color', c)}
-              className={`w-7 h-7 rounded-full transition-all ${form.color === c ? 'ring-2 ring-offset-2 ring-red-500 scale-110' : 'opacity-60 hover:opacity-100'}`}
+              className={`w-7 h-7 rounded-full transition-all ${form.color === c ? 'ring-2 ring-offset-2 ring-blue-500 scale-110' : 'opacity-60 hover:opacity-100'}`}
               style={{ background: c }}
             />
           ))}
@@ -128,12 +128,12 @@ function DeleteOrgModal({ org, onClose }) {
 
   return (
     <Modal
-      title={<span className="flex items-center gap-2 text-red-500"><Trash2 size={16}/>Fshi organizatën</span>}
+      title={<span className="flex items-center gap-2 text-blue-500"><Trash2 size={16}/>Fshi organizatën</span>}
       onClose={onClose}
       footer={
         <>
           <button className="btn btn-outline" onClick={onClose}>Anulo</button>
-          <button className="btn bg-red-500 hover:bg-red-600 text-white" onClick={del}>Fshi</button>
+          <button className="btn bg-blue-500 hover:bg-blue-600 text-white" onClick={del}>Fshi</button>
         </>
       }
     >
@@ -141,7 +141,7 @@ function DeleteOrgModal({ org, onClose }) {
         A jeni i sigurt që dëshironi të fshini <span className="font-bold text-gray-800">"{org.name}"</span>?
       </p>
       {orgUsers.length > 0 && (
-        <p className="text-xs text-red-500 mt-2 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
+        <p className="text-xs text-blue-500 mt-2 bg-blue-50 border border-blue-100 rounded-lg px-3 py-2">
           Kjo do të fshijë edhe <strong>{orgUsers.length} përdorues</strong> të kësaj organizate.
         </p>
       )}
@@ -182,7 +182,7 @@ function AddUserToOrgModal({ org, onClose }) {
     <Modal
       title={
         <span className="flex items-center gap-2">
-          <UserPlus size={18} className="text-red-500"/>
+          <UserPlus size={18} className="text-blue-500"/>
           Shto përdorues — {org.shortName}
         </span>
       }
@@ -194,7 +194,7 @@ function AddUserToOrgModal({ org, onClose }) {
         </>
       }
     >
-      {err && <div className="text-xs text-red-500 bg-red-50 border border-red-100 rounded-lg px-3 py-2 mb-4">{err}</div>}
+      {err && <div className="text-xs text-blue-500 bg-blue-50 border border-blue-100 rounded-lg px-3 py-2 mb-4">{err}</div>}
       <FormGroup label="Emri i plotë *">
         <input className="form-control" value={form.name} onChange={e => set('name', e.target.value)} autoFocus />
       </FormGroup>
@@ -284,7 +284,7 @@ function OrgDetailPanel({ org, onClose }) {
                   </span>
                   {!u.isSuperAdmin && (
                     <button
-                      className="icon-btn text-red-400 hover:bg-red-50 flex-shrink-0 p-1"
+                      className="icon-btn text-blue-400 hover:bg-blue-50 flex-shrink-0 p-1"
                       title="Hiq nga org"
                       onClick={() => removeUser(u.id)}
                     >
@@ -320,7 +320,7 @@ export default function OrgManager() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
         <div className="min-w-0 flex-1">
           <h2 className="text-lg sm:text-xl font-bold text-gray-800 dark:text-white flex items-center gap-2 truncate">
-            <Building2 size={20} className="text-red-500 flex-shrink-0" />
+            <Building2 size={20} className="text-blue-500 flex-shrink-0" />
             <span className="truncate">Menaxhimi i Organizatave</span>
           </h2>
           <p className="text-xs sm:text-sm text-gray-400 mt-0.5 truncate">{organizations.length} organizata · {totalUsers} përdorues gjithsej</p>
@@ -348,7 +348,7 @@ export default function OrgManager() {
           <p className="text-xs text-gray-400 mt-0.5">Aktive</p>
         </div>
         <div className="bg-white dark:bg-gray-800 rounded-lg sm:rounded-xl border border-gray-100 dark:border-gray-700 px-3 sm:px-5 py-3 sm:py-4 col-span-2 sm:col-span-1">
-          <p className="text-lg sm:text-2xl font-bold text-red-500">{totalUsers}</p>
+          <p className="text-lg sm:text-2xl font-bold text-blue-500">{totalUsers}</p>
           <p className="text-xs text-gray-400 mt-0.5">Përdorues</p>
         </div>
       </div>
@@ -430,7 +430,7 @@ export default function OrgManager() {
                 {/* Actions footer - responsive */}
                 <div className="border-t border-gray-50 dark:border-gray-700 px-3 sm:px-4 py-2 sm:py-3 flex items-center justify-between gap-2">
                   <button
-                    className="flex items-center gap-1 text-xs sm:text-sm text-red-500 hover:text-red-600 font-semibold transition-colors min-w-0"
+                    className="flex items-center gap-1 text-xs sm:text-sm text-blue-500 hover:text-blue-600 font-semibold transition-colors min-w-0"
                     onClick={() => setDetailOrg(org)}
                   >
                     <Users size={12} className="flex-shrink-0"/>
@@ -440,14 +440,14 @@ export default function OrgManager() {
                   </button>
                   <div className="flex gap-0.5 sm:gap-1 flex-shrink-0">
                     <button
-                      className="icon-btn text-red-400 hover:bg-red-50 hover:text-red-500 p-1.5 sm:p-2"
+                      className="icon-btn text-blue-400 hover:bg-blue-50 hover:text-blue-500 p-1.5 sm:p-2"
                       title="Edito"
                       onClick={() => openEdit(org)}
                     >
                       <Edit3 size={13}/>
                     </button>
                     <button
-                      className="icon-btn text-red-400 hover:bg-red-50 hover:text-red-500 p-1.5 sm:p-2"
+                      className="icon-btn text-blue-400 hover:bg-blue-50 hover:text-blue-500 p-1.5 sm:p-2"
                       title="Fshi"
                       onClick={() => openDelete(org)}
                     >

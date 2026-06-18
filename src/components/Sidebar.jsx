@@ -51,7 +51,7 @@ export default function Sidebar() {
     { id: 'dashboard',     icon: LayoutDashboard, label: 'Dashboard' },
     { id: 'invoices',      icon: FileText,        label: 'Faturat',    badge: invoices.filter(i => i.status === 'pending' || i.status === 'overdue').length || null },
     { id: 'subscriptions', icon: Bell,            label: 'Abonimet',   badge: subNotifyCount || null, badgeColor: 'bg-orange-500' },
-    { id: 'tasks',         icon: CheckSquare,     label: 'Detyrat',    badge: tasksDueBadge || null, badgeColor: 'bg-red-500' },
+    { id: 'tasks',         icon: CheckSquare,     label: 'Detyrat',    badge: tasksDueBadge || null, badgeColor: 'bg-blue-500' },
     { id: 'customers',     icon: UsersIcon,       label: 'Klientët' },
     { id: 'items',         icon: Package,         label: 'Produktet' },
     { id: 'payments',      icon: CreditCard,      label: 'Pagesat' },
@@ -84,8 +84,8 @@ export default function Sidebar() {
       `}>
         {/* Logo + Collapse Button */}
         <div className={`flex items-center border-b border-gray-100 dark:border-gray-800 h-12 sm:h-14 flex-shrink-0 ${sidebarCollapsed ? 'justify-center px-2' : 'gap-2 sm:gap-3 px-3 sm:px-4'}`}>
-          <div className="w-7 h-7 sm:w-8 sm:h-8 bg-gradient-to-br from-red-500 to-red-700 rounded-lg flex items-center justify-center text-white flex-shrink-0 shadow-sm">
-            <TrendingUp size={14} strokeWidth={2.5} />
+          <div className="w-7 h-7 sm:w-8 sm:h-8 bg-gradient-to-br from-blue-500 to-blue-700 rounded-lg flex items-center justify-center text-white flex-shrink-0 shadow-sm">
+            <span className="text-[10px] font-black tracking-tight">ATV</span>
           </div>
           {!sidebarCollapsed && (
             <div className="flex-1 min-w-0">
@@ -102,7 +102,7 @@ export default function Sidebar() {
           )}
           {/* Collapse toggle — visible only on desktop */}
           <button
-            className="hidden lg:flex items-center justify-center p-1 text-gray-400 hover:text-red-500 transition-colors flex-shrink-0"
+            className="hidden lg:flex items-center justify-center p-1 text-gray-400 hover:text-blue-500 transition-colors flex-shrink-0"
             onClick={() => setSidebarCollapsed(v => !v)}
             title={sidebarCollapsed ? 'Zgjero menunë' : 'Minimizo menunë'}
           >
@@ -128,12 +128,12 @@ export default function Sidebar() {
               <Icon size={18} className="flex-shrink-0" />
               {!sidebarCollapsed && <span className="flex-1 truncate">{label}</span>}
               {!sidebarCollapsed && badge ? (
-                <span className={`${badgeColor || 'bg-red-500'} text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[20px] text-center`}>
+                <span className={`${badgeColor || 'bg-blue-500'} text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[20px] text-center`}>
                   {badge}
                 </span>
               ) : null}
               {sidebarCollapsed && badge ? (
-                <span className={`absolute top-1 right-1 w-2 h-2 rounded-full ${badgeColor || 'bg-red-500'}`} />
+                <span className={`absolute top-1 right-1 w-2 h-2 rounded-full ${badgeColor || 'bg-blue-500'}`} />
               ) : null}
             </div>
           ))}
@@ -191,7 +191,7 @@ export default function Sidebar() {
         <div className={`px-2 py-3 border-t border-gray-100 dark:border-gray-800 mt-auto`}>
           <button
             type="button"
-            className={`sidebar-item w-full text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 cursor-pointer transition-all ${sidebarCollapsed ? 'justify-center px-2' : ''}`}
+            className={`sidebar-item w-full text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 cursor-pointer transition-all ${sidebarCollapsed ? 'justify-center px-2' : ''}`}
             onClick={() => {
               console.log('Logging out...')
               logout()

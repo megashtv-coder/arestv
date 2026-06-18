@@ -21,7 +21,7 @@ export function StatusBadge({ status }) {
 export function Toast({ msg, type, onClose }) {
   const isSuccess = type === 'success'
   return (
-    <div className={`fixed bottom-6 right-6 z-[9999] flex items-center gap-3 px-4 py-3 rounded-xl shadow-xl text-white text-sm font-semibold toast-enter ${isSuccess ? 'bg-emerald-600' : 'bg-red-500'}`}>
+    <div className={`fixed bottom-6 right-6 z-[9999] flex items-center gap-3 px-4 py-3 rounded-xl shadow-xl text-white text-sm font-semibold toast-enter ${isSuccess ? 'bg-emerald-600' : 'bg-blue-500'}`}>
       {isSuccess ? <CheckCircle size={16} /> : <AlertCircle size={16} />}
       {msg}
       <button onClick={onClose} className="ml-2 opacity-70 hover:opacity-100"><X size={14} /></button>
@@ -67,7 +67,7 @@ export function StatCard({ icon: Icon, iconBg, iconColor, val, label, badge, bad
           <Icon size={20} style={{ color: iconColor }} />
         </div>
         {badge && (
-          <span className={`flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-full ${badgeUp ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-500'}`}>
+          <span className={`flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-full ${badgeUp ? 'bg-emerald-50 text-emerald-600' : 'bg-blue-50 text-blue-500'}`}>
             {badgeUp ? <TrendingUp size={10} /> : <TrendingDown size={10} />}
             {badge}
           </span>
@@ -113,7 +113,7 @@ export function Pagination({ page, total, perPage, onChange }) {
 
   const btn = active =>
     `min-w-[2rem] h-8 px-2 flex items-center justify-center rounded-lg text-sm font-medium transition-all ${
-      active ? 'bg-red-500 text-white' : 'text-gray-500 hover:bg-gray-100'
+      active ? 'bg-blue-500 text-white' : 'text-gray-500 hover:bg-gray-100'
     }`
 
   return (
@@ -138,7 +138,7 @@ export function Pagination({ page, total, perPage, onChange }) {
 
 export function Toggle({ on, onToggle }) {
   return (
-    <div className={`toggle ${on ? 'bg-red-500' : 'bg-gray-200'}`} onClick={onToggle}>
+    <div className={`toggle ${on ? 'bg-blue-500' : 'bg-gray-200'}`} onClick={onToggle}>
       <div className={`toggle-knob ${on ? 'translate-x-[18px]' : ''}`} />
     </div>
   )

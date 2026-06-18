@@ -32,8 +32,8 @@ function SlideSelect({ value, onChange, options }) {
             onClick={() => onChange(value === opt ? '' : opt)}
             className={`flex-shrink-0 px-6 py-2 rounded-full text-sm font-semibold border transition-all whitespace-nowrap min-w-[calc(50%-8px)] ${
               value === opt
-                ? 'bg-red-500 text-white border-red-500 shadow-sm'
-                : 'bg-white text-gray-600 border-gray-200 hover:border-red-300 hover:text-red-500'
+                ? 'bg-blue-500 text-white border-blue-500 shadow-sm'
+                : 'bg-white text-gray-600 border-gray-200 hover:border-blue-300 hover:text-blue-500'
             }`}
           >
             {opt}
@@ -68,8 +68,8 @@ function MethodPills({ value, onChange, modes }) {
           onClick={() => onChange(m)}
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${
             value === m
-              ? 'bg-red-500 text-white border-red-500 shadow-sm'
-              : 'bg-white text-gray-600 border-gray-200 hover:border-red-300 hover:text-red-500'
+              ? 'bg-blue-500 text-white border-blue-500 shadow-sm'
+              : 'bg-white text-gray-600 border-gray-200 hover:border-blue-300 hover:text-blue-500'
           }`}
         >
           <span>{icons[m] || '💳'}</span> {m}
@@ -247,7 +247,7 @@ export default function PaymentModal({ invoice, payment: editPayment, onClose, i
       title={
         <span className="flex items-center gap-2">
           {isEdit
-            ? <Pencil size={18} className="text-red-500" />
+            ? <Pencil size={18} className="text-blue-500" />
             : <CreditCard size={18} className="text-emerald-500" />}
           {isEdit ? 'Ndrysho Pagesën' : 'Regjistro Pagesën'}
         </span>
@@ -259,7 +259,7 @@ export default function PaymentModal({ invoice, payment: editPayment, onClose, i
           <button
             className={`btn gap-2 text-white ${
               isEdit
-                ? 'bg-red-500 hover:bg-red-600'
+                ? 'bg-blue-500 hover:bg-blue-600'
                 : 'bg-emerald-600 hover:bg-emerald-700'
             }`}
             onClick={save}
@@ -272,28 +272,28 @@ export default function PaymentModal({ invoice, payment: editPayment, onClose, i
       }
     >
       {err && (
-        <div className="flex items-center gap-2 text-xs text-red-500 bg-red-50 border border-red-100 rounded-lg px-3 py-2 mb-4">
+        <div className="flex items-center gap-2 text-xs text-blue-500 bg-blue-50 border border-blue-100 rounded-lg px-3 py-2 mb-4">
           <AlertCircle size={14} /> {err}
         </div>
       )}
 
       {/* Edit-mode info banner */}
       {isEdit && (
-        <div className="flex items-center gap-2 text-xs text-red-500 bg-red-50 border border-red-100 rounded-lg px-3 py-2 mb-4">
+        <div className="flex items-center gap-2 text-xs text-blue-500 bg-blue-50 border border-blue-100 rounded-lg px-3 py-2 mb-4">
           ✏️ Duke ndryshuar pagesën ekzistuese. Shënim: ndryshimi i fee nuk përditëson automatikisht shpenzimet e krijuara.
         </div>
       )}
 
       {/* Fatura */}
       {displayInvoice ? (
-        <div className="flex items-center justify-between bg-red-50 rounded-xl px-4 py-3 mb-4">
+        <div className="flex items-center justify-between bg-blue-50 rounded-xl px-4 py-3 mb-4">
           <div>
-            <p className="text-xs text-red-400 font-semibold uppercase tracking-wide">Fatura</p>
-            <p className="font-bold text-red-600 text-sm mt-0.5">
+            <p className="text-xs text-blue-400 font-semibold uppercase tracking-wide">Fatura</p>
+            <p className="font-bold text-blue-600 text-sm mt-0.5">
               {displayInvoice.id} — {displayInvoice.customer}
             </p>
           </div>
-          <span className="font-bold text-red-500 text-lg">{fmt(displayInvoice.amount)}</span>
+          <span className="font-bold text-blue-500 text-lg">{fmt(displayInvoice.amount)}</span>
         </div>
       ) : (
         <FormGroup label="Zgjidh faturën *">
@@ -439,7 +439,7 @@ export default function PaymentModal({ invoice, payment: editPayment, onClose, i
             options={depositedToOptions}
           />
           {form.depositedTo && (
-            <p className="text-xs text-red-500 mt-1.5 font-medium">✓ {form.depositedTo}</p>
+            <p className="text-xs text-blue-500 mt-1.5 font-medium">✓ {form.depositedTo}</p>
           )}
         </FormGroup>
       )}

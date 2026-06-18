@@ -19,7 +19,7 @@
     @apply bg-gray-50 text-gray-700;
   }
   .sidebar-item.active {
-    @apply bg-red-50 text-red-500 font-semibold;
+    @apply bg-blue-50 text-blue-500 font-semibold;
   }
   .card {
     @apply bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden;
@@ -28,13 +28,13 @@
     @apply inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-150 cursor-pointer select-none whitespace-nowrap;
   }
   .btn-primary {
-    @apply bg-red-500 text-white hover:bg-red-600 active:scale-95 shadow-sm hover:shadow-md;
+    @apply bg-blue-500 text-white hover:bg-blue-600 active:scale-95 shadow-sm hover:shadow-md;
   }
   .btn-outline {
     @apply bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 hover:border-gray-300 active:scale-95;
   }
   .btn-danger {
-    @apply bg-red-50 text-red-600 border border-red-100 hover:bg-red-100 active:scale-95;
+    @apply bg-blue-50 text-blue-600 border border-blue-100 hover:bg-blue-100 active:scale-95;
   }
   .btn-sm {
     @apply px-3 py-1.5 text-xs;
@@ -46,14 +46,14 @@
     @apply w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-800 outline-none transition-all duration-150 bg-white;
   }
   .form-control:focus {
-    @apply border-red-400 ring-2 ring-red-50;
+    @apply border-blue-400 ring-2 ring-blue-50;
   }
   .badge {
     @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold;
   }
   .badge-paid { @apply bg-emerald-50 text-emerald-600; }
   .badge-pending { @apply bg-amber-50 text-amber-600; }
-  .badge-overdue { @apply bg-red-50 text-red-600; }
+  .badge-overdue { @apply bg-blue-50 text-blue-600; }
   .badge-draft { @apply bg-gray-100 text-gray-500; }
   .stat-card {
     @apply bg-white rounded-xl border border-gray-100 p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md cursor-default;
@@ -113,7 +113,7 @@
 .dark .stat-card { @apply bg-gray-800 border-gray-700; }
 .dark .sidebar-item { @apply text-gray-400; }
 .dark .sidebar-item:hover { @apply bg-gray-700 text-gray-200; }
-.dark .sidebar-item.active { @apply bg-red-800/50 text-red-400; }
+.dark .sidebar-item.active { @apply bg-blue-800/50 text-blue-400; }
 .dark .table-td { @apply border-gray-700 text-gray-300; }
 .dark .table-th { @apply text-gray-500; }
 .dark .modal { @apply bg-gray-800; }
@@ -153,7 +153,7 @@
 
 /* Floating Action Button - Mobile only */
 .fab {
-  @apply fixed bottom-6 right-6 w-14 h-14 rounded-full bg-red-500 text-white flex items-center justify-center shadow-lg hover:bg-red-600 hover:shadow-xl transition-all duration-200 cursor-pointer z-40 font-bold text-2xl;
+  @apply fixed bottom-6 right-6 w-14 h-14 rounded-full bg-blue-500 text-white flex items-center justify-center shadow-lg hover:bg-blue-600 hover:shadow-xl transition-all duration-200 cursor-pointer z-40 font-bold text-2xl;
 }
 
 .fab:hover {

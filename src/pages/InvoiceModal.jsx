@@ -118,13 +118,13 @@ function Combobox({
             {filtered.map((o, i) => (
               <div
                 key={getKey ? getKey(o) : i}
-                className={`px-3 py-2.5 cursor-pointer hover:bg-red-50 transition-colors border-b border-gray-50 last:border-0 ${
-                  getLabel(o) === value ? 'bg-red-50' : ''
+                className={`px-3 py-2.5 cursor-pointer hover:bg-blue-50 transition-colors border-b border-gray-50 last:border-0 ${
+                  getLabel(o) === value ? 'bg-blue-50' : ''
                 }`}
                 onClick={() => { onChange(o); setOpen(false); setSearch('') }}
               >
                 {renderOption ? renderOption(o) : (
-                  <span className={`text-sm ${getLabel(o) === value ? 'text-red-600 font-semibold' : 'text-gray-700'}`}>
+                  <span className={`text-sm ${getLabel(o) === value ? 'text-blue-600 font-semibold' : 'text-gray-700'}`}>
                     {getLabel(o)}
                   </span>
                 )}
@@ -194,7 +194,7 @@ function QuickAddCustomer({ initialName, onSave, onCancel }) {
       </div>
 
       {err && (
-        <div className="text-xs text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2 mb-3">{err}</div>
+        <div className="text-xs text-blue-600 bg-blue-50 border border-blue-100 rounded-lg px-3 py-2 mb-3">{err}</div>
       )}
 
       {/* Lloji */}
@@ -203,7 +203,7 @@ function QuickAddCustomer({ initialName, onSave, onCancel }) {
         <div className="flex gap-2">
           <button type="button" onClick={() => set('type', 'individual')}
             className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-bold border-2 transition-all ${
-              !isReseller ? 'border-red-500 bg-red-500 text-white' : 'border-gray-200 bg-white text-gray-500 hover:border-red-300'
+              !isReseller ? 'border-blue-500 bg-blue-500 text-white' : 'border-gray-200 bg-white text-gray-500 hover:border-blue-300'
             }`}>
             <User size={12}/> Individual
           </button>
@@ -349,12 +349,12 @@ function ItemRow({ item, products, onUpdate, onRemove, canRemove }) {
           renderOption={p => (
             <div className="flex items-center justify-between gap-2">
               <span className="text-sm text-gray-800 truncate">{p.name}</span>
-              <span className="text-xs font-bold text-red-500 flex-shrink-0">€{p.salePrice}</span>
+              <span className="text-xs font-bold text-blue-500 flex-shrink-0">€{p.salePrice}</span>
             </div>
           )}
         />
         <input
-          className="w-full text-base sm:text-xs text-gray-500 italic bg-transparent outline-none border-b border-dashed border-gray-200 focus:border-red-300 px-1 py-0.5 placeholder-gray-300 transition-colors"
+          className="w-full text-base sm:text-xs text-gray-500 italic bg-transparent outline-none border-b border-dashed border-gray-200 focus:border-blue-300 px-1 py-0.5 placeholder-gray-300 transition-colors"
           placeholder="Përshkrim (opsional)..."
           value={item.note || ''}
           onChange={e => onUpdate({ note: e.target.value })}
@@ -387,7 +387,7 @@ function ItemRow({ item, products, onUpdate, onRemove, canRemove }) {
       {canRemove ? (
         <button
           onClick={onRemove}
-          className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-red-50 text-gray-300 hover:text-red-400 transition-colors mt-0.5"
+          className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-blue-50 text-gray-300 hover:text-blue-400 transition-colors mt-0.5"
         >
           <X size={14} />
         </button>
@@ -601,7 +601,7 @@ export default function InvoiceModal({ initialData, isFormPage, onClose }) {
   const formContent = (
     <>
       {error && (
-        <div className="flex items-center gap-2 bg-red-50 border border-red-100 text-red-600 text-xs rounded-lg px-3 py-2.5 mb-4">
+        <div className="flex items-center gap-2 bg-blue-50 border border-blue-100 text-blue-600 text-xs rounded-lg px-3 py-2.5 mb-4">
           {error}
         </div>
       )}
@@ -734,7 +734,7 @@ export default function InvoiceModal({ initialData, isFormPage, onClose }) {
         </div>
 
         <button
-          className="mt-2 flex items-center gap-1.5 text-[13px] font-semibold text-red-500 hover:text-red-700 px-1 py-1 transition-colors"
+          className="mt-2 flex items-center gap-1.5 text-[13px] font-semibold text-blue-500 hover:text-blue-700 px-1 py-1 transition-colors"
           onClick={addItem}
         >
           <Plus size={13} /> Shto artikull tjetër
@@ -751,14 +751,14 @@ export default function InvoiceModal({ initialData, isFormPage, onClose }) {
           <div className="flex items-center gap-2 text-gray-500 font-medium">
             <span>Zbritja</span>
             <input
-              className="w-16 border border-gray-200 rounded-lg px-2 py-1.5 text-base sm:text-xs text-right outline-none focus:border-red-400 bg-white font-semibold"
+              className="w-16 border border-gray-200 rounded-lg px-2 py-1.5 text-base sm:text-xs text-right outline-none focus:border-blue-400 bg-white font-semibold"
               type="number" min="0" max={discount.type === '%' ? 100 : undefined}
               value={discount.value}
               onChange={e => setDiscount(p => ({ ...p, value: e.target.value }))}
               placeholder="0"
             />
             <select
-              className="border border-gray-200 rounded-lg px-2 py-1.5 text-base sm:text-xs outline-none focus:border-red-400 bg-white text-gray-700 font-semibold"
+              className="border border-gray-200 rounded-lg px-2 py-1.5 text-base sm:text-xs outline-none focus:border-blue-400 bg-white text-gray-700 font-semibold"
               value={discount.type}
               onChange={e => setDiscount(p => ({ ...p, type: e.target.value }))}
             >
@@ -766,13 +766,13 @@ export default function InvoiceModal({ initialData, isFormPage, onClose }) {
               <option value="fixed">€</option>
             </select>
           </div>
-          <span className={`font-semibold text-base sm:text-sm ${discAmount > 0 ? 'text-red-500' : 'text-gray-300'}`}>
+          <span className={`font-semibold text-base sm:text-sm ${discAmount > 0 ? 'text-blue-500' : 'text-gray-300'}`}>
             -{discAmount > 0 ? `€${fmtN(discAmount)}` : '€0'}
           </span>
         </div>
         <div className="flex items-center justify-between pt-2 border-t border-gray-200">
           <span className="font-bold text-gray-800 text-base sm:text-sm">Total (€)</span>
-          <span className="text-2xl sm:text-xl font-bold text-red-600">€{fmtN(total)}</span>
+          <span className="text-2xl sm:text-xl font-bold text-blue-600">€{fmtN(total)}</span>
         </div>
       </div>
 
@@ -853,7 +853,7 @@ export default function InvoiceModal({ initialData, isFormPage, onClose }) {
     <Modal
       title={
         <span className="flex items-center gap-2">
-          {isEdit ? <Pencil size={18} className="text-red-500"/> : <FilePlus size={18} className="text-red-500"/>}
+          {isEdit ? <Pencil size={18} className="text-blue-500"/> : <FilePlus size={18} className="text-blue-500"/>}
           {isEdit ? 'Ndrysho Faturën' : 'Faturë e re'}
         </span>
       }

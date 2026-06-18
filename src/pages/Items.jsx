@@ -52,7 +52,7 @@ function PinModal({ onSuccess, onClose }) {
         />
       </div>
       {err && (
-        <p className="text-xs text-red-500 text-center mt-3 font-semibold">PIN i gabuar. Provo përsëri.</p>
+        <p className="text-xs text-blue-500 text-center mt-3 font-semibold">PIN i gabuar. Provo përsëri.</p>
       )}
     </Modal>
   )
@@ -102,7 +102,7 @@ function ItemModal({ item, onClose, isFormPage }) {
     <Modal
       title={
         <span className="flex items-center gap-2">
-          <Package size={18} className="text-red-500" />
+          <Package size={18} className="text-blue-500" />
           {isEdit ? 'Edito produktin' : 'Produkt / Shërbim i ri'}
         </span>
       }
@@ -117,7 +117,7 @@ function ItemModal({ item, onClose, isFormPage }) {
       }
     >
       {err && (
-        <div className="text-xs text-red-500 bg-red-50 border border-red-100 rounded-lg px-3 py-2 mb-4">
+        <div className="text-xs text-blue-500 bg-blue-50 border border-blue-100 rounded-lg px-3 py-2 mb-4">
           {err}
         </div>
       )}
@@ -224,12 +224,12 @@ function DeleteConfirm({ item, onClose }) {
   }
   return (
     <Modal
-      title={<span className="flex items-center gap-2 text-red-500"><Trash2 size={16}/>Fshi produktin</span>}
+      title={<span className="flex items-center gap-2 text-blue-500"><Trash2 size={16}/>Fshi produktin</span>}
       onClose={onClose}
       footer={
         <>
           <button className="btn btn-outline" onClick={onClose}>Anulo</button>
-          <button className="btn bg-red-500 hover:bg-red-600 text-white" onClick={del}>Fshi</button>
+          <button className="btn bg-blue-500 hover:bg-blue-600 text-white" onClick={del}>Fshi</button>
         </>
       }
     >
@@ -298,7 +298,7 @@ export default function Items() {
 
   const SortIcon = ({ k }) =>
     sortKey === k
-      ? sortDir === 'asc' ? <ChevronUp size={13} className="text-red-500"/> : <ChevronDown size={13} className="text-red-500"/>
+      ? sortDir === 'asc' ? <ChevronUp size={13} className="text-blue-500"/> : <ChevronDown size={13} className="text-blue-500"/>
       : <ChevronUp size={13} className="text-gray-300"/>
 
   const openAdd    = ()    => navigate('items:create')
@@ -363,7 +363,7 @@ export default function Items() {
           <p className="text-xs text-gray-400 mt-0.5 font-medium">Artikuj gjithsej</p>
         </div>
         <div className="bg-white rounded-xl border border-gray-100 px-5 py-4">
-          <p className="text-2xl font-bold text-red-500">{fmt(avgSale.toFixed(2))}</p>
+          <p className="text-2xl font-bold text-blue-500">{fmt(avgSale.toFixed(2))}</p>
           <p className="text-xs text-gray-400 mt-0.5 font-medium">Çmimi mesatar shitje</p>
         </div>
         <div
@@ -391,7 +391,7 @@ export default function Items() {
       {/* Kërkim */}
       <div className="flex items-center gap-3 mb-4">
         <div className="flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-3 py-2
-                        focus-within:border-red-400 focus-within:ring-2 focus-within:ring-red-50 transition-all flex-1 max-w-sm">
+                        focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-50 transition-all flex-1 max-w-sm">
           <Search size={14} className="text-gray-400 flex-shrink-0" />
           <input
             className="bg-transparent border-none outline-none text-sm text-gray-600 w-full placeholder-gray-400"
@@ -488,13 +488,13 @@ export default function Items() {
                 return (
                   <tr
                     key={item.id}
-                    className="hover:bg-red-50/30 transition-colors group"
+                    className="hover:bg-blue-50/30 transition-colors group"
                   >
                     {/* Emri */}
                     <td className="px-5 py-3.5">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-red-50 flex items-center justify-center flex-shrink-0">
-                          <Package size={15} className="text-red-500" />
+                        <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
+                          <Package size={15} className="text-blue-500" />
                         </div>
                         <div>
                           <p className="font-semibold text-gray-800 text-sm">{item.name}</p>
@@ -525,7 +525,7 @@ export default function Items() {
                           ? <span className={`text-xs font-bold px-2 py-1 rounded-full ${
                               Number(margin) >= 30 ? 'bg-emerald-50 text-emerald-600'
                               : Number(margin) >= 10 ? 'bg-yellow-50 text-yellow-600'
-                              : 'bg-red-50 text-red-500'
+                              : 'bg-blue-50 text-blue-500'
                             }`}>{margin}%</span>
                           : <span className="text-gray-300 text-xs">—</span>
                         : <span onClick={() => setShowPin(true)}>{masked}</span>
@@ -549,14 +549,14 @@ export default function Items() {
                     <td className="px-5 py-3.5">
                       <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button
-                          className="icon-btn text-red-500 hover:bg-red-50"
+                          className="icon-btn text-blue-500 hover:bg-blue-50"
                           title="Edito"
                           onClick={() => openEdit(item)}
                         >
                           <Pencil size={14} />
                         </button>
                         <button
-                          className="icon-btn text-red-400 hover:bg-red-50"
+                          className="icon-btn text-blue-400 hover:bg-blue-50"
                           title="Fshi"
                           onClick={() => openDelete(item)}
                         >

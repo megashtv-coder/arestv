@@ -15,7 +15,7 @@ const ImportExcelModal = lazy(() => import('../components/ImportExcelModal'))
 
 /* ── method badge colour ── */
 const METHOD_COLOR = {
-  'PayPal':          'bg-red-50 text-red-500',
+  'PayPal':          'bg-blue-50 text-blue-500',
   'Transfer Bankar': 'bg-slate-50 text-slate-600',
   'Kesh':            'bg-green-50 text-green-700',
   'Western Union':   'bg-yellow-50 text-yellow-700',
@@ -261,7 +261,7 @@ export default function Payments() {
 
           {/* New Payment - Hidden on mobile (see FAB below) */}
           <button
-            className="hidden sm:flex w-9 h-9 items-center justify-center rounded-lg bg-red-500 text-white hover:bg-red-600 transition-colors font-bold text-lg"
+            className="hidden sm:flex w-9 h-9 items-center justify-center rounded-lg bg-blue-500 text-white hover:bg-blue-600 transition-colors font-bold text-lg"
             onClick={openNewPayment}
             title="Regjistro Pagesë"
           >
@@ -283,7 +283,7 @@ export default function Payments() {
       {/* Filtrat */}
       <div className="flex flex-wrap items-center gap-2 mb-4">
         <div className="flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-3 py-2
-                        focus-within:border-red-400 focus-within:ring-2 focus-within:ring-red-50 transition-all flex-1 min-w-[160px]">
+                        focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-50 transition-all flex-1 min-w-[160px]">
           <Search size={14} className="text-gray-400 flex-shrink-0" />
           <input
             className="bg-transparent border-none outline-none text-sm text-gray-600 w-full placeholder-gray-400"
@@ -299,7 +299,7 @@ export default function Payments() {
         </div>
 
         <select
-          className="bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 outline-none focus:border-red-400 cursor-pointer"
+          className="bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 outline-none focus:border-blue-400 cursor-pointer"
           value={monthFilt}
           onChange={e => { setMonthFilt(e.target.value); setPg(1) }}
         >
@@ -308,7 +308,7 @@ export default function Payments() {
         </select>
 
         <select
-          className="bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 outline-none focus:border-red-400 cursor-pointer"
+          className="bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 outline-none focus:border-blue-400 cursor-pointer"
           value={partnerFilt}
           onChange={e => { setPartner(e.target.value); setPg(1) }}
         >
@@ -318,7 +318,7 @@ export default function Payments() {
         </select>
 
         <select
-          className="bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 outline-none focus:border-red-400 cursor-pointer"
+          className="bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 outline-none focus:border-blue-400 cursor-pointer"
           value={methodFilt}
           onChange={e => { setMethod(e.target.value); setPg(1) }}
         >
@@ -327,7 +327,7 @@ export default function Payments() {
         </select>
 
         <select
-          className="hidden sm:block bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 outline-none focus:border-red-400 cursor-pointer"
+          className="hidden sm:block bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 outline-none focus:border-blue-400 cursor-pointer"
           value={perPage}
           onChange={e => { setPerPage(Number(e.target.value)); setPg(1) }}
         >
@@ -351,9 +351,9 @@ export default function Payments() {
               <div className="flex justify-between items-start gap-2">
                 {/* Col 1: Customer + Payment Date + Invoice */}
                 <div className="flex-1 min-w-0 cursor-pointer" onClick={() => openEditPayment(p)}>
-                  <p className="font-bold text-gray-800 text-sm truncate hover:text-red-500 transition-colors">{p.customer}</p>
+                  <p className="font-bold text-gray-800 text-sm truncate hover:text-blue-500 transition-colors">{p.customer}</p>
                   <p className="text-xs text-gray-500 mt-0.5">{formatDate(p.date)}</p>
-                  <p className="text-xs font-semibold text-red-500">{p.invoiceId}</p>
+                  <p className="text-xs font-semibold text-blue-500">{p.invoiceId}</p>
                 </div>
 
                 {/* Col 2: Amount + Fee + Partner */}
@@ -362,7 +362,7 @@ export default function Payments() {
                   <p className="text-xs text-amber-500 mt-0.5">{p.fee > 0 ? `- ${fmt(p.fee)}` : '—'}</p>
                   <span className={`inline-block px-2 py-0.5 rounded text-xs font-bold mt-0.5 ${
                     p.depositedTo === 'Enndy'
-                      ? 'bg-red-50 text-red-500'
+                      ? 'bg-blue-50 text-blue-500'
                       : 'bg-purple-50 text-purple-600'
                   }`}>
                     {p.depositedTo}
@@ -372,14 +372,14 @@ export default function Payments() {
                 {/* Col 3: Actions - Larger Button */}
                 <div className="relative flex-shrink-0 flex gap-1">
                   <button
-                    className="w-9 h-9 flex items-center justify-center rounded-lg bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-all"
+                    className="w-9 h-9 flex items-center justify-center rounded-lg bg-blue-50 text-blue-500 hover:bg-blue-500 hover:text-white transition-all"
                     title="Ndrysho"
                     onClick={() => openEditPayment(p)}
                   >
                     <Pencil size={16}/>
                   </button>
                   <button
-                    className="w-9 h-9 flex items-center justify-center rounded-lg bg-red-50 text-red-600 hover:bg-red-600 hover:text-white transition-all"
+                    className="w-9 h-9 flex items-center justify-center rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition-all"
                     title="Fshij"
                     onClick={() => setDeletingId(p.id)}
                   >
@@ -392,7 +392,7 @@ export default function Payments() {
               {deletingId === p.id && (
                 <div className="mt-3 pt-3 border-t border-gray-200 flex gap-2 justify-end">
                   <button
-                    className="px-3 py-1 text-xs bg-red-500 hover:bg-red-600 text-white rounded font-semibold"
+                    className="px-3 py-1 text-xs bg-blue-500 hover:bg-blue-600 text-white rounded font-semibold"
                     onClick={() => deletePayment(p)}
                   >
                     Po, fshi
@@ -442,7 +442,7 @@ export default function Payments() {
                   { key: 'invoiceId',   label: 'Fatura',  cls: '' },
                   { key: 'customer',    label: 'Klienti', cls: '' },
                 ].map(col => (
-                  <th key={col.key} className={`table-th cursor-pointer select-none hover:text-red-500 ${col.cls}`}
+                  <th key={col.key} className={`table-th cursor-pointer select-none hover:text-blue-500 ${col.cls}`}
                       onClick={() => toggleSort(col.key)}>
                     <span className="flex items-center gap-1">
                       {col.label}
@@ -450,7 +450,7 @@ export default function Payments() {
                     </span>
                   </th>
                 ))}
-                <th className="table-th text-right cursor-pointer select-none hover:text-red-500"
+                <th className="table-th text-right cursor-pointer select-none hover:text-blue-500"
                     onClick={() => toggleSort('amount')}>
                   <span className="flex items-center justify-end gap-1">
                     Shuma
@@ -458,14 +458,14 @@ export default function Payments() {
                   </span>
                 </th>
                 <th className="table-th text-right hidden md:table-cell">Fee</th>
-                <th className="table-th text-right cursor-pointer select-none hover:text-red-500"
+                <th className="table-th text-right cursor-pointer select-none hover:text-blue-500"
                     onClick={() => toggleSort('net')}>
                   <span className="flex items-center justify-end gap-1">
                     Neto
                     <span className="text-[10px]">{sortField === 'net' ? (sortDir === 'asc' ? '↑' : '↓') : <span className="text-gray-300">↕</span>}</span>
                   </span>
                 </th>
-                <th className="table-th hidden lg:table-cell cursor-pointer select-none hover:text-red-500"
+                <th className="table-th hidden lg:table-cell cursor-pointer select-none hover:text-blue-500"
                     onClick={() => toggleSort('method')}>
                   <span className="flex items-center gap-1">
                     Metoda
@@ -474,7 +474,7 @@ export default function Payments() {
                 </th>
                 <th className="table-th hidden lg:table-cell">Llogaria</th>
                 <th className="table-th hidden md:table-cell">Referenca</th>
-                <th className="table-th cursor-pointer select-none hover:text-red-500"
+                <th className="table-th cursor-pointer select-none hover:text-blue-500"
                     onClick={() => toggleSort('depositedTo')}>
                   <span className="flex items-center gap-1">
                     Partneri
@@ -486,9 +486,9 @@ export default function Payments() {
             </thead>
             <tbody className="divide-y divide-gray-50">
               {paged.map(p => (
-                <tr key={p.id} className="hover:bg-red-50/20 transition-colors group">
+                <tr key={p.id} className="hover:bg-blue-50/20 transition-colors group">
                   <td className="table-td text-gray-400 text-xs">{formatDate(p.date)}</td>
-                  <td className="table-td font-bold text-red-500 text-xs">{p.invoiceId}</td>
+                  <td className="table-td font-bold text-blue-500 text-xs">{p.invoiceId}</td>
                   <td className="table-td font-medium text-gray-800 text-xs max-w-[140px] truncate">{p.customer}</td>
                   <td className="table-td text-right font-semibold text-gray-700">{fmt(p.amount)}</td>
                   <td className="table-td text-right text-amber-500 text-xs hidden md:table-cell">
@@ -509,7 +509,7 @@ export default function Payments() {
                   <td className="table-td">
                     <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${
                       p.depositedTo === 'Enndy'
-                        ? 'bg-red-50 text-red-500'
+                        ? 'bg-blue-50 text-blue-500'
                         : 'bg-purple-50 text-purple-600'
                     }`}>
                       {p.depositedTo}
@@ -520,9 +520,9 @@ export default function Payments() {
                   <td className="table-td text-right">
                     {deletingId === p.id ? (
                       <div className="flex items-center justify-end gap-1.5">
-                        <span className="text-xs text-red-500 font-semibold whitespace-nowrap">Fshij?</span>
+                        <span className="text-xs text-blue-500 font-semibold whitespace-nowrap">Fshij?</span>
                         <button
-                          className="px-2 py-0.5 bg-red-500 hover:bg-red-600 text-white text-xs font-bold rounded transition-colors"
+                          className="px-2 py-0.5 bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold rounded transition-colors"
                           onClick={() => deletePayment(p)}
                         >
                           Po
@@ -537,14 +537,14 @@ export default function Payments() {
                     ) : (
                       <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button
-                          className="icon-btn text-red-400 hover:bg-red-50 hover:text-red-500"
+                          className="icon-btn text-blue-400 hover:bg-blue-50 hover:text-blue-500"
                           title="Ndrysho pagesën"
                           onClick={() => openEditPayment(p)}
                         >
                           <Pencil size={14} />
                         </button>
                         <button
-                          className="icon-btn text-red-400 hover:bg-red-50 hover:text-red-600"
+                          className="icon-btn text-blue-400 hover:bg-blue-50 hover:text-blue-600"
                           title="Fshij pagesën"
                           onClick={() => setDeletingId(p.id)}
                         >
@@ -578,7 +578,7 @@ export default function Payments() {
       {monthFilt !== 'all' && filtered.length > 0 && (
         <div className="mt-4 bg-white rounded-xl border border-gray-100 p-5">
           <h3 className="text-sm font-bold text-gray-700 mb-4 flex items-center gap-2">
-            <Users size={15} className="text-red-500" />
+            <Users size={15} className="text-blue-500" />
             Ndarja e Fitimit — {monthFilt}
           </h3>
           <div className="grid grid-cols-3 gap-4 text-center">
@@ -586,9 +586,9 @@ export default function Payments() {
               <p className="text-xs text-gray-400 mb-1">Neto Totale</p>
               <p className="text-lg font-bold text-emerald-600">{fmt(totalNet)}</p>
             </div>
-            <div className="bg-red-50 rounded-xl py-4">
+            <div className="bg-blue-50 rounded-xl py-4">
               <p className="text-xs text-gray-400 mb-1">👤 Enndy</p>
-              <p className="text-lg font-bold text-red-500">{fmt(enndiNet)}</p>
+              <p className="text-lg font-bold text-blue-500">{fmt(enndiNet)}</p>
               <p className="text-xs text-gray-400 mt-1">Pritshme 50%: {fmt(totalNet / 2)}</p>
             </div>
             <div className="bg-purple-50 rounded-xl py-4">

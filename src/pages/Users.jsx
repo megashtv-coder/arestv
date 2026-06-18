@@ -8,7 +8,7 @@ import { useApp } from '../context/AppContext'
 import { Modal, FormGroup, EmptyState } from '../components/UI'
 
 const ROLE_META = {
-  admin:  { label: 'Admin',  cls: 'bg-red-50 text-red-600 border border-red-100',       icon: Shield },
+  admin:  { label: 'Admin',  cls: 'bg-blue-50 text-blue-600 border border-blue-100',       icon: Shield },
   editor: { label: 'Editor', cls: 'bg-emerald-50 text-emerald-700 border border-emerald-100', icon: Edit3 },
   viewer: { label: 'Viewer', cls: 'bg-gray-100 text-gray-600 border border-gray-200',      icon: Eye },
   tester: { label: 'Tester', cls: 'bg-orange-50 text-orange-700 border border-orange-100', icon: Package },
@@ -17,9 +17,9 @@ const ROLE_META = {
 const COLORS = ['#2563eb','#7c3aed','#059669','#d97706','#dc2626','#0891b2','#be185d','#0f766e']
 
 const MODULE_COLORS = {
-  'Faturat':    'bg-red-50 text-red-500',
+  'Faturat':    'bg-blue-50 text-blue-500',
   'Klientët':   'bg-emerald-50 text-emerald-600',
-  'Shpenzimet': 'bg-red-50 text-red-600',
+  'Shpenzimet': 'bg-blue-50 text-blue-600',
   'Pagesat':    'bg-amber-50 text-amber-600',
   'Furnitorët': 'bg-purple-50 text-purple-600',
   'Sistemi':    'bg-gray-100 text-gray-500',
@@ -84,7 +84,7 @@ function UserModal({ user, onClose }) {
     <Modal
       title={
         <span className="flex items-center gap-2">
-          <UserCog size={18} className="text-red-500" />
+          <UserCog size={18} className="text-blue-500" />
           {isEdit ? `Edito — ${user.name}` : 'Përdorues i ri'}
         </span>
       }
@@ -98,7 +98,7 @@ function UserModal({ user, onClose }) {
         </>
       }
     >
-      {err && <div className="text-xs text-red-500 bg-red-50 border border-red-100 rounded-lg px-3 py-2 mb-4">{err}</div>}
+      {err && <div className="text-xs text-blue-500 bg-blue-50 border border-blue-100 rounded-lg px-3 py-2 mb-4">{err}</div>}
 
       {/* Roli */}
       <FormGroup label="Roli *">
@@ -109,7 +109,7 @@ function UserModal({ user, onClose }) {
               <button key={key} type="button" onClick={() => set('role', key)}
                 className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-bold border-2 transition-all ${
                   form.role === key
-                    ? key === 'admin'  ? 'border-red-500 bg-red-500 text-white'
+                    ? key === 'admin'  ? 'border-blue-500 bg-blue-500 text-white'
                     : key === 'editor' ? 'border-emerald-600 bg-emerald-600 text-white'
                     :                   'border-gray-500 bg-gray-500 text-white'
                     : 'border-gray-200 bg-white text-gray-500 hover:border-gray-300'
@@ -169,7 +169,7 @@ function UserModal({ user, onClose }) {
             </button>
             <button type="button" onClick={() => set('active', false)}
               className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-bold border-2 transition-all ${
-                !form.active ? 'border-red-500 bg-red-500 text-white' : 'border-gray-200 bg-white text-gray-500'
+                !form.active ? 'border-blue-500 bg-blue-500 text-white' : 'border-gray-200 bg-white text-gray-500'
               }`}>
               <XCircle size={12} /> Joaktiv
             </button>
@@ -246,7 +246,7 @@ export default function UsersPage() {
           return (
             <div key={u.id}
               className={`bg-white dark:bg-gray-800 rounded-xl border p-5 transition-all duration-200 group ${
-                isMe ? 'border-blue-200 dark:border-red-700 shadow-sm' : 'border-gray-100 dark:border-gray-700 hover:border-blue-200 dark:hover:border-red-600 hover:shadow-md'
+                isMe ? 'border-blue-200 dark:border-blue-700 shadow-sm' : 'border-gray-100 dark:border-gray-700 hover:border-blue-200 dark:hover:border-blue-600 hover:shadow-md'
               }`}>
               <div className="flex items-start gap-3 mb-4">
                 {/* Avatar */}
@@ -263,7 +263,7 @@ export default function UsersPage() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
                     <p className="font-bold text-gray-800 dark:text-gray-100 text-sm truncate">{u.name}</p>
-                    {isMe && <span className="text-[10px] bg-red-50 text-red-500 font-bold px-1.5 py-0.5 rounded-full">Unë</span>}
+                    {isMe && <span className="text-[10px] bg-blue-50 text-blue-500 font-bold px-1.5 py-0.5 rounded-full">Unë</span>}
                   </div>
                   <p className="text-xs text-gray-400 font-mono mt-0.5">@{u.username}</p>
                 </div>
@@ -271,12 +271,12 @@ export default function UsersPage() {
                 {/* Actions */}
                 {currentUser?.role === 'admin' && (
                   <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors"
+                    <button className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-blue-50 text-gray-400 hover:text-blue-500 transition-colors"
                       onClick={() => openEdit(u)}>
                       <Pencil size={13} />
                     </button>
                     {!isMe && (
-                      <button className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors"
+                      <button className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-blue-50 text-gray-400 hover:text-blue-500 transition-colors"
                         onClick={() => handleDelete(u)}>
                         <Trash2 size={13} />
                       </button>
@@ -291,9 +291,9 @@ export default function UsersPage() {
                   <RoleIcon size={10} /> {role.label}
                 </span>
                 <span className={`inline-flex items-center gap-1 text-[11px] font-semibold ${
-                  u.active !== false ? 'text-emerald-600' : 'text-red-500'
+                  u.active !== false ? 'text-emerald-600' : 'text-blue-500'
                 }`}>
-                  <span className={`w-1.5 h-1.5 rounded-full ${u.active !== false ? 'bg-emerald-500' : 'bg-red-400'}`} />
+                  <span className={`w-1.5 h-1.5 rounded-full ${u.active !== false ? 'bg-emerald-500' : 'bg-blue-400'}`} />
                   {u.active !== false ? 'Aktiv' : 'Joaktiv'}
                 </span>
               </div>
@@ -321,7 +321,7 @@ export default function UsersPage() {
           <div className="flex items-center gap-2 flex-wrap">
             {/* Searchbar */}
             <div className="flex items-center gap-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg px-2.5 py-1.5
-                            focus-within:border-red-400 focus-within:bg-white dark:focus-within:bg-gray-800 transition-all">
+                            focus-within:border-blue-400 focus-within:bg-white dark:focus-within:bg-gray-800 transition-all">
               <Search size={12} className="text-gray-400 flex-shrink-0" />
               <input
                 className="bg-transparent border-none outline-none text-xs text-gray-600 dark:text-gray-300 w-36 placeholder-gray-400"
@@ -340,7 +340,7 @@ export default function UsersPage() {
             <div className="flex items-center gap-1.5">
               <Filter size={11} className="text-gray-400" />
               <select
-                className="bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg px-2.5 py-1.5 text-xs text-gray-600 dark:text-gray-300 outline-none focus:border-red-400 cursor-pointer"
+                className="bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg px-2.5 py-1.5 text-xs text-gray-600 dark:text-gray-300 outline-none focus:border-blue-400 cursor-pointer"
                 value={logUserFilter}
                 onChange={e => setLogUserFilter(e.target.value)}
               >

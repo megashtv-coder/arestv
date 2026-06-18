@@ -4,7 +4,7 @@ import MessageLogService from '../services/MessageLogService'
 
 const MESSAGE_TYPES = {
   whatsapp: { label: '💬 WhatsApp', color: 'bg-green-100 text-green-700', icon: MessageCircle },
-  telegram: { label: '✈️ Telegram', color: 'bg-red-100 text-red-600', icon: Send },
+  telegram: { label: '✈️ Telegram', color: 'bg-blue-100 text-blue-600', icon: Send },
   email: { label: '📧 Email', color: 'bg-purple-100 text-purple-700', icon: Mail },
   sms: { label: '📱 SMS', color: 'bg-orange-100 text-orange-700', icon: Phone },
 }
@@ -96,8 +96,8 @@ export default function CommunicationHistory() {
     const statusMap = {
       prepared: { icon: '⏳', label: 'Gati për dërgim', color: 'bg-amber-100 text-amber-700' },
       sent: { icon: '✓', label: 'Dërguar', color: 'bg-emerald-100 text-emerald-700' },
-      failed: { icon: '✕', label: 'Dështoi', color: 'bg-red-100 text-red-700' },
-      read: { icon: '✓✓', label: 'Lexuar', color: 'bg-red-100 text-red-600' },
+      failed: { icon: '✕', label: 'Dështoi', color: 'bg-blue-100 text-blue-700' },
+      read: { icon: '✓✓', label: 'Lexuar', color: 'bg-blue-100 text-blue-600' },
     }
     const s = statusMap[status] || { icon: '•', label: status || 'Dërguar', color: 'bg-gray-100 text-gray-700' }
     return s
@@ -144,9 +144,9 @@ export default function CommunicationHistory() {
             <p className="text-xs text-green-600 font-semibold uppercase">WhatsApp</p>
             <p className="text-2xl font-bold text-green-700">{stats.byType.whatsapp || 0}</p>
           </div>
-          <div className="bg-red-50 rounded-lg p-3 border border-red-100">
-            <p className="text-xs text-red-500 font-semibold uppercase">Telegram</p>
-            <p className="text-2xl font-bold text-red-600">{stats.byType.telegram || 0}</p>
+          <div className="bg-blue-50 rounded-lg p-3 border border-blue-100">
+            <p className="text-xs text-blue-500 font-semibold uppercase">Telegram</p>
+            <p className="text-2xl font-bold text-blue-600">{stats.byType.telegram || 0}</p>
           </div>
           <div className="bg-purple-50 rounded-lg p-3 border border-purple-100">
             <p className="text-xs text-purple-600 font-semibold uppercase">Email</p>
@@ -183,7 +183,7 @@ export default function CommunicationHistory() {
           <select
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value)}
-            className="px-3 py-2 border border-gray-200 rounded-lg bg-white text-sm font-semibold text-gray-600 outline-none focus:border-red-400"
+            className="px-3 py-2 border border-gray-200 rounded-lg bg-white text-sm font-semibold text-gray-600 outline-none focus:border-blue-400"
           >
             <option value="all">Të gjitha tipet</option>
             <option value="whatsapp">💬 WhatsApp</option>
@@ -196,7 +196,7 @@ export default function CommunicationHistory() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3 py-2 border border-gray-200 rounded-lg bg-white text-sm font-semibold text-gray-600 outline-none focus:border-red-400"
+            className="px-3 py-2 border border-gray-200 rounded-lg bg-white text-sm font-semibold text-gray-600 outline-none focus:border-blue-400"
           >
             <option value="all">Të gjitha statuset</option>
             <option value="prepared">⏳ Gati për dërgim</option>
@@ -209,10 +209,10 @@ export default function CommunicationHistory() {
 
       {/* Clear confirmation */}
       {showConfirmClear && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6 flex items-center justify-between">
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 flex items-center justify-between">
           <div>
-            <p className="text-sm font-semibold text-red-700">Dëshiron të fshish të gjithë mesazhet?</p>
-            <p className="text-xs text-red-600 mt-1">Kjo nuk mund të rikthehej.</p>
+            <p className="text-sm font-semibold text-blue-700">Dëshiron të fshish të gjithë mesazhet?</p>
+            <p className="text-xs text-blue-600 mt-1">Kjo nuk mund të rikthehej.</p>
           </div>
           <div className="flex gap-2">
             <button
@@ -339,7 +339,7 @@ export default function CommunicationHistory() {
                       onClick={() => setPage(p)}
                       className={`px-2 py-1 rounded text-xs font-semibold ${
                         p === page
-                          ? 'bg-red-500 text-white'
+                          ? 'bg-blue-500 text-white'
                           : 'border border-gray-200 text-gray-600 hover:bg-gray-50'
                       }`}
                     >

@@ -166,7 +166,7 @@ function FinanciareTab({ invoices, expenses, fmt }) {
                     </span>
                   </td>
                   <td className="table-td font-semibold text-gray-700 dark:text-gray-300 text-xs">{c.name}</td>
-                  <td className="table-td text-right font-bold text-red-500 text-sm">{fmt(c.total)}</td>
+                  <td className="table-td text-right font-bold text-blue-500 text-sm">{fmt(c.total)}</td>
                 </tr>
               ))}
             </tbody>
@@ -323,7 +323,7 @@ function BarazimiTab({ payments, expenses, fmt }) {
                 <p className="text-xs text-gray-400">Partneri</p>
               </div>
               <div className="ml-auto text-right">
-                <p className={`text-xl font-black ${d.net >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>{fmt(d.net)}</p>
+                <p className={`text-xl font-black ${d.net >= 0 ? 'text-emerald-600' : 'text-blue-500'}`}>{fmt(d.net)}</p>
                 <p className="text-[11px] text-gray-400">Neto</p>
               </div>
             </div>
@@ -361,10 +361,10 @@ function BarazimiTab({ payments, expenses, fmt }) {
                 <button className="w-full flex items-center justify-between px-5 py-3 hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition-colors"
                   onClick={() => toggleExpand(`${d.partner}-exp`)}>
                   <span className="text-sm font-semibold text-gray-600 dark:text-gray-300 flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-red-500"/>Shpenzime
+                    <span className="w-2 h-2 rounded-full bg-blue-500"/>Shpenzime
                   </span>
                   <span className="flex items-center gap-2">
-                    <span className="text-sm font-bold text-red-500">-{fmt(d.spent)}</span>
+                    <span className="text-sm font-bold text-blue-500">-{fmt(d.spent)}</span>
                     {expand[`${d.partner}-exp`] ? <ChevronUp size={14} className="text-gray-400"/> : <ChevronDown size={14} className="text-gray-400"/>}
                   </span>
                 </button>
@@ -375,7 +375,7 @@ function BarazimiTab({ payments, expenses, fmt }) {
                       : d.expItems.map(e => (
                           <div key={e.id} className="flex justify-between text-xs text-gray-500 dark:text-gray-400">
                             <span className="truncate max-w-[200px]">{e.type} · {formatDate(e.date)}</span>
-                            <span className="font-semibold text-red-500 flex-shrink-0 ml-2">-{fmt(e.amount)}</span>
+                            <span className="font-semibold text-blue-500 flex-shrink-0 ml-2">-{fmt(e.amount)}</span>
                           </div>
                         ))
                     }
@@ -387,7 +387,7 @@ function BarazimiTab({ payments, expenses, fmt }) {
               {(d.tOut > 0 || d.tIn > 0) && (
                 <div className="px-5 py-3 space-y-1.5">
                   <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-red-400"/>Dorëzime
+                    <span className="w-2 h-2 rounded-full bg-blue-400"/>Dorëzime
                   </p>
                   {d.trfOut.map(t => (
                     <div key={t.id} className="flex justify-between text-xs text-gray-500 dark:text-gray-400">
@@ -398,7 +398,7 @@ function BarazimiTab({ payments, expenses, fmt }) {
                   {d.trfIn.map(t => (
                     <div key={t.id} className="flex justify-between text-xs text-gray-500 dark:text-gray-400">
                       <span className="truncate max-w-[200px]">← {t.from} · {formatDate(t.date)}{t.note ? ' · '+t.note : ''}</span>
-                      <span className="font-semibold text-red-500 flex-shrink-0 ml-2">+{fmt(t.amount)}</span>
+                      <span className="font-semibold text-blue-500 flex-shrink-0 ml-2">+{fmt(t.amount)}</span>
                     </div>
                   ))}
                 </div>
@@ -407,7 +407,7 @@ function BarazimiTab({ payments, expenses, fmt }) {
               {/* Net */}
               <div className="flex items-center justify-between px-5 py-3 bg-gray-50/50 dark:bg-gray-700/20">
                 <span className="text-sm font-bold text-gray-700 dark:text-gray-200">Neto (Hyrje − Shpenzime − Dorëzime)</span>
-                <span className={`text-sm font-black ${d.net >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
+                <span className={`text-sm font-black ${d.net >= 0 ? 'text-emerald-600' : 'text-blue-500'}`}>
                   {d.net >= 0 ? '+' : ''}{fmt(d.net)}
                 </span>
               </div>
@@ -419,7 +419,7 @@ function BarazimiTab({ payments, expenses, fmt }) {
       {/* Settlement summary */}
       <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-5">
         <div className="flex items-center gap-2 mb-4">
-          <Scale size={18} className="text-red-500"/>
+          <Scale size={18} className="text-blue-500"/>
           <p className="font-bold text-gray-800 dark:text-gray-100 text-sm">Barazimi financiar</p>
         </div>
 
@@ -428,9 +428,9 @@ function BarazimiTab({ payments, expenses, fmt }) {
             <p className="text-xs text-gray-400 mb-1">Totali neto</p>
             <p className="text-lg font-black text-gray-800 dark:text-gray-100">{fmt(totalNet)}</p>
           </div>
-          <div className="text-center p-3 bg-red-50 dark:bg-red-800/20 rounded-lg">
-            <p className="text-xs text-red-500 mb-1">Pjesa e drejtë (50/50)</p>
-            <p className="text-lg font-black text-red-500">{fmt(fairShare)}</p>
+          <div className="text-center p-3 bg-blue-50 dark:bg-blue-800/20 rounded-lg">
+            <p className="text-xs text-blue-500 mb-1">Pjesa e drejtë (50/50)</p>
+            <p className="text-lg font-black text-blue-500">{fmt(fairShare)}</p>
           </div>
           <div className="text-center p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
             <p className="text-xs text-gray-400 mb-1">Diferenca</p>
@@ -451,7 +451,7 @@ function BarazimiTab({ payments, expenses, fmt }) {
                 <div className="flex-1">
                   <div className="flex justify-between text-xs mb-1">
                     <span className="font-semibold text-gray-700 dark:text-gray-200">{d.partner}</span>
-                    <span className={`font-bold ${diff >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
+                    <span className={`font-bold ${diff >= 0 ? 'text-emerald-600' : 'text-blue-500'}`}>
                       {diff >= 0 ? '+' : ''}{fmt(diff)} vs pjesa e drejtë
                     </span>
                   </div>
@@ -503,17 +503,17 @@ function BarazimiTab({ payments, expenses, fmt }) {
         <div className="mt-5 pt-4 border-t border-gray-100 dark:border-gray-700">
           <div className="flex items-center justify-between mb-3">
             <p className="text-sm font-bold text-gray-700 dark:text-gray-200 flex items-center gap-2">
-              <ArrowRight size={15} className="text-red-500"/>
+              <ArrowRight size={15} className="text-blue-500"/>
               Dorëzime të regjistruara
               {periodTransfers.length > 0 && (
-                <span className="text-xs font-bold bg-red-100 dark:bg-red-800/40 text-red-500 px-2 py-0.5 rounded-full">
+                <span className="text-xs font-bold bg-blue-100 dark:bg-blue-800/40 text-blue-500 px-2 py-0.5 rounded-full">
                   {periodTransfers.length}
                 </span>
               )}
             </p>
             {!showTrf && (
               <button onClick={openTrf}
-                className="flex items-center gap-1.5 text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-800/20 px-3 py-1.5 rounded-lg border border-blue-200 dark:border-red-700 transition-colors">
+                className="flex items-center gap-1.5 text-xs font-bold text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-800/20 px-3 py-1.5 rounded-lg border border-blue-200 dark:border-blue-700 transition-colors">
                 + Regjistro dorëzim
               </button>
             )}
@@ -523,10 +523,10 @@ function BarazimiTab({ payments, expenses, fmt }) {
           {periodTransfers.length > 0 && (
             <div className="space-y-2 mb-4">
               {periodTransfers.map(t => (
-                <div key={t.id} className="flex items-center gap-3 bg-red-50 dark:bg-red-800/20 rounded-xl px-4 py-2.5">
+                <div key={t.id} className="flex items-center gap-3 bg-blue-50 dark:bg-blue-800/20 rounded-xl px-4 py-2.5">
                   <div className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
                     style={{ background: P_COLOR[t.from] }}>{t.from[0]}</div>
-                  <ArrowRight size={13} className="text-red-400 flex-shrink-0"/>
+                  <ArrowRight size={13} className="text-blue-400 flex-shrink-0"/>
                   <div className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
                     style={{ background: P_COLOR[t.to] }}>{t.to[0]}</div>
                   <div className="flex-1 min-w-0">
@@ -534,9 +534,9 @@ function BarazimiTab({ payments, expenses, fmt }) {
                     {t.note && <span className="text-xs text-gray-400 ml-2">· {t.note}</span>}
                   </div>
                   <span className="text-xs text-gray-400 flex-shrink-0">{formatDate(t.date)}</span>
-                  <span className="text-sm font-black text-red-500 flex-shrink-0">{fmt(t.amount)}</span>
+                  <span className="text-sm font-black text-blue-500 flex-shrink-0">{fmt(t.amount)}</span>
                   <button onClick={() => deleteTrf(t.id)}
-                    className="text-gray-300 hover:text-red-400 transition-colors text-xl leading-none flex-shrink-0 ml-1"
+                    className="text-gray-300 hover:text-blue-400 transition-colors text-xl leading-none flex-shrink-0 ml-1"
                     title="Fshi">×</button>
                 </div>
               ))}
@@ -634,7 +634,7 @@ function KlientetTab({ invoices }) {
         <div className="flex items-center gap-3">
           {growth !== null && (
             <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${
-              growth >= 0 ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-500'
+              growth >= 0 ? 'bg-emerald-50 text-emerald-600' : 'bg-blue-50 text-blue-500'
             }`}>
               {growth >= 0 ? '+' : ''}{growth}% vs {prevYear}
             </span>
@@ -649,8 +649,8 @@ function KlientetTab({ invoices }) {
       {/* Chart */}
       <div className="card">
         <div className="px-5 py-4 border-b border-gray-100 dark:border-gray-700 flex items-center gap-4">
-          <div className="flex items-center gap-1.5 text-xs font-semibold text-red-500">
-            <span className="w-3 h-3 rounded-sm bg-red-500 inline-block"/>
+          <div className="flex items-center gap-1.5 text-xs font-semibold text-blue-500">
+            <span className="w-3 h-3 rounded-sm bg-blue-500 inline-block"/>
             {chartYear}
           </div>
           <div className="flex items-center gap-1.5 text-xs font-semibold text-gray-400">
@@ -699,7 +699,7 @@ function KlientetTab({ invoices }) {
                   <tr key={i} className="hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition-colors border-b border-gray-50 dark:border-gray-700 last:border-0">
                     <td className="table-td font-semibold text-gray-700 dark:text-gray-300">{MONTHS_FULL[i]}</td>
                     <td className="table-td text-right">
-                      <span className={`font-bold text-sm ${cur > 0 ? 'text-red-500' : 'text-gray-400'}`}>{cur}</span>
+                      <span className={`font-bold text-sm ${cur > 0 ? 'text-blue-500' : 'text-gray-400'}`}>{cur}</span>
                     </td>
                     <td className="table-td text-right">
                       <span className="text-gray-500 dark:text-gray-400 text-sm">{prev}</span>
@@ -707,7 +707,7 @@ function KlientetTab({ invoices }) {
                     <td className="table-td text-right">
                       {diff !== 0 ? (
                         <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
-                          diff > 0 ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-500'
+                          diff > 0 ? 'bg-emerald-50 text-emerald-600' : 'bg-blue-50 text-blue-500'
                         }`}>
                           {diff > 0 ? '+' : ''}{diff}
                         </span>
@@ -721,12 +721,12 @@ function KlientetTab({ invoices }) {
               {/* Total row */}
               <tr className="bg-gray-50 dark:bg-gray-700/30">
                 <td className="table-td font-black text-gray-800 dark:text-gray-100">TOTAL</td>
-                <td className="table-td text-right font-black text-red-500">{totCurrent}</td>
+                <td className="table-td text-right font-black text-blue-500">{totCurrent}</td>
                 <td className="table-td text-right font-bold text-gray-500">{totPrev}</td>
                 <td className="table-td text-right">
                   {growth !== null && (
                     <span className={`text-xs font-black px-2 py-0.5 rounded-full ${
-                      growth >= 0 ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-500'
+                      growth >= 0 ? 'bg-emerald-50 text-emerald-600' : 'bg-blue-50 text-blue-500'
                     }`}>
                       {growth >= 0 ? '+' : ''}{growth}%
                     </span>
@@ -772,7 +772,7 @@ function ShtetTab() {
         <div className="px-5 py-4 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
           <div>
             <p className="text-sm font-bold text-gray-800 dark:text-gray-100 flex items-center gap-2">
-              <Globe size={15} className="text-red-500"/> Klientët sipas shtetit
+              <Globe size={15} className="text-blue-500"/> Klientët sipas shtetit
             </p>
             <p className="text-xs text-gray-400 mt-0.5">{customers.length} klientë · {countryData.length} shtete</p>
           </div>
@@ -830,7 +830,7 @@ function ShtetTab() {
                     </div>
                   </div>
                 </td>
-                <td className="table-td text-right font-bold text-red-500 text-base">{count}</td>
+                <td className="table-td text-right font-bold text-blue-500 text-base">{count}</td>
                 <td className="table-td text-right">
                   <span className="text-xs font-bold text-gray-500 bg-gray-100 dark:bg-gray-700 dark:text-gray-300 px-2 py-0.5 rounded-full">
                     {Math.round((count / customers.length) * 100)}%
@@ -945,7 +945,7 @@ function AbonentVjeterTab() {
                       realIndex === 0 ? 'bg-amber-100 text-amber-700' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'
                     }`}>{fmt(c.daysActive)}</span>
                   </td>
-                  <td className="table-td text-right font-bold text-red-500">{c.invoiceCount}</td>
+                  <td className="table-td text-right font-bold text-blue-500">{c.invoiceCount}</td>
                 </tr>
                 )})}
             </tbody>
@@ -993,7 +993,7 @@ function ReferuesitTab() {
     <div className="space-y-4">
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
         <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 px-5 py-4 text-center">
-          <p className="text-2xl font-bold text-red-500">{referralData.length}</p>
+          <p className="text-2xl font-bold text-blue-500">{referralData.length}</p>
           <p className="text-xs text-gray-400 mt-0.5 font-medium">Referues aktivë</p>
         </div>
         <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 px-5 py-4 text-center">
@@ -1031,14 +1031,14 @@ function ReferuesitTab() {
                     <p className="text-sm font-bold text-gray-800 dark:text-gray-100">{referrer}</p>
                     <div className="flex flex-wrap gap-1 mt-1.5">
                       {clients.map(cl => (
-                        <span key={cl} className="text-[10px] font-semibold bg-red-50 dark:bg-red-800/30 text-red-500 dark:text-red-400 px-1.5 py-0.5 rounded-full">
+                        <span key={cl} className="text-[10px] font-semibold bg-blue-50 dark:bg-blue-800/30 text-blue-500 dark:text-blue-400 px-1.5 py-0.5 rounded-full">
                           {cl}
                         </span>
                       ))}
                     </div>
                   </div>
                   <div className="text-right flex-shrink-0">
-                    <span className="text-2xl font-black text-red-500">{count}</span>
+                    <span className="text-2xl font-black text-blue-500">{count}</span>
                     <p className="text-[10px] text-gray-400 font-medium">referime</p>
                   </div>
                 </div>
