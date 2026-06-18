@@ -19,7 +19,7 @@ export default function Sidebar() {
   const [tasks, setTasks] = useState([])
 
   const today = new Date().toISOString().slice(0, 10)
-  const subNotifyCount = invoices.filter(i => i.notifyDate && i.notifyDate <= today).length
+  const subNotifyCount = invoices.filter(i => i.notifyDate && i.notifyDate <= today && i.status !== 'paid').length
 
   // Load tasks from Supabase
   useEffect(() => {
