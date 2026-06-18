@@ -196,7 +196,7 @@ export default function UsersPage() {
   const handleDelete = (u) => {
     if (u.id === currentUser?.id) { showToast('Nuk mund të fshish llogarinë tënde aktuale.', 'error'); return }
     if (!window.confirm(`A je i sigurt që dëshiron ta fshish "${u.name}"?`)) return
-    setUsers(prev => prev.filter(x => x.id !== u.id))
+    setUsers(prev => prev.map(x => x.id === u.id ? { ...x, deleted: true } : x))
     showToast(`"${u.name}" u fshi. ✓`)
   }
 

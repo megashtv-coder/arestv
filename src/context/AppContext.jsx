@@ -330,7 +330,8 @@ export function AppProvider({ children }) {
           return { ...u, username: base.username, role: base.role, orgId: base.orgId, isSuperAdmin: base.isSuperAdmin }
         })
         const supaIds     = new Set(supaUsers.map(u => u.id))
-        const missingMock = mockUsers.filter(u => !supaIds.has(u.id))
+        const deletedIds  = new Set(supaUsers.filter(u => u.deleted).map(u => u.id))
+        const missingMock = mockUsers.filter(u => !supaIds.has(u.id) && !deletedIds.has(u.id))
         const finalUsers  = missingMock.length ? [...merged, ...missingMock] : merged
         setUsers(finalUsers)
         prevUsers.current = finalUsers
@@ -667,7 +668,7 @@ export function AppProvider({ children }) {
   const contextExpenses  = isTester ? tExpenses   : filterByOrg(expenses)
   const contextPayments  = isTester ? tPayments   : filterByOrg(payments)
   const contextTransfers = isTester ? tTransfers  : filterByOrg(transfers)
-  const contextUsers     = isTester ? tUsers      : filterByOrg(users)
+  const contextUsers     = isTester ? tUsers      : filterByOrg(users).filter(u => !u.deleted)
 
   return (
     <AppContext.Provider value={{
