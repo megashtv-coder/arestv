@@ -10,7 +10,7 @@ export default defineConfig({
       injectRegister: 'auto',
       includeAssets: ['favicon.ico', 'icon.svg', 'apple-touch-icon-180x180.png'],
       workbox: {
-        cacheId: 'xflow-v3',
+        cacheId: 'arestv-v1',
         skipWaiting: true,
         clientsClaim: true,
         cleanupOutdatedCaches: true,
