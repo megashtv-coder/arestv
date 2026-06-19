@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Eye, EyeOff, AlertCircle, Zap } from 'lucide-react'
+import { Eye, EyeOff } from 'lucide-react'
 
 export default function Login({ users = [], onLogin }) {
   const [username, setUsername] = useState('')
@@ -9,120 +9,98 @@ export default function Login({ users = [], onLogin }) {
   const [error,    setError]    = useState('')
 
   const submit = async (e) => {
-  e?.preventDefault()
-  if (!username || !password) { setError('Plotëso të gjitha fushat.'); return }
-
-  setLoading(true)
-  setError('')
-
-  try {
-    console.log('🔐 Logging in with username:', username)
-
-    // Find user in local users list
-    const user = users.find(u => u.username === username && u.password === password)
-
-    if (!user) {
-      throw new Error('Emri i përdoruesit ose fjalëkalimi i pasaktë')
+    e?.preventDefault()
+    if (!username || !password) { setError('Plotëso të gjitha fushat.'); return }
+    setLoading(true)
+    setError('')
+    try {
+      const user = users.find(u => u.username === username && u.password === password)
+      if (!user) throw new Error('Kredencialet janë të pasakta')
+      onLogin(user)
+    } catch (err) {
+      setError(err.message || 'Login failed')
+    } finally {
+      setLoading(false)
     }
-
-    console.log('✅ Login successful:', user.username)
-    onLogin(user)
-
-  } catch (err) {
-    console.error('❌ Login error:', err)
-    setError(err.message || 'Login failed')
-  } finally {
-    setLoading(false)
   }
-}
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 flex items-center justify-center p-4">
-      <div className="absolute inset-0 opacity-[0.04]"
-        style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '28px 28px' }}
-      />
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <div className="w-full max-w-xs">
 
-      <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm p-8">
         {/* Logo */}
-        <div className="flex items-center gap-3 mb-8">
-          <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl flex items-center justify-center text-white shadow-md">
-            <span className="text-[11px] font-black tracking-tight">ATV</span>
+        <div className="flex flex-col items-center mb-8">
+          <div className="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-lg mb-3">
+            <span className="text-base font-black tracking-tight">ATV</span>
           </div>
-          <div>
-            <p className="text-lg font-black text-gray-900 leading-none tracking-tight">AresTV Flow</p>
-            <p className="text-[10px] text-gray-400 tracking-widest uppercase mt-0.5">Menaxhimi Financiar</p>
-          </div>
+          <h1 className="text-xl font-bold text-gray-900">AresTV Flow</h1>
+          <p className="text-xs text-gray-400 mt-0.5">Menaxhimi Financiar</p>
         </div>
 
-        <h2 className="text-xl font-bold text-gray-800 mb-1">Mirë se erdhe!</h2>
-        <p className="text-sm text-gray-400 mb-6">Kyçu me llogarinë tënde</p>
+        {/* Form */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+          <form onSubmit={submit} autoComplete="on" className="space-y-4">
 
-        <form onSubmit={submit} autoComplete="on">
-          {/* Username */}
-          <div className="mb-4">
-            <label className="form-label" htmlFor="login-username">Emri i përdoruesit</label>
-            <input
-              id="login-username"
-              name="username"
-              className="form-control"
-              type="text"
-              autoComplete="username"
-              value={username}
-              onChange={e => setUsername(e.target.value)}
-              placeholder="p.sh. xpmx"
-              autoFocus
-            />
-          </div>
-
-          {/* Password */}
-          <div className="mb-5">
-            <label className="form-label" htmlFor="login-password">Fjalëkalimi</label>
-            <div className="relative">
+            <div>
+              <label className="block text-xs font-semibold text-gray-500 mb-1.5">Përdoruesi</label>
               <input
-                id="login-password"
-                name="password"
-                className="form-control pr-10"
-                type={showPw ? 'text' : 'password'}
-                autoComplete="current-password"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                placeholder="••••••••"
+                id="login-username"
+                name="username"
+                type="text"
+                autoComplete="username"
+                value={username}
+                onChange={e => { setUsername(e.target.value); setError('') }}
+                placeholder="username"
+                autoFocus
+                className="w-full px-3 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-50 transition-all"
               />
-              <button
-                type="button"
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                onClick={() => setShowPw(v => !v)}
-              >
-                {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
-              </button>
             </div>
-          </div>
 
-          {/* Error */}
-          {error && (
-            <div className="flex items-center gap-2 bg-blue-50 border border-blue-100 text-blue-600 text-xs font-medium rounded-lg px-3 py-2.5 mb-4">
-              <AlertCircle size={14} className="flex-shrink-0" />
-              {error}
+            <div>
+              <label className="block text-xs font-semibold text-gray-500 mb-1.5">Fjalëkalimi</label>
+              <div className="relative">
+                <input
+                  id="login-password"
+                  name="password"
+                  type={showPw ? 'text' : 'password'}
+                  autoComplete="current-password"
+                  value={password}
+                  onChange={e => { setPassword(e.target.value); setError('') }}
+                  placeholder="••••••••"
+                  className="w-full px-3 py-2.5 pr-10 text-sm bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-50 transition-all"
+                />
+                <button
+                  type="button"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-300 hover:text-gray-500"
+                  onClick={() => setShowPw(v => !v)}
+                >
+                  {showPw ? <EyeOff size={15} /> : <Eye size={15} />}
+                </button>
+              </div>
             </div>
-          )}
 
-          {/* Submit */}
-          <button
-            type="submit"
-            className="btn btn-primary w-full justify-center py-2.5"
-            disabled={loading}
-          >
-            {loading ? (
-              <span className="flex items-center gap-2">
-                <svg className="animate-spin h-4 w-4 text-white" viewBox="0 0 24 24" fill="none">
-                  <circle cx="12" cy="12" r="10" stroke="currentColor" strokeOpacity=".25" strokeWidth="4"/>
-                  <path d="M22 12a10 10 0 01-10 10" stroke="currentColor" strokeWidth="4" strokeLinecap="round"/>
-                </svg>
-                Duke u kyçur...
-              </span>
-            ) : 'Kyçu në sistem'}
-          </button>
-        </form>
+            {error && (
+              <p className="text-xs text-red-500 font-medium">{error}</p>
+            )}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-blue-600 hover:bg-blue-700 active:scale-[0.98] text-white text-sm font-semibold py-2.5 rounded-xl transition-all shadow-sm disabled:opacity-60"
+            >
+              {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" strokeOpacity=".25" strokeWidth="4"/>
+                    <path d="M22 12a10 10 0 01-10 10" stroke="currentColor" strokeWidth="4" strokeLinecap="round"/>
+                  </svg>
+                  Duke u kyçur...
+                </span>
+              ) : 'Kyçu'}
+            </button>
+
+          </form>
+        </div>
       </div>
     </div>
   )
