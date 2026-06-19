@@ -182,7 +182,6 @@ export default function Sidebar() {
                 <p className="text-xs font-semibold text-gray-800 dark:text-gray-200 truncate">{currentUser?.name || 'User'}</p>
                 <p className="text-[10px] text-gray-400 dark:text-gray-500 capitalize">
                   {currentUser?.isSuperAdmin ? 'Super Admin' : currentUser?.role}
-                  {currentOrg ? ` · ${currentOrg.shortName}` : ''}
                 </p>
               </div>
               <ChevronRight size={14} className="text-gray-300 dark:text-gray-600 flex-shrink-0" />
