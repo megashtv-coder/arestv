@@ -287,7 +287,13 @@ export function AppProvider({ children }) {
       const loadedPayments  = load(pay,  [])
       const loadedTransfers = load(tran, [])
       const loadedVendors   = load(vend, mockVendors)
-      const loadedItems     = load(itm,  mockItems)
+      // Items — merge Supabase + mockItems (ri-shto ato që mungojnë)
+      const supaItems    = itm?.data?.length ? fromRows(itm.data) : []
+      const supaItemIds  = new Set(supaItems.map(i => i.id))
+      const missingItems = mockItems.filter(i => !supaItemIds.has(i.id))
+      const loadedItems  = [...supaItems, ...missingItems]
+      if (missingItems.length)
+        supabase.from('items').upsert(missingItems.map(i => ({ id: i.id, data: i }))).then()
 
       // Use wrapped setters to ensure orgId is assigned to all items from Supabase
       wrappedSetInvoices(loadedInvoices);    prevInvoices.current  = loadedInvoices
