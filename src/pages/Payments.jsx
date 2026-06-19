@@ -103,6 +103,11 @@ export default function Payments() {
   const [monthFilt,   setMonthFilt] = useState('all')
   const [partnerFilt, setPartner]   = useState('all')
   const [methodFilt,  setMethod]    = useState('all')
+  const [yearFilt,    setYearFilt]  = useState(() => {
+    const f = JSON.parse(localStorage.getItem('arestv_nav_filter') || 'null')
+    if (f?.year) { localStorage.removeItem('arestv_nav_filter'); return f.year }
+    return 'all'
+  })
   const [pg,          setPg]        = useState(1)
   const [perPage,     setPerPage]   = useState(50)
   const [sortField,   setSortField] = useState('date')
@@ -135,8 +140,9 @@ export default function Payments() {
     const matchMonth   = monthFilt  === 'all' || p.date.startsWith(monthFilt)
     const matchPartner = partnerFilt === 'all' || p.depositedTo === partnerFilt
     const matchMethod  = methodFilt  === 'all' || p.method === methodFilt
-    return matchSearch && matchMonth && matchPartner && matchMethod
-  }), [payments, search, monthFilt, partnerFilt, methodFilt])
+    const matchYear    = yearFilt    === 'all' || p.date?.startsWith(yearFilt)
+    return matchSearch && matchMonth && matchPartner && matchMethod && matchYear
+  }), [payments, search, monthFilt, partnerFilt, methodFilt, yearFilt])
 
   const toggleSort = field => {
     if (sortField === field) setSortDir(d => d === 'asc' ? 'desc' : 'asc')

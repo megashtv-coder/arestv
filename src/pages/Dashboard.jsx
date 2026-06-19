@@ -27,9 +27,11 @@ const CAT_COLORS = {
 }
 
 /* ── Stat card komponent ── */
-function KpiCard({ icon: Icon, iconBg, iconColor, label, value, sub, subColor = 'text-gray-400' }) {
+function KpiCard({ icon: Icon, iconBg, iconColor, label, value, sub, subColor = 'text-gray-400', onClick }) {
+  const base = "bg-white rounded-xl border border-gray-100 p-5 flex items-start gap-4 transition-all duration-200"
+  const interactive = onClick ? "cursor-pointer hover:-translate-y-0.5 hover:shadow-md hover:border-blue-200" : "hover:-translate-y-0.5 hover:shadow-md"
   return (
-    <div className="bg-white rounded-xl border border-gray-100 p-5 flex items-start gap-4 hover:-translate-y-0.5 hover:shadow-md transition-all duration-200">
+    <div className={`${base} ${interactive}`} onClick={onClick}>
       <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: iconBg }}>
         <Icon size={18} style={{ color: iconColor }} />
       </div>
@@ -37,6 +39,7 @@ function KpiCard({ icon: Icon, iconBg, iconColor, label, value, sub, subColor = 
         <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide truncate">{label}</p>
         <p className="text-xl font-bold text-gray-800 mt-0.5 truncate">{value}</p>
         {sub && <p className={`text-xs mt-1 font-medium truncate ${subColor}`}>{sub}</p>}
+        {onClick && <p className="text-[10px] text-blue-400 mt-1">Kliko për detaje →</p>}
       </div>
     </div>
   )
@@ -179,6 +182,11 @@ export default function Dashboard() {
   const openCustomerModal = () => setModal(<CustomerModal onClose={closeModal} />)
   const openExpenseModal  = () => setModal(<ExpenseModal  onClose={closeModal} />)
 
+  const goFiltered = (page, filter) => {
+    localStorage.setItem('arestv_nav_filter', JSON.stringify(filter))
+    navigate(page)
+  }
+
   return (
     <div className="space-y-6">
 
@@ -220,6 +228,7 @@ export default function Dashboard() {
           label={`Të ardhura ${thisYear}`}
           value={fmt(yearRevenue)}
           sub={`Pagesa të pranuara ${thisYear}`}
+          onClick={() => goFiltered('payments', { year: thisYear })}
         />
         <KpiCard
           icon={TrendingDown}  iconBg="#fef2f2"  iconColor="#dc2626"
@@ -227,6 +236,7 @@ export default function Dashboard() {
           value={fmt(yearExpenses)}
           sub={`Shpenzime të regjistruara`}
           subColor="text-blue-400"
+          onClick={() => goFiltered('expenses', { year: thisYear })}
         />
         <KpiCard
           icon={Clock}  iconBg="#fffbeb"  iconColor="#d97706"
@@ -234,6 +244,7 @@ export default function Dashboard() {
           value={fmt(pendingKlientAmt)}
           sub={`${pendingKlient.length} fatur${pendingKlient.length !== 1 ? 'a' : 'ë'} individuale`}
           subColor="text-amber-500"
+          onClick={() => goFiltered('invoices', { status: 'pending', type: 'individual' })}
         />
         <KpiCard
           icon={Layers}  iconBg="#f5f3ff"  iconColor="#7c3aed"
@@ -241,6 +252,7 @@ export default function Dashboard() {
           value={fmt(pendingResellerAmt)}
           sub={`${pendingReseller.length} fatur${pendingReseller.length !== 1 ? 'a' : 'ë'} reseller`}
           subColor="text-purple-500"
+          onClick={() => goFiltered('invoices', { status: 'pending', type: 'reseller' })}
         />
         <KpiCard
           icon={AlertCircle}  iconBg="#fff7ed"  iconColor="#ea580c"
@@ -248,6 +260,7 @@ export default function Dashboard() {
           value={fmt(pendingTotalAmt)}
           sub={`${pendingInvoices.length} fatura gjithsej`}
           subColor="text-orange-500"
+          onClick={() => goFiltered('invoices', { status: 'pending', type: 'all' })}
         />
       </div>
 

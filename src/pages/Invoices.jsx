@@ -715,8 +715,15 @@ export default function Invoices() {
     localStorage.removeItem('arestv_invoice_search') // Clear it after reading
     return headerSearch || ''
   })
-  const [statusFilter, setStatus]   = useState('all')
-  const [typeFilter,   setTypeFilter]= useState('all')   // 'all' | 'reseller' | 'individual'
+  const [statusFilter, setStatus]   = useState(() => {
+    const f = JSON.parse(localStorage.getItem('arestv_nav_filter') || 'null')
+    if (f?.status) { localStorage.removeItem('arestv_nav_filter'); return 'pending' }
+    return 'all'
+  })
+  const [typeFilter,   setTypeFilter]= useState(() => {
+    const f = JSON.parse(localStorage.getItem('arestv_nav_filter') || 'null')
+    return f?.type && f.type !== 'all' ? f.type : 'all'
+  })
   const [paginationPage,  setPaginationPage] = useState(1)
   const [perPage,      setPerPage]  = useState(50)
   const [sortField,    setSortField]= useState('id')
