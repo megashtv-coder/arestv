@@ -369,8 +369,8 @@ export default function Dashboard() {
               <XAxis dataKey="month" tick={{ fontSize: 10, fill: '#9ca3af' }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fontSize: 10, fill: '#9ca3af' }} axisLine={false} tickLine={false} tickFormatter={v => v >= 1000 ? v/1000+'k' : v} />
               <Tooltip content={<ChartTooltip />} />
-              <Bar dataKey="sales"     name={`Shitje ${thisYear}`} fill="#10b981" radius={[3,3,0,0]} maxBarSize={22} />
-              <Bar dataKey="salesPrev" name={`Shitje ${prevYear}`} fill="#3b82f6" radius={[3,3,0,0]} maxBarSize={22} />
+              <Bar dataKey="sales"     name={`Shitje ${thisYear}`} fill="#2563eb" radius={[4,4,0,0]} maxBarSize={22} />
+              <Bar dataKey="salesPrev" name={`Shitje ${prevYear}`} fill="#bfdbfe" radius={[4,4,0,0]} maxBarSize={22} />
             </ComposedChart>
           </ResponsiveContainer>
         </div>
