@@ -358,19 +358,25 @@ export default function Dashboard() {
         <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-4 border-b border-gray-50">
           <p className="text-sm font-bold text-gray-800">Shitje sipas muajit — 12 muaj</p>
           <div className="flex flex-wrap gap-3 text-[11px] text-gray-400">
-            <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm bg-emerald-500 inline-block"/>Shitje {thisYear}</span>
-            <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm bg-blue-500 inline-block"/>Shitje {prevYear}</span>
+            <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm inline-block" style={{background:'#6366f1'}}/>{thisYear}</span>
+            <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm bg-slate-200 inline-block"/>{prevYear}</span>
           </div>
         </div>
         <div className="px-2 py-4">
           <ResponsiveContainer width="100%" height={220}>
             <ComposedChart data={salesComparison} margin={{ top: 4, right: 8, left: -12, bottom: 0 }}>
+              <defs>
+                <linearGradient id="indigo-grad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#6366f1" />
+                  <stop offset="100%" stopColor="#818cf8" />
+                </linearGradient>
+              </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" vertical={false} />
               <XAxis dataKey="month" tick={{ fontSize: 10, fill: '#9ca3af' }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fontSize: 10, fill: '#9ca3af' }} axisLine={false} tickLine={false} tickFormatter={v => v >= 1000 ? v/1000+'k' : v} />
-              <Tooltip content={<ChartTooltip />} />
-              <Bar dataKey="sales"     name={`Shitje ${thisYear}`} fill="#2563eb" radius={[4,4,0,0]} maxBarSize={22} />
-              <Bar dataKey="salesPrev" name={`Shitje ${prevYear}`} fill="#bfdbfe" radius={[4,4,0,0]} maxBarSize={22} />
+              <Tooltip content={<ChartTooltip />} cursor={{ fill: 'rgba(0,0,0,0.03)' }} />
+              <Bar dataKey="salesPrev" name={`Shitje ${prevYear}`} fill="#e2e8f0" radius={[3,3,0,0]} maxBarSize={22} />
+              <Bar dataKey="sales"     name={`Shitje ${thisYear}`} fill="url(#indigo-grad)" radius={[4,4,0,0]} maxBarSize={22} />
             </ComposedChart>
           </ResponsiveContainer>
         </div>
