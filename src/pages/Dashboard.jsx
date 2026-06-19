@@ -141,23 +141,34 @@ export default function Dashboard() {
   const pendingTotalAmt    = pendingInvoices.reduce((s, i) => s + i.amount, 0)
 
   /* ── Shpenzime sipas kategorisë (me filter) ── */
-  const catData = useMemo(() => {
+  const { catData, catTotal, top5Types } = useMemo(() => {
     let filtered = expenses
     if (catFilter === '1m')   filtered = expenses.filter(e => e.date?.startsWith(thisMonth))
     if (catFilter === '12m')  filtered = expenses.filter(e => e.date?.startsWith(thisYear))
     if (catFilter === 'prev') filtered = expenses.filter(e => e.date?.startsWith(prevYear))
 
-    const groups = {}
+    const catGroups = {}
+    const typeGroups = {}
     filtered.forEach(e => {
-      const cat = e.category || 'Tjera'
-      groups[cat] = (groups[cat] || 0) + e.amount
+      const cat  = e.category || 'Tjera'
+      const type = e.type || e.category || 'Tjera'
+      catGroups[cat]   = (catGroups[cat]   || 0) + e.amount
+      typeGroups[type] = (typeGroups[type] || 0) + e.amount
     })
-    return Object.entries(groups)
+
+    const catData = Object.entries(catGroups)
       .map(([name, value]) => ({ name, value, color: CAT_COLORS[name] || '#6b7280' }))
       .sort((a, b) => b.value - a.value)
-  }, [expenses, catFilter, thisMonth, thisYear, prevYear])
 
-  const catTotal = catData.reduce((s, c) => s + c.value, 0)
+    const top5Types = Object.entries(typeGroups)
+      .map(([name, value]) => ({ name, value }))
+      .sort((a, b) => b.value - a.value)
+      .slice(0, 5)
+
+    const catTotal = catData.reduce((s, c) => s + c.value, 0)
+
+    return { catData, catTotal, top5Types }
+  }, [expenses, catFilter, thisMonth, thisYear, prevYear])
 
   /* ── Shitje sipas muajit: krahasim me vitin 2025 ── */
   const salesComparison = useMemo(() => {
@@ -296,7 +307,6 @@ export default function Dashboard() {
         <div className="card">
           <div className="px-5 py-4 border-b border-gray-50">
             <p className="text-sm font-bold text-gray-800 mb-2">Shpenzime sipas kategorisë</p>
-            {/* Filter tabs */}
             <div className="flex gap-1">
               {[
                 { key: '1m',   label: '1 muaj' },
@@ -319,35 +329,54 @@ export default function Dashboard() {
             {catData.length === 0 ? (
               <p className="text-xs text-gray-400 text-center py-8 italic">Nuk ka shpenzime për këtë periudhë</p>
             ) : (
-              <>
-                <ResponsiveContainer width="100%" height={120}>
-                  <PieChart>
-                    <Pie data={catData} cx="50%" cy="50%" innerRadius={32} outerRadius={55}
-                      paddingAngle={3} dataKey="value">
-                      {catData.map((e, i) => <Cell key={i} fill={e.color} />)}
-                    </Pie>
-                    <Tooltip formatter={v => [`€${Number(v).toLocaleString('de-DE')}`, '']}
-                      contentStyle={{ border: '1px solid #f3f4f6', borderRadius: 10, fontSize: 11 }} />
-                  </PieChart>
-                </ResponsiveContainer>
-
-                <div className="space-y-2 mt-3">
-                  {catData.map((e, i) => (
-                    <div key={i} className="flex items-center gap-2">
-                      <span className="w-2.5 h-2.5 rounded-sm flex-shrink-0" style={{ background: e.color }} />
-                      <span className="text-xs text-gray-600 flex-1 truncate">{e.name}</span>
-                      <span className="text-xs font-bold text-gray-800">€{e.value.toLocaleString('de-DE')}</span>
-                      <span className="text-[10px] text-gray-400 w-10 text-right">
-                        {catTotal > 0 ? Math.round(e.value / catTotal * 100) : 0}%
-                      </span>
-                    </div>
-                  ))}
-                  <div className="flex items-center justify-between pt-2 border-t border-gray-100 mt-2">
-                    <span className="text-xs font-bold text-gray-500">Total</span>
-                    <span className="text-sm font-bold text-gray-800">€{catTotal.toLocaleString('de-DE')}</span>
+              <div className="flex gap-4">
+                {/* ── Grafiku rrethor ── */}
+                <div className="flex-shrink-0 flex flex-col items-center">
+                  <ResponsiveContainer width={110} height={110}>
+                    <PieChart>
+                      <Pie data={catData} cx="50%" cy="50%" innerRadius={28} outerRadius={50}
+                        paddingAngle={3} dataKey="value">
+                        {catData.map((e, i) => <Cell key={i} fill={e.color} />)}
+                      </Pie>
+                      <Tooltip formatter={v => [`€${Number(v).toLocaleString('de-DE')}`, '']}
+                        contentStyle={{ border: '1px solid #f3f4f6', borderRadius: 10, fontSize: 11 }} />
+                    </PieChart>
+                  </ResponsiveContainer>
+                  <div className="mt-1 space-y-1">
+                    {catData.map((e, i) => (
+                      <div key={i} className="flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-sm flex-shrink-0" style={{ background: e.color }} />
+                        <span className="text-[10px] text-gray-500 truncate max-w-[70px]">{e.name}</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
-              </>
+
+                {/* ── Top 5 produktet/shërbimet ── */}
+                <div className="flex-1 min-w-0">
+                  <p className="text-[11px] font-bold text-gray-500 mb-2 uppercase tracking-wide">Top 5 shpenzime</p>
+                  <div className="space-y-2">
+                    {top5Types.map((t, i) => {
+                      const pct = catTotal > 0 ? Math.round(t.value / catTotal * 100) : 0
+                      return (
+                        <div key={i}>
+                          <div className="flex items-center justify-between mb-0.5">
+                            <span className="text-[11px] text-gray-700 truncate flex-1 pr-2 leading-tight">{t.name}</span>
+                            <span className="text-[11px] font-bold text-gray-800 flex-shrink-0">€{t.value.toLocaleString('de-DE')}</span>
+                          </div>
+                          <div className="h-1 bg-gray-100 rounded-full overflow-hidden">
+                            <div className="h-full bg-blue-400 rounded-full" style={{ width: `${pct}%` }} />
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                  <div className="flex items-center justify-between pt-2 mt-2 border-t border-gray-100">
+                    <span className="text-[11px] font-bold text-gray-500">Total</span>
+                    <span className="text-xs font-bold text-gray-800">€{catTotal.toLocaleString('de-DE')}</span>
+                  </div>
+                </div>
+              </div>
             )}
           </div>
         </div>
