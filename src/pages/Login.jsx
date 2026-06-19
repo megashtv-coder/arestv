@@ -46,7 +46,7 @@ export default function Login({ users = [], onLogin }) {
         {/* Logo */}
         <div className="flex items-center gap-3 mb-8">
           <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl flex items-center justify-center text-white shadow-md">
-            <Zap size={20} strokeWidth={2.5} />
+            <span className="text-[11px] font-black tracking-tight">ATV</span>
           </div>
           <div>
             <p className="text-lg font-black text-gray-900 leading-none tracking-tight">AresTV Flow</p>
