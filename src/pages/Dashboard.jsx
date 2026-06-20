@@ -213,9 +213,9 @@ export default function Dashboard() {
       {/* ── Veprime të shpejta ── */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
         {[
-          { icon: FilePlus,    title: 'Krijo Faturë',  sub: 'Faturë e re shpejt',    action: openInvoiceModal },
-          { icon: UserPlus,    title: 'Shto Klient',   sub: 'Regjistro klient të ri', action: openCustomerModal },
-          { icon: ReceiptText, title: 'Shpenzim i ri', sub: 'Regjistro shpenzim',     action: openExpenseModal  },
+          { icon: FilePlus,    title: 'Krijo Faturë',  sub: 'Faturë e re shpejt',    action: () => navigate('invoices:create') },
+          { icon: UserPlus,    title: 'Shto Klient',   sub: 'Regjistro klient të ri', action: () => navigate('customers:create') },
+          { icon: ReceiptText, title: 'Shpenzim i ri', sub: 'Regjistro shpenzim',     action: () => navigate('expenses:create') },
         ].map(({ icon: Icon, title, sub, action }) => (
           <button key={title} onClick={action}
             className="text-left bg-white border border-gray-100 rounded-xl p-4 hover:border-blue-300 hover:bg-blue-50 transition-all duration-150 group hover:-translate-y-0.5 hover:shadow-md">
