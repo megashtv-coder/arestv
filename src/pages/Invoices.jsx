@@ -3,7 +3,7 @@ import {
   FileText, Download, Pencil, Trash2, CreditCard,
   MessageCircle, Send, XCircle, X, MessageSquare,
   Search, Plus, LayoutList, Columns, AlertTriangle, FileSpreadsheet,
-  MoreVertical, Edit3,
+  MoreVertical, Edit3, Filter, CheckCircle2,
 } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import { formatDate } from '../utils/dateFormat'
@@ -502,6 +502,173 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer }) {
 }
 
 /* ══════════════════════════════════════════════════════════
+   Export Panel
+══════════════════════════════════════════════════════════ */
+function ExportPanel({ invoices, customers, onClose, fmt }) {
+  const today = new Date()
+  const thisYear  = today.getFullYear()
+  const thisMonth = String(today.getMonth() + 1).padStart(2, '0')
+
+  const [statusF, setStatusF] = useState('all')
+  const [yearF,   setYearF]   = useState(String(thisYear))
+  const [monthF,  setMonthF]  = useState('all')
+
+  const MONTHS = [
+    { v: 'all', l: 'Të gjithë muajt' },
+    { v: '01', l: 'Janar'   }, { v: '02', l: 'Shkurt' }, { v: '03', l: 'Mars'  },
+    { v: '04', l: 'Prill'   }, { v: '05', l: 'Maj'    }, { v: '06', l: 'Qershor' },
+    { v: '07', l: 'Korrik'  }, { v: '08', l: 'Gusht'  }, { v: '09', l: 'Shtator' },
+    { v: '10', l: 'Tetor'   }, { v: '11', l: 'Nëntor' }, { v: '12', l: 'Dhjetor' },
+  ]
+
+  const years = useMemo(() => {
+    const ys = new Set(invoices.map(i => i.date?.slice(0, 4)).filter(Boolean))
+    return [...ys].sort((a, b) => b - a)
+  }, [invoices])
+
+  const todayStr = today.toISOString().slice(0, 10)
+
+  const filtered = useMemo(() => invoices.filter(i => {
+    if (statusF !== 'all') {
+      if (statusF === 'overdue') {
+        const isOv = i.status === 'overdue' || (i.status === 'pending' && i.due && i.due < todayStr)
+        if (!isOv) return false
+      } else {
+        if (i.status !== statusF) return false
+      }
+    }
+    if (yearF !== 'all' && !i.date?.startsWith(yearF)) return false
+    if (monthF !== 'all' && i.date?.slice(5, 7) !== monthF) return false
+    return true
+  }), [invoices, statusF, yearF, monthF])
+
+  const totalAmt = filtered.reduce((s, i) => s + (i.amount || 0), 0)
+
+  const doExport = () => {
+    const header = ['ID', 'Data', 'Klienti', 'Telefoni', 'Shuma (€)', 'Statusi', 'Afati i pagesës', 'Skadimi Abonimit', 'Referenti']
+    const rows = filtered.map(i => {
+      const phone = customers.find(c => c.name === i.customer)?.phone || ''
+      const status = i.status === 'overdue' || (i.status === 'pending' && i.due && i.due < todayStr) ? 'Vonuar' :
+                     i.status === 'paid' ? 'Paguar' :
+                     i.status === 'pending' ? 'Pritje' :
+                     i.status === 'draft' ? 'Draft' :
+                     i.status === 'partial' ? 'Pjesërisht' : i.status || ''
+      return [
+        i.id, i.date || '', i.customer || '', phone,
+        (i.amount || 0).toFixed(2), status,
+        i.due || '', i.subscriptionExpiry || '', i.referent || '',
+      ]
+    })
+
+    const csv = [header, ...rows]
+      .map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(','))
+      .join('\n')
+
+    const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' })
+    const url  = URL.createObjectURL(blob)
+    const a    = document.createElement('a')
+    const labelStatus = statusF === 'all' ? 'te-gjitha' : statusF
+    const labelMonth  = monthF === 'all' ? '' : `-${monthF}`
+    a.href     = url
+    a.download = `faturat-${labelStatus}-${yearF}${labelMonth}.csv`
+    a.click()
+    URL.revokeObjectURL(url)
+    onClose()
+  }
+
+  const Chip = ({ active, onClick, children }) => (
+    <button onClick={onClick}
+      className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+        active ? 'bg-blue-500 text-white shadow-sm' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+      }`}>
+      {children}
+    </button>
+  )
+
+  return (
+    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center">
+              <Download size={15} className="text-blue-500"/>
+            </div>
+            <div>
+              <h2 className="font-bold text-gray-800 text-sm">Eksporto Faturat</h2>
+              <p className="text-[11px] text-gray-400">Zgjidh filtrat dhe shkarko CSV</p>
+            </div>
+          </div>
+          <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-400 transition-colors">
+            <X size={16}/>
+          </button>
+        </div>
+
+        <div className="p-6 space-y-5">
+          {/* Status filter */}
+          <div>
+            <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Statusi</label>
+            <div className="flex flex-wrap gap-1.5">
+              {[
+                { v: 'all',     l: 'Të gjitha' },
+                { v: 'paid',    l: 'Paguar' },
+                { v: 'pending', l: 'Pritje' },
+                { v: 'overdue', l: 'Vonuar' },
+                { v: 'draft',   l: 'Draft' },
+              ].map(f => (
+                <Chip key={f.v} active={statusF === f.v} onClick={() => setStatusF(f.v)}>{f.l}</Chip>
+              ))}
+            </div>
+          </div>
+
+          {/* Year filter */}
+          <div>
+            <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Viti</label>
+            <div className="flex flex-wrap gap-1.5">
+              <Chip active={yearF === 'all'} onClick={() => setYearF('all')}>Të gjithë</Chip>
+              {years.map(y => (
+                <Chip key={y} active={yearF === y} onClick={() => setYearF(y)}>{y}</Chip>
+              ))}
+            </div>
+          </div>
+
+          {/* Month filter */}
+          <div>
+            <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Muaji</label>
+            <div className="flex flex-wrap gap-1.5">
+              {MONTHS.map(m => (
+                <Chip key={m.v} active={monthF === m.v} onClick={() => setMonthF(m.v)}>{m.l}</Chip>
+              ))}
+            </div>
+          </div>
+
+          {/* Preview */}
+          <div className="bg-blue-50 rounded-xl px-4 py-3 flex items-center justify-between">
+            <div>
+              <p className="text-xs text-blue-500 font-semibold">{filtered.length} fatura të zgjedhura</p>
+              <p className="text-sm font-bold text-blue-700 mt-0.5">Totali: €{totalAmt.toLocaleString('de-DE', { minimumFractionDigits: 2 })}</p>
+            </div>
+            <CheckCircle2 size={20} className={filtered.length > 0 ? 'text-blue-400' : 'text-gray-300'}/>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="flex gap-2 px-6 pb-6">
+          <button onClick={doExport} disabled={filtered.length === 0}
+            className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-blue-500 hover:bg-blue-600 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-bold rounded-xl transition-colors">
+            <Download size={15}/> Shkarko CSV
+          </button>
+          <button onClick={onClose}
+            className="px-5 py-2.5 border border-gray-200 text-gray-500 text-sm font-semibold rounded-xl hover:bg-gray-50 transition-colors">
+            Anulo
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/* ══════════════════════════════════════════════════════════
    Kanban Board
 ══════════════════════════════════════════════════════════ */
 function KanbanCard({ inv, onOpen }) {
@@ -731,6 +898,7 @@ export default function Invoices() {
   const [preview,      setPreview]  = useState(null)
   const [viewMode,     setViewMode] = useState('table')
   const [importOpen,   setImportOpen] = useState(false)
+  const [showExport,   setShowExport] = useState(false)
   const [openDropdown, setOpenDropdown] = useState(null) // Track which row's dropdown is open
   const [selectedCustomer, setSelectedCustomer] = useState(null) // Customer details modal
   const [selected,     setSelected] = useState(new Set()) // Selected invoices for bulk delete
@@ -1030,6 +1198,7 @@ export default function Invoices() {
             <button
               className="w-9 h-9 flex items-center justify-center rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
               title="Eksporto"
+              onClick={() => setShowExport(true)}
             >
               <Download size={16}/>
             </button>
@@ -1113,6 +1282,7 @@ export default function Invoices() {
             <button
               className="hidden sm:flex w-9 h-9 items-center justify-center rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
               title="Eksporto faturat"
+              onClick={() => setShowExport(true)}
             >
               <Download size={16}/>
             </button>
@@ -1675,6 +1845,16 @@ export default function Invoices() {
         <CustomerDetailsModal
           customer={selectedCustomer}
           onClose={() => setSelectedCustomer(null)}
+        />
+      )}
+
+      {/* Export Panel */}
+      {showExport && (
+        <ExportPanel
+          invoices={invoices}
+          customers={customers}
+          fmt={fmt}
+          onClose={() => setShowExport(false)}
         />
       )}
 
