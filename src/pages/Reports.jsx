@@ -155,22 +155,41 @@ function FinanciareTab({ invoices, expenses, fmt }) {
           <div className="px-5 py-4 border-b border-gray-100 dark:border-gray-700">
             <p className="text-sm font-bold text-gray-800 dark:text-gray-100">Top 5 klientët sipas vlerës</p>
           </div>
-          <table className="w-full">
-            <tbody>
-              {[...customers].sort((a,b) => b.total - a.total).slice(0,5).map((c,i) => (
-                <tr key={c.id} className="hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition-colors">
-                  <td className="table-td w-10">
-                    <span className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white"
-                      style={{ background: i===0?'#f59e0b':i===1?'#94a3b8':i===2?'#cd7c3d':'#e5e7eb', color: i>=3?'#6b7280':undefined }}>
-                      {i+1}
-                    </span>
-                  </td>
-                  <td className="table-td font-semibold text-gray-700 dark:text-gray-300 text-xs">{c.name}</td>
-                  <td className="table-td text-right font-bold text-blue-500 text-sm">{fmt(c.total)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          {(() => {
+            const totalsMap = {}
+            invoices.filter(i => i.status !== 'void').forEach(i => {
+              totalsMap[i.customer] = (totalsMap[i.customer] || 0) + (i.amount || 0)
+            })
+            const top5 = Object.entries(totalsMap)
+              .map(([name, total]) => ({ name, total }))
+              .sort((a, b) => b.total - a.total)
+              .slice(0, 5)
+            const maxVal = top5[0]?.total || 1
+            const BADGE = ['#f59e0b','#94a3b8','#cd7c3d','#e5e7eb','#e5e7eb']
+            return (
+              <table className="w-full">
+                <tbody>
+                  {top5.map((c, i) => (
+                    <tr key={c.name} className="hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition-colors">
+                      <td className="table-td w-10">
+                        <span className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold"
+                          style={{ background: BADGE[i], color: i >= 3 ? '#6b7280' : '#fff' }}>
+                          {i + 1}
+                        </span>
+                      </td>
+                      <td className="table-td text-xs">
+                        <p className="font-semibold text-gray-700 dark:text-gray-300">{c.name}</p>
+                        <div className="h-1 bg-gray-100 rounded-full mt-1 overflow-hidden">
+                          <div className="h-full bg-blue-400 rounded-full" style={{ width: `${Math.round(c.total / maxVal * 100)}%` }}/>
+                        </div>
+                      </td>
+                      <td className="table-td text-right font-bold text-blue-500 text-sm whitespace-nowrap">{fmt(c.total)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )
+          })()}
         </div>
       </div>
     </div>
