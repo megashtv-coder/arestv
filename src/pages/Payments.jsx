@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect, lazy, Suspense } from 'react'
 import {
   CreditCard, Download, Search, X, Filter,
-  Pencil, Trash2, FileSpreadsheet, Plus,
+  Pencil, Trash2, FileSpreadsheet, Plus, CheckCircle2,
 } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import { formatDate } from '../utils/dateFormat'
@@ -28,6 +28,141 @@ const METHOD_ICON = {
   'PayPal': '🅿️', 'Transfer Bankar': '🏦', 'Kesh': '💵',
   'Western Union': '🌐', 'Ria': '🔄', 'Money Gram': '💱',
   'Crypto': '₿', 'Stripe': '⚡',
+}
+
+/* ── Export Panel ── */
+function ExportPanel({ payments, onClose }) {
+  const today = new Date()
+  const thisYear = today.getFullYear()
+
+  const [partnerF, setPartnerF] = useState('all')
+  const [yearF,    setYearF]    = useState(String(thisYear))
+  const [monthF,   setMonthF]   = useState('all')
+
+  const MONTHS = [
+    { v: 'all', l: 'Të gjithë muajt' },
+    { v: '01', l: 'Janar' },   { v: '02', l: 'Shkurt' }, { v: '03', l: 'Mars' },
+    { v: '04', l: 'Prill' },   { v: '05', l: 'Maj' },    { v: '06', l: 'Qershor' },
+    { v: '07', l: 'Korrik' },  { v: '08', l: 'Gusht' },  { v: '09', l: 'Shtator' },
+    { v: '10', l: 'Tetor' },   { v: '11', l: 'Nëntor' }, { v: '12', l: 'Dhjetor' },
+  ]
+
+  const years = useMemo(() => {
+    const ys = new Set(payments.map(p => p.date?.slice(0, 4)).filter(Boolean))
+    return [...ys].sort((a, b) => b - a)
+  }, [payments])
+
+  const filtered = useMemo(() => payments.filter(p => {
+    if (partnerF !== 'all' && p.depositedTo !== partnerF) return false
+    if (yearF !== 'all' && !p.date?.startsWith(yearF)) return false
+    if (monthF !== 'all' && p.date?.slice(5, 7) !== monthF) return false
+    return true
+  }), [payments, partnerF, yearF, monthF])
+
+  const totalAmt = filtered.reduce((s, p) => s + (p.amount || 0), 0)
+  const totalNet = filtered.reduce((s, p) => s + (p.net || 0), 0)
+
+  const doExport = () => {
+    const header = ['Data', 'Fatura ID', 'Klienti', 'Shuma (€)', 'Fee (€)', 'Neto (€)', 'Metoda', 'Llogaria', 'Referenca', 'Depozituar tek']
+    const rows = filtered.map(p => [
+      p.date || '', p.invoiceId || '', p.customer || '',
+      (p.amount || 0).toFixed(2), (p.fee || 0).toFixed(2), (p.net || 0).toFixed(2),
+      p.method || '', p.depositAccount || '', p.reference || '', p.depositedTo || '',
+    ])
+    const totalNet2  = filtered.reduce((s, p) => s + (p.net || 0), 0)
+    const totalFee2  = filtered.reduce((s, p) => s + (p.fee || 0), 0)
+    const totalGross = filtered.reduce((s, p) => s + (p.amount || 0), 0)
+    const beltiNet   = filtered.filter(p => p.depositedTo === 'Belti').reduce((s, p) => s + (p.net || 0), 0)
+    const enndiNet   = filtered.filter(p => p.depositedTo === 'Enndy').reduce((s, p) => s + (p.net || 0), 0)
+    const summary = [
+      [], ['=== PËRMBLEDHJE ==='],
+      ['Bruto:', totalGross.toFixed(2)], ['Fee:', totalFee2.toFixed(2)], ['Neto:', totalNet2.toFixed(2)],
+      [], ['=== NDARJA ==='],
+      ['Tek Enndy:', enndiNet.toFixed(2)], ['Tek Belti:', beltiNet.toFixed(2)],
+      ['50% secili:', (totalNet2 / 2).toFixed(2)],
+    ]
+    const csv = '﻿' + [header, ...rows, ...summary].map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n')
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+    const url  = URL.createObjectURL(blob)
+    const a    = document.createElement('a')
+    const lp   = partnerF === 'all' ? 'te-gjitha' : partnerF.toLowerCase()
+    const lm   = monthF === 'all' ? '' : `-${monthF}`
+    a.href     = url
+    a.download = `pagesat-${lp}-${yearF}${lm}.csv`
+    a.click()
+    URL.revokeObjectURL(url)
+    onClose()
+  }
+
+  const Chip = ({ active, onClick, children }) => (
+    <button onClick={onClick}
+      className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${active ? 'bg-blue-500 text-white shadow-sm' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}>
+      {children}
+    </button>
+  )
+
+  return (
+    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center">
+              <Download size={15} className="text-blue-500"/>
+            </div>
+            <div>
+              <h2 className="font-bold text-gray-800 text-sm">Eksporto Pagesat</h2>
+              <p className="text-[11px] text-gray-400">Zgjidh filtrat dhe shkarko CSV</p>
+            </div>
+          </div>
+          <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-400 transition-colors">
+            <X size={16}/>
+          </button>
+        </div>
+
+        <div className="p-6 space-y-5">
+          <div>
+            <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Partneri</label>
+            <div className="flex flex-wrap gap-1.5">
+              {[{ v: 'all', l: 'Të gjithë' }, { v: 'Enndy', l: 'Enndy' }, { v: 'Belti', l: 'Belti' }].map(f => (
+                <Chip key={f.v} active={partnerF === f.v} onClick={() => setPartnerF(f.v)}>{f.l}</Chip>
+              ))}
+            </div>
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Viti</label>
+            <div className="flex flex-wrap gap-1.5">
+              <Chip active={yearF === 'all'} onClick={() => setYearF('all')}>Të gjithë</Chip>
+              {years.map(y => <Chip key={y} active={yearF === y} onClick={() => setYearF(y)}>{y}</Chip>)}
+            </div>
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Muaji</label>
+            <div className="flex flex-wrap gap-1.5">
+              {MONTHS.map(m => <Chip key={m.v} active={monthF === m.v} onClick={() => setMonthF(m.v)}>{m.l}</Chip>)}
+            </div>
+          </div>
+          <div className="bg-blue-50 rounded-xl px-4 py-3 flex items-center justify-between">
+            <div>
+              <p className="text-xs text-blue-500 font-semibold">{filtered.length} pagesa të zgjedhura</p>
+              <p className="text-sm font-bold text-blue-700 mt-0.5">Neto: €{totalNet.toLocaleString('de-DE', { minimumFractionDigits: 2 })} · Bruto: €{totalAmt.toLocaleString('de-DE', { minimumFractionDigits: 2 })}</p>
+            </div>
+            <CheckCircle2 size={20} className={filtered.length > 0 ? 'text-blue-400' : 'text-gray-300'}/>
+          </div>
+        </div>
+
+        <div className="flex gap-2 px-6 pb-6">
+          <button onClick={doExport} disabled={filtered.length === 0}
+            className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-blue-500 hover:bg-blue-600 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-bold rounded-xl transition-colors">
+            <Download size={15}/> Shkarko CSV
+          </button>
+          <button onClick={onClose}
+            className="px-5 py-2.5 border border-gray-200 text-gray-500 text-sm font-semibold rounded-xl hover:bg-gray-50 transition-colors">
+            Anulo
+          </button>
+        </div>
+      </div>
+    </div>
+  )
 }
 
 /* ── CSV export ── */
@@ -114,6 +249,7 @@ export default function Payments() {
   const [sortDir,     setSortDir]   = useState('desc')
   const [deletingId,  setDeletingId] = useState(null)
   const [importOpen,  setImportOpen] = useState(false)
+  const [showExport,  setShowExport] = useState(false)
 
   // Detect if we're in form mode (page like "payments:create" or "payments:ID:edit")
   const pageMatch = page.split(':')
@@ -250,7 +386,7 @@ export default function Payments() {
           {/* Export - Hidden on mobile */}
           <button
             className="hidden sm:flex w-9 h-9 items-center justify-center rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
-            onClick={() => exportCSV(filtered, monthFilt !== 'all' ? monthFilt : '', partnerFilt, fmt)}
+            onClick={() => setShowExport(true)}
             title="Eksporto"
           >
             <Download size={16}/>
@@ -611,6 +747,8 @@ export default function Payments() {
           )}
         </div>
       )}
+
+      {showExport && <ExportPanel payments={payments} onClose={() => setShowExport(false)} />}
 
       {/* Floating Action Button - Mobile only */}
       <div

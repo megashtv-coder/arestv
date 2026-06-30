@@ -2,6 +2,7 @@ import { useState, useRef, useMemo, useEffect, lazy, Suspense } from 'react'
 import {
   Receipt, Trash2, Plus, Search, X, RefreshCw,
   ChevronLeft, ChevronRight, Filter, Users, Wallet, FileSpreadsheet,
+  Download, CheckCircle2,
 } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import { formatDate } from '../utils/dateFormat'
@@ -59,6 +60,142 @@ function SlideSelect({ value, onChange, options, placeholder = 'Zgjidh llogarin�
       {!value && placeholder && (
         <p className="text-xs text-gray-300 mt-1.5">{placeholder}</p>
       )}
+    </div>
+  )
+}
+
+/* ── Export Panel ── */
+function ExportPanel({ expenses, onClose }) {
+  const today = new Date()
+  const thisYear = today.getFullYear()
+
+  const [partnerF,  setPartnerF]  = useState('all')
+  const [categoryF, setCategoryF] = useState('all')
+  const [yearF,     setYearF]     = useState(String(thisYear))
+  const [monthF,    setMonthF]    = useState('all')
+
+  const MONTHS = [
+    { v: 'all', l: 'Të gjithë muajt' },
+    { v: '01', l: 'Janar' },   { v: '02', l: 'Shkurt' }, { v: '03', l: 'Mars' },
+    { v: '04', l: 'Prill' },   { v: '05', l: 'Maj' },    { v: '06', l: 'Qershor' },
+    { v: '07', l: 'Korrik' },  { v: '08', l: 'Gusht' },  { v: '09', l: 'Shtator' },
+    { v: '10', l: 'Tetor' },   { v: '11', l: 'Nëntor' }, { v: '12', l: 'Dhjetor' },
+  ]
+
+  const years = useMemo(() => {
+    const ys = new Set(expenses.map(e => e.date?.slice(0, 4)).filter(Boolean))
+    return [...ys].sort((a, b) => b - a)
+  }, [expenses])
+
+  const categories = useMemo(() => {
+    return [...new Set(expenses.map(e => e.category).filter(Boolean))].sort()
+  }, [expenses])
+
+  const filtered = useMemo(() => expenses.filter(e => {
+    if (partnerF !== 'all' && e.paidBy !== partnerF) return false
+    if (categoryF !== 'all' && e.category !== categoryF) return false
+    if (yearF !== 'all' && !e.date?.startsWith(yearF)) return false
+    if (monthF !== 'all' && e.date?.slice(5, 7) !== monthF) return false
+    return true
+  }), [expenses, partnerF, categoryF, yearF, monthF])
+
+  const totalAmt = filtered.reduce((s, e) => s + (e.amount || 0), 0)
+
+  const doExport = () => {
+    const header = ['ID', 'Data', 'Kategoria', 'Tipi', 'Furnitori', 'Shuma (€)', 'Paguar nga', 'Nga llogaria', 'Referenca', 'Periodik']
+    const rows = filtered.map(e => [
+      e.id || '', e.date || '', e.category || '', e.type || '',
+      e.vendor || '', (e.amount || 0).toFixed(2),
+      e.paidBy || '', e.paidFrom || '', e.reference || '',
+      e.recurring ? 'Po' : 'Jo',
+    ])
+    const csv = '﻿' + [header, ...rows].map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n')
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+    const url  = URL.createObjectURL(blob)
+    const a    = document.createElement('a')
+    const lp   = partnerF === 'all' ? 'te-gjitha' : partnerF.toLowerCase()
+    const lm   = monthF === 'all' ? '' : `-${monthF}`
+    a.href     = url
+    a.download = `shpenzimet-${lp}-${yearF}${lm}.csv`
+    a.click()
+    URL.revokeObjectURL(url)
+    onClose()
+  }
+
+  const Chip = ({ active, onClick, children }) => (
+    <button onClick={onClick}
+      className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${active ? 'bg-blue-500 text-white shadow-sm' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}>
+      {children}
+    </button>
+  )
+
+  return (
+    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 sticky top-0 bg-white">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center">
+              <Download size={15} className="text-blue-500"/>
+            </div>
+            <div>
+              <h2 className="font-bold text-gray-800 text-sm">Eksporto Shpenzimet</h2>
+              <p className="text-[11px] text-gray-400">Zgjidh filtrat dhe shkarko CSV</p>
+            </div>
+          </div>
+          <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-400 transition-colors">
+            <X size={16}/>
+          </button>
+        </div>
+
+        <div className="p-6 space-y-5">
+          <div>
+            <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Partneri</label>
+            <div className="flex flex-wrap gap-1.5">
+              {[{ v: 'all', l: 'Të gjithë' }, { v: 'Enndy', l: 'Enndy' }, { v: 'Belti', l: 'Belti' }].map(f => (
+                <Chip key={f.v} active={partnerF === f.v} onClick={() => setPartnerF(f.v)}>{f.l}</Chip>
+              ))}
+            </div>
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Kategoria</label>
+            <div className="flex flex-wrap gap-1.5">
+              <Chip active={categoryF === 'all'} onClick={() => setCategoryF('all')}>Të gjitha</Chip>
+              {categories.map(c => <Chip key={c} active={categoryF === c} onClick={() => setCategoryF(c)}>{c}</Chip>)}
+            </div>
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Viti</label>
+            <div className="flex flex-wrap gap-1.5">
+              <Chip active={yearF === 'all'} onClick={() => setYearF('all')}>Të gjithë</Chip>
+              {years.map(y => <Chip key={y} active={yearF === y} onClick={() => setYearF(y)}>{y}</Chip>)}
+            </div>
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Muaji</label>
+            <div className="flex flex-wrap gap-1.5">
+              {MONTHS.map(m => <Chip key={m.v} active={monthF === m.v} onClick={() => setMonthF(m.v)}>{m.l}</Chip>)}
+            </div>
+          </div>
+          <div className="bg-blue-50 rounded-xl px-4 py-3 flex items-center justify-between">
+            <div>
+              <p className="text-xs text-blue-500 font-semibold">{filtered.length} shpenzime të zgjedhura</p>
+              <p className="text-sm font-bold text-blue-700 mt-0.5">Totali: €{totalAmt.toLocaleString('de-DE', { minimumFractionDigits: 2 })}</p>
+            </div>
+            <CheckCircle2 size={20} className={filtered.length > 0 ? 'text-blue-400' : 'text-gray-300'}/>
+          </div>
+        </div>
+
+        <div className="flex gap-2 px-6 pb-6">
+          <button onClick={doExport} disabled={filtered.length === 0}
+            className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-blue-500 hover:bg-blue-600 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-bold rounded-xl transition-colors">
+            <Download size={15}/> Shkarko CSV
+          </button>
+          <button onClick={onClose}
+            className="px-5 py-2.5 border border-gray-200 text-gray-500 text-sm font-semibold rounded-xl hover:bg-gray-50 transition-colors">
+            Anulo
+          </button>
+        </div>
+      </div>
     </div>
   )
 }
@@ -300,6 +437,7 @@ export default function ExpensesPage() {
   const [sortField,      setSortField]     = useState('date')
   const [sortDir,        setSortDir]       = useState('desc')
   const [importOpen,     setImportOpen]    = useState(false)
+  const [showExport,     setShowExport]    = useState(false)
   const [openDropdown,   setOpenDropdown]  = useState(null)
 
   // Detect if we're in form mode (page like "expenses:create" or "expenses:ID:edit")
@@ -420,6 +558,15 @@ export default function ExpensesPage() {
           <p className="text-sm text-gray-400 mt-0.5">Totali: {fmt(allTotal)}</p>
         </div>
         <div className="flex items-center gap-1.5">
+          {/* Export - Hidden on mobile */}
+          <button
+            className="hidden sm:flex w-9 h-9 items-center justify-center rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
+            onClick={() => setShowExport(true)}
+            title="Eksporto"
+          >
+            <Download size={16}/>
+          </button>
+
           {/* Import - Hidden on mobile */}
           <button
             className="hidden sm:flex w-9 h-9 items-center justify-center rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
@@ -754,6 +901,8 @@ export default function ExpensesPage() {
           </div>
         </div>
       )}
+
+      {showExport && <ExportPanel expenses={expenses} onClose={() => setShowExport(false)} />}
 
       {/* Floating Action Button - Mobile only */}
       <div
