@@ -1056,6 +1056,9 @@ export default function Invoices() {
     return () => document.removeEventListener('click', handleClickOutside)
   }, [])
 
+  /* ── FORM MODE takes priority over preview ── */
+  if (isFormMode) return InvoiceFormPanel
+
   /* ── SPLIT LAYOUT (when a preview is selected) ── */
   if (preview) {
     return (
