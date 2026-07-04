@@ -283,10 +283,7 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer }) {
         <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
 
           {/* ── Row 1: Country + FATURË title ── */}
-          <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-gray-50">
-            <div className="flex items-center gap-1.5 text-sm text-gray-500 font-medium">
-              {inv.country ? <><span>🌍</span><span>{inv.country}</span></> : <span className="invisible">—</span>}
-            </div>
+          <div className="flex items-center justify-end px-6 pt-5 pb-4 border-b border-gray-50">
             <div className="text-right">
               <h2 className="text-xl font-light tracking-[0.28em] text-blue-600 uppercase">Faturë</h2>
               <p className="text-[11px] text-gray-400 mt-0.5 font-medium">Numri i faturës <span className="font-bold text-gray-600">{inv.id}</span></p>
