@@ -1098,47 +1098,28 @@ export default function Invoices() {
             </div>
           </div>
 
-          <div className="flex gap-1 px-3 py-2 border-b border-gray-100 overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
-            {[
-              { key: 'all',     label: 'Të gjitha' },
-              { key: 'pending', label: 'Pritje' },
-              { key: 'overdue', label: 'Vonuar' },
-              { key: 'paid',    label: 'Paguar' },
-              { key: 'draft',   label: 'Draft' },
-              { key: 'void',    label: 'Void' },
-            ].map(f => (
-              <button
-                key={f.key}
-                onClick={() => setStatus(f.key)}
-                className={`flex-shrink-0 text-xs px-2.5 py-1 rounded-full transition-colors ${
-                  statusFilter === f.key
-                    ? 'bg-blue-500 text-white'
-                    : 'text-gray-500 hover:bg-gray-100'
-                }`}
-              >
-                {f.label}
-              </button>
-            ))}
-          </div>
-          {/* Filter lloji klienti — panel anësor */}
-          <div className="flex gap-1 px-3 py-2 border-b border-gray-100 overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
-            {[
-              { key: 'all',        label: 'Të gjithë' },
-              { key: 'individual', label: '👤 Klientë' },
-              { key: 'reseller',   label: '🔄 Reseller' },
-            ].map(f => (
-              <button
-                key={f.key}
-                onClick={() => setTypeFilter(f.key)}
-                className={`flex-shrink-0 text-xs px-2.5 py-1 rounded-full transition-colors ${
-                  typeFilter === f.key
-                    ? 'bg-purple-600 text-white'
-                    : 'text-gray-500 hover:bg-gray-100'
-                }`}
-              >
-                {f.label}
-              </button>
-            ))}
+          <div className="flex gap-2 px-3 py-2 border-b border-gray-100">
+            <select
+              value={statusFilter}
+              onChange={e => setStatus(e.target.value)}
+              className="flex-1 text-xs bg-gray-50 border border-gray-200 rounded-lg px-2 py-1.5 outline-none focus:border-blue-400 cursor-pointer text-gray-600"
+            >
+              <option value="all">Të gjitha</option>
+              <option value="pending">Pritje</option>
+              <option value="overdue">Vonuar</option>
+              <option value="paid">Paguar</option>
+              <option value="draft">Draft</option>
+              <option value="void">Void</option>
+            </select>
+            <select
+              value={typeFilter}
+              onChange={e => setTypeFilter(e.target.value)}
+              className="flex-1 text-xs bg-gray-50 border border-gray-200 rounded-lg px-2 py-1.5 outline-none focus:border-blue-400 cursor-pointer text-gray-600"
+            >
+              <option value="all">Të gjithë</option>
+              <option value="individual">👤 Klientë</option>
+              <option value="reseller">🔄 Reseller</option>
+            </select>
           </div>
 
           <div className="flex-1 overflow-y-auto">
