@@ -307,7 +307,15 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer }) {
               </button>
               {inv.country && <p className="text-xs text-gray-500 mt-1">{inv.country}</p>}
               {inv.email   && <p className="text-xs text-gray-400 mt-0.5">{inv.email}</p>}
-              {custObj?.phone && <p className="text-xs text-gray-400 mt-0.5">📞 {custObj.phone}</p>}
+              {custObj?.phone && (
+                <p className="text-xs text-gray-400 mt-0.5">
+                  📞 {custObj.phone}
+                  {inv.referent && <span className="ml-1.5 text-purple-500 font-semibold">· ref: {inv.referent}</span>}
+                </p>
+              )}
+              {!custObj?.phone && inv.referent && (
+                <p className="text-xs text-purple-500 font-semibold mt-0.5">ref: {inv.referent}</p>
+              )}
             </div>
             <div className="text-left sm:text-right sm:min-w-[190px]">
               <p className="text-[10px] text-gray-400 uppercase tracking-widest font-bold mb-1">Totali për pagesë</p>
@@ -346,9 +354,9 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer }) {
                   </span>
                 </div>
                 {inv.subscriptionExpiry && (
-                  <div className="flex items-center justify-between sm:justify-end gap-4">
-                    <span className="text-gray-400">Skadimi:</span>
-                    <span className="font-medium text-blue-600 w-24 text-right">{formatDate(inv.subscriptionExpiry)}</span>
+                  <div className="flex items-center justify-between sm:justify-end gap-4 bg-blue-50 rounded-lg px-2 py-1 -mx-2">
+                    <span className="text-blue-500 font-semibold">📅 Skadimi:</span>
+                    <span className="font-bold text-blue-600 w-24 text-right">{formatDate(inv.subscriptionExpiry)}</span>
                   </div>
                 )}
                 {inv.notifyDate && (
