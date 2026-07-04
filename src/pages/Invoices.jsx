@@ -281,99 +281,95 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer }) {
 
       <div className="flex-1 overflow-y-auto bg-gray-50 p-4 space-y-4">
         <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-          <div className="flex justify-between items-start px-6 pt-6 pb-3">
-            <div>
-              {inv.country && (
-                <div className="flex items-center gap-1.5">
-                  <span className="text-gray-400 text-sm">🌍</span>
-                  <span className="text-sm font-semibold text-gray-600">{inv.country}</span>
-                </div>
-              )}
+
+          {/* ── Row 1: Country + FATURË title ── */}
+          <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-gray-50">
+            <div className="flex items-center gap-1.5 text-sm text-gray-500 font-medium">
+              {inv.country ? <><span>🌍</span><span>{inv.country}</span></> : <span className="invisible">—</span>}
             </div>
             <div className="text-right">
-              <h2 className="text-2xl font-light tracking-[0.22em] text-blue-600 uppercase">Faturë</h2>
-              <p className="text-xs font-bold text-gray-500 mt-0.5">Numri i faturës {inv.id}</p>
+              <h2 className="text-xl font-light tracking-[0.28em] text-blue-600 uppercase">Faturë</h2>
+              <p className="text-[11px] text-gray-400 mt-0.5 font-medium">Numri i faturës <span className="font-bold text-gray-600">{inv.id}</span></p>
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row justify-between gap-4 sm:gap-6 px-6 pb-5">
+          {/* ── Row 2: Klienti | Totali ── */}
+          <div className="grid grid-cols-2 gap-4 px-6 py-4 border-b border-gray-50">
+            {/* Klienti */}
             <div>
-              <p className="text-[10px] text-gray-400 uppercase tracking-widest font-bold mb-1.5">Fatura për</p>
+              <p className="text-[9px] text-gray-400 uppercase tracking-widest font-bold mb-1.5">Fatura për</p>
               <button
                 onClick={() => setSelectedCustomer(custObj)}
-                className="font-bold text-blue-600 text-base leading-tight hover:text-blue-800 hover:underline cursor-pointer transition-colors text-left"
+                className="font-bold text-blue-600 text-sm leading-snug hover:text-blue-800 hover:underline cursor-pointer transition-colors text-left block"
               >
                 {inv.customer}
               </button>
-              {inv.country && <p className="text-xs text-gray-500 mt-1">{inv.country}</p>}
+              {inv.country && <p className="text-xs text-gray-400 mt-0.5">{inv.country}</p>}
               {inv.email   && <p className="text-xs text-gray-400 mt-0.5">{inv.email}</p>}
               {custObj?.phone && (
-                <p className="text-xs text-gray-400 mt-0.5">
-                  📞 {custObj.phone}
-                  {inv.referent && <span className="ml-1.5 text-purple-500 font-semibold">· ref: {inv.referent}</span>}
+                <p className="text-xs text-gray-400 mt-0.5 flex items-center gap-1 flex-wrap">
+                  <span>📞 {custObj.phone}</span>
+                  {inv.referent && <span className="text-purple-500 font-semibold">· ref: {inv.referent}</span>}
                 </p>
               )}
               {!custObj?.phone && inv.referent && (
                 <p className="text-xs text-purple-500 font-semibold mt-0.5">ref: {inv.referent}</p>
               )}
             </div>
-            <div className="text-left sm:text-right sm:min-w-[190px]">
-              <p className="text-[10px] text-gray-400 uppercase tracking-widest font-bold mb-1">Totali për pagesë</p>
-              <p className="text-[1.7rem] font-bold text-gray-800 leading-tight mb-3">{fmt(inv.amount)}</p>
-
-              {/* Shfaq shumin e paguar dhe balancën për faturat e paguara pjesërisht */}
+            {/* Totali */}
+            <div>
+              <p className="text-[9px] text-gray-400 uppercase tracking-widest font-bold mb-1.5">Totali për pagesë</p>
+              <p className="text-2xl font-bold text-gray-800 leading-tight">{fmt(inv.amount)}</p>
+              <div className="mt-1.5">
+                <StatusBadge status={isOverdue && inv.status !== 'paid' && inv.status !== 'void' ? 'overdue' : inv.status}/>
+              </div>
               {inv.status === 'partial' && inv.paidAmount > 0 && (
-                <div className="mb-3 p-2 bg-blue-50 rounded-lg border border-blue-100">
-                  <div className="flex items-center justify-between sm:justify-end gap-4 text-xs mb-1.5">
+                <div className="mt-2 p-2 bg-blue-50 rounded-lg border border-blue-100 text-xs">
+                  <div className="flex justify-between mb-1">
                     <span className="text-blue-500 font-semibold">Paguar:</span>
-                    <span className="font-bold text-blue-600 w-24 text-right">{fmt(inv.paidAmount)}</span>
+                    <span className="font-bold text-blue-600">{fmt(inv.paidAmount)}</span>
                   </div>
-                  <div className="flex items-center justify-between sm:justify-end gap-4 text-xs">
+                  <div className="flex justify-between mb-1.5">
                     <span className="text-amber-600 font-semibold">Mbetur:</span>
-                    <span className="font-bold text-amber-700 w-24 text-right">{fmt(inv.amount - inv.paidAmount)}</span>
+                    <span className="font-bold text-amber-700">{fmt(inv.amount - inv.paidAmount)}</span>
                   </div>
-                  {/* Indikatori i progresit */}
-                  <div className="mt-2 w-full bg-gray-200 rounded-full h-2">
-                    <div
-                      className="bg-blue-500 h-2 rounded-full transition-all"
-                      style={{ width: `${(inv.paidAmount / inv.amount) * 100}%` }}
-                    ></div>
+                  <div className="w-full bg-gray-200 rounded-full h-1.5">
+                    <div className="bg-blue-500 h-1.5 rounded-full" style={{ width: `${(inv.paidAmount / inv.amount) * 100}%` }}/>
                   </div>
                 </div>
               )}
-
-              <div className="space-y-1 text-xs">
-                <div className="flex items-center justify-between sm:justify-end gap-4">
-                  <span className="text-gray-400">Data e faturës:</span>
-                  <span className="font-medium text-gray-700 w-24 text-right">{formatDate(inv.date)}</span>
-                </div>
-                <div className="flex items-center justify-between sm:justify-end gap-4">
-                  <span className="text-gray-400">Afati i pagesës:</span>
-                  <span className={`font-semibold w-24 text-right ${isOverdue ? 'text-red-500' : 'text-gray-700'}`}>
-{formatDate(inv.due)}
-                  </span>
-                </div>
-                {inv.subscriptionExpiry && (
-                  <div className="flex items-center justify-between sm:justify-end gap-4 bg-blue-50 rounded-lg px-2 py-1 -mx-2">
-                    <span className="text-blue-500 font-semibold">📅 Skadimi:</span>
-                    <span className="font-bold text-blue-600 w-24 text-right">{formatDate(inv.subscriptionExpiry)}</span>
-                  </div>
-                )}
-                {inv.notifyDate && (
-                  <div className="flex items-center justify-between sm:justify-end gap-4">
-                    <span className="text-gray-400">🔔 Njoftim:</span>
-                    <span className="font-medium text-orange-600 w-24 text-right">{inv.notifyDate}</span>
-                  </div>
-                )}
-              </div>
-              <div className="mt-2 flex justify-start sm:justify-end">
-                <StatusBadge status={isOverdue && inv.status !== 'paid' && inv.status !== 'void' ? 'overdue' : inv.status}/>
-              </div>
             </div>
           </div>
 
-          <div className="px-6 pb-4 overflow-x-auto">
-            <table className="w-full text-xs border-collapse min-w-[380px]">
+          {/* ── Row 3: Datat (4 kolona) ── */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-gray-100 border-b border-gray-100">
+            <div className="bg-white px-4 py-3">
+              <p className="text-[9px] text-gray-400 uppercase tracking-wider font-bold mb-1">Data e faturës:</p>
+              <p className="text-sm font-semibold text-gray-700">{formatDate(inv.date)}</p>
+            </div>
+            <div className="bg-white px-4 py-3">
+              <p className="text-[9px] text-gray-400 uppercase tracking-wider font-bold mb-1">Afati i pagesës:</p>
+              <p className={`text-sm font-semibold ${isOverdue ? 'text-red-500' : 'text-gray-700'}`}>{formatDate(inv.due) || '—'}</p>
+            </div>
+            {inv.subscriptionExpiry && (
+              <div className="bg-blue-50 px-4 py-3">
+                <p className="text-[9px] text-blue-400 uppercase tracking-wider font-bold mb-1">📅 Skadimi:</p>
+                <p className="text-sm font-bold text-blue-600">{formatDate(inv.subscriptionExpiry)}</p>
+              </div>
+            )}
+            {inv.notifyDate && (
+              <div className="bg-amber-50 px-4 py-3">
+                <p className="text-[9px] text-amber-500 uppercase tracking-wider font-bold mb-1">🔔 Njoftim:</p>
+                <p className="text-sm font-bold text-amber-600">{inv.notifyDate}</p>
+              </div>
+            )}
+            {!inv.subscriptionExpiry && !inv.notifyDate && <div className="bg-white"/>}
+            {!inv.subscriptionExpiry && !inv.notifyDate && <div className="bg-white"/>}
+          </div>
+
+          {/* ── Tabela e artikujve ── */}
+          <div className="px-6 py-4 overflow-x-auto">
+            <table className="w-full text-xs border-collapse min-w-[360px]">
               <thead>
                 <tr className="bg-blue-500 text-white">
                   <th className="text-center px-3 py-2.5 rounded-tl-lg w-8">#</th>
@@ -398,7 +394,7 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer }) {
                 ))}
               </tbody>
             </table>
-            <div className="flex justify-end mt-3 pt-3 border-t-2 border-blue-200">
+            <div className="flex justify-end mt-3 pt-3 border-t-2 border-blue-100">
               <div className="flex items-center gap-10 text-sm">
                 <span className="font-bold text-blue-600">Totali</span>
                 <span className="font-bold text-gray-800 text-base">{fmt(inv.amount)}</span>
