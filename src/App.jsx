@@ -6,7 +6,7 @@ import Login from './pages/Login'
 import Sidebar from './components/Sidebar'
 import Header from './components/Header'
 import { Toast, LoadingSkeleton } from './components/UI'
-import { useEffect, useState, lazy, Suspense } from 'react'
+import { useEffect, useState, useRef, lazy, Suspense } from 'react'
 import AutoNotificationService from './services/AutoNotificationService'
 import BackupService from './services/BackupService'
 
@@ -52,9 +52,12 @@ function OrgAppLayout() {
 
   const PageComponent = ORG_PAGES[basePage] || Dashboard
 
-  // Check for pending auto-notifications when app loads
+  // Check for pending auto-notifications once per session (not on every state change)
+  const notifChecked = useRef(false)
   useEffect(() => {
-    // Get configured advance days from localStorage
+    if (notifChecked.current || invoices.length === 0) return
+    notifChecked.current = true
+
     const savedAdvanceDays = localStorage.getItem('arestv_notif_advance_days')
     const advanceDays = savedAdvanceDays ? parseInt(savedAdvanceDays) : 7
 
@@ -62,7 +65,6 @@ function OrgAppLayout() {
 
     if (pending.length > 0) {
       console.log(`📬 Found ${pending.length} pending subscription notifications`)
-      // Auto-send notifications
       const sentCount = AutoNotificationService.checkAndSendNotifications(invoices, customers, advanceDays)
       if (sentCount > 0) {
         showToast(`📱 ${sentCount} njoftim u dërgua nëpërmjet WhatsApp`, 'success')

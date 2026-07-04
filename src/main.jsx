@@ -11,8 +11,8 @@ const updateSW = registerSW({
   },
   onOfflineReady() {},
   onRegisteredSW(swUrl, r) {
-    // Kontrollo për update çdo 60 sekonda
-    if (r) setInterval(() => r.update(), 60 * 1000)
+    // Kontrollo për update vetëm kur tab bëhet aktiv
+    if (r) document.addEventListener('visibilitychange', () => { if (!document.hidden) r.update() })
   },
 })
 
