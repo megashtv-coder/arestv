@@ -57,7 +57,7 @@ function InvoiceListCard({ inv, selected, onClick }) {
   else if (inv.status === 'void')  { dueLabel = 'VOID';           dueCls = 'text-gray-400 line-through' }
   else if (inv.status === 'draft') { dueLabel = 'DRAFT';          dueCls = 'text-gray-400' }
   else if (diff === null)          { dueLabel = '—';              dueCls = 'text-gray-400' }
-  else if (diff < 0)               { dueLabel = 'VONUAR';         dueCls = 'text-blue-500' }
+  else if (diff < 0)               { dueLabel = 'VONUAR';         dueCls = 'text-red-500' }
   else if (diff === 0)             { dueLabel = 'SOT SKADON';     dueCls = 'text-orange-500 font-black' }
   else if (diff === 1)             { dueLabel = 'NGA 1 DITË';     dueCls = 'text-amber-500' }
   else                             { dueLabel = `NGA ${diff} DITË`; dueCls = 'text-amber-500' }
@@ -264,15 +264,15 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer }) {
       )}
 
       {isOverdue && canContact && (
-        <div className="flex items-center justify-between gap-3 bg-blue-50 border-b border-blue-100 px-4 py-2">
+        <div className="flex items-center justify-between gap-3 bg-red-50 border-b border-red-100 px-4 py-2">
           <div className="min-w-0">
-            <p className="text-xs font-semibold text-blue-600">⚠ Fatura ka kaluar afatin e pagesës — {formatDate(inv.due)}</p>
-            <p className="text-[11px] text-blue-400 mt-0.5 truncate italic">"{buildReminderMsg(inv).slice(0, 90)}…"</p>
+            <p className="text-xs font-semibold text-red-600">⚠ Fatura ka kaluar afatin e pagesës — {formatDate(inv.due)}</p>
+            <p className="text-[11px] text-red-400 mt-0.5 truncate italic">"{buildReminderMsg(inv).slice(0, 90)}…"</p>
           </div>
           <a
             href={`https://wa.me/${rawPhone}?text=${msgEncoded}`}
             target="_blank" rel="noopener noreferrer"
-            className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold rounded-lg"
+            className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white text-xs font-bold rounded-lg"
           >
             <MessageCircle size={12}/> Dërgo rikujtim
           </a>
@@ -791,8 +791,8 @@ function KanbanBoard({ invoices, setPreview }) {
       label:   'Jashtë afatit',
       count:   overdue.length,
       items:   overdue,
-      accent:  'border-t-blue-500',
-      badge:   'bg-blue-50 text-blue-600',
+      accent:  'border-t-red-500',
+      badge:   'bg-red-50 text-red-600',
       empty:   'Nuk ka fatura të vonuara',
     },
     {
@@ -1270,9 +1270,9 @@ export default function Invoices() {
               <p className="text-xs text-amber-600 font-medium">Në pritje</p>
               <p className="text-base font-bold text-amber-700">{fmt(pendingValue)}</p>
             </div>
-            <div className="bg-blue-50 rounded-lg p-3 border border-blue-100 min-w-max">
-              <p className="text-xs text-blue-600 font-medium">Të vonuara</p>
-              <p className="text-base font-bold text-blue-700">{fmt(overdueValue)}</p>
+            <div className="bg-red-50 rounded-lg p-3 border border-red-100 min-w-max">
+              <p className="text-xs text-red-500 font-medium">Të vonuara</p>
+              <p className="text-base font-bold text-red-600">{fmt(overdueValue)}</p>
             </div>
             <div className="bg-blue-50 rounded-lg p-3 border border-blue-100 min-w-max">
               <p className="text-xs text-blue-500 font-medium">Papaguara Sellers</p>
@@ -1328,9 +1328,9 @@ export default function Invoices() {
             <p className="text-xs text-amber-600 font-medium">Në pritje</p>
             <p className="text-base font-bold text-amber-700">{fmt(pendingValue)}</p>
           </div>
-          <div className="flex-1 bg-blue-50 rounded-lg p-3 border border-blue-100">
-            <p className="text-xs text-blue-600 font-medium">Të vonuara</p>
-            <p className="text-base font-bold text-blue-700">{fmt(overdueValue)}</p>
+          <div className="flex-1 bg-red-50 rounded-lg p-3 border border-red-100">
+            <p className="text-xs text-red-500 font-medium">Të vonuara</p>
+            <p className="text-base font-bold text-red-600">{fmt(overdueValue)}</p>
           </div>
           <div className="flex-1 bg-blue-50 rounded-lg p-3 border border-blue-100">
             <p className="text-xs text-blue-500 font-medium">Papaguara Sellers</p>
@@ -1675,7 +1675,7 @@ export default function Invoices() {
                           <div className="flex items-center gap-1.5">
                             {inv.customer}
                             {hasLongOverdue(inv.customer) && (
-                              <span className="text-blue-600 flex-shrink-0" title="Fatura më shumë se 3 javë të vonuara">▲</span>
+                              <span className="text-red-500 flex-shrink-0" title="Fatura më shumë se 3 javë të vonuara">▲</span>
                             )}
                             {getCustomerType(inv.customer) === 'reseller' && (
                               <span className="text-[10px] font-bold px-1.5 py-0.5 bg-purple-100 text-purple-600 rounded-full flex-shrink-0">Reseller</span>
