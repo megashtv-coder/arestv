@@ -896,12 +896,7 @@ export default function Invoices() {
   const [perPage,      setPerPage]  = useState(50)
   const [sortField,    setSortField]= useState('id')
   const [sortDir,      setSortDir]  = useState('desc')
-  const [preview,      setPreviewRaw] = useState(() => sessionStorage.getItem('arestv_invoice_preview') || null)
-  const setPreview = (id) => {
-    if (id) sessionStorage.setItem('arestv_invoice_preview', id)
-    else sessionStorage.removeItem('arestv_invoice_preview')
-    setPreviewRaw(id)
-  }
+  const [preview,      setPreview]   = useState(null)
   const [viewMode,     setViewMode] = useState('table')
   const [importOpen,   setImportOpen] = useState(false)
   const [showExport,   setShowExport] = useState(false)
