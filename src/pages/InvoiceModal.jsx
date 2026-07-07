@@ -661,6 +661,7 @@ export default function InvoiceModal({ initialData, isFormPage, onClose }) {
       </FormGroup>
 
       {/* ── Referenti (Sales Person) ── */}
+      <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 sm:p-4">
       <FormGroup label="Referenti (Përfaqësuesi)">
         <Combobox
           options={[
@@ -692,6 +693,7 @@ export default function InvoiceModal({ initialData, isFormPage, onClose }) {
           addNewLabel="Shto referent të ri"
         />
       </FormGroup>
+      </div>
 
       {/* Quick add customer form */}
       {addingCustomer && (
