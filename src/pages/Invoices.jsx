@@ -1,4 +1,4 @@
-import { useState, useEffect, lazy, Suspense, useMemo } from 'react'
+import { useState, useEffect, lazy, Suspense, useMemo, memo, useCallback } from 'react'
 import {
   FileText, Download, Pencil, Trash2, CreditCard,
   MessageCircle, Send, XCircle, X, MessageSquare,
@@ -763,6 +763,96 @@ function KanbanCard({ inv, onOpen }) {
   )
 }
 
+/* ── Self-contained actions dropdown — isolates open/close state so parent never re-renders ── */
+const RowActions = memo(function RowActions({ inv, canContact, isOverdue, rawPhone, onNavigate, onPayment, onDelete, isMobile }) {
+  const [open, setOpen] = useState(false)
+  const close = useCallback(() => setOpen(false), [])
+
+  // Close on outside click
+  useEffect(() => {
+    if (!open) return
+    const handler = () => setOpen(false)
+    document.addEventListener('click', handler)
+    return () => document.removeEventListener('click', handler)
+  }, [open])
+
+  const msg = canContact ? encodeURIComponent(buildReminderMsg(inv)) : ''
+
+  return (
+    <div className="relative flex-shrink-0" onClick={e => e.stopPropagation()}>
+      <button
+        className={isMobile
+          ? "w-10 h-10 flex items-center justify-center rounded-lg bg-gray-100 text-gray-600 hover:bg-blue-500 hover:text-white"
+          : "icon-btn text-gray-400 hover:text-gray-600 hover:bg-gray-100"}
+        title="Veprimet"
+        onClick={e => { e.stopPropagation(); setOpen(o => !o) }}
+      >
+        <MoreVertical size={isMobile ? 18 : 16}/>
+      </button>
+
+      {open && (
+        <div className={`absolute right-0 top-full mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-2xl z-[9999]`}>
+          <button
+            className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 flex items-center gap-2 border-b border-gray-100"
+            onClick={() => { onNavigate(`invoices:${inv.id}:edit`); close() }}
+          >
+            <Pencil size={14}/> Ndrysho
+          </button>
+
+          {canContact && (
+            <a
+              href={`https://wa.me/${rawPhone}?text=${msg}`}
+              target="_blank" rel="noopener noreferrer"
+              className={`block w-full text-left px-4 py-2 text-sm hover:bg-green-50 flex items-center gap-2 border-b border-gray-100 ${isOverdue ? 'text-orange-600' : 'text-green-600'}`}
+              onClick={() => { MessageLogService.logWhatsAppMessage(inv.customer, rawPhone, buildReminderMsg(inv), inv.id, 'prepared'); close() }}
+            >
+              <MessageCircle size={14}/> Pagesa WA {isOverdue && '🔔'}
+            </a>
+          )}
+
+          {!isMobile && canContact && (
+            <a
+              href={`https://t.me/+${rawPhone}`}
+              target="_blank" rel="noopener noreferrer"
+              className="block w-full text-left px-4 py-2 text-sm text-sky-600 hover:bg-sky-50 flex items-center gap-2 border-b border-gray-100"
+              onClick={close}
+            >
+              <Send size={14}/> Pagesa TG
+            </a>
+          )}
+
+          {!isMobile && canContact && (
+            <a
+              href={`https://wa.me/${rawPhone}?text=${encodeURIComponent(buildInvoiceMsg(inv))}`}
+              target="_blank" rel="noopener noreferrer"
+              className="block w-full text-left px-4 py-2 text-sm text-blue-500 hover:bg-blue-50 flex items-center gap-2 border-b border-gray-100"
+              onClick={() => { MessageLogService.logWhatsAppMessage(inv.customer, rawPhone, buildInvoiceMsg(inv), inv.id, 'prepared'); close() }}
+            >
+              <FileText size={14}/> Dërgo faturën WA
+            </a>
+          )}
+
+          {(inv.status === 'pending' || inv.status === 'overdue') && (
+            <button
+              className="w-full text-left px-4 py-2 text-sm text-emerald-600 hover:bg-emerald-50 flex items-center gap-2 border-b border-gray-100"
+              onClick={() => { onPayment(inv); close() }}
+            >
+              <CreditCard size={14}/> {isMobile ? 'Pagesa' : 'Regjistro Pagesën'}
+            </button>
+          )}
+
+          <button
+            className="w-full text-left px-4 py-2 text-sm text-blue-600 hover:bg-blue-50 flex items-center gap-2"
+            onClick={() => { onDelete(inv.id); close() }}
+          >
+            <Trash2 size={14}/> Fshi
+          </button>
+        </div>
+      )}
+    </div>
+  )
+})
+
 function KanbanBoard({ invoices, setPreview }) {
   const today = new Date().toISOString().slice(0, 10)
 
@@ -900,7 +990,6 @@ export default function Invoices() {
   const [viewMode,     setViewMode] = useState('table')
   const [importOpen,   setImportOpen] = useState(false)
   const [showExport,   setShowExport] = useState(false)
-  const [openDropdown, setOpenDropdown] = useState(null) // Track which row's dropdown is open
   const [selectedCustomer, setSelectedCustomer] = useState(null) // Customer details modal
   const [selected,     setSelected] = useState(new Set()) // Selected invoices for bulk delete
   const [confirmDelAll, setConfirmDelAll] = useState(false) // Confirmation dialog for bulk delete
@@ -1044,12 +1133,6 @@ export default function Invoices() {
     })
   }
 
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = () => setOpenDropdown(null)
-    document.addEventListener('click', handleClickOutside)
-    return () => document.removeEventListener('click', handleClickOutside)
-  }, [])
 
   /* ── FORM MODE takes priority over preview ── */
   if (isFormMode) return InvoiceFormPanel
@@ -1498,73 +1581,17 @@ export default function Invoices() {
                     </div>
                   </div>
 
-                  {/* Col 3: Actions - Larger Button */}
-                  <div className="relative flex-shrink-0">
-                    <button
-                      className="w-10 h-10 flex items-center justify-center rounded-lg bg-gray-100 text-gray-600 hover:bg-blue-500 hover:text-white transition-all duration-150"
-                      onClick={e => {
-                        e.stopPropagation()
-                        setOpenDropdown(openDropdown === inv.id ? null : inv.id)
-                      }}
-                    >
-                      <MoreVertical size={18}/>
-                    </button>
-
-                    {/* Dropdown */}
-                    {openDropdown === inv.id && (
-                      <div className="absolute right-0 top-full mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-xl z-50">
-                        <button
-                          className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-blue-50 flex items-center gap-2 border-b"
-                          onClick={e => {
-                            e.stopPropagation()
-                            navigate(`invoices:${inv.id}:edit`)
-                            setOpenDropdown(null)
-                          }}
-                        >
-                          <Pencil size={14}/> Ndrysho
-                        </button>
-
-                        {canContact && (
-                          <a
-                            href={`https://wa.me/${rawPhone}?text=${encodeURIComponent(buildReminderMsg(inv))}`}
-                            target="_blank" rel="noopener noreferrer"
-                            className={`block w-full text-left px-3 py-2 text-sm hover:bg-green-50 flex items-center gap-2 border-b ${isOverdue ? 'text-orange-600' : 'text-green-600'}`}
-                            onClick={e => {
-                              e.stopPropagation()
-                              MessageLogService.logWhatsAppMessage(inv.customer, rawPhone, buildReminderMsg(inv), inv.id, 'prepared')
-                              setOpenDropdown(null)
-                            }}
-                          >
-                            <MessageCircle size={14}/> Pagesa WA {isOverdue && '🔔'}
-                          </a>
-                        )}
-
-                        {(inv.status === 'pending' || inv.status === 'overdue') && (
-                          <button
-                            className="w-full text-left px-3 py-2 text-sm text-emerald-600 hover:bg-emerald-50 flex items-center gap-2 border-b"
-                            onClick={e => {
-                              e.stopPropagation()
-                              setModal(<PaymentModal invoice={inv} onClose={closeModal}/>)
-                              setOpenDropdown(null)
-                            }}
-                          >
-                            <CreditCard size={14}/> Pagesa
-                          </button>
-                        )}
-
-                        <button
-                          className="w-full text-left px-3 py-2 text-sm text-blue-600 hover:bg-blue-50 flex items-center gap-2"
-                          onClick={e => {
-                            e.stopPropagation()
-                            setDeletingInvoiceId(inv.id)
-                            setOpenDropdown(null)
-                          }}
-                        >
-                          <Trash2 size={14}/> Fshi
-                        </button>
-                      </div>
-                    )}
-                  </div>
+                  {/* Col 3: Actions */}
+                  <RowActions
+                    inv={inv}
+                    canContact={canContact}
+                    isOverdue={isOverdue}
+                    rawPhone={rawPhone}
+                    onNavigate={navigate}
+                    onPayment={inv => setModal(<PaymentModal invoice={inv} onClose={closeModal}/>)}
+                    onDelete={setDeletingInvoiceId}
+                    isMobile={true}
+                  />
                 </div>
               </div>
             )
@@ -1642,9 +1669,6 @@ export default function Invoices() {
                     const canContact = (inv.status === 'pending' || inv.status === 'overdue' || inv.status === 'paid') && rawPhone
                     const isOverdue  = inv.status === 'overdue' ||
                       (inv.due && inv.due < today && inv.status !== 'paid' && inv.status !== 'void')
-                    const msg = canContact ? encodeURIComponent(buildReminderMsg(inv)) : ''
-                    const isDropdownOpen = openDropdown === inv.id
-
                     return (
                       <tr
                         key={inv.id}
@@ -1686,124 +1710,18 @@ export default function Invoices() {
                           {formatDate(inv.due)}
                         </td>
                         <td className="table-td"><StatusBadge status={isOverdue && inv.status !== 'paid' && inv.status !== 'void' ? 'overdue' : inv.status}/></td>
-                        <td className="table-td relative" onClick={e => e.stopPropagation()}>
+                        <td className="table-td" onClick={e => e.stopPropagation()}>
                           <div className="flex items-center justify-end">
-                            <div className="relative">
-                              <button
-                                className="icon-btn text-gray-400 hover:text-gray-600 hover:bg-gray-100"
-                                title="Veprimet"
-                                data-invoice-id={inv.id}
-                                onClick={e => {
-                                  e.stopPropagation()
-                                  setOpenDropdown(isDropdownOpen ? null : inv.id)
-                                }}
-                              >
-                                <MoreVertical size={16}/>
-                              </button>
-
-                              {/* Dropdown Menu - absolute positioning as overlay, scrolls with row */}
-                              {isDropdownOpen && (
-                                <div
-                                  className="absolute w-48 bg-white border border-gray-200 rounded-lg shadow-2xl z-[9999] pointer-events-auto top-full right-0 mt-1"
-                                >
-                                  <button
-                                    className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 flex items-center gap-2 border-b border-gray-100"
-                                    onClick={e => {
-                                      e.stopPropagation()
-                                      navigate(`invoices:${inv.id}:edit`)
-                                      setOpenDropdown(null)
-                                    }}
-                                  >
-                                    <Pencil size={14}/> Ndrysho
-                                  </button>
-
-                                  {canContact && (
-                                    <a
-                                      href={`https://wa.me/${rawPhone}?text=${msg}`}
-                                      target="_blank" rel="noopener noreferrer"
-                                      className={`block w-full text-left px-4 py-2 text-sm hover:bg-green-50 flex items-center gap-2 border-b border-gray-100 ${isOverdue ? 'text-orange-600' : 'text-green-600'}`}
-                                      onClick={e => {
-                                        e.stopPropagation()
-                                        // Log reminder message as "prepared"
-                                        const loggedMsg = MessageLogService.logWhatsAppMessage(inv.customer, rawPhone, buildReminderMsg(inv), inv.id, 'prepared')
-
-                                        // Auto-mark as "sent" after 5 seconds
-                                        if (loggedMsg?.id) {
-                                          setTimeout(() => {
-                                            MessageLogService.updateMessageStatus(loggedMsg.id, 'sent')
-                                          }, 5000)
-                                        }
-
-                                        setOpenDropdown(null)
-                                      }}
-                                    >
-                                      <MessageCircle size={14}/> Pagesa WA {isOverdue && '🔔'}
-                                    </a>
-                                  )}
-
-                                  {canContact && (
-                                    <a
-                                      href={`https://t.me/+${rawPhone}`}
-                                      target="_blank" rel="noopener noreferrer"
-                                      className="block w-full text-left px-4 py-2 text-sm text-sky-600 hover:bg-sky-50 flex items-center gap-2 border-b border-gray-100"
-                                      onClick={e => {
-                                        e.stopPropagation()
-                                        setOpenDropdown(null)
-                                      }}
-                                    >
-                                      <Send size={14}/> Pagesa TG
-                                    </a>
-                                  )}
-
-                                  {canContact && (
-                                    <a
-                                      href={`https://wa.me/${rawPhone}?text=${encodeURIComponent(buildInvoiceMsg(inv))}`}
-                                      target="_blank" rel="noopener noreferrer"
-                                      className="block w-full text-left px-4 py-2 text-sm text-blue-500 hover:bg-blue-50 flex items-center gap-2 border-b border-gray-100"
-                                      onClick={e => {
-                                        e.stopPropagation()
-                                        // Log as "prepared" when button is clicked
-                                        const loggedMsg = MessageLogService.logWhatsAppMessage(inv.customer, rawPhone, buildInvoiceMsg(inv), inv.id, 'prepared')
-
-                                        // Auto-mark as "sent" after 5 seconds (assumes user sends it)
-                                        if (loggedMsg?.id) {
-                                          setTimeout(() => {
-                                            MessageLogService.updateMessageStatus(loggedMsg.id, 'sent')
-                                          }, 5000)
-                                        }
-
-                                        setOpenDropdown(null)
-                                      }}
-                                    >
-                                      <FileText size={14}/> Dërgo faturën WA
-                                    </a>
-                                  )}
-
-                                  {(inv.status === 'pending' || inv.status === 'overdue') && (
-                                    <button
-                                      className="w-full text-left px-4 py-2 text-sm text-emerald-600 hover:bg-emerald-50 flex items-center gap-2 border-b border-gray-100"
-                                      onClick={e => {
-                                        e.stopPropagation()
-                                        setModal(<PaymentModal invoice={inv} onClose={closeModal}/>)
-                                        setOpenDropdown(null)
-                                      }}
-                                    >
-                                      <CreditCard size={14}/> Regjistro Pagesën
-                                    </button>
-                                  )}
-
-                                  <button
-                                    className="w-full text-left px-4 py-2 text-sm text-blue-600 hover:bg-blue-50 flex items-center gap-2"
-                                    onClick={e => {
-                                      e.stopPropagation()
-                                      setDeletingInvoiceId(inv.id)
-                                    }}
-                                  >
-                                    <Trash2 size={14}/> Fshi
-                                  </button>
-                                </div>
-                              )}
-                            </div>
+                            <RowActions
+                              inv={inv}
+                              canContact={canContact}
+                              isOverdue={isOverdue}
+                              rawPhone={rawPhone}
+                              onNavigate={navigate}
+                              onPayment={inv => setModal(<PaymentModal invoice={inv} onClose={closeModal}/>)}
+                              onDelete={setDeletingInvoiceId}
+                              isMobile={false}
+                            />
                           </div>
                         </td>
                         <td className="table-td w-8 text-center hidden sm:table-cell" onClick={e => e.stopPropagation()}>
