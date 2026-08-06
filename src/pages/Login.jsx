@@ -31,17 +31,10 @@ export default function Login({ users = [], onLogin }) {
         {/* Logo */}
         <div className="flex flex-col items-center mb-8">
           <img
-            src="/aflow-logo.png"
+            src="/aflow-logo.svg"
             alt="A Flow"
-            className="w-20 h-20 rounded-2xl object-contain mb-3 shadow-lg"
-            onError={e => {
-              e.currentTarget.style.display = 'none'
-              e.currentTarget.nextSibling.style.display = 'flex'
-            }}
+            className="w-24 h-24 object-contain mb-2"
           />
-          <div className="w-14 h-14 bg-blue-600 rounded-2xl items-center justify-center text-white shadow-lg mb-3 hidden">
-            <span className="text-base font-black tracking-tight">AF</span>
-          </div>
           <h1 className="text-xl font-bold text-gray-900">A Flow</h1>
           <p className="text-xs text-gray-400 mt-0.5">Menaxhimi Financiar</p>
         </div>

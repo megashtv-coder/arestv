@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none" role="img" aria-label="A Flow">
+  <rect width="512" height="512" rx="112" fill="#F4F7FE" />
+  <g transform="translate(72 84) scale(3.0)">
+  <g stroke="#4C7DEA" stroke-width="11" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14 102 L46 24" />
+    <path d="M46 24 L72 102" />
+    <path d="M6 94 C22 94 26 72 52 72 C76 72 86 52 104 31" />
+  </g>
+  <path d="M115 21 L108.6 48.6 L87.4 27.4 Z" fill="#4C7DEA" />
+  </g>
+</svg>

@@ -8,7 +8,7 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       injectRegister: 'auto',
-      includeAssets: ['favicon.ico', 'pwa_icon_192.png', 'pwa_icon_512.png', 'aflow-logo.png'],
+      includeAssets: ['aflow-icon.svg', 'aflow-logo.png', 'apple-touch-icon-180x180.png'],
       workbox: {
         cacheId: 'arestv-v1',
         skipWaiting: true,
@@ -41,7 +41,8 @@ export default defineConfig({
         categories: ['finance', 'business', 'productivity'],
         icons: [
           { src: 'pwa_icon_192.png', sizes: '192x192', type: 'image/png' },
-          { src: 'pwa_icon_512.png', sizes: '512x512', type: 'image/png' }
+          { src: 'pwa_icon_512.png', sizes: '512x512', type: 'image/png' },
+          { src: 'maskable-icon-512x512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' }
         ]
       }
     })

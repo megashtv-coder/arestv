@@ -91,14 +91,10 @@ export default function Sidebar() {
         {/* Logo + Collapse Button */}
         <div className={`flex items-center border-b border-gray-100 dark:border-gray-800 h-12 sm:h-14 flex-shrink-0 ${sidebarCollapsed ? 'justify-center px-2' : 'gap-2 sm:gap-3 px-3 sm:px-4'}`}>
           <img
-            src="/aflow-logo.png"
+            src="/aflow-logo.svg"
             alt="A Flow"
-            className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg object-contain flex-shrink-0"
-            onError={e => { e.currentTarget.style.display='none'; e.currentTarget.nextSibling.style.display='flex' }}
+            className="w-7 h-7 sm:w-8 sm:h-8 object-contain flex-shrink-0"
           />
-          <div className="w-7 h-7 sm:w-8 sm:h-8 bg-gradient-to-br from-blue-500 to-blue-700 rounded-lg items-center justify-center text-white flex-shrink-0 shadow-sm hidden">
-            <span className="text-[10px] font-black tracking-tight">AF</span>
-          </div>
           {!sidebarCollapsed && (
             <div className="flex-1 min-w-0">
               <div className="text-xs sm:text-sm font-black text-gray-900 dark:text-gray-100 leading-none tracking-tight">A Flow</div>
