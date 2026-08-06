@@ -377,8 +377,9 @@ export default function Payments() {
   return (
     <div>
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
         <div>
+          <p className="text-[11px] font-bold text-blue-500 uppercase tracking-widest mb-0.5">Financa</p>
           <h2 className="text-xl font-bold text-gray-800">Pagesat e Marra</h2>
           <p className="text-sm text-gray-400 mt-0.5">{payments.length} pagesa gjithsej</p>
         </div>
@@ -421,6 +422,21 @@ export default function Payments() {
           />
         </Suspense>
       )}
+
+      {/* Stats strip */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+        {[
+          { label: 'Bruto',  value: fmt(totalGross), color: 'text-gray-800',    border: 'border-l-blue-400' },
+          { label: 'Fee',    value: fmt(totalFee),   color: 'text-amber-600',   border: 'border-l-amber-400' },
+          { label: 'Neto',   value: fmt(totalNet),   color: 'text-emerald-600', border: 'border-l-emerald-400' },
+          { label: 'Enndy / Belti', value: `${fmt(enndiNet)} / ${fmt(beltiNet)}`, color: 'text-purple-600', border: 'border-l-purple-400' },
+        ].map(s => (
+          <div key={s.label} className={`bg-white rounded-xl border border-gray-100 border-l-4 ${s.border} px-4 py-3`}>
+            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{s.label}</p>
+            <p className={`text-sm font-bold mt-0.5 ${s.color}`}>{s.value}</p>
+          </div>
+        ))}
+      </div>
 
       {/* Filtrat */}
       <div className="flex flex-wrap items-center gap-2 mb-4">

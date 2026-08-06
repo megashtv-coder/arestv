@@ -995,8 +995,8 @@ export default function Invoices() {
   const [confirmDelAll, setConfirmDelAll] = useState(false) // Confirmation dialog for bulk delete
   const [deletingInvoiceId, setDeletingInvoiceId] = useState(null) // Track which invoice is being deleted from dropdown
 
-  const getCustomerType = name =>
-    customers.find(c => c.name === name)?.type || 'individual'
+  const customerTypeMap = useMemo(() => new Map(customers.map(c => [c.name, c.type])), [customers])
+  const getCustomerType = useCallback(name => customerTypeMap.get(name) || 'individual', [customerTypeMap])
 
   function handleImportInvoices(rows) {
     console.error('🔴🔴🔴 IMPORT ORGID CHECK:')
@@ -1121,17 +1121,18 @@ export default function Invoices() {
     return c?.phone || ''
   }
 
-  // Check if customer has invoices overdue more than 3 weeks (21 days)
-  const hasLongOverdue = (customerName) => {
-    const today = new Date()
-    return invoices.some(inv => {
-      if (inv.customer !== customerName || inv.status === 'paid' || inv.status === 'void') return false
-      if (!inv.due) return false
-      const dueDate = new Date(inv.due)
-      const daysOverdue = Math.floor((today - dueDate) / (1000 * 60 * 60 * 24))
-      return daysOverdue > 21  // More than 3 weeks
+  // Pre-compute set of customers with 3+ week overdue invoices (O(n) once, then O(1) per row)
+  const longOverdueSet = useMemo(() => {
+    const now = new Date()
+    const s = new Set()
+    invoices.forEach(inv => {
+      if (inv.status === 'paid' || inv.status === 'void' || !inv.due) return
+      const daysOverdue = Math.floor((now - new Date(inv.due)) / (1000 * 60 * 60 * 24))
+      if (daysOverdue > 21) s.add(inv.customer)
     })
-  }
+    return s
+  }, [invoices])
+  const hasLongOverdue = name => longOverdueSet.has(name)
 
 
   /* ── FORM MODE takes priority over preview ── */
@@ -1249,6 +1250,7 @@ export default function Invoices() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
           <div>
+            <p className="text-[11px] font-bold text-blue-500 uppercase tracking-widest mb-0.5">Faturim</p>
             <h2 className="text-xl font-bold text-gray-800">Faturat</h2>
             <p className="text-sm text-gray-400 mt-0.5">{invoices.length} fatura gjithsej</p>
           </div>
@@ -1324,6 +1326,7 @@ export default function Invoices() {
       <div className="flex flex-col gap-3 mb-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
+            <p className="text-[11px] font-bold text-blue-500 uppercase tracking-widest mb-0.5">Faturim</p>
             <h2 className="text-xl font-bold text-gray-800">Faturat</h2>
             <p className="text-sm text-gray-400 mt-0.5">{invoices.length} fatura gjithsej</p>
           </div>

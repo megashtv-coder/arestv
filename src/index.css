@@ -13,22 +13,22 @@
 
 @layer components {
   .sidebar-item {
-    @apply flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer text-gray-500 text-sm font-medium transition-all duration-150 select-none;
+    @apply flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer text-gray-500 text-sm font-medium transition-all duration-150 select-none;
   }
   .sidebar-item:hover {
-    @apply bg-gray-50 text-gray-700;
+    @apply bg-gray-100/70 text-gray-700;
   }
   .sidebar-item.active {
-    @apply bg-blue-50 text-blue-500 font-semibold;
+    @apply bg-blue-500 text-white font-semibold shadow-sm;
   }
   .card {
-    @apply bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden;
+    @apply bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden;
   }
   .btn {
     @apply inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-150 cursor-pointer select-none whitespace-nowrap;
   }
   .btn-primary {
-    @apply bg-blue-500 text-white hover:bg-blue-600 active:scale-95 shadow-sm hover:shadow-md;
+    @apply bg-blue-500 text-white hover:bg-blue-600 active:scale-95 shadow-sm hover:shadow-md font-bold;
   }
   .btn-outline {
     @apply bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 hover:border-gray-300 active:scale-95;
@@ -59,10 +59,10 @@
     @apply bg-white rounded-xl border border-gray-100 p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md cursor-default;
   }
   .table-th {
-    @apply text-xs font-bold text-gray-400 uppercase tracking-wide px-4 py-2 text-left;
+    @apply text-[11px] font-bold text-gray-400 uppercase tracking-wider px-4 py-3 text-left;
   }
   .table-td {
-    @apply px-4 py-2 text-sm text-gray-600 border-b border-gray-50;
+    @apply px-4 py-3 text-sm text-gray-600 border-b border-gray-50;
   }
   .icon-btn {
     @apply w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-all duration-150 cursor-pointer;
@@ -113,7 +113,7 @@
 .dark .stat-card { @apply bg-gray-800 border-gray-700; }
 .dark .sidebar-item { @apply text-gray-400; }
 .dark .sidebar-item:hover { @apply bg-gray-700 text-gray-200; }
-.dark .sidebar-item.active { @apply bg-blue-800/50 text-blue-400; }
+.dark .sidebar-item.active { @apply bg-blue-600 text-white; }
 .dark .table-td { @apply border-gray-700 text-gray-300; }
 .dark .table-th { @apply text-gray-500; }
 .dark .modal { @apply bg-gray-800; }

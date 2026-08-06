@@ -28,18 +28,18 @@ const CAT_COLORS = {
 
 /* ── Stat card komponent ── */
 function KpiCard({ icon: Icon, iconBg, iconColor, label, value, sub, subColor = 'text-gray-400', onClick }) {
-  const base = "bg-white rounded-xl border border-gray-100 p-5 flex items-start gap-4 transition-all duration-200"
-  const interactive = onClick ? "cursor-pointer hover:-translate-y-0.5 hover:shadow-md hover:border-blue-200" : "hover:-translate-y-0.5 hover:shadow-md"
+  const base = "bg-white rounded-xl border border-gray-100 p-5 flex items-start gap-4 transition-all duration-200 relative overflow-hidden"
+  const interactive = onClick ? "cursor-pointer hover:-translate-y-0.5 hover:shadow-lg hover:border-blue-100" : "hover:-translate-y-0.5 hover:shadow-md"
   return (
-    <div className={`${base} ${interactive}`} onClick={onClick}>
+    <div className={`${base} ${interactive}`} onClick={onClick} style={{ borderLeft: `3px solid ${iconColor}` }}>
       <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: iconBg }}>
         <Icon size={18} style={{ color: iconColor }} />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide truncate">{label}</p>
-        <p className="text-xl font-bold text-gray-800 mt-0.5 truncate">{value}</p>
+        <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider truncate">{label}</p>
+        <p className="text-xl font-bold text-gray-800 mt-1 truncate">{value}</p>
         {sub && <p className={`text-xs mt-1 font-medium truncate ${subColor}`}>{sub}</p>}
-        {onClick && <p className="text-[10px] text-blue-400 mt-1">Kliko për detaje →</p>}
+        {onClick && <p className="text-[10px] text-blue-400 mt-1.5 font-semibold">Kliko për detaje →</p>}
       </div>
     </div>
   )
@@ -94,7 +94,8 @@ export default function Dashboard() {
   }, [payments, expenses])
 
   /* ── Helpers ── */
-  const getType = name => customers.find(c => c.name === name)?.type || 'individual'
+  const customerTypeMap = useMemo(() => new Map(customers.map(c => [c.name, c.type])), [customers])
+  const getType = name => customerTypeMap.get(name) || 'individual'
 
   /* ── KPI 1: Klientë aktivë ── */
   // Fatura jo-void me subscriptionExpiry në të ardhmen (paguar ose jo)
@@ -133,12 +134,17 @@ export default function Dashboard() {
     invoices.filter(i => i.status === 'pending' || i.status === 'overdue'),
     [invoices]
   )
-  const pendingKlient   = pendingInvoices.filter(i => getType(i.customer) !== 'reseller')
-  const pendingReseller = pendingInvoices.filter(i => getType(i.customer) === 'reseller')
-
-  const pendingKlientAmt   = pendingKlient.reduce((s, i) => s + i.amount, 0)
-  const pendingResellerAmt = pendingReseller.reduce((s, i) => s + i.amount, 0)
-  const pendingTotalAmt    = pendingInvoices.reduce((s, i) => s + i.amount, 0)
+  const { pendingKlient, pendingReseller, pendingKlientAmt, pendingResellerAmt, pendingTotalAmt } = useMemo(() => {
+    const klient   = pendingInvoices.filter(i => getType(i.customer) !== 'reseller')
+    const reseller = pendingInvoices.filter(i => getType(i.customer) === 'reseller')
+    return {
+      pendingKlient:      klient,
+      pendingReseller:    reseller,
+      pendingKlientAmt:   klient.reduce((s, i) => s + i.amount, 0),
+      pendingResellerAmt: reseller.reduce((s, i) => s + i.amount, 0),
+      pendingTotalAmt:    pendingInvoices.reduce((s, i) => s + i.amount, 0),
+    }
+  }, [pendingInvoices, customerTypeMap])
 
   /* ── Shpenzime sipas kategorisë (me filter) ── */
   const { catData, catTotal, top5Types } = useMemo(() => {
@@ -213,15 +219,15 @@ export default function Dashboard() {
       {/* ── Veprime të shpejta ── */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
         {[
-          { icon: FilePlus,    title: 'Krijo Faturë',  sub: 'Faturë e re shpejt',    action: () => navigate('invoices:create') },
-          { icon: UserPlus,    title: 'Shto Klient',   sub: 'Regjistro klient të ri', action: () => navigate('customers:create') },
-          { icon: ReceiptText, title: 'Shpenzim i ri', sub: 'Regjistro shpenzim',     action: () => navigate('expenses:create') },
-        ].map(({ icon: Icon, title, sub, action }) => (
+          { icon: FilePlus,    title: 'Krijo Faturë',  sub: 'Faturë e re shpejt',    action: () => navigate('invoices:create'),  bg: 'bg-blue-500',    hover: 'hover:bg-blue-600' },
+          { icon: UserPlus,    title: 'Shto Klient',   sub: 'Regjistro klient të ri', action: () => navigate('customers:create'), bg: 'bg-emerald-500', hover: 'hover:bg-emerald-600' },
+          { icon: ReceiptText, title: 'Shpenzim i ri', sub: 'Regjistro shpenzim',     action: () => navigate('expenses:create'),  bg: 'bg-orange-500',  hover: 'hover:bg-orange-600' },
+        ].map(({ icon: Icon, title, sub, action, bg, hover }) => (
           <button key={title} onClick={action}
-            className="text-left bg-white border border-gray-100 rounded-xl p-4 hover:border-blue-300 hover:bg-blue-50 transition-all duration-150 group hover:-translate-y-0.5 hover:shadow-md">
-            <Icon size={20} className="text-blue-500 mb-2 group-hover:scale-110 transition-transform" />
-            <p className="text-xs sm:text-sm font-semibold text-gray-700">{title}</p>
-            <p className="text-xs text-gray-400 mt-0.5 hidden sm:block">{sub}</p>
+            className={`text-left ${bg} ${hover} text-white rounded-xl p-4 transition-all duration-150 group hover:-translate-y-0.5 hover:shadow-lg active:scale-95`}>
+            <Icon size={20} className="mb-2 opacity-90 group-hover:scale-110 transition-transform" />
+            <p className="text-xs sm:text-sm font-bold">{title}</p>
+            <p className="text-xs opacity-75 mt-0.5 hidden sm:block">{sub}</p>
           </button>
         ))}
       </div>

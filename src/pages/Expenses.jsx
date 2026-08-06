@@ -552,8 +552,9 @@ export default function ExpensesPage() {
   return (
     <div>
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
         <div>
+          <p className="text-[11px] font-bold text-orange-500 uppercase tracking-widest mb-0.5">Financa</p>
           <h2 className="text-xl font-bold text-gray-800">Shpenzimet</h2>
           <p className="text-sm text-gray-400 mt-0.5">Totali: {fmt(allTotal)}</p>
         </div>
@@ -597,35 +598,26 @@ export default function ExpensesPage() {
       )}
 
       {/* Stat cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white rounded-xl border border-gray-100 px-5 py-4">
-          <p className="text-xs text-gray-400 font-medium mb-1">Totali</p>
-          <p className="text-xl font-bold text-blue-500">- {fmt(allTotal)}</p>
-          <p className="text-xs text-gray-400 mt-0.5">{expenses.length} shpenzime</p>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
+        <div className="bg-white rounded-xl border border-gray-100 border-l-4 border-l-blue-400 px-4 py-3">
+          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Totali</p>
+          <p className="text-base font-bold text-blue-500">- {fmt(allTotal)}</p>
+          <p className="text-[11px] text-gray-400 mt-0.5">{expenses.length} shpenzime</p>
         </div>
-        <div className="bg-white rounded-xl border border-gray-100 px-5 py-4">
-          <div className="flex items-center gap-1.5 mb-1">
-            <Users size={13} className="text-blue-400" />
-            <p className="text-xs text-gray-400 font-medium">Enndy</p>
-          </div>
-          <p className="text-xl font-bold text-blue-500">- {fmt(enndiTotal)}</p>
-          <p className="text-xs text-gray-400 mt-0.5">{Math.round(enndiTotal/allTotal*100)||0}% e totalit</p>
+        <div className="bg-white rounded-xl border border-gray-100 border-l-4 border-l-blue-300 px-4 py-3">
+          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Enndy</p>
+          <p className="text-base font-bold text-blue-500">- {fmt(enndiTotal)}</p>
+          <p className="text-[11px] text-gray-400 mt-0.5">{Math.round(enndiTotal/allTotal*100)||0}% e totalit</p>
         </div>
-        <div className="bg-white rounded-xl border border-gray-100 px-5 py-4">
-          <div className="flex items-center gap-1.5 mb-1">
-            <Users size={13} className="text-purple-400" />
-            <p className="text-xs text-gray-400 font-medium">Belti</p>
-          </div>
-          <p className="text-xl font-bold text-purple-600">- {fmt(beltiTotal)}</p>
-          <p className="text-xs text-gray-400 mt-0.5">{Math.round(beltiTotal/allTotal*100)||0}% e totalit</p>
+        <div className="bg-white rounded-xl border border-gray-100 border-l-4 border-l-purple-400 px-4 py-3">
+          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Belti</p>
+          <p className="text-base font-bold text-purple-600">- {fmt(beltiTotal)}</p>
+          <p className="text-[11px] text-gray-400 mt-0.5">{Math.round(beltiTotal/allTotal*100)||0}% e totalit</p>
         </div>
-        <div className="bg-white rounded-xl border border-gray-100 px-5 py-4">
-          <div className="flex items-center gap-1.5 mb-1">
-            <RefreshCw size={13} className="text-emerald-400" />
-            <p className="text-xs text-gray-400 font-medium">Të Rregullta</p>
-          </div>
-          <p className="text-xl font-bold text-gray-700">- {fmt(recurTotal)}</p>
-          <p className="text-xs text-gray-400 mt-0.5">{recurringItems.length} shpenzime aktive</p>
+        <div className="bg-white rounded-xl border border-gray-100 border-l-4 border-l-emerald-400 px-4 py-3">
+          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Të Rregullta</p>
+          <p className="text-base font-bold text-gray-700">- {fmt(recurTotal)}</p>
+          <p className="text-[11px] text-gray-400 mt-0.5">{recurringItems.length} aktive</p>
         </div>
       </div>
 

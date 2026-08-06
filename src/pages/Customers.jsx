@@ -743,8 +743,9 @@ export default function Customers() {
   return (
     <div>
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
         <div>
+          <p className="text-[11px] font-bold text-emerald-600 uppercase tracking-widest mb-0.5">CRM</p>
           <h2 className="text-xl font-bold text-gray-800">Klientët</h2>
           <p className="text-sm text-gray-400 mt-0.5">{customers.length} klientë aktiv</p>
         </div>
@@ -779,25 +780,28 @@ export default function Customers() {
       )}
 
       {/* Mini stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white rounded-xl border border-gray-100 px-5 py-4">
-          <p className="text-2xl font-bold text-gray-800">{customers.length}</p>
-          <p className="text-xs text-gray-400 mt-0.5 font-medium">Klientë gjithsej</p>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
+        <div className="bg-white rounded-xl border border-gray-100 border-l-4 border-l-gray-400 px-4 py-3">
+          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Gjithsej</p>
+          <p className="text-xl font-bold text-gray-800">{customers.length}</p>
+          <p className="text-[11px] text-gray-400 mt-0.5">klientë</p>
         </div>
-        <div className="bg-white rounded-xl border border-gray-100 px-5 py-4">
-          <p className="text-2xl font-bold text-blue-500">{totalIndividuals}</p>
-          <p className="text-xs text-gray-400 mt-0.5 font-medium">Individualë</p>
+        <div className="bg-white rounded-xl border border-gray-100 border-l-4 border-l-blue-400 px-4 py-3">
+          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Individualë</p>
+          <p className="text-xl font-bold text-blue-500">{totalIndividuals}</p>
+          <p className="text-[11px] text-gray-400 mt-0.5">klientë</p>
         </div>
-        <div className="bg-white rounded-xl border border-gray-100 px-5 py-4">
-          <p className="text-2xl font-bold text-purple-600">{totalResellers}</p>
-          <p className="text-xs text-gray-400 mt-0.5 font-medium">Resellers</p>
+        <div className="bg-white rounded-xl border border-gray-100 border-l-4 border-l-purple-400 px-4 py-3">
+          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Resellers</p>
+          <p className="text-xl font-bold text-purple-600">{totalResellers}</p>
+          <p className="text-[11px] text-gray-400 mt-0.5">reseller</p>
         </div>
-        <div className="bg-white rounded-xl border border-gray-100 px-5 py-4">
-          <p className="text-2xl font-bold text-emerald-600">{usedCountries.length}</p>
-          <p className="text-xs text-gray-400 mt-0.5 font-medium flex flex-wrap items-center gap-1">
-            Shtete
+        <div className="bg-white rounded-xl border border-gray-100 border-l-4 border-l-emerald-400 px-4 py-3">
+          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Shtete</p>
+          <p className="text-xl font-bold text-emerald-600">{usedCountries.length}</p>
+          <p className="text-[11px] text-gray-400 mt-0.5 flex flex-wrap items-center gap-1">
             {topCountry && (
-              <span className="text-gray-400 font-normal">· {topCountry.co} ({topCountry.count})</span>
+              <span>{topCountry.co} ({topCountry.count})</span>
             )}
           </p>
         </div>

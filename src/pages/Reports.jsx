@@ -1111,6 +1111,7 @@ export default function Reports() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
+          <p className="text-[11px] font-bold text-purple-500 uppercase tracking-widest mb-0.5">Analiza</p>
           <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">Raportet</h2>
           <p className="text-sm text-gray-400 mt-0.5">Pasqyra e plotë e performancës</p>
         </div>
