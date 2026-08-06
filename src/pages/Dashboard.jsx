@@ -226,6 +226,24 @@ export default function Dashboard() {
     return names.size
   }, [invoices, today])
 
+  /* Sa klientë ishin aktivë në fund të muajit të kaluar — për krahasim.
+     Merren vetëm faturat që ekzistonin atëherë (i.date <= fundi i muajit). */
+  const activeClientsPrev = useMemo(() => {
+    const d = new Date()
+    const lastMonthEnd = new Date(d.getFullYear(), d.getMonth(), 0).toISOString().slice(0, 10)
+    const names = new Set(
+      invoices
+        .filter(i =>
+          i.status !== 'void' &&
+          i.subscriptionExpiry &&
+          i.date && i.date <= lastMonthEnd &&
+          i.subscriptionExpiry > lastMonthEnd
+        )
+        .map(i => i.customer)
+    )
+    return names.size
+  }, [invoices])
+
   /* ── KPI 2: Të ardhura totale viti aktual ── */
   // Përdor payments (datën e pagesës), jo datën e faturës
   const yearRevenue = useMemo(() =>
@@ -334,6 +352,21 @@ export default function Dashboard() {
   const expDelta = pctDelta(yearExpenses, expPrevYTD)
   const ytdCtx   = `deri ${MONTH_LBL[curMonthIdx]} ${prevYear}`
 
+  /* Klientë aktivë: ndryshimi ndaj fundit të muajit të kaluar */
+  const clientDelta = activeClients - activeClientsPrev
+  const clientTone  = clientDelta > 0 ? 'up' : clientDelta < 0 ? 'down' : 'neutral'
+
+  /* Ikona lart-djathtas ndjek drejtimin real; ngjyra tregon nëse është mirë apo keq.
+     Te shpenzimet rritja është e keqe, prandaj toni është i kundërt me drejtimin. */
+  const revUp   = revDelta === null ? true : revDelta >= 0
+  const expUp   = expDelta === null ? true : expDelta >= 0
+  const revIcon = revUp ? TrendingUp : TrendingDown
+  const expIcon = expUp ? TrendingUp : TrendingDown
+  const revBg   = revDelta === null ? '#eff6ff' : revUp ? '#ecfdf5' : '#fef2f2'
+  const revFg   = revDelta === null ? '#2563eb' : revUp ? '#059669' : '#dc2626'
+  const expBg   = expDelta === null ? '#fef2f2' : expUp ? '#fef2f2' : '#ecfdf5'
+  const expFg   = expDelta === null ? '#dc2626' : expUp ? '#dc2626' : '#059669'
+
   const openInvoiceModal  = () => setModal(<InvoiceModal />)
   const openCustomerModal = () => setModal(<CustomerModal onClose={closeModal} />)
   const openExpenseModal  = () => setModal(<ExpenseModal  onClose={closeModal} />)
@@ -384,24 +417,26 @@ export default function Dashboard() {
           icon={UserCheck}  iconBg="#ecfdf5"  iconColor="#059669"
           label="Klientë aktivë"
           value={activeClients}
-          ctx="Abonime aktive"
+          delta={`${clientDelta > 0 ? '+' : ''}${clientDelta}`}
+          deltaTone={clientTone}
+          ctx="krahasuar me muajin e kaluar"
         />
         <KpiCard
-          icon={TrendingUp}  iconBg="#eff6ff"  iconColor="#2563eb"
+          icon={revIcon}  iconBg={revBg}  iconColor={revFg}
           label={`Të ardhura ${thisYear}`}
           value={fmt(yearRevenue)}
           delta={deltaLbl(revDelta)}
           deltaTone={revDelta === null ? 'neutral' : revDelta >= 0 ? 'up' : 'down'}
-          ctx={revPrevYTD > 0 ? `vs. ${fmt(revPrevYTD)} ${ytdCtx}` : `Pagesa të pranuara ${thisYear}`}
+          ctx={`vs. ${fmt(revPrevYTD)} ${ytdCtx}`}
           onClick={() => goFiltered('payments', { year: thisYear })}
         />
         <KpiCard
-          icon={TrendingDown}  iconBg="#fef2f2"  iconColor="#dc2626"
+          icon={expIcon}  iconBg={expBg}  iconColor={expFg}
           label={`Shpenzime ${thisYear}`}
           value={fmt(yearExpenses)}
           delta={deltaLbl(expDelta)}
           deltaTone={expDelta === null ? 'neutral' : expDelta >= 0 ? 'down' : 'up'}
-          ctx={expPrevYTD > 0 ? `vs. ${fmt(expPrevYTD)} ${ytdCtx}` : 'Shpenzime të regjistruara'}
+          ctx={`vs. ${fmt(expPrevYTD)} ${ytdCtx}`}
           onClick={() => goFiltered('expenses', { year: thisYear })}
         />
         <KpiCard
