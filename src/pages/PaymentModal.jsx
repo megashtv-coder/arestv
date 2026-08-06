@@ -151,25 +151,27 @@ export default function PaymentModal({ invoice, payment: editPayment, onClose, i
 
     if (isEdit) {
       /* ── UPDATE existing payment ── */
-      setPayments(prev => prev.map(p =>
-        p.id === editPayment.id
-          ? {
-              ...p,
-              amount:         Number(form.amount),
-              fee,
-              net,
-              date:           form.date,
-              method:         form.method,
-              depositAccount: form.depositAccount,
-              reference:      form.reference,
-              depositedTo:    form.depositedTo,
-              notes:          form.notes,
-            }
-          : p
-      ))
-      logActivity(`Përditësoi pagesën ${editPayment.id} — ${editPayment.customer} €${Number(form.amount)}`, 'Pagesat')
-      showToast(`Pagesa u përditësua! Neto: ${fmt(net)} ✓`)
       onClose()
+      setTimeout(() => {
+        setPayments(prev => prev.map(p =>
+          p.id === editPayment.id
+            ? {
+                ...p,
+                amount:         Number(form.amount),
+                fee,
+                net,
+                date:           form.date,
+                method:         form.method,
+                depositAccount: form.depositAccount,
+                reference:      form.reference,
+                depositedTo:    form.depositedTo,
+                notes:          form.notes,
+              }
+            : p
+        ))
+        logActivity(`Përditësoi pagesën ${editPayment.id} — ${editPayment.customer} €${Number(form.amount)}`, 'Pagesat')
+        showToast(`Pagesa u përditësua! Neto: ${fmt(net)} ✓`)
+      }, 0)
       return
     }
 
@@ -190,56 +192,37 @@ export default function PaymentModal({ invoice, payment: editPayment, onClose, i
       notes:          form.notes,
     }
 
-    /* 1 — regjistro pagesën */
-    setPayments(prev => [payment, ...prev])
-    logActivity(`Regjistroi pagesën ${payment.id} — ${selectedInv.customer} €${Number(form.amount)}`, 'Pagesat')
-
-    /* 2 — kalkuloj shumin totale të paguar për këtë faturë */
-    // Përfshirë pagesën e re që sapo u regjistrua
-    setInvoices(prev => prev.map(i => {
-      if (i.id !== selectedInv.id) return i
-
-      // Kalkuloj shumin e paguar = pagesa e re + shuma tashmë e paguar
-      const newPaidAmount = (i.paidAmount || 0) + Number(form.amount)
-      const invoiceTotal = i.amount
-
-      // Përcaktoj statusin:
-      // - Nëse pagesa >= shuma totale: 'paid' (e paguar)
-      // - Nëse pagesa > 0 e < shuma totale: 'partial' (pjesërisht e paguar)
-      // - Nëse pagesa = 0: 'pending' (në pritje)
-      let status = 'pending'
-      if (newPaidAmount >= invoiceTotal) {
-        status = 'paid'
-      } else if (newPaidAmount > 0) {
-        status = 'partial'
-      }
-
-      // Add paidDate when invoice becomes fully paid
-      const updates = { ...i, paidAmount: newPaidAmount, status }
-      if (status === 'paid' && !i.paidDate) {
-        updates.paidDate = form.paidDate
-      }
-      return updates
-    }))
-
-    /* 3 — krijo shpenzim automatikisht nëse ka fee */
-    if (fee > 0) {
-      setExpenses(prev => [{
-        id:            `EXP-${Date.now() + 1}`,
-        date:          form.date,
-        type:          'Pagesa tjera',
-        vendor:        form.method,
-        paidFrom:      form.depositAccount || '',
-        reference:     `Fee transaksioni — ${form.method} (${selectedInv.id})`,
-        paidBy:        form.depositedTo,
-        recurring:     false,
-        recurringFreq: '',
-        amount:        fee,
-      }, ...prev])
-    }
-
-    showToast(`Pagesa u regjistrua! Neto: ${fmt(net)} ✓`)
     onClose()
+    setTimeout(() => {
+      setPayments(prev => [payment, ...prev])
+      logActivity(`Regjistroi pagesën ${payment.id} — ${selectedInv.customer} €${Number(form.amount)}`, 'Pagesat')
+      setInvoices(prev => prev.map(i => {
+        if (i.id !== selectedInv.id) return i
+        const newPaidAmount = (i.paidAmount || 0) + Number(form.amount)
+        const invoiceTotal = i.amount
+        let status = 'pending'
+        if (newPaidAmount >= invoiceTotal) status = 'paid'
+        else if (newPaidAmount > 0) status = 'partial'
+        const updates = { ...i, paidAmount: newPaidAmount, status }
+        if (status === 'paid' && !i.paidDate) updates.paidDate = form.paidDate
+        return updates
+      }))
+      if (fee > 0) {
+        setExpenses(prev => [{
+          id:            `EXP-${Date.now() + 1}`,
+          date:          form.date,
+          type:          'Pagesa tjera',
+          vendor:        form.method,
+          paidFrom:      form.depositAccount || '',
+          reference:     `Fee transaksioni — ${form.method} (${selectedInv.id})`,
+          paidBy:        form.depositedTo,
+          recurring:     false,
+          recurringFreq: '',
+          amount:        fee,
+        }, ...prev])
+      }
+      showToast(`Pagesa u regjistrua! Neto: ${fmt(net)} ✓`)
+    }, 0)
   }
 
   return (
