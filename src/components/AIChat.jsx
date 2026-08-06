@@ -244,9 +244,9 @@ export default function AIChat() {
   return (
     <div className="flex flex-col h-screen bg-white dark:bg-gray-800">
       {/* Header */}
-      <div className="bg-gradient-to-r from-red-500 to-red-600 text-white px-6 py-4 shadow-lg">
+      <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-4 shadow-lg">
         <h1 className="text-2xl font-bold">🤖 AI Asistenti</h1>
-        <p className="text-red-100 text-sm">Komandat në shqip për menaxhimin e faturave</p>
+        <p className="text-blue-100 text-sm">Komandat në shqip për menaxhimin e faturave</p>
       </div>
 
       {/* Messages */}
@@ -281,13 +281,13 @@ export default function AIChat() {
             value={input}
             onChange={e => setInput(e.target.value)}
             placeholder="P.sh: Krijo faturë për Viktor 12 muaj..."
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             disabled={loading}
           />
           <button
             type="submit"
             disabled={loading || !input.trim()}
-            className="bg-red-500 hover:bg-red-600 disabled:bg-gray-300 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
+            className="bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
           >
             <Send size={18} />
           </button>
@@ -310,7 +310,7 @@ function ChatMessage({ message, onFollowUp, onAccept }) {
     case 'user':
       return (
         <div className="flex justify-end">
-          <div className="bg-red-500 text-white px-4 py-2 rounded-lg max-w-xs">
+          <div className="bg-blue-500 text-white px-4 py-2 rounded-lg max-w-xs">
             {message.content}
           </div>
         </div>

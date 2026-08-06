@@ -35,7 +35,7 @@ export default function AIChatFloat() {
     {
       id: 'welcome',
       type: 'system',
-      content: 'Përshëndetje! 👋\n\nTips:\n\n1. Regjistro faturë, shkruaj:\n@Emer_Klientit @Paketa Shuma\nP.sh: @Viktor Shemshiri @12 muaj 100 eur\nMe referent: @Klienti @Referenti @Paketa Shuma DataSkadimit(ddmmyyyy)\n\n2. Regjistro pagesë, shkruaj:\nPagese @Klienti @FormaPageses Shuma Fee @Enndy/Samki\n\n3. Regjistro shpenzim, shkruaj:\nShpenzim lloji i shpenzimit, shuma, llogaria, Enndy/Samki',
+      content: 'Përshëndetje! 👋\n\nTips:\n\n1. Regjistro faturë, shkruaj:\n@Emer_Klientit @Paketa Shuma\nP.sh: @Viktor Shemshiri @12 muaj 100 eur\nMe referent: @Klienti @Referenti @Paketa Shuma DataSkadimit(ddmmyyyy)\n\n2. Regjistro pagesë, shkruaj:\nPagese @Klienti @FormaPageses Shuma Fee @Enndy/Belti\n\n3. Regjistro shpenzim, shkruaj:\nShpenzim lloji i shpenzimit, shuma, llogaria, Enndy/Belti',
       timestamp: new Date(),
     },
   ])
@@ -89,7 +89,7 @@ export default function AIChatFloat() {
     setDepositedToSuggestions([])
 
     // "Pagese @Klienti @FormaPageses Shuma Fee @Enndy" — 2nd @ is the payment
-    // mode, 3rd @ is who received it (Enndy/Samki), both from fixed lists.
+    // mode, 3rd @ is who received it (Enndy/Belti), both from fixed lists.
     if (/^pagese\b/i.test(value.trim())) {
       if (mentions.length === 2) {
         const modeMention = mentions[1].substring(1).toLowerCase().trim()
@@ -378,7 +378,7 @@ export default function AIChatFloat() {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 w-14 h-14 bg-red-500 hover:bg-red-600 text-white rounded-full shadow-lg flex items-center justify-center transition-all hover:scale-110 z-40"
+          className="fixed bottom-6 right-6 w-14 h-14 bg-blue-500 hover:bg-blue-600 text-white rounded-full shadow-lg flex items-center justify-center transition-all hover:scale-110 z-40"
           title="Hap AI Chat"
         >
           <MessageCircle size={24} />
@@ -391,7 +391,7 @@ export default function AIChatFloat() {
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
             <div className="flex items-center gap-2">
-              <MessageCircle size={20} className="text-red-500" />
+              <MessageCircle size={20} className="text-blue-500" />
               <h3 className="font-bold text-gray-900 dark:text-white dark:text-gray-50">🤖 AI Asistenti</h3>
             </div>
             <button
@@ -409,7 +409,7 @@ export default function AIChatFloat() {
               <div key={msg.id}>
                 {msg.type === 'user' && (
                   <div className="flex justify-end">
-                    <div className="bg-red-500 text-white px-4 py-2 rounded-lg max-w-xs break-words">
+                    <div className="bg-blue-500 text-white px-4 py-2 rounded-lg max-w-xs break-words">
                       {msg.content}
                     </div>
                   </div>
@@ -479,7 +479,7 @@ export default function AIChatFloat() {
             ))}
             {loading && (
               <div className="flex justify-center py-2">
-                <Loader size={18} className="animate-spin text-red-500" />
+                <Loader size={18} className="animate-spin text-blue-500" />
               </div>
             )}
             <div ref={messagesEndRef} />
@@ -497,7 +497,7 @@ export default function AIChatFloat() {
                     onClick={() => selectCustomer(customer.name)}
                     className="w-full text-left px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 text-sm text-gray-900 dark:text-white flex items-center gap-2 border-b border-gray-200 dark:border-gray-600 last:border-0 dark:text-gray-50 dark:border-gray-700"
                   >
-                    <Users size={14} className="text-red-500" />
+                    <Users size={14} className="text-blue-500" />
                     {customer.name}
                   </button>
                 ))}
@@ -579,13 +579,13 @@ export default function AIChatFloat() {
                 value={input}
                 onChange={handleInputChange}
                 placeholder="Shkruaj komandë (@Emri, shto klient, etj)..."
-                className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-red-500 dark:text-gray-50"
+                className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-gray-50"
                 disabled={loading}
               />
               <button
                 type="submit"
                 disabled={loading || !input.trim()}
-                className="bg-red-500 hover:bg-red-600 disabled:bg-gray-300 text-white p-2 rounded-lg transition-colors flex-shrink-0"
+                className="bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 text-white p-2 rounded-lg transition-colors flex-shrink-0"
               >
                 <Send size={18} />
               </button>

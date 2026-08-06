@@ -114,7 +114,7 @@ function escapeRegex(s) {
 /**
  * Parse the "register payment" command:
  * "Pagese @Klienti @FormaPageses ShumaEPranuar Fee @Enndy" (fee and the
- * @Enndy/@Samki "who received it" mention are optional).
+ * @Enndy/@Belti "who received it" mention are optional).
  * Matches customer/mode/depositedTo by known-value substring (like
  * extractCustomerMentions/extractPackage), not by @mention position, since a
  * greedy @mention capture would otherwise swallow the trailing amount/fee
