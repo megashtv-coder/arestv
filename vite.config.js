@@ -8,7 +8,7 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       injectRegister: 'auto',
-      includeAssets: ['favicon.ico', 'icon.svg', 'apple-touch-icon-180x180.png'],
+      includeAssets: ['favicon.ico', 'pwa_icon_192.png', 'pwa_icon_512.png', 'aflow-logo.png'],
       workbox: {
         cacheId: 'arestv-v1',
         skipWaiting: true,
