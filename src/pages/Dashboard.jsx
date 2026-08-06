@@ -279,7 +279,7 @@ export default function Dashboard() {
   }, [pendingInvoices, customerTypeMap])
 
   /* ── Shpenzime sipas kategorisë (me filter) ── */
-  const { catData, catTotal, top5Types } = useMemo(() => {
+  const { catData, catTotal, top5Types, groupByType } = useMemo(() => {
     let filtered = expenses
     if (catFilter === '1m')   filtered = expenses.filter(e => e.date?.startsWith(thisMonth))
     if (catFilter === '12m')  filtered = expenses.filter(e => e.date?.startsWith(thisYear))
@@ -297,27 +297,54 @@ export default function Dashboard() {
       typeGroups[type].cats[cat] = (typeGroups[type].cats[cat] || 0) + e.amount
     })
 
-    // Ngjyrat caktohen nga kategoritë më të mëdha te më të voglat
+    const catTotal = filtered.reduce((s, e) => s + (e.amount || 0), 0)
+
     const sortedCats = Object.entries(catGroups)
       .map(([name, value]) => ({ name, value }))
       .sort((a, b) => b.value - a.value)
 
-    const catColor = assignColors(sortedCats.map(c => c.name))
-
-    const catData = sortedCats.map(c => ({ ...c, color: catColor[c.name] }))
-
-    const top5Types = Object.entries(typeGroups)
-      .map(([name, g]) => {
-        // Kategoria dominuese e këtij lloji shpenzimi (ajo me shumën më të madhe)
-        const cat = Object.entries(g.cats).sort((a, b) => b[1] - a[1])[0]?.[0] || 'Tjera'
-        return { name, value: g.value, category: cat, color: catColor[cat] || PALETTE[0] }
-      })
+    const typeList = Object.entries(typeGroups)
+      .map(([name, g]) => ({ name, value: g.value, cats: g.cats }))
       .sort((a, b) => b.value - a.value)
-      .slice(0, 5)
 
-    const catTotal = catData.reduce((s, c) => s + c.value, 0)
+    /* Kategoria shpesh nuk plotësohet dhe çdo shpenzim bie te "Tjera".
+       Atëherë një kategori e vetme do të thoshte një ngjyrë e vetme, prandaj
+       grupojmë sipas llojit të shpenzimit që grafiku të ketë kuptim. */
+    const groupByType = sortedCats.length < 2
 
-    return { catData, catTotal, top5Types }
+    let donutRaw
+    if (groupByType) {
+      const TOP = 8
+      donutRaw = typeList.slice(0, TOP).map(t => ({ name: t.name, value: t.value }))
+      const rest = typeList.slice(TOP).reduce((s, t) => s + t.value, 0)
+      if (rest > 0) donutRaw.push({ name: 'Të tjera', value: rest })
+    } else {
+      donutRaw = sortedCats
+    }
+
+    const top5Raw = typeList.slice(0, 5)
+
+    /* Ngjyrat caktohen për çdo emër të shfaqur; segmentet më të mëdha të
+       donut-it renditen të parat, që ato të marrin ngjyrën e tyre të preferuar. */
+    const colorMap = assignColors([...new Set([
+      ...donutRaw.map(d => d.name),
+      ...top5Raw.map(t => t.name),
+      ...sortedCats.map(c => c.name),
+    ])])
+
+    const catData = donutRaw.map(d => ({ ...d, color: colorMap[d.name] }))
+
+    const top5Types = top5Raw.map(t => {
+      // Kategoria dominuese e këtij lloji shpenzimi (ajo me shumën më të madhe)
+      const cat = Object.entries(t.cats).sort((a, b) => b[1] - a[1])[0]?.[0] || 'Tjera'
+      return {
+        name: t.name, value: t.value, category: cat,
+        // Kur kategoritë mungojnë, ngjyra vjen nga vetë emri i shpenzimit
+        color: (groupByType ? colorMap[t.name] : colorMap[cat]) || PALETTE[0],
+      }
+    })
+
+    return { catData, catTotal, top5Types, groupByType }
   }, [expenses, catFilter, thisMonth, thisYear, prevYear])
 
   /* ── Shitje sipas muajit: viti aktual vs viti paraprak ── */
@@ -498,7 +525,9 @@ export default function Dashboard() {
               <PieIcon size={17} />
             </span>
             <div>
-              <p className="text-[17px] font-bold text-gray-900 leading-tight">Shpenzime sipas kategorisë</p>
+              <p className="text-[17px] font-bold text-gray-900 leading-tight">
+                Shpenzime sipas {groupByType ? 'llojit' : 'kategorisë'}
+              </p>
               <p className="text-xs text-gray-400 mt-0.5">
                 {catFilter === '1m' ? 'Muaji aktual' : catFilter === '12m' ? `Viti ${thisYear}` : `Viti ${prevYear}`}
               </p>
