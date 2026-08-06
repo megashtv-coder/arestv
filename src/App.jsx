@@ -9,6 +9,7 @@ import { Toast, LoadingSkeleton } from './components/UI'
 import { useEffect, useState, useRef, lazy, Suspense } from 'react'
 import AutoNotificationService from './services/AutoNotificationService'
 import BackupService from './services/BackupService'
+import AIChatFloat from './components/AIChatFloat'
 
 // Lazy load all pages to reduce initial bundle size
 const Dashboard = lazy(() => import('./pages/Dashboard'))
@@ -24,6 +25,7 @@ const Suppliers = lazy(() => import('./pages/Suppliers'))
 const UsersPage = lazy(() => import('./pages/Users'))
 const CommunicationHistory = lazy(() => import('./pages/CommunicationHistory'))
 const Tasks = lazy(() => import('./pages/Tasks'))
+const AIChat = lazy(() => import('./components/AIChat'))
 
 const ORG_PAGES = {
   dashboard:              Dashboard,
@@ -39,6 +41,7 @@ const ORG_PAGES = {
   users:                 UsersPage,
   communicationHistory:  CommunicationHistory,
   tasks:                 Tasks,
+  'ai-chat':             AIChat,
 }
 
 function OrgAppLayout() {
@@ -127,6 +130,8 @@ function OrgAppLayout() {
           {modal}
         </div>
       )}
+
+      <AIChatFloat />
     </div>
   )
 }
