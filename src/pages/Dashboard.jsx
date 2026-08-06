@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react'
 import {
   Users, TrendingUp, TrendingDown, Clock, FilePlus,
   UserPlus, ReceiptText, AlertCircle, UserCheck, Layers,
-  ArrowUp, ArrowDown,
+  ArrowUp, ArrowDown, PieChart as PieIcon,
 } from 'lucide-react'
 import {
   ComposedChart, Area, Line, PieChart, Pie, Cell,
@@ -163,6 +163,7 @@ function YoYChart({ title, sub, data, curKey, prevKey, color, softColor, gradId,
 export default function Dashboard() {
   const { invoices, customers, expenses, payments, navigate, setModal, closeModal, fmt, currentUser } = useApp()
   const [catFilter, setCatFilter] = useState('12m')
+  const [activeCat, setActiveCat] = useState(null)   // indeksi i segmentit nën kursor
 
   const today    = new Date().toISOString().slice(0, 10)
   const thisYear = new Date().getFullYear().toString()
@@ -252,8 +253,11 @@ export default function Dashboard() {
     filtered.forEach(e => {
       const cat  = e.category || 'Tjera'
       const type = e.type || e.category || 'Tjera'
-      catGroups[cat]   = (catGroups[cat]   || 0) + e.amount
-      typeGroups[type] = (typeGroups[type] || 0) + e.amount
+      catGroups[cat] = (catGroups[cat] || 0) + e.amount
+      // Ruajmë edhe ndarjen sipas kategorisë, që pika e listës të marrë ngjyrën e saktë
+      if (!typeGroups[type]) typeGroups[type] = { value: 0, cats: {} }
+      typeGroups[type].value += e.amount
+      typeGroups[type].cats[cat] = (typeGroups[type].cats[cat] || 0) + e.amount
     })
 
     const catData = Object.entries(catGroups)
@@ -261,7 +265,11 @@ export default function Dashboard() {
       .sort((a, b) => b.value - a.value)
 
     const top5Types = Object.entries(typeGroups)
-      .map(([name, value]) => ({ name, value }))
+      .map(([name, g]) => {
+        // Kategoria dominuese e këtij lloji shpenzimi (ajo me shumën më të madhe)
+        const cat = Object.entries(g.cats).sort((a, b) => b[1] - a[1])[0]?.[0] || 'Tjera'
+        return { name, value: g.value, category: cat, color: CAT_COLORS[cat] || '#6b7280' }
+      })
       .sort((a, b) => b.value - a.value)
       .slice(0, 5)
 
@@ -422,85 +430,124 @@ export default function Dashboard() {
       </div>
 
       {/* ── Shpenzime sipas kategorisë ── */}
-      <div className="grid grid-cols-1 gap-4">
+      <div className="bg-white rounded-2xl border border-gray-200 p-6">
 
-        {/* Shpenzime sipas kategorisë */}
-        <div className="card">
-          <div className="px-5 py-4 border-b border-gray-50">
-            <p className="text-sm font-bold text-gray-800 mb-2">Shpenzime sipas kategorisë</p>
-            <div className="flex gap-1">
-              {[
-                { key: '1m',   label: '1 muaj' },
-                { key: '12m',  label: `${thisYear}` },
-                { key: 'prev', label: `${prevYear}` },
-              ].map(f => (
-                <button key={f.key} onClick={() => setCatFilter(f.key)}
-                  className={`flex-1 px-2 py-1 rounded-lg text-[11px] font-bold transition-all ${
-                    catFilter === f.key
-                      ? 'bg-blue-500 text-white shadow-sm'
-                      : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
-                  }`}>
-                  {f.label}
-                </button>
-              ))}
+        {/* Header + filtra */}
+        <div className="flex flex-wrap items-center justify-between gap-4 pb-4 mb-6 border-b border-gray-100">
+          <div className="flex items-center gap-2.5">
+            <span className="w-9 h-9 rounded-[9px] bg-blue-50 text-blue-600 flex items-center justify-center flex-shrink-0">
+              <PieIcon size={17} />
+            </span>
+            <div>
+              <p className="text-[17px] font-bold text-gray-900 leading-tight">Shpenzime sipas kategorisë</p>
+              <p className="text-xs text-gray-400 mt-0.5">
+                {catFilter === '1m' ? 'Muaji aktual' : catFilter === '12m' ? `Viti ${thisYear}` : `Viti ${prevYear}`}
+              </p>
             </div>
           </div>
 
-          <div className="p-4">
-            {catData.length === 0 ? (
-              <p className="text-xs text-gray-400 text-center py-8 italic">Nuk ka shpenzime për këtë periudhë</p>
-            ) : (
-              <div className="flex gap-4">
-                {/* ── Grafiku rrethor ── */}
-                <div className="flex-shrink-0 flex flex-col items-center">
-                  <ResponsiveContainer width={110} height={110}>
-                    <PieChart>
-                      <Pie data={catData} cx="50%" cy="50%" innerRadius={28} outerRadius={50}
-                        paddingAngle={3} dataKey="value">
-                        {catData.map((e, i) => <Cell key={i} fill={e.color} />)}
-                      </Pie>
-                      <Tooltip formatter={v => [`€${Number(v).toLocaleString('de-DE')}`, '']}
-                        contentStyle={{ border: '1px solid #f3f4f6', borderRadius: 10, fontSize: 11 }} />
-                    </PieChart>
-                  </ResponsiveContainer>
-                  <div className="mt-1 space-y-1">
-                    {catData.map((e, i) => (
-                      <div key={i} className="flex items-center gap-1.5">
-                        <span className="w-2 h-2 rounded-sm flex-shrink-0" style={{ background: e.color }} />
-                        <span className="text-[10px] text-gray-500 truncate max-w-[70px]">{e.name}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* ── Top 5 produktet/shërbimet ── */}
-                <div className="flex-1 min-w-0">
-                  <p className="text-[11px] font-bold text-gray-500 mb-2 uppercase tracking-wide">Top 5 shpenzime</p>
-                  <div className="space-y-2">
-                    {top5Types.map((t, i) => {
-                      const pct = catTotal > 0 ? Math.round(t.value / catTotal * 100) : 0
-                      return (
-                        <div key={i}>
-                          <div className="flex items-center justify-between mb-0.5">
-                            <span className="text-[11px] text-gray-700 truncate flex-1 pr-2 leading-tight">{t.name}</span>
-                            <span className="text-[11px] font-bold text-gray-800 flex-shrink-0">€{t.value.toLocaleString('de-DE')}</span>
-                          </div>
-                          <div className="h-1 bg-gray-100 rounded-full overflow-hidden">
-                            <div className="h-full bg-blue-400 rounded-full" style={{ width: `${pct}%` }} />
-                          </div>
-                        </div>
-                      )
-                    })}
-                  </div>
-                  <div className="flex items-center justify-between pt-2 mt-2 border-t border-gray-100">
-                    <span className="text-[11px] font-bold text-gray-500">Total</span>
-                    <span className="text-xs font-bold text-gray-800">€{catTotal.toLocaleString('de-DE')}</span>
-                  </div>
-                </div>
-              </div>
-            )}
+          <div className="inline-flex bg-gray-100 p-1 rounded-[10px]">
+            {[
+              { key: '1m',   label: '1 muaj' },
+              { key: '12m',  label: `${thisYear}` },
+              { key: 'prev', label: `${prevYear}` },
+            ].map(f => (
+              <button key={f.key} onClick={() => setCatFilter(f.key)}
+                className={`px-4 py-1.5 rounded-[7px] text-[13px] transition-all ${
+                  catFilter === f.key
+                    ? 'bg-white text-blue-600 font-semibold shadow-sm'
+                    : 'text-gray-500 font-medium hover:text-gray-700'
+                }`}>
+                {f.label}
+              </button>
+            ))}
           </div>
         </div>
+
+        {catData.length === 0 ? (
+          <p className="text-sm text-gray-400 text-center py-10 italic">Nuk ka shpenzime për këtë periudhë</p>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-[220px_1fr] gap-8 items-center">
+
+            {/* ── Donut me total në qendër ── */}
+            <div className="relative h-[200px] flex items-center justify-center">
+              <ResponsiveContainer width="100%" height={200}>
+                <PieChart>
+                  <Pie
+                    data={catData} cx="50%" cy="50%"
+                    innerRadius={62} outerRadius={80}
+                    paddingAngle={2} dataKey="value"
+                    stroke="none" isAnimationActive={false}
+                    onMouseEnter={(_, i) => setActiveCat(i)}
+                    onMouseLeave={() => setActiveCat(null)}
+                  >
+                    {catData.map((e, i) => (
+                      <Cell key={i} fill={e.color}
+                        opacity={activeCat === null || activeCat === i ? 1 : 0.35}
+                        style={{ transition: 'opacity .18s ease', cursor: 'pointer' }} />
+                    ))}
+                  </Pie>
+                </PieChart>
+              </ResponsiveContainer>
+
+              <div className="absolute text-center pointer-events-none">
+                {activeCat === null ? (
+                  <>
+                    <p className="text-[11px] text-gray-500 uppercase tracking-wider font-medium">Total</p>
+                    <p className="text-xl font-bold text-gray-900 mt-0.5">{fmt(catTotal)}</p>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-[11px] text-gray-500 uppercase tracking-wider font-medium">
+                      {catData[activeCat].name}
+                    </p>
+                    <p className="text-xl font-bold mt-0.5" style={{ color: catData[activeCat].color }}>
+                      {fmt(catData[activeCat].value)}
+                    </p>
+                    <p className="text-[11px] text-gray-400 mt-0.5">
+                      {(catData[activeCat].value / catTotal * 100).toFixed(1)}% e totalit
+                    </p>
+                  </>
+                )}
+              </div>
+            </div>
+
+            {/* ── Top shpenzimet ── */}
+            <div className="flex flex-col gap-[15px] min-w-0">
+              <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">
+                Top {top5Types.length} shpenzime
+              </p>
+
+              {top5Types.map((t, i) => {
+                const pct = catTotal > 0 ? (t.value / catTotal * 100) : 0
+                return (
+                  <div key={i} className="flex flex-col gap-1.5">
+                    <div className="flex items-center justify-between gap-3 text-[13px]">
+                      <span className="flex items-center gap-2 min-w-0 font-medium text-gray-700">
+                        <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: t.color }}
+                              title={t.category} />
+                        <span className="truncate">{t.name}</span>
+                      </span>
+                      <span className="font-bold text-gray-900 flex-shrink-0">
+                        {fmt(t.value)}
+                        <span className="text-[11px] text-gray-400 font-medium ml-1.5">{pct.toFixed(1)}%</span>
+                      </span>
+                    </div>
+                    <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                      <div className="h-full rounded-full transition-all duration-500"
+                           style={{ width: `${pct}%`, background: t.color }} />
+                    </div>
+                  </div>
+                )
+              })}
+
+              <div className="flex items-center justify-between pt-3 mt-2 border-t border-gray-200">
+                <span className="text-[13px] font-semibold text-gray-500">Gjithsej Shpenzime</span>
+                <span className="text-[17px] font-bold text-blue-600">{fmt(catTotal)}</span>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
     </div>
