@@ -16,15 +16,34 @@ import { ExpenseModal }  from './Expenses'
 
 const MONTH_LBL = ['Jan','Shk','Mar','Pri','Maj','Qer','Kor','Gus','Sht','Tet','Nën','Dhj']
 
-/* ── Ngjyrat për kategorinë ── */
-const CAT_COLORS = {
-  'Shërbime': '#2563eb',
-  'Software':  '#7c3aed',
-  'Marketing': '#d97706',
-  'Ushqim':    '#059669',
-  'Pajisje':   '#dc2626',
-  'Udhëtime':  '#be185d',
-  'Tjera':     '#6b7280',
+/* ── Paleta e ngjyrave për kategoritë ──
+   Më parë ngjyrat vinin nga një listë e fiksuar emrash, prandaj çdo kategori
+   që nuk ishte në të dilte gri dhe shpenzimet nuk dalloheshin nga njëra-tjetra.
+   Tani ngjyra caktohet automatikisht nga emri i kategorisë: e njëjta kategori
+   merr gjithnjë të njëjtën ngjyrë, dhe ngjyrat mbeten të dallueshme mes tyre. */
+const PALETTE = [
+  '#2563eb', '#dc2626', '#7c3aed', '#059669', '#d97706', '#0891b2',
+  '#be185d', '#4f46e5', '#ea580c', '#15803d', '#db2777', '#ca8a04',
+]
+
+const hashName = s => {
+  let h = 0
+  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0
+  return h
+}
+
+/* Cakton një ngjyrë të dallueshme për secilin emër; nis nga hash-i i emrit
+   (që ngjyra të jetë e qëndrueshme) dhe kalon te tjetra nëse është e zënë. */
+function assignColors(names) {
+  const used = new Set()
+  const map  = {}
+  names.forEach(name => {
+    let idx = hashName(name) % PALETTE.length
+    for (let t = 0; t < PALETTE.length && used.has(idx); t++) idx = (idx + 1) % PALETTE.length
+    used.add(idx)
+    map[name] = PALETTE[idx]
+  })
+  return map
 }
 
 /* ── Stat card komponent ── */
@@ -260,15 +279,20 @@ export default function Dashboard() {
       typeGroups[type].cats[cat] = (typeGroups[type].cats[cat] || 0) + e.amount
     })
 
-    const catData = Object.entries(catGroups)
-      .map(([name, value]) => ({ name, value, color: CAT_COLORS[name] || '#6b7280' }))
+    // Ngjyrat caktohen nga kategoritë më të mëdha te më të voglat
+    const sortedCats = Object.entries(catGroups)
+      .map(([name, value]) => ({ name, value }))
       .sort((a, b) => b.value - a.value)
+
+    const catColor = assignColors(sortedCats.map(c => c.name))
+
+    const catData = sortedCats.map(c => ({ ...c, color: catColor[c.name] }))
 
     const top5Types = Object.entries(typeGroups)
       .map(([name, g]) => {
         // Kategoria dominuese e këtij lloji shpenzimi (ajo me shumën më të madhe)
         const cat = Object.entries(g.cats).sort((a, b) => b[1] - a[1])[0]?.[0] || 'Tjera'
-        return { name, value: g.value, category: cat, color: CAT_COLORS[cat] || '#6b7280' }
+        return { name, value: g.value, category: cat, color: catColor[cat] || PALETTE[0] }
       })
       .sort((a, b) => b.value - a.value)
       .slice(0, 5)
