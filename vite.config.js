@@ -28,8 +28,8 @@ export default defineConfig({
         ]
       },
       manifest: {
-        name: 'AresTV Flow — Menaxhimi Financiar',
-        short_name: 'AresTV Flow',
+        name: 'A Flow',
+        short_name: 'AFlow',
         description: 'App moderne për menaxhimin e financave dhe faturave',
         theme_color: '#2563eb',
         background_color: '#ffffff',
@@ -40,10 +40,8 @@ export default defineConfig({
         lang: 'sq',
         categories: ['finance', 'business', 'productivity'],
         icons: [
-          { src: 'pwa-64x64.png',            sizes: '64x64',   type: 'image/png' },
-          { src: 'pwa-192x192.png',           sizes: '192x192', type: 'image/png' },
-          { src: 'pwa-512x512.png',           sizes: '512x512', type: 'image/png' },
-          { src: 'maskable-icon-512x512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' }
+          { src: 'pwa_icon_192.png', sizes: '192x192', type: 'image/png' },
+          { src: 'pwa_icon_512.png', sizes: '512x512', type: 'image/png' }
         ]
       }
     })
