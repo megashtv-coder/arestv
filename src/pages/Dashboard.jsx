@@ -191,6 +191,23 @@ export default function Dashboard() {
 
   const curMonthIdx = new Date().getMonth()   // 0-indexed; muajt pas tij s'kanë ardhur ende
 
+  /* ── Të ardhura sipas muajit: viti aktual vs viti paraprak ──
+     Bazohet te pagesat e pranuara (data e pagesës), jo te faturat. */
+  const revenueYoY = useMemo(() =>
+    MONTH_LBL.map((label, mo) => {
+      const key  = `${thisYear}-${String(mo + 1).padStart(2, '0')}`
+      const prev = `${prevYear}-${String(mo + 1).padStart(2, '0')}`
+      return {
+        month:       label,
+        revenue:     mo <= curMonthIdx
+          ? payments.filter(p => p.date?.startsWith(key)).reduce((s, p) => s + (p.amount || 0), 0)
+          : null,
+        revenuePrev: payments.filter(p => p.date?.startsWith(prev)).reduce((s, p) => s + (p.amount || 0), 0),
+      }
+    }),
+    [payments, thisYear, prevYear, curMonthIdx]
+  )
+
   /* ── Shpenzime sipas muajit: viti aktual vs viti paraprak ── */
   const expensesYoY = useMemo(() =>
     MONTH_LBL.map((label, mo) => {
@@ -495,14 +512,24 @@ export default function Dashboard() {
         />
       </div>
 
-      {/* ── Krahasimi vjetor: shitje & shpenzime ── */}
+      {/* ── Shitje sipas muajit (nga faturat) ── */}
+      <YoYChart
+        title="Shitje sipas muajit"
+        sub={`Nga faturat e lëshuara — ${thisYear} vs. ${prevYear}`}
+        data={salesYoY}
+        curKey="sales"  prevKey="salesPrev"
+        color="#6366f1" softColor="#c7d2fe" gradId="yoy-sales"
+        curLabel={thisYear} prevLabel={prevYear} fmt={fmt}
+      />
+
+      {/* ── Të ardhura & shpenzime sipas muajit ── */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 items-stretch">
         <YoYChart
-          title="Shitje sipas muajit"
-          sub={`${thisYear} vs. ${prevYear}`}
-          data={salesYoY}
-          curKey="sales"  prevKey="salesPrev"
-          color="#10b981" softColor="#a7f3d0" gradId="yoy-sales"
+          title="Të ardhura sipas muajit"
+          sub={`Nga pagesat e pranuara — ${thisYear} vs. ${prevYear}`}
+          data={revenueYoY}
+          curKey="revenue" prevKey="revenuePrev"
+          color="#10b981" softColor="#a7f3d0" gradId="yoy-revenue"
           curLabel={thisYear} prevLabel={prevYear} fmt={fmt}
         />
         <YoYChart
