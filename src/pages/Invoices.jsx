@@ -34,50 +34,48 @@ const INVOICE_TABLE_COLUMNS = [
   { key: 'status',   label: 'Statusi' },
 ]
 
-function renderInvoiceColHeader(col, { sortField, sortDir, toggleSort }) {
+// Radhitja e kolonave tërhiqet drejt e nga kokat e tabelës (drag & drop), si alternativë
+// e shpejtë ndaj hapjes së panelit "Kolonat e tabelës". Klikimi për renditje (sort) vazhdon
+// të funksionojë njësoj — draggable s'e prish click-in, vetëm shton edhe tërheqjen.
+function renderInvoiceColHeader(col, { sortField, sortDir, toggleSort, draggedCol, onColDragStart, onColDrop, onColDragEnd }) {
   const sortIcon = key => (
     <span className="text-[10px]">{sortField === key ? (sortDir === 'asc' ? '↑' : '↓') : <span className="text-gray-300">↕</span>}</span>
   )
-  switch (col.key) {
-    case 'date':
-      return <th key={col.key} className="table-th hidden sm:table-cell">Data</th>
-    case 'id':
-      return (
-        <th key={col.key} className="table-th cursor-pointer select-none hover:text-blue-500 hidden sm:table-cell" onClick={() => toggleSort('id')}>
-          <span className="flex items-center gap-1">ID {sortIcon('id')}</span>
-        </th>
-      )
-    case 'customer':
-      return (
-        <th key={col.key} className="table-th cursor-pointer select-none hover:text-blue-500" onClick={() => toggleSort('customer')}>
-          <span className="flex items-center gap-1">Klienti {sortIcon('customer')}</span>
-        </th>
-      )
-    case 'referent':
-      return (
-        <th key={col.key} className="table-th cursor-pointer select-none hover:text-blue-500 hidden sm:table-cell" onClick={() => toggleSort('referent')}>
-          <span className="flex items-center gap-1">Referenti {sortIcon('referent')}</span>
-        </th>
-      )
-    case 'expiry':
-      return <th key={col.key} className="table-th sm:table-cell lg:table-cell">Skadimi Abonimit</th>
-    case 'amount':
-      return (
-        <th key={col.key} className="table-th cursor-pointer select-none hover:text-blue-500 text-right" onClick={() => toggleSort('amount')}>
-          <span className="flex items-center justify-end gap-1">Shuma {sortIcon('amount')}</span>
-        </th>
-      )
-    case 'due':
-      return <th key={col.key} className="table-th hidden lg:table-cell">Afati</th>
-    case 'status':
-      return (
-        <th key={col.key} className="table-th cursor-pointer select-none hover:text-blue-500" onClick={() => toggleSort('status')}>
-          <span className="flex items-center gap-1">Statusi {sortIcon('status')}</span>
-        </th>
-      )
-    default:
-      return null
-  }
+
+  const respCls = {
+    date: 'hidden sm:table-cell', id: 'hidden sm:table-cell', customer: '', referent: 'hidden sm:table-cell',
+    expiry: 'sm:table-cell lg:table-cell', amount: 'text-right', due: 'hidden lg:table-cell', status: '',
+  }[col.key] || ''
+
+  const content = {
+    date:     'Data',
+    id:       <span className="flex items-center gap-1">ID {sortIcon('id')}</span>,
+    customer: <span className="flex items-center gap-1">Klienti {sortIcon('customer')}</span>,
+    referent: <span className="flex items-center gap-1">Referenti {sortIcon('referent')}</span>,
+    expiry:   'Skadimi Abonimit',
+    amount:   <span className="flex items-center justify-end gap-1">Shuma {sortIcon('amount')}</span>,
+    due:      'Afati',
+    status:   <span className="flex items-center gap-1">Statusi {sortIcon('status')}</span>,
+  }[col.key]
+  if (content === undefined) return null
+
+  const sortable = ['id', 'customer', 'referent', 'amount', 'status'].includes(col.key)
+  const isDragging = draggedCol === col.key
+
+  return (
+    <th
+      key={col.key}
+      className={`table-th select-none cursor-move ${sortable ? 'cursor-pointer hover:text-blue-500' : ''} ${respCls} ${isDragging ? 'opacity-30' : ''}`}
+      onClick={sortable ? () => toggleSort(col.key) : undefined}
+      draggable
+      onDragStart={() => onColDragStart(col.key)}
+      onDragOver={e => e.preventDefault()}
+      onDrop={e => { e.preventDefault(); onColDrop(col.key) }}
+      onDragEnd={onColDragEnd}
+    >
+      {content}
+    </th>
+  )
 }
 
 function renderInvoiceColCell(col, inv, { isOverdue, fmt, hasLongOverdue, getCustomerType, setPreview }) {
@@ -1140,7 +1138,23 @@ export default function Invoices() {
   const [selected,     setSelected] = useState(new Set()) // Selected invoices for bulk delete
   const [confirmDelAll, setConfirmDelAll] = useState(false) // Confirmation dialog for bulk delete
   const [deletingInvoiceId, setDeletingInvoiceId] = useState(null) // Track which invoice is being deleted from dropdown
-  const { columns: invoiceColumns } = useColumnPrefs('invoices', INVOICE_TABLE_COLUMNS)
+  const { columns: invoiceColumns, allColumns: allInvoiceColumns, savePrefs: saveInvoiceColumnPrefs } = useColumnPrefs('invoices', INVOICE_TABLE_COLUMNS)
+  const [draggedCol, setDraggedCol] = useState(null)
+
+  // Rendit kolonën e tërhequr pikërisht te pozita e kolonës mbi të cilën u lëshua
+  // (futet para saj) — ndikon radhën e RUAJTUR (të gjitha kolonat, jo vetëm ato
+  // të dukshme), që kolonat e fshehura të mos i humbin vendin kur rishfaqen.
+  const handleColDrop = useCallback((targetKey) => {
+    if (!draggedCol || draggedCol === targetKey) { setDraggedCol(null); return }
+    const order = allInvoiceColumns.map(c => c.key)
+    const hidden = allInvoiceColumns.filter(c => c.hidden).map(c => c.key)
+    const withoutDragged = order.filter(k => k !== draggedCol)
+    const targetIdx = withoutDragged.indexOf(targetKey)
+    if (targetIdx === -1) { setDraggedCol(null); return }
+    withoutDragged.splice(targetIdx, 0, draggedCol)
+    saveInvoiceColumnPrefs(withoutDragged, hidden)
+    setDraggedCol(null)
+  }, [draggedCol, allInvoiceColumns, saveInvoiceColumnPrefs])
 
   // Optimize customer lookups: O(1) instead of O(n)
   const customerMap = useMemo(() => new Map(customers.map(c => [c.name, c])), [customers])
@@ -1857,7 +1871,12 @@ export default function Invoices() {
               <table className="w-full min-w-[500px]" style={{ position: 'relative' }}>
                 <thead className="sticky top-0 z-10">
                   <tr className="border-b border-gray-200 bg-gray-50">
-                    {invoiceColumns.map(col => renderInvoiceColHeader(col, { sortField, sortDir, toggleSort }))}
+                    {invoiceColumns.map(col => renderInvoiceColHeader(col, {
+                      sortField, sortDir, toggleSort, draggedCol,
+                      onColDragStart: setDraggedCol,
+                      onColDrop: handleColDrop,
+                      onColDragEnd: () => setDraggedCol(null),
+                    }))}
                     <th className="table-th text-right">Veprimet</th>
                     <th className="table-th w-8 text-center hidden sm:table-cell">
                       <input
