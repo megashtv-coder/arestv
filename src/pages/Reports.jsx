@@ -70,42 +70,41 @@ function FinanciareTab({ invoices, expenses, fmt }) {
   const statusColors = { paid:'#059669', pending:'#d97706', overdue:'#dc2626', draft:'#9ca3af' }
 
   const KPIS = [
-    { label:'Të ardhura totale', val: fmt(paid),    icon: TrendingUp,   bg:'#eff6ff', color:'#2563eb' },
-    { label:'Shpenzime totale',  val: fmt(totalExp), icon: TrendingDown, bg:'#fef2f2', color:'#dc2626' },
-    { label:'Fitimi neto',       val: fmt(profit),   icon: DollarSign,   bg:'#ecfdf5', color:'#059669' },
+    { label:'Të ardhura totale', val: fmt(paid),    icon: TrendingUp,   cls: 'bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400' },
+    { label:'Shpenzime totale',  val: fmt(totalExp), icon: TrendingDown, cls: 'bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400' },
+    { label:'Fitimi neto',       val: fmt(profit),   icon: DollarSign,   cls: 'bg-emerald-50 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400' },
   ]
   const TABS = [
     { id:'revenue',  label:'Të ardhurat', key:'revenue',  color:'#3b82f6' },
     { id:'expenses', label:'Shpenzimet',  key:'expenses', color:'#f87171' },
     { id:'profit',   label:'Fitimi neto', key:'profit',   color:'#10b981' },
   ]
-  const { customers } = useApp()
   const activeTab = TABS.find(t => t.id === tab)
 
   return (
     <div className="space-y-4">
       {/* KPIs */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {KPIS.map(({ label, val, icon: Icon, bg, color }) => (
-          <div key={label} className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-5 text-center hover:shadow-md transition-all">
-            <div className="w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-3" style={{ background: bg }}>
-              <Icon size={22} style={{ color }}/>
+        {KPIS.map(({ label, val, icon: Icon, cls }) => (
+          <div key={label} className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200/90 dark:border-gray-700 shadow-sm p-5 text-center">
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-2 ${cls}`}>
+              <Icon size={18}/>
             </div>
-            <p className="text-2xl font-bold text-gray-800 dark:text-gray-100 tracking-tight">{val}</p>
-            <p className="text-xs text-gray-400 mt-1 font-medium">{label}</p>
+            <p className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">{val}</p>
+            <p className="text-xs text-gray-400 dark:text-gray-500 mt-1 font-semibold">{label}</p>
           </div>
         ))}
       </div>
 
       {/* Chart */}
-      <div className="card">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200/90 dark:border-gray-700 shadow-sm overflow-hidden">
         <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-gray-700">
-          <p className="text-sm font-bold text-gray-800 dark:text-gray-100">Analiza mujore — 2026</p>
-          <div className="flex bg-gray-100 dark:bg-gray-700 rounded-lg p-0.5 gap-0.5">
+          <p className="text-sm font-bold text-gray-900 dark:text-white">Analiza mujore — {thisYear}</p>
+          <div className="flex bg-gray-100 dark:bg-gray-900/60 rounded-xl p-0.5 gap-0.5">
             {TABS.map(t => (
               <button key={t.id} onClick={() => setTab(t.id)}
-                className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
-                  tab === t.id ? 'bg-white dark:bg-gray-600 text-gray-800 dark:text-gray-100 shadow-sm' : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                  tab === t.id ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
                 }`}>
                 {t.label}
               </button>
@@ -118,7 +117,7 @@ function FinanciareTab({ invoices, expenses, fmt }) {
               <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" vertical={false}/>
               <XAxis dataKey="month" tick={{ fontSize:11, fill:'#9ca3af' }} axisLine={false} tickLine={false}/>
               <YAxis tick={{ fontSize:11, fill:'#9ca3af' }} axisLine={false} tickLine={false} tickFormatter={v => v/1000+'k'}/>
-              <Tooltip formatter={v => [`€${v.toLocaleString()}`, activeTab.label]} contentStyle={{ border:'1px solid #f3f4f6', borderRadius:10, fontSize:12 }}/>
+              <Tooltip formatter={v => [`€${v.toLocaleString('en-US')}`, activeTab.label]} contentStyle={{ border:'1px solid #f3f4f6', borderRadius:10, fontSize:12 }}/>
               <Bar dataKey={activeTab.key} fill={activeTab.color} radius={[6,6,0,0]}/>
             </BarChart>
           </ResponsiveContainer>
@@ -127,9 +126,9 @@ function FinanciareTab({ invoices, expenses, fmt }) {
 
       {/* Bottom grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div className="card">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200/90 dark:border-gray-700 shadow-sm overflow-hidden">
           <div className="px-5 py-4 border-b border-gray-100 dark:border-gray-700">
-            <p className="text-sm font-bold text-gray-800 dark:text-gray-100">Faturat sipas statusit</p>
+            <p className="text-sm font-bold text-gray-900 dark:text-white">Faturat sipas statusit</p>
           </div>
           <div className="p-5 space-y-4">
             {statusCounts.map(({ status, count }) => {
@@ -137,11 +136,11 @@ function FinanciareTab({ invoices, expenses, fmt }) {
               return (
                 <div key={status}>
                   <div className="flex justify-between text-xs mb-1.5">
-                    <span className="font-semibold text-gray-600 dark:text-gray-300 flex items-center gap-1.5">
+                    <span className="font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-1.5">
                       <span className="w-2 h-2 rounded-full" style={{ background: statusColors[status] }}/>
                       {statusLabels[status]}
                     </span>
-                    <span className="text-gray-500">{count} · <span className="font-bold text-gray-700 dark:text-gray-200">{pct}%</span></span>
+                    <span className="text-gray-500 dark:text-gray-400">{count} · <span className="font-extrabold text-gray-800 dark:text-gray-200">{pct}%</span></span>
                   </div>
                   <div className="h-1.5 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
                     <div className="h-full rounded-full transition-all duration-700" style={{ width:`${pct}%`, background:statusColors[status] }}/>
@@ -151,45 +150,37 @@ function FinanciareTab({ invoices, expenses, fmt }) {
             })}
           </div>
         </div>
-        <div className="card">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200/90 dark:border-gray-700 shadow-sm overflow-hidden">
           <div className="px-5 py-4 border-b border-gray-100 dark:border-gray-700">
-            <p className="text-sm font-bold text-gray-800 dark:text-gray-100">Top 5 klientët sipas vlerës</p>
+            <p className="text-sm font-bold text-gray-900 dark:text-white">Top 5 klientët sipas vlerës</p>
           </div>
-          {(() => {
-            const totalsMap = {}
-            invoices.filter(i => i.status !== 'void').forEach(i => {
-              totalsMap[i.customer] = (totalsMap[i.customer] || 0) + (i.amount || 0)
-            })
-            const top5 = Object.entries(totalsMap)
-              .map(([name, total]) => ({ name, total }))
-              .sort((a, b) => b.total - a.total)
-              .slice(0, 5)
-            const maxVal = top5[0]?.total || 1
-            const BADGE = ['#f59e0b','#94a3b8','#cd7c3d','#e5e7eb','#e5e7eb']
-            return (
-              <table className="w-full">
-                <tbody>
-                  {top5.map((c, i) => (
-                    <tr key={c.name} className="hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition-colors">
-                      <td className="table-td w-10">
-                        <span className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold"
-                          style={{ background: BADGE[i], color: i >= 3 ? '#6b7280' : '#fff' }}>
-                          {i + 1}
+          <table className="w-full">
+            <tbody>
+              {useMemo(() => {
+                // AresTV: llogaritja bazohet vetëm te faturat (përjashtuar 'void'), jo te lista e klientëve
+                const totalsMap = {}
+                invoices.filter(i => i.status !== 'void').forEach(i => {
+                  totalsMap[i.customer] = (totalsMap[i.customer] || 0) + (i.amount || 0)
+                })
+                return Object.entries(totalsMap)
+                  .map(([name, total]) => ({ name, total }))
+                  .sort((a, b) => b.total - a.total)
+                  .slice(0, 5)
+                  .map((c, i) => (
+                    <tr key={c.name} className="hover:bg-gray-50/80 dark:hover:bg-gray-700/40 transition-colors">
+                      <td className="px-5 py-2.5 w-10">
+                        <span className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-black text-white"
+                          style={{ background: i===0?'#f59e0b':i===1?'#94a3b8':i===2?'#cd7c3d':'#e5e7eb', color: i>=3?'#6b7280':undefined }}>
+                          {i+1}
                         </span>
                       </td>
-                      <td className="table-td text-xs">
-                        <p className="font-semibold text-gray-700 dark:text-gray-300">{c.name}</p>
-                        <div className="h-1 bg-gray-100 rounded-full mt-1 overflow-hidden">
-                          <div className="h-full bg-blue-400 rounded-full" style={{ width: `${Math.round(c.total / maxVal * 100)}%` }}/>
-                        </div>
-                      </td>
-                      <td className="table-td text-right font-bold text-blue-500 text-sm whitespace-nowrap">{fmt(c.total)}</td>
+                      <td className="px-2 py-2.5 font-bold text-gray-800 dark:text-gray-200 text-xs">{c.name}</td>
+                      <td className="px-5 py-2.5 text-right font-mono font-extrabold text-blue-600 dark:text-blue-400 text-sm">{fmt(c.total)}</td>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            )
-          })()}
+                  ))
+              }, [invoices])}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -300,50 +291,50 @@ function BarazimiTab({ payments, expenses, fmt }) {
   return (
     <div className="space-y-4">
       {/* Filter row */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-4 flex flex-wrap items-center gap-3">
-        <div className="flex bg-gray-100 dark:bg-gray-700 rounded-lg p-0.5 gap-0.5">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200/90 dark:border-gray-700 shadow-sm p-4 flex flex-wrap items-center gap-3">
+        <div className="flex bg-gray-100 dark:bg-gray-900/60 rounded-xl p-0.5 gap-0.5">
           {['month','quarter'].map(m => (
             <button key={m} onClick={() => setMode(m)}
-              className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
-                mode===m ? 'bg-white dark:bg-gray-600 text-gray-800 dark:text-gray-100 shadow-sm' : 'text-gray-500'
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                mode===m ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm' : 'text-gray-500 dark:text-gray-400'
               }`}>
               {m==='month' ? 'Mujore' : '3-Mujore'}
             </button>
           ))}
         </div>
         <select value={year} onChange={e => setYear(+e.target.value)}
-          className="form-control w-auto text-xs py-1.5">
+          className="text-xs px-3 py-1.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 text-gray-900 dark:text-white font-bold outline-none focus:border-blue-400 cursor-pointer">
           {YEARS.map(y => <option key={y}>{y}</option>)}
         </select>
         {mode === 'month' ? (
           <select value={month} onChange={e => setMonth(+e.target.value)}
-            className="form-control w-auto text-xs py-1.5">
+            className="text-xs px-3 py-1.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 text-gray-900 dark:text-white font-bold outline-none focus:border-blue-400 cursor-pointer">
             {MONTHS_FULL.map((m, i) => <option key={i+1} value={i+1}>{m}</option>)}
           </select>
         ) : (
           <select value={quarter} onChange={e => setQuarter(+e.target.value)}
-            className="form-control w-auto text-xs py-1.5">
+            className="text-xs px-3 py-1.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 text-gray-900 dark:text-white font-bold outline-none focus:border-blue-400 cursor-pointer">
             {QUARTERS.map((q, i) => <option key={i+1} value={i+1}>{q}</option>)}
           </select>
         )}
-        <span className="text-xs text-gray-400 dark:text-gray-500 ml-auto">{from} → {to}</span>
+        <span className="text-xs font-mono text-gray-400 dark:text-gray-500 ml-auto">{from} → {to}</span>
       </div>
 
       {/* Partner cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {partnerData.map(d => (
-          <div key={d.partner} className="bg-white dark:bg-gray-800 rounded-xl border-2 border-gray-100 dark:border-gray-700 overflow-hidden">
+          <div key={d.partner} className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200/90 dark:border-gray-700 shadow-sm overflow-hidden">
             <div className="flex items-center gap-3 px-5 py-4 border-b border-gray-100 dark:border-gray-700"
               style={{ background: P_COLOR[d.partner] + '10' }}>
               <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-base"
                 style={{ background: P_COLOR[d.partner] }}>{d.partner[0]}</div>
               <div>
                 <p className="font-bold text-gray-800 dark:text-gray-100">{d.partner}</p>
-                <p className="text-xs text-gray-400">Partneri</p>
+                <p className="text-xs text-gray-400 dark:text-gray-500">Partneri</p>
               </div>
               <div className="ml-auto text-right">
                 <p className={`text-xl font-black ${d.net >= 0 ? 'text-emerald-600' : 'text-blue-500'}`}>{fmt(d.net)}</p>
-                <p className="text-[11px] text-gray-400">Neto</p>
+                <p className="text-[11px] text-gray-400 dark:text-gray-500">Neto</p>
               </div>
             </div>
 
@@ -357,13 +348,13 @@ function BarazimiTab({ payments, expenses, fmt }) {
                   </span>
                   <span className="flex items-center gap-2">
                     <span className="text-sm font-bold text-emerald-600">+{fmt(d.income)}</span>
-                    {expand[`${d.partner}-pay`] ? <ChevronUp size={14} className="text-gray-400"/> : <ChevronDown size={14} className="text-gray-400"/>}
+                    {expand[`${d.partner}-pay`] ? <ChevronUp size={14} className="text-gray-400 dark:text-gray-500"/> : <ChevronDown size={14} className="text-gray-400 dark:text-gray-500"/>}
                   </span>
                 </button>
                 {expand[`${d.partner}-pay`] && (
                   <div className="px-5 pb-3 space-y-1.5">
                     {d.payItems.length === 0
-                      ? <p className="text-xs text-gray-400">Asnjë pagesë në këtë periudhë.</p>
+                      ? <p className="text-xs text-gray-400 dark:text-gray-500">Asnjë pagesë në këtë periudhë.</p>
                       : d.payItems.map(p => (
                           <div key={p.id} className="flex justify-between text-xs text-gray-500 dark:text-gray-400">
                             <span className="truncate max-w-[200px]">{p.customer} · {formatDate(p.date)}</span>
@@ -384,13 +375,13 @@ function BarazimiTab({ payments, expenses, fmt }) {
                   </span>
                   <span className="flex items-center gap-2">
                     <span className="text-sm font-bold text-blue-500">-{fmt(d.spent)}</span>
-                    {expand[`${d.partner}-exp`] ? <ChevronUp size={14} className="text-gray-400"/> : <ChevronDown size={14} className="text-gray-400"/>}
+                    {expand[`${d.partner}-exp`] ? <ChevronUp size={14} className="text-gray-400 dark:text-gray-500"/> : <ChevronDown size={14} className="text-gray-400 dark:text-gray-500"/>}
                   </span>
                 </button>
                 {expand[`${d.partner}-exp`] && (
                   <div className="px-5 pb-3 space-y-1.5">
                     {d.expItems.length === 0
-                      ? <p className="text-xs text-gray-400">Asnjë shpenzim në këtë periudhë.</p>
+                      ? <p className="text-xs text-gray-400 dark:text-gray-500">Asnjë shpenzim në këtë periudhë.</p>
                       : d.expItems.map(e => (
                           <div key={e.id} className="flex justify-between text-xs text-gray-500 dark:text-gray-400">
                             <span className="truncate max-w-[200px]">{e.type} · {formatDate(e.date)}</span>
@@ -436,23 +427,23 @@ function BarazimiTab({ payments, expenses, fmt }) {
       </div>
 
       {/* Settlement summary */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-5">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200/90 dark:border-gray-700 shadow-sm p-5">
         <div className="flex items-center gap-2 mb-4">
           <Scale size={18} className="text-blue-500"/>
           <p className="font-bold text-gray-800 dark:text-gray-100 text-sm">Barazimi financiar</p>
         </div>
 
         <div className="grid grid-cols-3 gap-4 mb-5">
-          <div className="text-center p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-            <p className="text-xs text-gray-400 mb-1">Totali neto</p>
+          <div className="text-center p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg dark:bg-gray-900/50">
+            <p className="text-xs text-gray-400 mb-1 dark:text-gray-500">Totali neto</p>
             <p className="text-lg font-black text-gray-800 dark:text-gray-100">{fmt(totalNet)}</p>
           </div>
           <div className="text-center p-3 bg-blue-50 dark:bg-blue-800/20 rounded-lg">
             <p className="text-xs text-blue-500 mb-1">Pjesa e drejtë (50/50)</p>
             <p className="text-lg font-black text-blue-500">{fmt(fairShare)}</p>
           </div>
-          <div className="text-center p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-            <p className="text-xs text-gray-400 mb-1">Diferenca</p>
+          <div className="text-center p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg dark:bg-gray-900/50">
+            <p className="text-xs text-gray-400 mb-1 dark:text-gray-500">Diferenca</p>
             <p className="text-lg font-black text-gray-800 dark:text-gray-100">
               {fmt(Math.abs(partnerData[0].net - fairShare))}
             </p>
@@ -489,9 +480,9 @@ function BarazimiTab({ payments, expenses, fmt }) {
 
         {/* Verdict */}
         {totalNet === 0 ? (
-          <div className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
-            <CheckCircle size={20} className="text-gray-400"/>
-            <p className="text-sm text-gray-500">Asnjë të ardhur në këtë periudhë.</p>
+          <div className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl dark:bg-gray-900/50">
+            <CheckCircle size={20} className="text-gray-400 dark:text-gray-500"/>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Asnjë të ardhur në këtë periudhë.</p>
           </div>
         ) : settlement === null ? (
           <div className="flex items-center gap-3 p-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl border border-emerald-100 dark:border-emerald-800">
@@ -550,9 +541,9 @@ function BarazimiTab({ payments, expenses, fmt }) {
                     style={{ background: P_COLOR[t.to] }}>{t.to[0]}</div>
                   <div className="flex-1 min-w-0">
                     <span className="text-xs font-semibold text-gray-700 dark:text-gray-200">{t.from} → {t.to}</span>
-                    {t.note && <span className="text-xs text-gray-400 ml-2">· {t.note}</span>}
+                    {t.note && <span className="text-xs text-gray-400 ml-2 dark:text-gray-500">· {t.note}</span>}
                   </div>
-                  <span className="text-xs text-gray-400 flex-shrink-0">{formatDate(t.date)}</span>
+                  <span className="text-xs text-gray-400 flex-shrink-0 dark:text-gray-500">{formatDate(t.date)}</span>
                   <span className="text-sm font-black text-blue-500 flex-shrink-0">{fmt(t.amount)}</span>
                   <button onClick={() => deleteTrf(t.id)}
                     className="text-gray-300 hover:text-blue-400 transition-colors text-xl leading-none flex-shrink-0 ml-1"
@@ -563,16 +554,16 @@ function BarazimiTab({ payments, expenses, fmt }) {
           )}
 
           {periodTransfers.length === 0 && !showTrf && (
-            <p className="text-xs text-gray-400 italic">Asnjë dorëzim i regjistruar për këtë periudhë.</p>
+            <p className="text-xs text-gray-400 italic dark:text-gray-500">Asnjë dorëzim i regjistruar për këtë periudhë.</p>
           )}
 
           {/* Form */}
           {showTrf && (
-            <div className="bg-gray-50 dark:bg-gray-700/40 rounded-xl p-4 space-y-3 border border-gray-200 dark:border-gray-600">
+            <div className="bg-gray-50 dark:bg-gray-700/40 rounded-xl p-4 space-y-3 border border-gray-200 dark:border-gray-600 dark:bg-gray-900/50 dark:border-gray-700">
               <p className="text-xs font-bold text-gray-600 dark:text-gray-300">Regjistro dorëzim të mjeteve</p>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs font-semibold text-gray-500 mb-1 block">Nga</label>
+                  <label className="text-xs font-semibold text-gray-500 mb-1 block dark:text-gray-400">Nga</label>
                   <select value={trfFrom}
                     onChange={e => { setTrfFrom(e.target.value); setTrfTo(PARTNERS.find(p => p !== e.target.value)) }}
                     className="form-control text-xs">
@@ -580,7 +571,7 @@ function BarazimiTab({ payments, expenses, fmt }) {
                   </select>
                 </div>
                 <div>
-                  <label className="text-xs font-semibold text-gray-500 mb-1 block">Tek</label>
+                  <label className="text-xs font-semibold text-gray-500 mb-1 block dark:text-gray-400">Tek</label>
                   <select value={trfTo}
                     onChange={e => { setTrfTo(e.target.value); setTrfFrom(PARTNERS.find(p => p !== e.target.value)) }}
                     className="form-control text-xs">
@@ -590,19 +581,19 @@ function BarazimiTab({ payments, expenses, fmt }) {
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs font-semibold text-gray-500 mb-1 block">Shuma (€)</label>
+                  <label className="text-xs font-semibold text-gray-500 mb-1 block dark:text-gray-400">Shuma (€)</label>
                   <input type="number" min="0" step="0.01" value={trfAmt}
                     onChange={e => setTrfAmt(e.target.value)}
                     className="form-control text-xs" placeholder="0.00"/>
                 </div>
                 <div>
-                  <label className="text-xs font-semibold text-gray-500 mb-1 block">Data</label>
+                  <label className="text-xs font-semibold text-gray-500 mb-1 block dark:text-gray-400">Data</label>
                   <input type="date" value={trfDate} onChange={e => setTrfDate(e.target.value)}
                     className="form-control text-xs"/>
                 </div>
               </div>
               <div>
-                <label className="text-xs font-semibold text-gray-500 mb-1 block">Shënim (opsional)</label>
+                <label className="text-xs font-semibold text-gray-500 mb-1 block dark:text-gray-400">Shënim (opsional)</label>
                 <input type="text" value={trfNote} onChange={e => setTrfNote(e.target.value)}
                   className="form-control text-xs" placeholder="p.sh. Barazim Maj 2026"/>
               </div>
@@ -645,35 +636,35 @@ function KlientetTab({ invoices }) {
   return (
     <div className="space-y-4">
       {/* Header + filter */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-4 flex flex-wrap items-center justify-between gap-3">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200/90 dark:border-gray-700 shadow-sm p-4 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <p className="font-bold text-gray-800 dark:text-gray-100 text-sm">Klientët aktivë — numri mujor</p>
-          <p className="text-xs text-gray-400 mt-0.5">Bazuar në datën e skadimit të abonimit</p>
+          <p className="font-bold text-gray-900 dark:text-white text-sm">Klientët aktivë — numri mujor</p>
+          <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">Bazuar në datën e skadimit të abonimit</p>
         </div>
         <div className="flex items-center gap-3">
           {growth !== null && (
-            <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${
-              growth >= 0 ? 'bg-emerald-50 text-emerald-600' : 'bg-blue-50 text-blue-500'
+            <span className={`text-xs font-extrabold px-2.5 py-1 rounded-full ${
+              growth >= 0 ? 'bg-emerald-50 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400' : 'bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400'
             }`}>
               {growth >= 0 ? '+' : ''}{growth}% vs {prevYear}
             </span>
           )}
           <select value={chartYear} onChange={e => setChartYear(+e.target.value)}
-            className="form-control w-auto text-xs py-1.5">
+            className="text-xs px-3 py-1.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 text-gray-900 dark:text-white font-bold outline-none focus:border-blue-400 cursor-pointer">
             {YEARS.map(y => <option key={y}>{y}</option>)}
           </select>
         </div>
       </div>
 
       {/* Chart */}
-      <div className="card">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200/90 dark:border-gray-700 shadow-sm overflow-hidden">
         <div className="px-5 py-4 border-b border-gray-100 dark:border-gray-700 flex items-center gap-4">
           <div className="flex items-center gap-1.5 text-xs font-semibold text-blue-500">
             <span className="w-3 h-3 rounded-sm bg-blue-500 inline-block"/>
             {chartYear}
           </div>
-          <div className="flex items-center gap-1.5 text-xs font-semibold text-gray-400">
-            <span className="w-3 h-1 bg-gray-400 inline-block rounded-full"/>
+          <div className="flex items-center gap-1.5 text-xs font-semibold text-gray-400 dark:text-gray-500">
+            <span className="w-3 h-1 bg-gray-400 dark:bg-gray-500 inline-block rounded-full"/>
             {prevYear} {chartYear === 2026 ? '(vlerësim)' : ''}
           </div>
         </div>
@@ -695,18 +686,18 @@ function KlientetTab({ invoices }) {
       </div>
 
       {/* Table */}
-      <div className="card">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200/90 dark:border-gray-700 shadow-sm overflow-hidden">
         <div className="px-5 py-4 border-b border-gray-100 dark:border-gray-700">
-          <p className="text-sm font-bold text-gray-800 dark:text-gray-100">Detajet mujore</p>
+          <p className="text-sm font-bold text-gray-900 dark:text-white">Detajet mujore</p>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-gray-100 dark:border-gray-700">
-                <th className="table-th">Muaji</th>
-                <th className="table-th text-right">{chartYear}</th>
-                <th className="table-th text-right">{prevYear} {chartYear === 2026 ? '(est.)' : ''}</th>
-                <th className="table-th text-right">Ndryshimi</th>
+              <tr className="border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/50">
+                <th className="px-4 py-3 text-left text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Muaji</th>
+                <th className="px-4 py-3 text-right text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-wider">{chartYear}</th>
+                <th className="px-4 py-3 text-right text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-wider">{prevYear} {chartYear === 2026 ? '(est.)' : ''}</th>
+                <th className="px-4 py-3 text-right text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Ndryshimi</th>
               </tr>
             </thead>
             <tbody>
@@ -715,37 +706,37 @@ function KlientetTab({ invoices }) {
                 const prev = row[prevYear]  || 0
                 const diff = cur - prev
                 return (
-                  <tr key={i} className="hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition-colors border-b border-gray-50 dark:border-gray-700 last:border-0">
-                    <td className="table-td font-semibold text-gray-700 dark:text-gray-300">{MONTHS_FULL[i]}</td>
-                    <td className="table-td text-right">
-                      <span className={`font-bold text-sm ${cur > 0 ? 'text-blue-500' : 'text-gray-400'}`}>{cur}</span>
+                  <tr key={i} className="hover:bg-gray-50/80 dark:hover:bg-gray-700/40 transition-colors border-b border-gray-50 dark:border-gray-700 last:border-0">
+                    <td className="px-4 py-2.5 font-bold text-gray-800 dark:text-gray-200">{MONTHS_FULL[i]}</td>
+                    <td className="px-4 py-2.5 text-right">
+                      <span className={`font-mono font-extrabold text-sm ${cur > 0 ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400 dark:text-gray-500'}`}>{cur}</span>
                     </td>
-                    <td className="table-td text-right">
-                      <span className="text-gray-500 dark:text-gray-400 text-sm">{prev}</span>
+                    <td className="px-4 py-2.5 text-right">
+                      <span className="font-mono text-gray-500 dark:text-gray-400 text-sm">{prev}</span>
                     </td>
-                    <td className="table-td text-right">
+                    <td className="px-4 py-2.5 text-right">
                       {diff !== 0 ? (
-                        <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
-                          diff > 0 ? 'bg-emerald-50 text-emerald-600' : 'bg-blue-50 text-blue-500'
+                        <span className={`text-xs font-extrabold font-mono px-2 py-0.5 rounded-full ${
+                          diff > 0 ? 'bg-emerald-50 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400' : 'bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400'
                         }`}>
                           {diff > 0 ? '+' : ''}{diff}
                         </span>
                       ) : (
-                        <span className="text-xs text-gray-400">—</span>
+                        <span className="text-xs text-gray-400 dark:text-gray-500">—</span>
                       )}
                     </td>
                   </tr>
                 )
               })}
               {/* Total row */}
-              <tr className="bg-gray-50 dark:bg-gray-700/30">
-                <td className="table-td font-black text-gray-800 dark:text-gray-100">TOTAL</td>
-                <td className="table-td text-right font-black text-blue-500">{totCurrent}</td>
-                <td className="table-td text-right font-bold text-gray-500">{totPrev}</td>
-                <td className="table-td text-right">
+              <tr className="bg-gray-50 dark:bg-gray-900/50">
+                <td className="px-4 py-3 font-black text-gray-900 dark:text-white">TOTAL</td>
+                <td className="px-4 py-3 text-right font-mono font-black text-blue-600 dark:text-blue-400">{totCurrent}</td>
+                <td className="px-4 py-3 text-right font-mono font-bold text-gray-500 dark:text-gray-400">{totPrev}</td>
+                <td className="px-4 py-3 text-right">
                   {growth !== null && (
-                    <span className={`text-xs font-black px-2 py-0.5 rounded-full ${
-                      growth >= 0 ? 'bg-emerald-50 text-emerald-600' : 'bg-blue-50 text-blue-500'
+                    <span className={`text-xs font-black font-mono px-2 py-0.5 rounded-full ${
+                      growth >= 0 ? 'bg-emerald-50 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400' : 'bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400'
                     }`}>
                       {growth >= 0 ? '+' : ''}{growth}%
                     </span>
@@ -787,13 +778,13 @@ function ShtetTab() {
 
   return (
     <div className="space-y-4">
-      <div className="card">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200/90 dark:border-gray-700 shadow-sm overflow-hidden">
         <div className="px-5 py-4 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
           <div>
-            <p className="text-sm font-bold text-gray-800 dark:text-gray-100 flex items-center gap-2">
+            <p className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
               <Globe size={15} className="text-blue-500"/> Klientët sipas shtetit
             </p>
-            <p className="text-xs text-gray-400 mt-0.5">{customers.length} klientë · {countryData.length} shtete</p>
+            <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{customers.length} klientë · {countryData.length} shtete</p>
           </div>
         </div>
         <div className="p-5">
@@ -816,42 +807,42 @@ function ShtetTab() {
         </div>
       </div>
 
-      <div className="card overflow-x-auto">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200/90 dark:border-gray-700 shadow-sm overflow-hidden overflow-x-auto">
         <div className="px-5 py-4 border-b border-gray-100 dark:border-gray-700">
-          <p className="text-sm font-bold text-gray-800 dark:text-gray-100">Renditja sipas shtetit</p>
+          <p className="text-sm font-bold text-gray-900 dark:text-white">Renditja sipas shtetit</p>
         </div>
         <table className="w-full min-w-[360px]">
           <thead>
-            <tr className="border-b border-gray-100 dark:border-gray-700">
-              <th className="table-th">#</th>
-              <th className="table-th">Shteti</th>
-              <th className="table-th text-right">Klientë</th>
-              <th className="table-th text-right">% e totalit</th>
+            <tr className="border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/50">
+              <th className="px-4 py-3 text-left text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-wider">#</th>
+              <th className="px-4 py-3 text-left text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Shteti</th>
+              <th className="px-4 py-3 text-right text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Klientë</th>
+              <th className="px-4 py-3 text-right text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-wider">% e totalit</th>
             </tr>
           </thead>
           <tbody>
             {paged.map(({ country, count }, i) => {
               const realIndex = (page - 1) * perPage + i
               return (
-              <tr key={country} className="hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition-colors border-b border-gray-50 dark:border-gray-700 last:border-0">
-                <td className="table-td w-10">
-                  <span className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white"
+              <tr key={country} className="hover:bg-gray-50/80 dark:hover:bg-gray-700/40 transition-colors border-b border-gray-50 dark:border-gray-700 last:border-0">
+                <td className="px-4 py-2.5 w-10">
+                  <span className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-black text-white"
                     style={{ background: realIndex===0?'#f59e0b':realIndex===1?'#94a3b8':realIndex===2?'#cd7c3d':'#e5e7eb', color: realIndex>=3?'#6b7280':undefined }}>
                     {realIndex + 1}
                   </span>
                 </td>
-                <td className="table-td">
+                <td className="px-4 py-2.5">
                   <div>
-                    <p className="text-sm font-semibold text-gray-700 dark:text-gray-300">{country}</p>
+                    <p className="text-sm font-bold text-gray-800 dark:text-gray-200">{country}</p>
                     <div className="mt-1 h-1.5 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden w-36">
                       <div className="h-full rounded-full transition-all duration-700"
                         style={{ width: `${(count / max) * 100}%`, background: CHART_COLORS[realIndex % CHART_COLORS.length] }}/>
                     </div>
                   </div>
                 </td>
-                <td className="table-td text-right font-bold text-blue-500 text-base">{count}</td>
-                <td className="table-td text-right">
-                  <span className="text-xs font-bold text-gray-500 bg-gray-100 dark:bg-gray-700 dark:text-gray-300 px-2 py-0.5 rounded-full">
+                <td className="px-4 py-2.5 text-right font-mono font-extrabold text-blue-600 dark:text-blue-400 text-base">{count}</td>
+                <td className="px-4 py-2.5 text-right">
+                  <span className="text-xs font-bold font-mono text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded-full">
                     {Math.round((count / customers.length) * 100)}%
                   </span>
                 </td>
@@ -860,10 +851,10 @@ function ShtetTab() {
           </tbody>
         </table>
         <div className="px-5 py-3 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between text-xs">
-          <span className="text-gray-400">Faqja {page} e {maxPages}</span>
+          <span className="text-gray-400 dark:text-gray-500">Faqja {page} e {maxPages}</span>
           <div className="flex gap-2">
-            <button onClick={() => setPage(Math.max(1, page - 1))} disabled={page === 1} className="px-2 py-1 rounded border border-gray-200 dark:border-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">←</button>
-            <button onClick={() => setPage(Math.min(maxPages, page + 1))} disabled={page === maxPages} className="px-2 py-1 rounded border border-gray-200 dark:border-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">→</button>
+            <button onClick={() => setPage(Math.max(1, page - 1))} disabled={page === 1} className="px-2 py-1 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-900/50 disabled:opacity-50 disabled:cursor-not-allowed">←</button>
+            <button onClick={() => setPage(Math.min(maxPages, page + 1))} disabled={page === maxPages} className="px-2 py-1 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-900/50 disabled:opacity-50 disabled:cursor-not-allowed">→</button>
           </div>
         </div>
       </div>
@@ -881,11 +872,21 @@ function AbonentVjeterTab() {
 
   const subscriberData = useMemo(() => {
     const today = new Date()
+
+    // Group invoices by customer name once (O(invoices)) instead of
+    // filtering the full invoices array per customer (O(customers × invoices))
+    const invoicesByCustomer = new Map()
+    for (const inv of invoices) {
+      const list = invoicesByCustomer.get(inv.customer)
+      if (list) list.push(inv)
+      else invoicesByCustomer.set(inv.customer, [inv])
+    }
+
     return customers
       .map(c => {
         const name = c.name || `${c.firstName} ${c.lastName}`
-        const custInvoices = invoices.filter(inv => inv.customer === name)
-        if (!custInvoices.length) return null
+        const custInvoices = invoicesByCustomer.get(name)
+        if (!custInvoices || !custInvoices.length) return null
         const firstDate = custInvoices.reduce((min, inv) => inv.date < min ? inv.date : min, custInvoices[0].date)
         const daysActive = Math.floor((today - new Date(firstDate)) / 86400000)
         return { ...c, name, firstDate, daysActive, invoiceCount: custInvoices.length }
@@ -906,75 +907,75 @@ function AbonentVjeterTab() {
 
   return (
     <div className="space-y-4">
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-4 flex items-center gap-3">
-        <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center flex-shrink-0">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200/90 dark:border-gray-700 shadow-sm p-4 flex items-center gap-3">
+        <div className="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-900/40 flex items-center justify-center flex-shrink-0">
           <Clock size={18} className="text-amber-500"/>
         </div>
         <div>
-          <p className="font-bold text-gray-800 dark:text-gray-100 text-sm">Abonentët më të vjetër</p>
-          <p className="text-xs text-gray-400 mt-0.5">Renditur nga fatura e parë (më i vjetri sipër)</p>
+          <p className="font-bold text-gray-900 dark:text-white text-sm">Abonentët më të vjetër</p>
+          <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">Renditur nga fatura e parë (më i vjetri sipër)</p>
         </div>
-        <span className="ml-auto text-xs font-bold bg-amber-50 text-amber-600 px-2.5 py-1 rounded-full flex-shrink-0">
+        <span className="ml-auto text-xs font-extrabold bg-amber-50 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 px-2.5 py-1 rounded-full flex-shrink-0 border border-amber-200/60 dark:border-amber-800/50">
           {subscriberData.length} klientë me historik
         </span>
       </div>
 
-      <div className="card">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200/90 dark:border-gray-700 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-gray-100 dark:border-gray-700">
-                <th className="table-th">#</th>
-                <th className="table-th">Klienti</th>
-                <th className="table-th">Shteti</th>
-                <th className="table-th text-right">Fatura e parë</th>
-                <th className="table-th text-right">Kohëzgjatja</th>
-                <th className="table-th text-right">Fatura</th>
+              <tr className="border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/50">
+                <th className="px-4 py-3 text-left text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-wider">#</th>
+                <th className="px-4 py-3 text-left text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Klienti</th>
+                <th className="px-4 py-3 text-left text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Shteti</th>
+                <th className="px-4 py-3 text-right text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Fatura e parë</th>
+                <th className="px-4 py-3 text-right text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Kohëzgjatja</th>
+                <th className="px-4 py-3 text-right text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Fatura</th>
               </tr>
             </thead>
             <tbody>
               {paged.map((c, i) => {
                 const realIndex = (page - 1) * perPage + i
                 return (
-                <tr key={c.id} className="hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition-colors border-b border-gray-50 dark:border-gray-700 last:border-0">
-                  <td className="table-td w-10">
-                    <span className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white"
+                <tr key={c.id} className="hover:bg-gray-50/80 dark:hover:bg-gray-700/40 transition-colors border-b border-gray-50 dark:border-gray-700 last:border-0">
+                  <td className="px-4 py-2.5 w-10">
+                    <span className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-black text-white"
                       style={{ background: realIndex===0?'#f59e0b':realIndex===1?'#94a3b8':realIndex===2?'#cd7c3d':'#e5e7eb', color: realIndex>=3?'#6b7280':undefined }}>
                       {realIndex + 1}
                     </span>
                   </td>
-                  <td className="table-td">
+                  <td className="px-4 py-2.5">
                     <div className="flex items-center gap-2">
                       <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
                         style={{ background: c.color || '#2563eb' }}>
                         {(c.name || '?')[0]}
                       </div>
                       <div>
-                        <p className="text-sm font-semibold text-gray-700 dark:text-gray-300">{c.name}</p>
-                        <p className="text-[10px] text-gray-400">{c.type === 'reseller' ? 'Reseller' : 'Individual'}</p>
+                        <p className="text-sm font-bold text-gray-800 dark:text-gray-200">{c.name}</p>
+                        <p className="text-[10px] text-gray-400 dark:text-gray-500">{c.type === 'reseller' ? 'Reseller' : 'Individual'}</p>
                       </div>
                     </div>
                   </td>
-                  <td className="table-td text-xs text-gray-500 dark:text-gray-400">{c.country}</td>
-                  <td className="table-td text-right">
-                    <span className="text-xs font-semibold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md">{c.firstDate}</span>
+                  <td className="px-4 py-2.5 text-xs text-gray-500 dark:text-gray-400">{c.country}</td>
+                  <td className="px-4 py-2.5 text-right">
+                    <span className="text-xs font-bold font-mono text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/40 px-2 py-0.5 rounded-md">{c.firstDate}</span>
                   </td>
-                  <td className="table-td text-right">
+                  <td className="px-4 py-2.5 text-right">
                     <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
-                      realIndex === 0 ? 'bg-amber-100 text-amber-700' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'
+                      realIndex === 0 ? 'bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-400' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'
                     }`}>{fmt(c.daysActive)}</span>
                   </td>
-                  <td className="table-td text-right font-bold text-blue-500">{c.invoiceCount}</td>
+                  <td className="px-4 py-2.5 text-right font-mono font-extrabold text-blue-600 dark:text-blue-400">{c.invoiceCount}</td>
                 </tr>
                 )})}
             </tbody>
           </table>
         </div>
         <div className="px-5 py-3 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between text-xs">
-          <span className="text-gray-400">Faqja {page} e {maxPages}</span>
+          <span className="text-gray-400 dark:text-gray-500">Faqja {page} e {maxPages}</span>
           <div className="flex gap-2">
-            <button onClick={() => setPage(Math.max(1, page - 1))} disabled={page === 1} className="px-2 py-1 rounded border border-gray-200 dark:border-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">←</button>
-            <button onClick={() => setPage(Math.min(maxPages, page + 1))} disabled={page === maxPages} className="px-2 py-1 rounded border border-gray-200 dark:border-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">→</button>
+            <button onClick={() => setPage(Math.max(1, page - 1))} disabled={page === 1} className="px-2 py-1 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-900/50 disabled:opacity-50 disabled:cursor-not-allowed">←</button>
+            <button onClick={() => setPage(Math.min(maxPages, page + 1))} disabled={page === maxPages} className="px-2 py-1 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-900/50 disabled:opacity-50 disabled:cursor-not-allowed">→</button>
           </div>
         </div>
       </div>
@@ -988,6 +989,7 @@ function AbonentVjeterTab() {
 function ReferuesitTab() {
   const { customers } = useApp()
   const [page, setPage] = useState(1)
+  const [expandedRef, setExpandedRef] = useState(null)
   const perPage = 10
 
   const referralData = useMemo(() => {
@@ -1011,56 +1013,66 @@ function ReferuesitTab() {
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-        <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 px-5 py-4 text-center">
-          <p className="text-2xl font-bold text-blue-500">{referralData.length}</p>
-          <p className="text-xs text-gray-400 mt-0.5 font-medium">Referues aktivë</p>
+        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200/90 dark:border-gray-700 shadow-sm px-5 py-4 text-center">
+          <p className="text-2xl font-black font-mono text-blue-600 dark:text-blue-400">{referralData.length}</p>
+          <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5 font-bold">Referues aktivë</p>
         </div>
-        <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 px-5 py-4 text-center">
-          <p className="text-2xl font-bold text-emerald-600">{totalReferred}</p>
-          <p className="text-xs text-gray-400 mt-0.5 font-medium">Klientë të referuar</p>
+        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200/90 dark:border-gray-700 shadow-sm px-5 py-4 text-center">
+          <p className="text-2xl font-black font-mono text-emerald-600 dark:text-emerald-400">{totalReferred}</p>
+          <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5 font-bold">Klientë të referuar</p>
         </div>
-        <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 px-5 py-4 text-center">
-          <p className="text-2xl font-bold text-gray-700 dark:text-gray-200">{notReferred}</p>
-          <p className="text-xs text-gray-400 mt-0.5 font-medium">Pa referues</p>
+        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200/90 dark:border-gray-700 shadow-sm px-5 py-4 text-center">
+          <p className="text-2xl font-black font-mono text-gray-800 dark:text-gray-200">{notReferred}</p>
+          <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5 font-bold">Pa referues</p>
         </div>
       </div>
 
       {referralData.length === 0 ? (
-        <div className="card p-12 text-center">
-          <Share2 size={36} className="text-gray-200 mx-auto mb-3"/>
-          <p className="text-sm font-semibold text-gray-500">Asnjë klient nuk ka referuar ende.</p>
-          <p className="text-xs text-gray-400 mt-1">Referuesit shfaqen kur plotësohet fusha "Referuar nga" te klienti.</p>
+        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200/90 dark:border-gray-700 shadow-sm p-12 text-center">
+          <Share2 size={36} className="text-gray-200 dark:text-gray-700 mx-auto mb-3"/>
+          <p className="text-sm font-semibold text-gray-500 dark:text-gray-400">Asnjë klient nuk ka referuar ende.</p>
+          <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Referuesit shfaqen kur plotësohet fusha "Referuar nga" te klienti.</p>
         </div>
       ) : (
-        <div className="card">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200/90 dark:border-gray-700 shadow-sm overflow-hidden">
           <div className="px-5 py-4 border-b border-gray-100 dark:border-gray-700">
-            <p className="text-sm font-bold text-gray-800 dark:text-gray-100">Renditja e referuesve</p>
+            <p className="text-sm font-bold text-gray-900 dark:text-white">Renditja e referuesve</p>
           </div>
           <div className="divide-y divide-gray-50 dark:divide-gray-700">
             {paged.map(({ referrer, count, clients }, i) => {
               const realIndex = (page - 1) * perPage + i
+              const isOpen = expandedRef === referrer
               return (
-              <div key={referrer} className="px-5 py-4 hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition-colors">
+              <div key={referrer} className="px-5 py-4 hover:bg-gray-50/80 dark:hover:bg-gray-700/40 transition-colors">
                 <div className="flex items-center gap-3">
-                  <span className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0"
+                  <span className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-black text-white flex-shrink-0"
                     style={{ background: realIndex===0?'#f59e0b':realIndex===1?'#94a3b8':realIndex===2?'#cd7c3d':'#6b7280' }}>
                     {realIndex + 1}
                   </span>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-bold text-gray-800 dark:text-gray-100">{referrer}</p>
-                    <div className="flex flex-wrap gap-1 mt-1.5">
-                      {clients.map(cl => (
-                        <span key={cl} className="text-[10px] font-semibold bg-blue-50 dark:bg-blue-800/30 text-blue-500 dark:text-blue-400 px-1.5 py-0.5 rounded-full">
-                          {cl}
-                        </span>
-                      ))}
-                    </div>
+                    <p className="text-sm font-bold text-gray-900 dark:text-white">{referrer}</p>
                   </div>
-                  <div className="text-right flex-shrink-0">
-                    <span className="text-2xl font-black text-blue-500">{count}</span>
-                    <p className="text-[10px] text-gray-400 font-medium">referime</p>
+                  <button
+                    onClick={() => setExpandedRef(isOpen ? null : referrer)}
+                    className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-gray-200 dark:border-gray-700 text-blue-600 dark:text-blue-400 text-[11px] font-bold hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors flex-shrink-0"
+                  >
+                    Shiko klientët ({count})
+                    {isOpen ? <ChevronUp size={12}/> : <ChevronDown size={12}/>}
+                  </button>
+                  <div className="text-right flex-shrink-0 w-14">
+                    <span className="text-2xl font-black font-mono text-blue-600 dark:text-blue-400">{count}</span>
+                    <p className="text-[10px] text-gray-400 dark:text-gray-500 font-bold">referime</p>
                   </div>
                 </div>
+                {isOpen && (
+                  <div className="flex flex-wrap gap-1.5 mt-3 pt-3 border-t border-gray-100 dark:border-gray-700 ml-10">
+                    {clients.map(cl => (
+                      <span key={cl} className="text-[10px] font-semibold bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-1.5 py-0.5 rounded-full">
+                        {cl}
+                      </span>
+                    ))}
+                  </div>
+                )}
                 <div className="mt-2.5 ml-10 h-1.5 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
                   <div className="h-full rounded-full transition-all duration-700"
                     style={{ width:`${(count/topCount)*100}%`, background: realIndex===0?'#f59e0b':realIndex===1?'#94a3b8':realIndex===2?'#cd7c3d':'#6b7280' }}/>
@@ -1069,10 +1081,10 @@ function ReferuesitTab() {
             )})}
           </div>
           <div className="px-5 py-3 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between text-xs">
-            <span className="text-gray-400">Faqja {page} e {maxPages}</span>
+            <span className="text-gray-400 dark:text-gray-500">Faqja {page} e {maxPages}</span>
             <div className="flex gap-2">
-              <button onClick={() => setPage(Math.max(1, page - 1))} disabled={page === 1} className="px-2 py-1 rounded border border-gray-200 dark:border-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">←</button>
-              <button onClick={() => setPage(Math.min(maxPages, page + 1))} disabled={page === maxPages} className="px-2 py-1 rounded border border-gray-200 dark:border-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">→</button>
+              <button onClick={() => setPage(Math.max(1, page - 1))} disabled={page === 1} className="px-2 py-1 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-900/50 disabled:opacity-50 disabled:cursor-not-allowed">←</button>
+              <button onClick={() => setPage(Math.min(maxPages, page + 1))} disabled={page === maxPages} className="px-2 py-1 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-900/50 disabled:opacity-50 disabled:cursor-not-allowed">→</button>
             </div>
           </div>
         </div>
@@ -1109,25 +1121,26 @@ export default function Reports() {
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-gray-200 dark:border-gray-700">
         <div>
-          <p className="text-[11px] font-bold text-purple-500 uppercase tracking-widest mb-0.5">Analiza</p>
-          <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">Raportet</h2>
-          <p className="text-sm text-gray-400 mt-0.5">Pasqyra e plotë e performancës</p>
+          <h2 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">Raportet</h2>
+          <p className="text-xs text-gray-500 dark:text-gray-400 font-medium mt-0.5">Pasqyra e plotë e performancës</p>
         </div>
-        <button className="btn btn-outline btn-sm self-start sm:self-auto"><Download size={14}/>Eksporto</button>
+        <button className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 font-bold text-xs hover:bg-gray-50 dark:hover:bg-gray-700 shadow-sm transition-colors self-start sm:self-auto">
+          <Download size={14}/>Eksporto
+        </button>
       </div>
 
       {/* Main tab switcher */}
-      <div className="flex gap-1 bg-gray-100 dark:bg-gray-800 rounded-xl p-1 overflow-x-auto">
+      <div className="flex gap-1 bg-gray-200/60 dark:bg-gray-800/80 rounded-2xl p-1 overflow-x-auto">
         {MAIN_TABS.map(({ id, label, icon: Icon }) => (
           <button key={id} onClick={() => setMainTab(id)}
-            className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap px-2 ${
+            className={`flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
               mainTab === id
-                ? 'bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 shadow-sm'
-                : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
+                ? 'bg-white dark:bg-gray-900 text-gray-900 dark:text-white shadow-sm'
+                : 'text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
             }`}>
-            <Icon size={13}/>
+            <Icon size={14} className={mainTab === id ? 'text-blue-500' : 'text-gray-400'}/>
             <span className="hidden sm:inline">{label}</span>
           </button>
         ))}
