@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react'
 import {
   Users, TrendingUp, TrendingDown, Clock, FilePlus,
   UserPlus, ReceiptText, AlertCircle, UserCheck, Layers,
-  ArrowUp, ArrowDown, PieChart as PieIcon,
+  ArrowUp, ArrowDown, PieChart as PieIcon, CalendarDays, Eye, EyeOff,
 } from 'lucide-react'
 import {
   ComposedChart, Area, Line, PieChart, Pie, Cell,
@@ -14,7 +14,26 @@ import InvoiceModal from './InvoiceModal'
 import { CustomerModal } from './Customers'
 import { ExpenseModal }  from './Expenses'
 
-const MONTH_LBL = ['Jan','Shk','Mar','Pri','Maj','Qer','Kor','Gus','Sht','Tet','Nën','Dhj']
+const MONTH_LBL  = ['Jan','Shk','Mar','Pri','Maj','Qer','Kor','Gus','Sht','Tet','Nën','Dhj']
+const MONTH_FULL = ['Janar','Shkurt','Mars','Prill','Maj','Qershor','Korrik','Gusht','Shtator','Tetor','Nëntor','Dhjetor']
+
+const pad2 = n => String(n).padStart(2, '0')
+
+// Kufijtë e një periudhe: muaj i vetëm (kur month != null) ose vit i plotë (kur month === null)
+function periodRange(year, month) {
+  const y = parseInt(year)
+  if (month == null) return { start: `${y}-01-01`, end: `${y}-12-31` }
+  const lastDay = new Date(y, month + 1, 0).getDate()
+  return { start: `${y}-${pad2(month + 1)}-01`, end: `${y}-${pad2(month + 1)}-${pad2(lastDay)}` }
+}
+
+// Periudha menjëherë paraardhëse (muaji i kaluar, ose viti i kaluar nëse s'ka muaj të zgjedhur)
+function precedingPeriod(year, month) {
+  const y = parseInt(year)
+  if (month == null) return { year: y - 1, month: null }
+  if (month === 0)    return { year: y - 1, month: 11 }
+  return { year: y, month: month - 1 }
+}
 
 /* ── Paleta e ngjyrave për kategoritë ──
    Më parë ngjyrat vinin nga një listë e fiksuar emrash, prandaj çdo kategori
@@ -54,10 +73,13 @@ const DELTA_TONE = {
   neutral: 'bg-gray-100 text-gray-500',
 }
 
-function KpiCard({ icon: Icon, iconBg, iconColor, label, value, delta, deltaTone = 'neutral', ctx, onClick }) {
+function KpiCard({ icon: Icon, iconBg, iconColor, label, value, delta, deltaTone = 'neutral', ctx, onClick, hidden }) {
   const base = "bg-white rounded-2xl border border-gray-100 p-5 flex flex-col h-full transition-all duration-200"
   const interactive = onClick ? "cursor-pointer hover:-translate-y-0.5 hover:shadow-lg hover:border-blue-100" : "hover:-translate-y-0.5 hover:shadow-md"
   const Arrow = deltaTone === 'up' ? ArrowUp : deltaTone === 'down' ? ArrowDown : null
+  const displayValue = hidden ? '••••••' : value
+  const displayDelta = hidden ? null : delta
+  const displayCtx   = hidden ? '••• •••' : ctx
   return (
     <div className={`${base} ${interactive}`} onClick={onClick}>
       <div className="flex items-start justify-between gap-3">
@@ -66,21 +88,21 @@ function KpiCard({ icon: Icon, iconBg, iconColor, label, value, delta, deltaTone
           <Icon size={17} style={{ color: iconColor }} />
         </div>
       </div>
-      <p className="text-2xl font-bold text-gray-800 mt-2 truncate">{value}</p>
+      <p className="text-2xl font-bold text-gray-800 mt-2 truncate">{displayValue}</p>
       <div className="flex items-center gap-2 mt-auto pt-3 flex-wrap">
-        {delta && (
+        {displayDelta && (
           <span className={`inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full ${DELTA_TONE[deltaTone]}`}>
-            {Arrow && <Arrow size={11} strokeWidth={3} />}{delta}
+            {Arrow && <Arrow size={11} strokeWidth={3} />}{displayDelta}
           </span>
         )}
-        {ctx && <span className="text-[11px] text-gray-400 truncate">{ctx}</span>}
+        {displayCtx && <span className="text-[11px] text-gray-400 truncate">{displayCtx}</span>}
       </div>
     </div>
   )
 }
 
 /* ── Graf krahasues: viti aktual vs viti paraprak ── */
-function YoYChart({ title, sub, data, curKey, prevKey, color, softColor, gradId, curLabel, prevLabel, fmt }) {
+function YoYChart({ title, sub, data, curKey, prevKey, color, softColor, gradId, curLabel, prevLabel, fmt, hidden }) {
   /* Totalet krahasohen vetëm për muajt që kanë të dhëna këtë vit (periudhë e njëjtë) */
   const rows      = data.filter(d => d[curKey] !== null && d[curKey] !== undefined)
   const curTotal  = rows.reduce((s, d) => s + (d[curKey]  || 0), 0)
@@ -136,7 +158,7 @@ function YoYChart({ title, sub, data, curKey, prevKey, color, softColor, gradId,
         </div>
       </div>
 
-      <div className="px-2 py-4">
+      <div className={`px-2 py-4 transition-all duration-200 ${hidden ? 'blur-md select-none pointer-events-none' : ''}`}>
         <ResponsiveContainer width="100%" height={220}>
           <ComposedChart data={data} margin={{ top: 4, right: 8, left: -12, bottom: 0 }}>
             <defs>
@@ -162,16 +184,16 @@ function YoYChart({ title, sub, data, curKey, prevKey, color, softColor, gradId,
       <div className="flex items-center justify-around gap-2 px-4 py-3 border-t border-gray-50 mt-auto">
         <div className="text-center">
           <p className="text-[10px] text-gray-400 font-medium">{curLabel}</p>
-          <p className="text-sm font-bold mt-0.5" style={{ color }}>{fmt(curTotal)}</p>
+          <p className="text-sm font-bold mt-0.5" style={{ color }}>{hidden ? '••••••' : fmt(curTotal)}</p>
         </div>
         <div className="text-center">
           <p className="text-[10px] text-gray-400 font-medium">{prevLabel}</p>
-          <p className="text-sm font-bold text-gray-400 mt-0.5">{fmt(prevTotal)}</p>
+          <p className="text-sm font-bold text-gray-400 mt-0.5">{hidden ? '••••••' : fmt(prevTotal)}</p>
         </div>
         <div className="text-center">
           <p className="text-[10px] text-gray-400 font-medium">Ndryshimi</p>
           <p className={`text-sm font-bold mt-0.5 ${up ? 'text-emerald-600' : 'text-red-500'}`}>
-            {delta === null ? '—' : `${up ? '▲' : '▼'} ${Math.abs(delta).toFixed(1)}%`}
+            {hidden ? '•••' : delta === null ? '—' : `${up ? '▲' : '▼'} ${Math.abs(delta).toFixed(1)}%`}
           </p>
         </div>
       </div>
@@ -181,107 +203,122 @@ function YoYChart({ title, sub, data, curKey, prevKey, color, softColor, gradId,
 
 export default function Dashboard() {
   const { invoices, customers, expenses, payments, navigate, setModal, closeModal, fmt, currentUser } = useApp()
-  const [catFilter, setCatFilter] = useState('12m')
   const [activeCat, setActiveCat] = useState(null)   // indeksi i segmentit nën kursor
+  const [hideData, setHideData] = useState(true)      // fshehur si parazgjedhje — mbrojtje privatësie
 
-  const today    = new Date().toISOString().slice(0, 10)
-  const thisYear = new Date().getFullYear().toString()
-  const prevYear = (new Date().getFullYear() - 1).toString()
-  const thisMonth = today.slice(0, 7)  // YYYY-MM
+  const today             = new Date().toISOString().slice(0, 10)
+  const actualCurrentYear = new Date().getFullYear().toString()
+  const curMonthIdx       = new Date().getMonth()   // 0-indexed; muajt pas tij s'kanë ardhur ende
 
-  const curMonthIdx = new Date().getMonth()   // 0-indexed; muajt pas tij s'kanë ardhur ende
+  /* ── Filteri global i Dashboard-it: muaj + vit — ndikon në çdo kartelë/grafik më poshtë ── */
+  const [filterYear,  setFilterYear]  = useState(actualCurrentYear)
+  const [filterMonth, setFilterMonth] = useState(null) // null = krejt vitin
 
-  /* ── Të ardhura sipas muajit: viti aktual vs viti paraprak ──
-     Bazohet te pagesat e pranuara (data e pagesës), jo te faturat. */
+  const availableYears = useMemo(() => {
+    const set = new Set([actualCurrentYear])
+    ;[...invoices, ...payments, ...expenses].forEach(x => { if (x.date) set.add(x.date.slice(0, 4)) })
+    return [...set].sort((a, b) => b.localeCompare(a))
+  }, [invoices, payments, expenses, actualCurrentYear])
+
+  // Kufijtë e periudhës së zgjedhur — periudhat "në vazhdim" (viti/muaji aktual) kufizohen
+  // te sot, periudhat e kaluara mbeten të plota (2025 = gjithë viti, 2026 = deri sot).
+  const rawRange         = periodRange(filterYear, filterMonth)
+  const periodWasCapped  = rawRange.end > today
+  const periodStart      = rawRange.start
+  const periodEnd        = periodWasCapped ? today : rawRange.end
+  const periodLabel      = filterMonth != null ? `${MONTH_FULL[filterMonth]} ${filterYear}` : filterYear
+
+  // Krahasimi (a): e njëjta periudhë, një vit më parë — për Të ardhura/Shpenzime (formula YTD ekzistuese e përgjithësuar)
+  const yoyPrevYear     = (parseInt(filterYear) - 1).toString()
+  const yoyRawRange     = periodRange(yoyPrevYear, filterMonth)
+  const yoyPrevStart    = yoyRawRange.start
+  const yoyPrevEnd      = periodWasCapped ? `${yoyPrevYear}${periodEnd.slice(4)}` : yoyRawRange.end
+  const yoyPrevMonthIdx = parseInt(periodEnd.slice(5, 7)) - 1
+  const ytdCtx          = `deri ${MONTH_LBL[yoyPrevMonthIdx]} ${yoyPrevYear}`
+
+  // Krahasimi (b): periudha menjëherë paraardhëse — për 'Klientë aktivë' (trend, jo krahasim YoY)
+  const precP     = precedingPeriod(filterYear, filterMonth)
+  const precRange = periodRange(precP.year, precP.month)
+  const precAsOf  = precRange.end
+  const precLabel = filterMonth != null ? 'muajin e kaluar' : 'vitin e kaluar'
+
+  /* ── Të ardhura sipas muajit: viti i zgjedhur vs viti paraprak ──
+     Bazohet te pagesat e pranuara (data e pagesës), jo te faturat.
+     Respekton vetëm filterin e VITIT (grafik 12-mujor, s'ngushtohet në 1 muaj). */
+  const chartCutoffIdx = filterYear === actualCurrentYear ? curMonthIdx : 11
+  const chartPrevYear  = (parseInt(filterYear) - 1).toString()
+
   const revenueYoY = useMemo(() =>
     MONTH_LBL.map((label, mo) => {
-      const key  = `${thisYear}-${String(mo + 1).padStart(2, '0')}`
-      const prev = `${prevYear}-${String(mo + 1).padStart(2, '0')}`
+      const key  = `${filterYear}-${pad2(mo + 1)}`
+      const prev = `${chartPrevYear}-${pad2(mo + 1)}`
       return {
         month:       label,
-        revenue:     mo <= curMonthIdx
+        revenue:     mo <= chartCutoffIdx
           ? payments.filter(p => p.date?.startsWith(key)).reduce((s, p) => s + (p.amount || 0), 0)
           : null,
         revenuePrev: payments.filter(p => p.date?.startsWith(prev)).reduce((s, p) => s + (p.amount || 0), 0),
       }
     }),
-    [payments, thisYear, prevYear, curMonthIdx]
+    [payments, filterYear, chartPrevYear, chartCutoffIdx]
   )
 
-  /* ── Shpenzime sipas muajit: viti aktual vs viti paraprak ── */
+  /* ── Shpenzime sipas muajit: viti i zgjedhur vs viti paraprak ── */
   const expensesYoY = useMemo(() =>
     MONTH_LBL.map((label, mo) => {
-      const key  = `${thisYear}-${String(mo + 1).padStart(2, '0')}`
-      const prev = `${prevYear}-${String(mo + 1).padStart(2, '0')}`
+      const key  = `${filterYear}-${pad2(mo + 1)}`
+      const prev = `${chartPrevYear}-${pad2(mo + 1)}`
       return {
         month:        label,
-        expenses:     mo <= curMonthIdx
+        expenses:     mo <= chartCutoffIdx
           ? expenses.filter(e => e.date?.startsWith(key)).reduce((s, e) => s + (e.amount || 0), 0)
           : null,
         expensesPrev: expenses.filter(e => e.date?.startsWith(prev)).reduce((s, e) => s + (e.amount || 0), 0),
       }
     }),
-    [expenses, thisYear, prevYear, curMonthIdx]
+    [expenses, filterYear, chartPrevYear, chartCutoffIdx]
   )
 
   /* ── Helpers ── */
   const customerTypeMap = useMemo(() => new Map(customers.map(c => [c.name, c.type])), [customers])
   const getType = name => customerTypeMap.get(name) || 'individual'
 
-  /* ── KPI 1: Klientë aktivë ── */
-  // Fatura jo-void me subscriptionExpiry në të ardhmen (paguar ose jo)
+  /* ── KPI 1: Klientë aktivë — 'si të ishte' në fund të periudhës së zgjedhur ── */
   const activeClients = useMemo(() => {
     const names = new Set(
       invoices
-        .filter(i =>
-          i.status !== 'void' &&
-          i.subscriptionExpiry &&
-          i.subscriptionExpiry > today
-        )
+        .filter(i => i.status !== 'void' && i.subscriptionExpiry && i.date && i.date <= periodEnd && i.subscriptionExpiry > periodEnd)
         .map(i => i.customer)
     )
     return names.size
-  }, [invoices, today])
+  }, [invoices, periodEnd])
 
-  /* Sa klientë ishin aktivë në fund të muajit të kaluar — për krahasim.
-     Merren vetëm faturat që ekzistonin atëherë (i.date <= fundi i muajit). */
+  /* Klientë aktivë në fund të periudhës paraardhëse — vetëm për krahasim */
   const activeClientsPrev = useMemo(() => {
-    const d = new Date()
-    const lastMonthEnd = new Date(d.getFullYear(), d.getMonth(), 0).toISOString().slice(0, 10)
     const names = new Set(
       invoices
-        .filter(i =>
-          i.status !== 'void' &&
-          i.subscriptionExpiry &&
-          i.date && i.date <= lastMonthEnd &&
-          i.subscriptionExpiry > lastMonthEnd
-        )
+        .filter(i => i.status !== 'void' && i.subscriptionExpiry && i.date && i.date <= precAsOf && i.subscriptionExpiry > precAsOf)
         .map(i => i.customer)
     )
     return names.size
-  }, [invoices])
+  }, [invoices, precAsOf])
 
-  /* ── KPI 2: Të ardhura totale viti aktual ── */
-  // Përdor payments (datën e pagesës), jo datën e faturës
-  const yearRevenue = useMemo(() =>
-    payments
-      .filter(p => p.date?.startsWith(thisYear))
-      .reduce((s, p) => s + (p.amount || 0), 0),
-    [payments, thisYear]
+  /* ── KPI 2: Të ardhura, periudha e zgjedhur ── */
+  const periodRevenue = useMemo(() =>
+    payments.filter(p => p.date >= periodStart && p.date <= periodEnd).reduce((s, p) => s + (p.amount || 0), 0),
+    [payments, periodStart, periodEnd]
   )
 
-  /* ── KPI 3: Shpenzime viti aktual ── */
-  const yearExpenses = useMemo(() =>
-    expenses
-      .filter(e => e.date?.startsWith(thisYear))
-      .reduce((s, e) => s + e.amount, 0),
-    [expenses, thisYear]
+  /* ── KPI 3: Shpenzime, periudha e zgjedhur ── */
+  const periodExpenses = useMemo(() =>
+    expenses.filter(e => e.date >= periodStart && e.date <= periodEnd).reduce((s, e) => s + e.amount, 0),
+    [expenses, periodStart, periodEnd]
   )
 
-  /* ── KPI 4-6: Fatura në pritje ── */
+  /* ── KPI 4-6: Fatura në pritje, të lëshuara brenda periudhës së zgjedhur ── */
   const pendingInvoices = useMemo(() =>
-    invoices.filter(i => i.status === 'pending' || i.status === 'overdue'),
-    [invoices]
+    invoices.filter(i => (i.status === 'pending' || i.status === 'overdue') && i.date >= periodStart && i.date <= periodEnd),
+    [invoices, periodStart, periodEnd]
   )
   const { pendingKlient, pendingReseller, pendingKlientAmt, pendingResellerAmt, pendingTotalAmt } = useMemo(() => {
     const klient   = pendingInvoices.filter(i => getType(i.customer) !== 'reseller')
@@ -295,12 +332,11 @@ export default function Dashboard() {
     }
   }, [pendingInvoices, customerTypeMap])
 
-  /* ── Shpenzime sipas kategorisë (me filter) ── */
+  /* ── Shpenzime sipas kategorisë, brenda periudhës së zgjedhur globalisht
+     (më parë kishte filter lokal 1muaj/12muaj/viti-paraprak të pavarur — tani ndjek
+     filterin e përbashkët të faqes, si çdo kartelë tjetër) ── */
   const { catData, catTotal, top5Types, groupByType } = useMemo(() => {
-    let filtered = expenses
-    if (catFilter === '1m')   filtered = expenses.filter(e => e.date?.startsWith(thisMonth))
-    if (catFilter === '12m')  filtered = expenses.filter(e => e.date?.startsWith(thisYear))
-    if (catFilter === 'prev') filtered = expenses.filter(e => e.date?.startsWith(prevYear))
+    const filtered = expenses.filter(e => e.date >= periodStart && e.date <= periodEnd)
 
     const catGroups = {}
     const typeGroups = {}
@@ -362,41 +398,36 @@ export default function Dashboard() {
     })
 
     return { catData, catTotal, top5Types, groupByType }
-  }, [expenses, catFilter, thisMonth, thisYear, prevYear])
+  }, [expenses, periodStart, periodEnd])
 
-  /* ── Shitje sipas muajit: viti aktual vs viti paraprak ── */
+  /* ── Shitje sipas muajit: viti i zgjedhur vs viti paraprak ── */
   const salesYoY = useMemo(() =>
     MONTH_LBL.map((label, mo) => {
-      const key  = `${thisYear}-${String(mo + 1).padStart(2, '0')}`
-      const prev = `${prevYear}-${String(mo + 1).padStart(2, '0')}`
+      const key  = `${filterYear}-${pad2(mo + 1)}`
+      const prev = `${chartPrevYear}-${pad2(mo + 1)}`
       return {
         month:     label,
-        sales:     mo <= curMonthIdx
+        sales:     mo <= chartCutoffIdx
           ? invoices.filter(i => i.date?.startsWith(key)  && i.status !== 'void').reduce((s, i) => s + (i.amount || 0), 0)
           : null,
         salesPrev: invoices.filter(i => i.date?.startsWith(prev) && i.status !== 'void').reduce((s, i) => s + (i.amount || 0), 0),
       }
     }),
-    [invoices, thisYear, prevYear, curMonthIdx]
+    [invoices, filterYear, chartPrevYear, chartCutoffIdx]
   )
 
-  /* ── Krahasim YTD për KPI: e njëjta periudhë e vitit paraprak ── */
-  const { revPrevYTD, expPrevYTD } = useMemo(() => {
-    const from = `${prevYear}-01-01`
-    const to   = `${prevYear}-${today.slice(5)}`   // deri në të njëjtën ditë e muaj
-    return {
-      revPrevYTD: payments.filter(p => p.date >= from && p.date <= to).reduce((s, p) => s + (p.amount || 0), 0),
-      expPrevYTD: expenses.filter(e => e.date >= from && e.date <= to).reduce((s, e) => s + (e.amount || 0), 0),
-    }
-  }, [payments, expenses, prevYear, today])
+  /* ── Krahasimi me të njëjtën periudhë, vitin paraprak ── */
+  const { revPrevYTD, expPrevYTD } = useMemo(() => ({
+    revPrevYTD: payments.filter(p => p.date >= yoyPrevStart && p.date <= yoyPrevEnd).reduce((s, p) => s + (p.amount || 0), 0),
+    expPrevYTD: expenses.filter(e => e.date >= yoyPrevStart && e.date <= yoyPrevEnd).reduce((s, e) => s + (e.amount || 0), 0),
+  }), [payments, expenses, yoyPrevStart, yoyPrevEnd])
 
   const pctDelta = (cur, prev) => prev > 0 ? ((cur - prev) / prev) * 100 : null
   const deltaLbl = d => d === null ? null : `${d >= 0 ? '+' : ''}${d.toFixed(1)}%`
-  const revDelta = pctDelta(yearRevenue,  revPrevYTD)
-  const expDelta = pctDelta(yearExpenses, expPrevYTD)
-  const ytdCtx   = `deri ${MONTH_LBL[curMonthIdx]} ${prevYear}`
+  const revDelta = pctDelta(periodRevenue,  revPrevYTD)
+  const expDelta = pctDelta(periodExpenses, expPrevYTD)
 
-  /* Klientë aktivë: ndryshimi ndaj fundit të muajit të kaluar */
+  /* Klientë aktivë: ndryshimi ndaj periudhës paraardhëse */
   const clientDelta = activeClients - activeClientsPrev
   const clientTone  = clientDelta > 0 ? 'up' : clientDelta < 0 ? 'down' : 'neutral'
 
@@ -429,6 +460,37 @@ export default function Dashboard() {
           <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">Përshëndetje, {currentUser?.name?.split(' ')[0] || 'Mirë se erdhe'} 👋</h2>
           <p className="text-sm text-gray-400 mt-0.5 hidden sm:block">Pasqyra financiare — {new Date().toLocaleDateString('sq-AL', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
           <p className="text-sm text-gray-400 mt-0.5 sm:hidden">{new Date().toLocaleDateString('sq-AL', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
+        </div>
+
+        {/* Filteri i periudhës — ndikon në krejt të dhënat e faqes */}
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 bg-white border border-gray-200 rounded-xl px-2.5 py-1.5 shadow-sm">
+            <CalendarDays size={14} className="text-gray-400 flex-shrink-0" />
+            <select
+              value={filterMonth ?? 'all'}
+              onChange={e => setFilterMonth(e.target.value === 'all' ? null : parseInt(e.target.value))}
+              className="bg-transparent border-none outline-none text-sm font-semibold text-gray-700 cursor-pointer"
+            >
+              <option value="all">Krejt vitin</option>
+              {MONTH_FULL.map((m, i) => <option key={i} value={i}>{m}</option>)}
+            </select>
+          </div>
+          <div className="flex items-center gap-1.5 bg-white border border-gray-200 rounded-xl px-2.5 py-1.5 shadow-sm">
+            <select
+              value={filterYear}
+              onChange={e => setFilterYear(e.target.value)}
+              className="bg-transparent border-none outline-none text-sm font-semibold text-gray-700 cursor-pointer"
+            >
+              {availableYears.map(y => <option key={y} value={y}>{y}</option>)}
+            </select>
+          </div>
+          <button
+            onClick={() => setHideData(h => !h)}
+            title={hideData ? 'Shfaq të dhënat' : 'Fshih të dhënat'}
+            className="flex items-center justify-center w-9 h-9 bg-white border border-gray-200 rounded-xl shadow-sm text-gray-500 hover:text-blue-600 hover:border-blue-200 transition-colors flex-shrink-0"
+          >
+            {hideData ? <EyeOff size={15}/> : <Eye size={15}/>}
+          </button>
         </div>
       </div>
 
@@ -463,25 +525,28 @@ export default function Dashboard() {
           value={activeClients}
           delta={`${clientDelta > 0 ? '+' : ''}${clientDelta}`}
           deltaTone={clientTone}
-          ctx="krahasuar me muajin e kaluar"
+          ctx={`vs. ${activeClientsPrev} ${precLabel}`}
+          hidden={hideData}
         />
         <KpiCard
           icon={revIcon}  iconBg={revBg}  iconColor={revFg}
-          label={`Të ardhura ${thisYear}`}
-          value={fmt(yearRevenue)}
+          label={`Të ardhura ${periodLabel}`}
+          value={fmt(periodRevenue)}
           delta={deltaLbl(revDelta)}
           deltaTone={revDelta === null ? 'neutral' : revDelta >= 0 ? 'up' : 'down'}
           ctx={`vs. ${fmt(revPrevYTD)} ${ytdCtx}`}
-          onClick={() => goFiltered('payments', { year: thisYear })}
+          onClick={() => goFiltered('payments', { year: filterYear })}
+          hidden={hideData}
         />
         <KpiCard
           icon={expIcon}  iconBg={expBg}  iconColor={expFg}
-          label={`Shpenzime ${thisYear}`}
-          value={fmt(yearExpenses)}
+          label={`Shpenzime ${periodLabel}`}
+          value={fmt(periodExpenses)}
           delta={deltaLbl(expDelta)}
           deltaTone={expDelta === null ? 'neutral' : expDelta >= 0 ? 'down' : 'up'}
           ctx={`vs. ${fmt(expPrevYTD)} ${ytdCtx}`}
-          onClick={() => goFiltered('expenses', { year: thisYear })}
+          onClick={() => goFiltered('expenses', { year: filterYear })}
+          hidden={hideData}
         />
         <KpiCard
           icon={Clock}  iconBg="#fffbeb"  iconColor="#d97706"
@@ -491,6 +556,7 @@ export default function Dashboard() {
           deltaTone="warn"
           ctx="individuale të papaguara"
           onClick={() => goFiltered('invoices', { status: 'pending', type: 'individual' })}
+          hidden={hideData}
         />
         <KpiCard
           icon={Layers}  iconBg="#f5f3ff"  iconColor="#7c3aed"
@@ -500,6 +566,7 @@ export default function Dashboard() {
           deltaTone="warn"
           ctx="reseller të papaguara"
           onClick={() => goFiltered('invoices', { status: 'pending', type: 'reseller' })}
+          hidden={hideData}
         />
         <KpiCard
           icon={AlertCircle}  iconBg="#fff7ed"  iconColor="#ea580c"
@@ -509,43 +576,47 @@ export default function Dashboard() {
           deltaTone="warn"
           ctx="gjithsej të papaguara"
           onClick={() => goFiltered('invoices', { status: 'pending', type: 'all' })}
+          hidden={hideData}
         />
       </div>
 
       {/* ── Shitje sipas muajit (nga faturat) ── */}
       <YoYChart
         title="Shitje sipas muajit"
-        sub={`Nga faturat e lëshuara — ${thisYear} vs. ${prevYear}`}
+        sub={`Nga faturat e lëshuara — ${filterYear} vs. ${chartPrevYear}`}
         data={salesYoY}
         curKey="sales"  prevKey="salesPrev"
         color="#6366f1" softColor="#c7d2fe" gradId="yoy-sales"
-        curLabel={thisYear} prevLabel={prevYear} fmt={fmt}
+        curLabel={filterYear} prevLabel={chartPrevYear} fmt={fmt}
+        hidden={hideData}
       />
 
       {/* ── Të ardhura & shpenzime sipas muajit ── */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 items-stretch">
         <YoYChart
           title="Të ardhura sipas muajit"
-          sub={`Nga pagesat e pranuara — ${thisYear} vs. ${prevYear}`}
+          sub={`Nga pagesat e pranuara — ${filterYear} vs. ${chartPrevYear}`}
           data={revenueYoY}
           curKey="revenue" prevKey="revenuePrev"
           color="#10b981" softColor="#a7f3d0" gradId="yoy-revenue"
-          curLabel={thisYear} prevLabel={prevYear} fmt={fmt}
+          curLabel={filterYear} prevLabel={chartPrevYear} fmt={fmt}
+          hidden={hideData}
         />
         <YoYChart
           title="Shpenzime sipas muajit"
-          sub={`${thisYear} vs. ${prevYear}`}
+          sub={`${filterYear} vs. ${chartPrevYear}`}
           data={expensesYoY}
           curKey="expenses" prevKey="expensesPrev"
           color="#ef4444" softColor="#fecaca" gradId="yoy-exp"
-          curLabel={thisYear} prevLabel={prevYear} fmt={fmt}
+          curLabel={filterYear} prevLabel={chartPrevYear} fmt={fmt}
+          hidden={hideData}
         />
       </div>
 
       {/* ── Shpenzime sipas kategorisë ── */}
       <div className="bg-white rounded-2xl border border-gray-200 p-6">
 
-        {/* Header + filtra */}
+        {/* Header */}
         <div className="flex flex-wrap items-center justify-between gap-4 pb-4 mb-6 border-b border-gray-100">
           <div className="flex items-center gap-2.5">
             <span className="w-9 h-9 rounded-[9px] bg-blue-50 text-blue-600 flex items-center justify-center flex-shrink-0">
@@ -555,27 +626,8 @@ export default function Dashboard() {
               <p className="text-[17px] font-bold text-gray-900 leading-tight">
                 Shpenzime sipas {groupByType ? 'llojit' : 'kategorisë'}
               </p>
-              <p className="text-xs text-gray-400 mt-0.5">
-                {catFilter === '1m' ? 'Muaji aktual' : catFilter === '12m' ? `Viti ${thisYear}` : `Viti ${prevYear}`}
-              </p>
+              <p className="text-xs text-gray-400 mt-0.5">{periodLabel}</p>
             </div>
-          </div>
-
-          <div className="inline-flex bg-gray-100 p-1 rounded-[10px]">
-            {[
-              { key: '1m',   label: '1 muaj' },
-              { key: '12m',  label: `${thisYear}` },
-              { key: 'prev', label: `${prevYear}` },
-            ].map(f => (
-              <button key={f.key} onClick={() => setCatFilter(f.key)}
-                className={`px-4 py-1.5 rounded-[7px] text-[13px] transition-all ${
-                  catFilter === f.key
-                    ? 'bg-white text-blue-600 font-semibold shadow-sm'
-                    : 'text-gray-500 font-medium hover:text-gray-700'
-                }`}>
-                {f.label}
-              </button>
-            ))}
           </div>
         </div>
 
@@ -585,7 +637,7 @@ export default function Dashboard() {
           <div className="grid grid-cols-1 sm:grid-cols-[220px_1fr] gap-8 items-center">
 
             {/* ── Donut me total në qendër ── */}
-            <div className="relative h-[200px] flex items-center justify-center">
+            <div className={`relative h-[200px] flex items-center justify-center transition-all duration-200 ${hideData ? 'blur-md select-none pointer-events-none' : ''}`}>
               <ResponsiveContainer width="100%" height={200}>
                 <PieChart>
                   <Pie
@@ -644,11 +696,11 @@ export default function Dashboard() {
                         <span className="truncate">{t.name}</span>
                       </span>
                       <span className="font-bold text-gray-900 flex-shrink-0">
-                        {fmt(t.value)}
-                        <span className="text-[11px] text-gray-400 font-medium ml-1.5">{pct.toFixed(1)}%</span>
+                        {hideData ? '••••••' : fmt(t.value)}
+                        <span className="text-[11px] text-gray-400 font-medium ml-1.5">{hideData ? '••%' : `${pct.toFixed(1)}%`}</span>
                       </span>
                     </div>
-                    <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                    <div className={`h-1.5 bg-gray-100 rounded-full overflow-hidden ${hideData ? 'blur-sm' : ''}`}>
                       <div className="h-full rounded-full transition-all duration-500"
                            style={{ width: `${pct}%`, background: t.color }} />
                     </div>
@@ -658,7 +710,7 @@ export default function Dashboard() {
 
               <div className="flex items-center justify-between pt-3 mt-2 border-t border-gray-200">
                 <span className="text-[13px] font-semibold text-gray-500">Gjithsej Shpenzime</span>
-                <span className="text-[17px] font-bold text-blue-600">{fmt(catTotal)}</span>
+                <span className="text-[17px] font-bold text-blue-600">{hideData ? '••••••' : fmt(catTotal)}</span>
               </div>
             </div>
           </div>
