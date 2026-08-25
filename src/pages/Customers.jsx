@@ -1,7 +1,7 @@
 import { useState, useMemo, useRef, useEffect, memo, lazy, Suspense } from 'react'
 import {
   Users, Mail, Phone, UserPlus, Search, X,
-  Pencil, Monitor, Wifi, UserCheck, Globe, Filter,
+  Pencil, Monitor, Wifi, UserCheck, Globe,
   MessageCircle, Send, LayoutGrid, User, AlertTriangle, FileSpreadsheet,
   ChevronDown, Trash2,
 } from 'lucide-react'
@@ -423,114 +423,121 @@ const CustomerCard = memo(function CustomerCard({ c, onEdit, fmt, isLatePayer, o
 
   return (
     <div
-      className={`bg-white rounded-xl border p-5 hover:shadow-md transition-all duration-200 group ${
-        isLatePayer
-          ? 'border-orange-200 hover:border-orange-300'
-          : 'border-gray-100 hover:border-blue-200'
-      } ${checked ? 'ring-2 ring-blue-400 bg-blue-50/50' : ''}`}
+      className={`bg-white rounded-2xl border p-4 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between gap-3 cursor-pointer ${
+        checked
+          ? 'border-blue-500'
+          : isLatePayer
+            ? 'border-orange-200 hover:border-orange-300'
+            : 'border-gray-200/90'
+      }`}
       onClick={() => onEdit(c)}
     >
-      {/* Header */}
-      <div className="flex items-start gap-3 mb-3">
-        <input
-          type="checkbox"
-          checked={checked}
-          onChange={(e) => {
-            e.stopPropagation()
-            onToggleSelect()
-          }}
-          className="w-5 h-5 rounded border-gray-300 text-blue-500 cursor-pointer mt-1 flex-shrink-0"
-          onClick={(e) => e.stopPropagation()}
-        />
-        <Avatar name={c.name || c.firstName || '?'} color={c.color} size={44} />
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-1.5 flex-wrap">
-            <p className="font-bold text-gray-800 truncate text-sm">
-              {c.name || `${c.firstName} ${c.lastName}`}
-            </p>
-            {isLatePayer && (
-              <span
-                className="flex items-center gap-0.5 bg-orange-50 text-orange-500 border border-orange-100 text-[10px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0"
-                title="Ky klient ka shfaqur vonesa pagese"
-              >
-                <AlertTriangle size={9}/> Vonues
-              </span>
-            )}
+      <div>
+        {/* Header */}
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex items-start gap-2.5">
+            <input
+              type="checkbox"
+              checked={checked}
+              onChange={(e) => {
+                e.stopPropagation()
+                onToggleSelect()
+              }}
+              className="w-4 h-4 mt-1.5 rounded border-gray-300 text-blue-500 cursor-pointer flex-shrink-0"
+              onClick={(e) => e.stopPropagation()}
+            />
+            <Avatar name={c.name || c.firstName || '?'} color={c.color} size={36} />
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <p className="font-bold text-gray-900 truncate text-sm leading-tight">
+                  {c.name || `${c.firstName} ${c.lastName}`}
+                </p>
+                {isLatePayer && (
+                  <span
+                    className="flex items-center gap-0.5 bg-orange-50 text-orange-500 border border-orange-100 text-[10px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0"
+                    title="Ky klient ka shfaqur vonesa pagese"
+                  >
+                    <AlertTriangle size={9}/> Vonues
+                  </span>
+                )}
+              </div>
+              <div className="flex items-center gap-1 text-[11px] text-gray-400 mt-0.5">
+                <Globe size={10} className="flex-shrink-0"/>
+                <span className="truncate">{c.country}</span>
+              </div>
+            </div>
           </div>
-          <div className="flex items-center gap-1.5 mt-0.5">
-            <Globe size={10} className="text-gray-300 flex-shrink-0"/>
-            <p className="text-xs text-gray-400 truncate">{c.country}</p>
-          </div>
+          {/* Type badge */}
+          <span className={`flex-shrink-0 text-[10px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap ${
+            isReseller ? 'bg-purple-100 text-purple-600' : 'bg-blue-50 text-blue-600'
+          }`}>
+            {isReseller ? 'Reseller' : 'Individual'}
+          </span>
         </div>
-        {/* Type badge */}
-        <span className={`flex-shrink-0 text-[10px] font-bold px-2 py-0.5 rounded-full ${
-          isReseller ? 'bg-purple-50 text-purple-600' : 'bg-blue-50 text-blue-500'
-        }`}>
-          {isReseller ? 'Reseller' : 'Individual'}
-        </span>
-      </div>
 
-      {/* Info rows */}
-      <div className="space-y-1.5 mb-3 text-xs text-gray-500">
-        {c.email && (
-          <div className="flex items-center gap-2">
-            <Mail size={11} className="text-gray-300 flex-shrink-0"/>
-            <span className="truncate">{c.email}</span>
-          </div>
-        )}
-        {c.phone && (
-          <div className="flex items-center gap-2">
-            <Phone size={11} className="text-gray-300 flex-shrink-0"/>
-            <span>{c.phone}</span>
-          </div>
-        )}
+        {/* Info rows */}
+        <div className="pl-[26px] mt-3 space-y-1 text-xs text-gray-500">
+          {c.email && (
+            <div className="flex items-center gap-1.5">
+              <Mail size={11} className="text-gray-400 flex-shrink-0"/>
+              <span className="truncate text-[11px]">{c.email}</span>
+            </div>
+          )}
+          {c.phone && (
+            <div className="flex items-center gap-1.5 font-mono">
+              <Phone size={11} className="text-gray-400 flex-shrink-0"/>
+              <span className="text-[11px]">{c.phone}</span>
+            </div>
+          )}
 
-        {/* Individual: App + MAC */}
-        {!isReseller && c.app && (
-          <div className="flex items-center gap-2">
-            <Monitor size={11} className="text-gray-300 flex-shrink-0"/>
-            <span className="truncate">{c.app}</span>
-          </div>
-        )}
-        {!isReseller && c.macAddress && (
-          <div className="flex items-center gap-2">
-            <Wifi size={11} className="text-gray-300 flex-shrink-0"/>
-            <span className="font-mono text-[10px] truncate">{c.macAddress}</span>
-          </div>
-        )}
+          {/* Individual: App + MAC */}
+          {!isReseller && c.app && (
+            <div className="flex items-center gap-1.5">
+              <Monitor size={11} className="text-gray-400 flex-shrink-0"/>
+              <span className="truncate text-[11px] font-semibold text-gray-700">{c.app}</span>
+            </div>
+          )}
+          {!isReseller && c.macAddress && (
+            <div className="flex items-center gap-1.5 font-mono">
+              <Wifi size={11} className="text-gray-400 flex-shrink-0"/>
+              <span className="text-[11px] truncate">{c.macAddress}</span>
+            </div>
+          )}
 
-        {/* Reseller: Username + Panel */}
-        {isReseller && c.username && (
-          <div className="flex items-center gap-2">
-            <User size={11} className="text-gray-300 flex-shrink-0"/>
-            <span className="font-mono text-[10px]">{c.username}</span>
-          </div>
-        )}
-        {isReseller && c.panel && (
-          <div className="flex items-center gap-2">
-            <LayoutGrid size={11} className="text-gray-300 flex-shrink-0"/>
-            <span className="truncate text-[10px]">{c.panel}</span>
-          </div>
-        )}
+          {/* Reseller: Username + Panel */}
+          {isReseller && c.username && (
+            <div className="flex items-center gap-1.5 font-mono">
+              <User size={11} className="text-gray-400 flex-shrink-0"/>
+              <span className="text-[11px]">{c.username}</span>
+            </div>
+          )}
+          {isReseller && c.panel && (
+            <div className="flex items-center gap-1.5">
+              <LayoutGrid size={11} className="text-gray-400 flex-shrink-0"/>
+              <span className="truncate text-[11px]">{c.panel}</span>
+            </div>
+          )}
 
-        {/* Referral */}
-        {c.referredBy && (
-          <div className="flex items-center gap-2">
-            <UserCheck size={11} className="text-gray-300 flex-shrink-0"/>
-            <span className="truncate text-emerald-600">Ref: {c.referredBy}</span>
-          </div>
-        )}
+          {/* Referral */}
+          {c.referredBy && (
+            <div className="text-[11px] font-semibold text-emerald-600 mt-1">
+              Ref: {c.referredBy}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Footer */}
-      <div className="flex justify-between items-center pt-3 border-t border-gray-50">
-        <div>
-          <p className="text-base font-bold text-blue-500">{fmt(c.total)}</p>
-          <p className="text-[10px] text-gray-400 uppercase tracking-wide">Totali</p>
-        </div>
-        <div className="text-right">
-          <p className="text-base font-bold text-gray-700">{c.invoices}</p>
-          <p className="text-[10px] text-gray-400 uppercase tracking-wide">Fatura</p>
+      <div className="flex justify-between items-center pt-3 border-t border-gray-100">
+        <div className="flex items-center gap-4">
+          <div>
+            <span className="text-xs font-black font-mono text-blue-600 block">{fmt(c.total)}</span>
+            <span className="text-[9px] font-bold uppercase tracking-wider text-gray-400">Totali</span>
+          </div>
+          <div>
+            <span className="text-xs font-black font-mono text-gray-800 block">{c.invoices}</span>
+            <span className="text-[9px] font-bold uppercase tracking-wider text-gray-400">Fatura</span>
+          </div>
         </div>
 
         {/* Action buttons */}
@@ -542,7 +549,7 @@ const CustomerCard = memo(function CustomerCard({ c, onEdit, fmt, isLatePayer, o
               target="_blank"
               rel="noopener noreferrer"
               onClick={e => e.stopPropagation()}
-              className="w-8 h-8 flex items-center justify-center rounded-lg bg-green-50 text-green-500 hover:bg-green-100 hover:text-green-700 transition-colors"
+              className="p-1.5 rounded-lg bg-green-50 text-green-600 hover:bg-green-100 border border-green-200/50 transition-colors"
               title="Kontakto në WhatsApp"
             >
               <MessageCircle size={14}/>
@@ -555,7 +562,7 @@ const CustomerCard = memo(function CustomerCard({ c, onEdit, fmt, isLatePayer, o
               target="_blank"
               rel="noopener noreferrer"
               onClick={e => e.stopPropagation()}
-              className="w-8 h-8 flex items-center justify-center rounded-lg bg-sky-50 text-sky-500 hover:bg-sky-100 hover:text-sky-700 transition-colors"
+              className="p-1.5 rounded-lg bg-sky-50 text-sky-600 hover:bg-sky-100 border border-sky-200/50 transition-colors"
               title="Kontakto në Telegram"
             >
               <Send size={14}/>
@@ -563,23 +570,114 @@ const CustomerCard = memo(function CustomerCard({ c, onEdit, fmt, isLatePayer, o
           )}
           {/* Edit */}
           <button
-            className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-50 text-gray-400 hover:bg-blue-50 hover:text-blue-500 transition-colors opacity-0 group-hover:opacity-100"
+            className="p-1.5 rounded-lg bg-gray-100 text-gray-500 hover:bg-blue-50 hover:text-blue-600 border border-transparent hover:border-blue-200/50 transition-colors"
             onClick={e => { e.stopPropagation(); onEdit(c) }}
+            title="Edito"
+          >
+            <Pencil size={14}/>
+          </button>
+          {/* Delete */}
+          <button
+            className="p-1.5 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 border border-blue-200/50 transition-colors"
+            onClick={e => { e.stopPropagation(); onDelete(c.id) }}
+            title="Fshi klientin"
+          >
+            <Trash2 size={14}/>
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+})
+
+/* ══════════════════════════════════════════════════════════
+   Tabela e klientëve — vetëm desktop (sm:hidden në mobile)
+══════════════════════════════════════════════════════════ */
+const CustomerRow = memo(function CustomerRow({ c, onEdit, fmt, isLatePayer, onDelete, checked, onToggleSelect }) {
+  const isReseller = c.type === 'reseller'
+
+  return (
+    <tr
+      className="border-b border-gray-100 last:border-b-0 hover:bg-gray-50/80 transition-colors cursor-pointer"
+      onClick={() => onEdit(c)}
+    >
+      <td className="p-3" onClick={e => e.stopPropagation()}>
+        <input
+          type="checkbox"
+          checked={checked}
+          onChange={onToggleSelect}
+          className="w-4 h-4 rounded border-gray-300 text-blue-500 cursor-pointer"
+        />
+      </td>
+      <td className="p-3">
+        <div className="flex items-center gap-3">
+          <Avatar name={c.name || c.firstName || '?'} color={c.color} size={34} />
+          <div className="min-w-0">
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <span className="font-bold text-gray-900 text-sm truncate">{c.name || `${c.firstName} ${c.lastName}`}</span>
+              {isLatePayer && (
+                <span className="flex items-center gap-0.5 bg-orange-50 text-orange-500 border border-orange-100 text-[10px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0" title="Ky klient ka shfaqur vonesa pagese">
+                  <AlertTriangle size={9}/> Vonues
+                </span>
+              )}
+            </div>
+            <span className="text-[11px] text-gray-400 flex items-center gap-1">
+              <Globe size={10}/> {c.country}
+            </span>
+          </div>
+        </div>
+      </td>
+      <td className="p-3 text-xs">
+        {c.email && <div className="flex items-center gap-1.5 text-gray-700"><Mail size={11} className="text-gray-400"/>{c.email}</div>}
+        {c.phone && <div className="flex items-center gap-1.5 font-mono text-gray-400 mt-0.5">{c.phone}</div>}
+      </td>
+      <td className="p-3 text-xs">
+        {isReseller ? (
+          <>
+            {c.username && <span className="font-mono font-semibold text-gray-800 block">{c.username}</span>}
+            {c.panel && <span className="font-mono text-[11px] text-gray-400">{c.panel}</span>}
+          </>
+        ) : (
+          <>
+            {c.app && <span className="font-semibold text-gray-800 block">{c.app}</span>}
+            {c.macAddress && <span className="font-mono text-[11px] text-gray-400">{c.macAddress}</span>}
+          </>
+        )}
+      </td>
+      <td className="p-3">
+        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap ${
+          isReseller ? 'bg-purple-100 text-purple-600' : 'bg-blue-50 text-blue-600'
+        }`}>
+          {isReseller ? 'Reseller' : 'Individual'}
+        </span>
+      </td>
+      <td className="p-3 text-right font-mono font-bold text-blue-600 text-xs">{fmt(c.total)}</td>
+      <td className="p-3 text-right font-mono font-bold text-gray-800 text-xs">{c.invoices}</td>
+      <td className="p-3 text-right" onClick={e => e.stopPropagation()}>
+        <div className="flex items-center justify-end gap-1.5">
+          <button
+            onClick={() => onEdit(c)}
+            className="px-2.5 py-1.5 rounded-lg bg-gray-100 text-gray-600 font-bold text-[11px] hover:bg-gray-200 transition-colors"
+          >
+            Detajet
+          </button>
+          <button
+            onClick={() => onEdit(c)}
+            className="p-1.5 rounded-lg bg-gray-100 text-gray-500 hover:bg-blue-50 hover:text-blue-600 transition-colors"
             title="Edito"
           >
             <Pencil size={13}/>
           </button>
-          {/* Delete */}
           <button
-            className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-50 text-gray-400 hover:bg-blue-50 hover:text-blue-600 transition-colors opacity-0 group-hover:opacity-100"
-            onClick={e => { e.stopPropagation(); onDelete(c.id) }}
+            onClick={() => onDelete(c.id)}
+            className="p-1.5 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors"
             title="Fshi klientin"
           >
             <Trash2 size={13}/>
           </button>
         </div>
-      </div>
-    </div>
+      </td>
+    </tr>
   )
 })
 
@@ -591,6 +689,7 @@ export default function Customers() {
   const [search,        setSearch]        = useState('')
   const [typeFilt,      setTypeFilt]      = useState('all')
   const [countryFilt,   setCountryFilt]   = useState('all')
+  const [sortBy,        setSortBy]        = useState('default')
   const [importOpen,    setImportOpen]    = useState(false)
   const [selected,      setSelected]      = useState(new Set())
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(null) // null | 'single' | 'multiple'
@@ -688,7 +787,7 @@ export default function Customers() {
     }
   }
 
-  const usedCountries = [...new Set(customers.map(c => c.country).filter(Boolean))]
+  const usedCountries = useMemo(() => [...new Set(customers.map(c => c.country).filter(Boolean))], [customers])
 
   /* klientët me vonesë pagese: kanë fatura overdue ose kaluar afatin */
   const today = new Date().toISOString().slice(0, 10)
@@ -705,26 +804,53 @@ export default function Customers() {
     return names
   }, [invoices, today])
 
-  const filtered = useMemo(() => customers.filter(c => {
-    const name = c.name || `${c.firstName || ''} ${c.lastName || ''}`.trim()
-    const matchSearch  = !search ||
-      name.toLowerCase().includes(search.toLowerCase()) ||
-      (c.email      || '').toLowerCase().includes(search.toLowerCase()) ||
-      (c.phone      || '').toLowerCase().includes(search.toLowerCase()) ||
-      (c.app        || '').toLowerCase().includes(search.toLowerCase()) ||
-      (c.username   || '').toLowerCase().includes(search.toLowerCase()) ||
-      (c.referredBy || '').toLowerCase().includes(search.toLowerCase())
-    const matchType    = typeFilt    === 'all' || c.type    === typeFilt
-    const matchCountry = countryFilt === 'all' || c.country === countryFilt
-    return matchSearch && matchType && matchCountry
-  }), [customers, search, typeFilt, countryFilt])
+  // Normalize text: convert spaces, underscores, dashes to uniform format for fuzzy search
+  const normalize = (text) => (text || '').toLowerCase().replace(/[\s_-]/g, ' ').trim()
 
-  /* stats */
-  const totalResellers   = customers.filter(c => c.type === 'reseller').length
-  const totalIndividuals = customers.filter(c => c.type === 'individual').length
-  const topCountry       = usedCountries
-    .map(co => ({ co, count: customers.filter(c => c.country === co).length }))
-    .sort((a, b) => b.count - a.count)[0]
+  const filtered = useMemo(() => {
+    let result = customers.filter(c => {
+      const name = c.name || `${c.firstName || ''} ${c.lastName || ''}`.trim()
+      const searchNorm = normalize(search)
+      const matchSearch  = !search ||
+        normalize(name).includes(searchNorm) ||
+        normalize(c.email || '').includes(searchNorm) ||
+        normalize(c.phone || '').includes(searchNorm) ||
+        normalize(c.app || '').includes(searchNorm) ||
+        normalize(c.username || '').includes(searchNorm) ||
+        normalize(c.referredBy || '').includes(searchNorm)
+      const matchType    = typeFilt    === 'all' || c.type    === typeFilt
+      const matchCountry = countryFilt === 'all' || c.country === countryFilt
+      return matchSearch && matchType && matchCountry
+    })
+
+    // Apply sorting
+    if (sortBy === 'alphabetic') {
+      result.sort((a, b) => {
+        const nameA = (a.name || `${a.firstName || ''} ${a.lastName || ''}`.trim()).toLowerCase()
+        const nameB = (b.name || `${b.firstName || ''} ${b.lastName || ''}`.trim()).toLowerCase()
+        return nameA.localeCompare(nameB)
+      })
+    }
+
+    return result
+  }, [customers, search, typeFilt, countryFilt, sortBy])
+
+  /* stats — single pass instead of a country × customers nested scan */
+  const { totalResellers, totalIndividuals, topCountry } = useMemo(() => {
+    let resellers = 0
+    let individuals = 0
+    const countryCounts = new Map()
+    for (const c of customers) {
+      if (c.type === 'reseller') resellers++
+      else if (c.type === 'individual') individuals++
+      if (c.country) countryCounts.set(c.country, (countryCounts.get(c.country) || 0) + 1)
+    }
+    let top = null
+    for (const [co, count] of countryCounts) {
+      if (!top || count > top.count) top = { co, count }
+    }
+    return { totalResellers: resellers, totalIndividuals: individuals, topCountry: top }
+  }, [customers])
 
   const openAdd  = ()     => navigate('customers:create')
   const openEdit = cust   => navigate(`customers:${cust.id}:edit`)
@@ -743,16 +869,18 @@ export default function Customers() {
   return (
     <div>
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 mb-6 border-b border-gray-200">
         <div>
-          <p className="text-[11px] font-bold text-emerald-600 uppercase tracking-widest mb-0.5">CRM</p>
-          <h2 className="text-xl font-bold text-gray-800">Klientët</h2>
-          <p className="text-sm text-gray-400 mt-0.5">{customers.length} klientë aktiv</p>
+          <h2 className="text-xl font-black text-gray-900 flex items-center gap-2 tracking-tight">
+            <Users size={20} className="text-blue-500" />
+            Klientët
+          </h2>
+          <p className="text-xs text-gray-500 font-medium mt-0.5">{customers.length} klientë aktiv në sistem</p>
         </div>
         <div className="flex items-center gap-1.5">
           {/* Import - Hidden on mobile */}
           <button
-            className="hidden sm:flex w-9 h-9 items-center justify-center rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
+            className="hidden sm:flex w-9 h-9 items-center justify-center rounded-xl border border-gray-200 bg-white text-gray-600 hover:bg-gray-100 transition-colors"
             onClick={() => setImportOpen(true)}
             title="Importo Excel"
           >
@@ -761,11 +889,12 @@ export default function Customers() {
 
           {/* New Customer - Hidden on mobile (see FAB below) */}
           <button
-            className="hidden sm:flex w-9 h-9 items-center justify-center rounded-lg bg-blue-500 text-white hover:bg-blue-600 transition-colors font-bold text-lg"
+            className="hidden sm:flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-500 text-white hover:bg-blue-600 transition-all active:scale-95 font-bold text-xs shadow-sm"
             onClick={openAdd}
             title="Shto klient"
           >
-            +
+            <UserPlus size={14}/>
+            <span>Shto Klient</span>
           </button>
         </div>
       </div>
@@ -780,98 +909,103 @@ export default function Customers() {
       )}
 
       {/* Mini stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
-        <div className="bg-white rounded-xl border border-gray-100 border-l-4 border-l-gray-400 px-4 py-3">
-          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Gjithsej</p>
-          <p className="text-xl font-bold text-gray-800">{customers.length}</p>
-          <p className="text-[11px] text-gray-400 mt-0.5">klientë</p>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-5">
+        <div className="bg-white rounded-2xl border border-gray-200/90 shadow-sm px-4 py-4">
+          <span className="text-3xl font-black font-mono tracking-tight text-gray-900 block">{customers.length}</span>
+          <p className="text-xs text-gray-500 mt-1 font-bold">Klientë gjithsej</p>
         </div>
-        <div className="bg-white rounded-xl border border-gray-100 border-l-4 border-l-blue-400 px-4 py-3">
-          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Individualë</p>
-          <p className="text-xl font-bold text-blue-500">{totalIndividuals}</p>
-          <p className="text-[11px] text-gray-400 mt-0.5">klientë</p>
+        <div className="bg-white rounded-2xl border border-gray-200/90 shadow-sm px-4 py-4">
+          <span className="text-3xl font-black font-mono tracking-tight text-blue-600 block">{totalIndividuals}</span>
+          <p className="text-xs text-gray-500 mt-1 font-bold">Individualë</p>
         </div>
-        <div className="bg-white rounded-xl border border-gray-100 border-l-4 border-l-purple-400 px-4 py-3">
-          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Resellers</p>
-          <p className="text-xl font-bold text-purple-600">{totalResellers}</p>
-          <p className="text-[11px] text-gray-400 mt-0.5">reseller</p>
+        <div className="bg-white rounded-2xl border border-gray-200/90 shadow-sm px-4 py-4">
+          <span className="text-3xl font-black font-mono tracking-tight text-purple-600 block">{totalResellers}</span>
+          <p className="text-xs text-gray-500 mt-1 font-bold">Resellers</p>
         </div>
-        <div className="bg-white rounded-xl border border-gray-100 border-l-4 border-l-emerald-400 px-4 py-3">
-          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Shtete</p>
-          <p className="text-xl font-bold text-emerald-600">{usedCountries.length}</p>
-          <p className="text-[11px] text-gray-400 mt-0.5 flex flex-wrap items-center gap-1">
+        <div className="bg-white rounded-2xl border border-gray-200/90 shadow-sm px-4 py-4">
+          <span className="text-3xl font-black font-mono tracking-tight text-emerald-600 block">{usedCountries.length}</span>
+          <p className="text-xs text-gray-500 mt-1 font-bold flex flex-wrap items-center gap-1">
+            Shtete
             {topCountry && (
-              <span>{topCountry.co} ({topCountry.count})</span>
+              <span className="font-normal">· {topCountry.co} ({topCountry.count})</span>
             )}
           </p>
         </div>
       </div>
 
       {/* Filtrat */}
-      <div className="flex flex-wrap items-center gap-2 mb-5">
-        {/* Select All Checkbox */}
-        {paginatedCustomers.length > 0 && (
-          <div className="flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-3 py-2">
-            <input
-              type="checkbox"
-              checked={paginatedCustomers.length > 0 && paginatedCustomers.every(c => selected.has(c.id))}
-              onChange={toggleSelectAll}
-              className="w-5 h-5 rounded border-gray-300 text-blue-500 cursor-pointer"
-              title="Zgjidh faqen"
-            />
-            <span className="text-xs text-gray-600 font-medium">
-              {selected.size > 0 ? `${selected.size} zgjedhur` : 'Zgjidh faqen'}
-            </span>
-          </div>
-        )}
+      <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 bg-white p-3 rounded-2xl border border-gray-200/90 shadow-sm mb-5">
+        {/* Left: Select all + delete-selected + search */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 flex-1">
+          {paginatedCustomers.length > 0 && (
+            <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-gray-700 flex-shrink-0 whitespace-nowrap">
+              <input
+                type="checkbox"
+                checked={paginatedCustomers.length > 0 && paginatedCustomers.every(c => selected.has(c.id))}
+                onChange={toggleSelectAll}
+                className="w-4 h-4 rounded border-gray-300 text-blue-500 cursor-pointer"
+              />
+              <span>{selected.size > 0 ? `${selected.size} zgjedhur` : 'Zgjidh faqen'}</span>
+            </label>
+          )}
 
-        {/* Delete Selected Button */}
-        {selected.size > 0 && (
-          <button
-            onClick={() => setShowDeleteConfirm({ type: 'multiple' })}
-            className="flex items-center gap-1.5 bg-blue-50 border border-blue-200 text-blue-600 hover:bg-blue-100 rounded-lg px-3 py-2 text-xs font-semibold transition-colors"
-          >
-            <Trash2 size={14}/>
-            Fshi {selected.size}
-          </button>
-        )}
-
-        <div className="flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-3 py-2
-                        focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-50 transition-all flex-1 min-w-[160px]">
-          <Search size={14} className="text-gray-400 flex-shrink-0" />
-          <input
-            className="bg-transparent border-none outline-none text-sm text-gray-600 w-full placeholder-gray-400"
-            placeholder="Kërko emër, telefon..."
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-          />
-          {search && (
-            <button onClick={() => setSearch('')} className="text-gray-300 hover:text-gray-500">
-              <X size={13} />
+          {selected.size > 0 && (
+            <button
+              onClick={() => setShowDeleteConfirm({ type: 'multiple' })}
+              className="flex items-center justify-center gap-1.5 bg-blue-50 border border-blue-200 text-blue-600 hover:bg-blue-100 rounded-xl px-3 py-1.5 text-xs font-bold transition-colors flex-shrink-0"
+            >
+              <Trash2 size={14}/>
+              Fshi {selected.size}
             </button>
           )}
+
+          <div className="relative flex-1">
+            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input
+              className="w-full pl-8 pr-8 py-1.5 text-xs rounded-xl border border-gray-200 bg-gray-50 text-gray-900 placeholder-gray-400 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-50"
+              placeholder="Kërko emër, telefon..."
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+            />
+            {search && (
+              <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                <X size={13} />
+              </button>
+            )}
+          </div>
         </div>
 
-        <select
-          className="bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 outline-none focus:border-blue-400 cursor-pointer"
-          value={typeFilt} onChange={e => setTypeFilt(e.target.value)}
-        >
-          <option value="all">Të gjitha llojet</option>
-          <option value="individual">Individualë</option>
-          <option value="reseller">Resellers</option>
-        </select>
+        {/* Right: filters + sort + count */}
+        <div className="flex flex-wrap items-center gap-2">
+          <select
+            className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 font-semibold outline-none focus:border-blue-400 cursor-pointer"
+            value={typeFilt} onChange={e => setTypeFilt(e.target.value)}
+          >
+            <option value="all">Të gjitha llojet</option>
+            <option value="individual">Individualë</option>
+            <option value="reseller">Resellers</option>
+          </select>
 
-        <select
-          className="bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 outline-none focus:border-blue-400 cursor-pointer"
-          value={countryFilt} onChange={e => setCountryFilt(e.target.value)}
-        >
-          <option value="all">Të gjitha shtetet</option>
-          {usedCountries.sort().map(c => <option key={c} value={c}>{c}</option>)}
-        </select>
+          <select
+            className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 font-semibold outline-none focus:border-blue-400 cursor-pointer"
+            value={countryFilt} onChange={e => setCountryFilt(e.target.value)}
+          >
+            <option value="all">Të gjitha shtetet</option>
+            {usedCountries.sort().map(c => <option key={c} value={c}>{c}</option>)}
+          </select>
 
-        <span className="text-xs text-gray-400 flex items-center gap-1 ml-auto">
-          <Filter size={12} /> {filtered.length}
-        </span>
+          <select
+            className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 font-semibold outline-none focus:border-blue-400 cursor-pointer"
+            value={sortBy} onChange={e => setSortBy(e.target.value)}
+          >
+            <option value="default">Renditja — Parazgjedhur</option>
+            <option value="alphabetic">A — Z (Alfabetik)</option>
+          </select>
+
+          <span className="text-xs font-bold text-gray-400 font-mono px-2">
+            {filtered.length}
+          </span>
+        </div>
       </div>
 
       {/* Grid */}
@@ -888,7 +1022,42 @@ export default function Customers() {
         />
       ) : (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+          {/* Desktop: table */}
+          <div className="hidden sm:block bg-white rounded-2xl border border-gray-200/90 shadow-sm overflow-hidden mb-6">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left" style={{ minWidth: 760 }}>
+                <thead>
+                  <tr className="border-b border-gray-100 bg-gray-50/50">
+                    <th className="p-3 w-10"></th>
+                    <th className="p-3 text-[10px] font-extrabold text-gray-400 uppercase tracking-wider">Klienti</th>
+                    <th className="p-3 text-[10px] font-extrabold text-gray-400 uppercase tracking-wider">Kontaktet</th>
+                    <th className="p-3 text-[10px] font-extrabold text-gray-400 uppercase tracking-wider">Aplikacioni / Panel</th>
+                    <th className="p-3 text-[10px] font-extrabold text-gray-400 uppercase tracking-wider">Tipi</th>
+                    <th className="p-3 text-[10px] font-extrabold text-gray-400 uppercase tracking-wider text-right">Totali</th>
+                    <th className="p-3 text-[10px] font-extrabold text-gray-400 uppercase tracking-wider text-right">Fatura</th>
+                    <th className="p-3 text-[10px] font-extrabold text-gray-400 uppercase tracking-wider text-right">Veprime</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {paginatedCustomers.map(c => (
+                    <CustomerRow
+                      key={c.id}
+                      c={c}
+                      onEdit={setSelectedCustomer}
+                      fmt={fmt}
+                      isLatePayer={latePayerNames.has(c.name)}
+                      onDelete={handleDeleteCustomer}
+                      checked={selected.has(c.id)}
+                      onToggleSelect={() => toggleSelectCustomer(c.id)}
+                    />
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Mobile: cards */}
+          <div className="sm:hidden grid grid-cols-1 gap-4 mb-6">
             {paginatedCustomers.map(c => (
               <CustomerCard
                 key={c.id}

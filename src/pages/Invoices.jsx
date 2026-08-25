@@ -3,7 +3,7 @@ import {
   FileText, Download, Pencil, Trash2, CreditCard,
   MessageCircle, Send, XCircle, X, MessageSquare,
   Search, Plus, LayoutList, Columns, AlertTriangle, FileSpreadsheet,
-  MoreVertical, Edit3, Filter, CheckCircle2,
+  MoreVertical, Edit3, Filter, CheckCircle2, Eye, EyeOff,
 } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import { formatDate } from '../utils/dateFormat'
@@ -36,15 +36,16 @@ function buildInvoiceMsg(inv) {
 }
 
 /* ── compact invoice card (left panel list) ─────────── */
-function InvoiceListCard({ inv, selected, onClick }) {
-  const { fmt, customers } = useApp()
-  const isReseller = customers.find(c => c.name === inv.customer)?.type === 'reseller'
+const InvoiceListCard = memo(function InvoiceListCard({ inv, selected, onClick, customerMap, hidden }) {
+  const { fmt: rawFmt } = useApp()
+  const fmt = hidden ? () => '••••••' : rawFmt
+  const isReseller = customerMap.get(inv.customer)?.type === 'reseller'
   const diff = inv.due
     ? Math.round((new Date(inv.due) - Date.now()) / 86_400_000)
     : null
 
-  let dueLabel, dueCls
-  if      (inv.status === 'paid')  { dueLabel = 'PAGUAR';         dueCls = 'text-emerald-600' }
+  let dueLabel, duePillCls
+  if      (inv.status === 'paid')  { dueLabel = 'PAGUAR';         duePillCls = 'bg-emerald-100 text-emerald-700' }
   else if (inv.status === 'partial') {
     // Shfaq shumin e paguar dhe të mbetur për faturat e paguara pjesërisht
     const paid = inv.paidAmount || 0
@@ -52,53 +53,56 @@ function InvoiceListCard({ inv, selected, onClick }) {
     const paidFormatted = Math.round(paid * 100) / 100
     const remainingFormatted = Math.round(remaining * 100) / 100
     dueLabel = `€${paidFormatted} / €${remainingFormatted}`
-    dueCls = 'text-blue-500 font-semibold'
+    duePillCls = 'bg-blue-100 text-blue-700'
   }
-  else if (inv.status === 'void')  { dueLabel = 'VOID';           dueCls = 'text-gray-400 line-through' }
-  else if (inv.status === 'draft') { dueLabel = 'DRAFT';          dueCls = 'text-gray-400' }
-  else if (diff === null)          { dueLabel = '—';              dueCls = 'text-gray-400' }
-  else if (diff < 0)               { dueLabel = 'VONUAR';         dueCls = 'text-red-500' }
-  else if (diff === 0)             { dueLabel = 'SOT SKADON';     dueCls = 'text-orange-500 font-black' }
-  else if (diff === 1)             { dueLabel = 'NGA 1 DITË';     dueCls = 'text-amber-500' }
-  else                             { dueLabel = `NGA ${diff} DITË`; dueCls = 'text-amber-500' }
+  else if (inv.status === 'void')  { dueLabel = 'VOID';           duePillCls = 'bg-gray-100 text-gray-500 line-through' }
+  else if (inv.status === 'draft') { dueLabel = 'DRAFT';          duePillCls = 'bg-gray-100 text-gray-500' }
+  else if (diff === null)          { dueLabel = '—';              duePillCls = 'bg-gray-100 text-gray-400' }
+  else if (diff < 0)               { dueLabel = 'VONUAR';         duePillCls = 'bg-red-100 text-red-700' }
+  else if (diff === 0)             { dueLabel = 'SOT SKADON';     duePillCls = 'bg-amber-100 text-amber-800' }
+  else if (diff === 1)             { dueLabel = 'NGA 1 DITË';     duePillCls = 'bg-amber-100 text-amber-800' }
+  else                             { dueLabel = `NGA ${diff} DITË`; duePillCls = 'bg-amber-100 text-amber-800' }
 
   return (
-    <div
-      className={`px-4 py-3.5 cursor-pointer border-b border-gray-100 transition-all ${
-        selected
-          ? 'bg-blue-50 border-l-[3px] border-l-blue-500'
-          : 'hover:bg-gray-50 border-l-[3px] border-l-transparent'
-      }`}
-      onClick={onClick}
-    >
-      <div className="flex items-start justify-between gap-2">
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-1.5 min-w-0">
-            <p className="font-semibold text-gray-800 text-base truncate">{inv.customer}</p>
-            {isReseller && (
-              <span className="text-[9px] font-bold px-1 py-0.5 bg-purple-100 text-purple-600 rounded flex-shrink-0">R</span>
-            )}
+    <div className="px-2 pt-1.5">
+      <div
+        className={`p-3 rounded-xl border cursor-pointer transition-colors ${
+          selected
+            ? 'bg-blue-50 border-blue-300'
+            : 'bg-gray-50/50 border-gray-100 hover:bg-gray-100'
+        }`}
+        onClick={onClick}
+      >
+        <div className="flex items-start justify-between gap-2">
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-1.5 min-w-0">
+              <p className="font-bold text-gray-900 text-sm truncate">{inv.customer}</p>
+              {isReseller && (
+                <span className="text-[9px] font-bold px-1 py-0.5 bg-purple-100 text-purple-600 rounded flex-shrink-0">R</span>
+              )}
+            </div>
+            <p className="text-[11px] text-gray-400 mt-0.5 font-mono">{inv.id} · {formatDate(inv.date)}</p>
           </div>
-          <p className="text-sm text-gray-500 mt-0.5">{inv.id} · {formatDate(inv.date)}</p>
-        </div>
-        <div className="text-right flex-shrink-0">
-          <p className="font-bold text-gray-800 text-base">{fmt(inv.amount)}</p>
-          <p className={`text-xs font-bold mt-0.5 ${dueCls}`}>{dueLabel}</p>
+          <div className="text-right flex-shrink-0">
+            <p className="font-extrabold text-gray-900 text-sm font-mono">{fmt(inv.amount)}</p>
+            <span className={`inline-block text-[10px] font-bold px-1.5 py-0.5 rounded mt-1 uppercase ${duePillCls}`}>{dueLabel}</span>
+          </div>
         </div>
       </div>
     </div>
   )
-}
+})
 
 /* ── invoice side panel (right panel) ───────────────── */
-function InvoiceSidePanel({ invId, onClose, setSelectedCustomer }) {
+function InvoiceSidePanel({ invId, onClose, setSelectedCustomer, customerMap, hidden }) {
   const {
     invoices, setInvoices,
     customers,
     payments, setPayments,
     setModal, closeModal,
-    showToast, fmt, logActivity, navigate,
+    showToast, fmt: rawFmt, logActivity, navigate,
   } = useApp()
+  const fmt = hidden ? () => '••••••' : rawFmt
 
   const inv = invoices.find(i => i.id === invId)
   if (!inv) return null
@@ -108,7 +112,7 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer }) {
   const [confirmDelPayment, setConfirmDelPayment] = useState(false)
   const [comment,           setComment]           = useState('')
 
-  const custObj  = customers.find(c => c.name === inv.customer)
+  const custObj  = customerMap.get(inv.customer)
   const rawPhone = cleanPhone(custObj?.phone || '')
   const today    = new Date().toISOString().slice(0, 10)
   const isOverdue = inv.status === 'overdue' ||
@@ -164,19 +168,19 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer }) {
     setComment('')
   }
 
-  const TB = 'flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold rounded-lg border transition-colors'
+  const TB = 'flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-xl border transition-colors'
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
 
       {/* ── Action toolbar ── */}
-      <div className="flex items-center gap-1.5 px-4 py-2.5 border-b border-gray-100 bg-white flex-wrap">
+      <div className="flex items-center gap-1.5 px-4 py-3 border-b border-gray-100 bg-white flex-wrap lg:flex-nowrap">
         {/* Mobile back button */}
         <button className="md:hidden icon-btn mr-1 text-blue-500" onClick={onClose} title="Kthehu">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
         </button>
-        <div className="flex items-center gap-2 mr-1">
-          <span className="font-bold text-gray-800 text-sm">{inv.id}</span>
+        <div className="flex items-center gap-2.5 mr-1">
+          <span className="font-black text-gray-900 text-base font-mono">{inv.id}</span>
           <StatusBadge status={isOverdue && inv.status !== 'paid' && inv.status !== 'void' ? 'overdue' : inv.status}/>
         </div>
 
@@ -203,7 +207,7 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer }) {
           <a
             href={`https://wa.me/${rawPhone}?text=${msgEncoded}`}
             target="_blank" rel="noopener noreferrer"
-            className={`${TB} ${isOverdue ? 'border-orange-200 text-orange-600 hover:bg-orange-50' : 'border-green-200 text-green-600 hover:bg-green-50'}`}
+            className={`${TB} ${isOverdue ? 'border-orange-200 text-orange-600 hover:bg-orange-50' : 'border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100'}`}
           >
             <MessageCircle size={13}/> WhatsApp{isOverdue ? ' 🔔' : ''}
           </a>
@@ -213,7 +217,7 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer }) {
           <a
             href={`https://t.me/+${rawPhone}`}
             target="_blank" rel="noopener noreferrer"
-            className={`${TB} border-sky-200 text-sky-600 hover:bg-sky-50`}
+            className={`${TB} border-sky-200 bg-sky-50 text-sky-700 hover:bg-sky-100`}
           >
             <Send size={13}/> Telegram
           </a>
@@ -221,7 +225,7 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer }) {
 
         {canPay && (
           <button
-            className={`${TB} border-emerald-200 text-emerald-600 hover:bg-emerald-50`}
+            className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm transition-colors"
             onClick={() => setModal(<PaymentModal invoice={inv} onClose={closeModal}/>)}
           >
             <CreditCard size={13}/> Regjistro Pagesën
@@ -230,7 +234,7 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer }) {
 
         {canVoid && (
           <button
-            className={`${TB} border-amber-200 text-amber-600 hover:bg-amber-50`}
+            className={`${TB} border-gray-200 text-gray-500 hover:text-amber-600 hover:bg-amber-50`}
             onClick={() => setConfirmVoid(true)}
           >
             <XCircle size={13}/> Void
@@ -238,7 +242,7 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer }) {
         )}
 
         <button
-          className={`${TB} border-blue-200 text-blue-500 hover:bg-blue-50`}
+          className={`${TB} border-blue-200 text-blue-600 hover:bg-blue-50`}
           onClick={() => setConfirmDel(true)}
         >
           <Trash2 size={13}/> Fshi
@@ -280,135 +284,149 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer }) {
       )}
 
       <div className="flex-1 overflow-y-auto bg-gray-50 p-4 space-y-4">
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-
-          {/* ── Row 1: Country + FATURË title ── */}
-          <div className="flex items-center justify-end px-6 pt-5 pb-4 border-b border-gray-50">
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+          <div className="flex justify-end px-6 pt-5 pb-4 border-b border-gray-100">
             <div className="text-right">
-              <h2 className="text-xl font-light tracking-[0.28em] text-blue-600 uppercase">Faturë</h2>
-              <p className="text-[11px] text-gray-400 mt-0.5 font-medium">Numri i faturës <span className="font-bold text-gray-600">{inv.id}</span></p>
+              <h2 className="text-3xl font-black tracking-wider text-blue-500 font-mono">Faturë</h2>
+              <p className="text-xs font-semibold text-gray-500 mt-0.5 font-mono">Numri i faturës {inv.id}</p>
             </div>
           </div>
 
-          {/* ── Row 2: Klienti | Totali ── */}
-          <div className="grid grid-cols-2 gap-4 px-6 py-4 border-b border-gray-50">
-            {/* Klienti */}
-            <div>
-              <p className="text-[9px] text-gray-400 uppercase tracking-widest font-bold mb-1.5">Fatura për</p>
+          {/* Top section: Customer info and Total */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 px-6 pt-5">
+            <div className="flex-1 bg-gray-50 rounded-xl border border-gray-100 p-4">
+              <p className="text-[10px] text-gray-400 uppercase tracking-widest font-bold mb-1">Fatura për</p>
               <button
                 onClick={() => setSelectedCustomer(custObj)}
-                className="font-bold text-blue-600 text-sm leading-snug hover:text-blue-800 hover:underline cursor-pointer transition-colors text-left block"
+                className="font-black text-blue-600 text-lg leading-tight hover:text-blue-800 hover:underline cursor-pointer transition-colors text-left"
               >
                 {inv.customer}
               </button>
-              {inv.country && <p className="text-xs text-gray-400 mt-0.5">{inv.country}</p>}
+              {inv.country && <p className="text-xs text-gray-600 mt-1">📍 {inv.country}</p>}
               {inv.email   && <p className="text-xs text-gray-400 mt-0.5">{inv.email}</p>}
-              {custObj?.phone && (
-                <p className="text-xs text-gray-400 mt-0.5 flex items-center gap-1 flex-wrap">
-                  <span>📞 {custObj.phone}</span>
-                  {inv.referent && <span className="text-purple-500 font-semibold">· ref: {inv.referent}</span>}
-                </p>
-              )}
-              {!custObj?.phone && inv.referent && (
-                <p className="text-xs text-purple-500 font-semibold mt-0.5">ref: {inv.referent}</p>
-              )}
+              {custObj?.phone && <p className="text-xs text-gray-600 font-mono mt-0.5">📞 {custObj.phone}</p>}
+              {inv.referent && <p className="text-xs text-purple-600 mt-0.5 font-semibold">👤 Referent: {inv.referent}</p>}
             </div>
-            {/* Totali */}
-            <div>
-              <p className="text-[9px] text-gray-400 uppercase tracking-widest font-bold mb-1.5">Totali për pagesë</p>
-              <p className="text-2xl font-bold text-gray-800 leading-tight">{fmt(inv.amount)}</p>
-              <div className="mt-1.5">
+            <div className="flex-1 bg-gray-50 rounded-xl border border-gray-100 p-4 flex flex-col justify-between gap-2">
+              <div>
+                <p className="text-[10px] text-gray-400 uppercase tracking-widest font-bold mb-1">Totali për pagesë</p>
+                <p className="text-3xl font-black text-gray-900 leading-tight mt-1 font-mono">{fmt(inv.amount)}</p>
+              </div>
+              <div className="flex items-center gap-2">
                 <StatusBadge status={isOverdue && inv.status !== 'paid' && inv.status !== 'void' ? 'overdue' : inv.status}/>
               </div>
+
+              {/* Shfaq shumin e paguar dhe balancën për faturat e paguara pjesërisht */}
               {inv.status === 'partial' && inv.paidAmount > 0 && (
-                <div className="mt-2 p-2 bg-blue-50 rounded-lg border border-blue-100 text-xs">
-                  <div className="flex justify-between mb-1">
-                    <span className="text-blue-500 font-semibold">Paguar:</span>
-                    <span className="font-bold text-blue-600">{fmt(inv.paidAmount)}</span>
+                <div className="p-2 bg-blue-50 rounded-lg border border-blue-100">
+                  <div className="flex items-center justify-between gap-2 text-xs mb-0.5">
+                    <span className="text-blue-500 font-semibold text-[11px]">Paguar:</span>
+                    <span className="font-bold text-blue-600 text-[11px] font-mono">{fmt(inv.paidAmount)}</span>
                   </div>
-                  <div className="flex justify-between mb-1.5">
-                    <span className="text-amber-600 font-semibold">Mbetur:</span>
-                    <span className="font-bold text-amber-700">{fmt(inv.amount - inv.paidAmount)}</span>
+                  <div className="flex items-center justify-between gap-2 text-xs">
+                    <span className="text-amber-600 font-semibold text-[11px]">Mbetur:</span>
+                    <span className="font-bold text-amber-700 text-[11px] font-mono">{fmt(inv.amount - inv.paidAmount)}</span>
                   </div>
-                  <div className="w-full bg-gray-200 rounded-full h-1.5">
-                    <div className="bg-blue-500 h-1.5 rounded-full" style={{ width: `${(inv.paidAmount / inv.amount) * 100}%` }}/>
+                  <div className="mt-1 w-full bg-gray-200 rounded-full h-1">
+                    <div
+                      className="bg-blue-500 h-1 rounded-full transition-all"
+                      style={{ width: `${(inv.paidAmount / inv.amount) * 100}%` }}
+                    ></div>
                   </div>
                 </div>
               )}
             </div>
           </div>
 
-          {/* ── Row 3: Datat (4 kolona) ── */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-gray-100 border-b border-gray-100">
-            <div className="bg-white px-4 py-3">
-              <p className="text-[9px] text-gray-400 uppercase tracking-wider font-bold mb-1">Data e faturës:</p>
-              <p className="text-sm font-semibold text-gray-700">{formatDate(inv.date)}</p>
+          {/* Bottom section: Dates in grid (2 cols on mobile, 2 rows on desktop) */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 px-6 py-5">
+            <div className="bg-gray-50 rounded-xl border border-gray-100 p-3">
+              <span className="text-gray-400 text-[10px] mb-1 font-bold uppercase tracking-wide block">Data e faturës:</span>
+              <span className="font-bold text-gray-900 text-sm block font-mono">{formatDate(inv.date)}</span>
             </div>
-            <div className="bg-white px-4 py-3">
-              <p className="text-[9px] text-gray-400 uppercase tracking-wider font-bold mb-1">Afati i pagesës:</p>
-              <p className={`text-sm font-semibold ${isOverdue ? 'text-red-500' : 'text-gray-700'}`}>{formatDate(inv.due) || '—'}</p>
+            <div className={`rounded-xl border p-3 ${isOverdue ? 'bg-red-50 border-red-200' : 'bg-gray-50 border-gray-100'}`}>
+              <span className={`text-[10px] mb-1 font-bold uppercase tracking-wide block ${isOverdue ? 'text-red-600' : 'text-gray-400'}`}>Afati i pagesës:</span>
+              <span className={`font-bold text-sm block font-mono ${isOverdue ? 'text-red-600' : 'text-gray-900'}`}>
+                {formatDate(inv.due)}
+              </span>
             </div>
             {inv.subscriptionExpiry && (
-              <div className="bg-blue-50 px-4 py-3">
-                <p className="text-[9px] text-blue-400 uppercase tracking-wider font-bold mb-1">📅 Skadimi:</p>
-                <p className="text-sm font-bold text-blue-600">{formatDate(inv.subscriptionExpiry)}</p>
+              <div className="bg-blue-50 rounded-xl border border-blue-100 p-3">
+                <span className="text-blue-500 font-bold text-[10px] mb-1 uppercase tracking-wide block">📅 Skadimi:</span>
+                <span className="font-bold text-blue-600 text-sm block font-mono">{formatDate(inv.subscriptionExpiry)}</span>
               </div>
             )}
             {inv.notifyDate && (
-              <div className="bg-amber-50 px-4 py-3">
-                <p className="text-[9px] text-amber-500 uppercase tracking-wider font-bold mb-1">🔔 Njoftim:</p>
-                <p className="text-sm font-bold text-amber-600">{inv.notifyDate}</p>
+              <div className="bg-amber-50 rounded-xl border border-amber-100 p-3">
+                <span className="text-amber-600 text-[10px] mb-1 font-bold uppercase tracking-wide block">🔔 Njoftim:</span>
+                <span className="font-bold text-amber-700 text-sm block font-mono">{inv.notifyDate}</span>
               </div>
             )}
-            {!inv.subscriptionExpiry && !inv.notifyDate && <div className="bg-white"/>}
-            {!inv.subscriptionExpiry && !inv.notifyDate && <div className="bg-white"/>}
           </div>
 
-          {/* ── Tabela e artikujve ── */}
-          <div className="px-6 py-4 overflow-x-auto">
-            <table className="w-full text-xs border-collapse min-w-[360px]">
-              <thead>
-                <tr className="bg-blue-500 text-white">
-                  <th className="text-center px-3 py-2.5 rounded-tl-lg w-8">#</th>
-                  <th className="text-left px-3 py-2.5">Artikulli &amp; Përshkrimi</th>
-                  <th className="text-right px-3 py-2.5 w-14">Sasia</th>
-                  <th className="text-right px-3 py-2.5 w-20">Çmimi</th>
-                  <th className="text-right px-3 py-2.5 rounded-tr-lg w-24">Shuma</th>
-                </tr>
-              </thead>
-              <tbody>
+          <div className="px-6 pb-5">
+            <div className="rounded-xl border border-gray-200 overflow-hidden">
+
+              {/* Desktop/tablet: full table */}
+              <div className="hidden sm:block overflow-x-auto">
+                <table className="w-full text-sm border-collapse min-w-[380px]">
+                  <thead>
+                    <tr className="bg-blue-500 text-white">
+                      <th className="text-center px-3 py-3 w-8 font-bold uppercase text-xs tracking-wide">#</th>
+                      <th className="text-left px-3 py-3 font-bold uppercase text-xs tracking-wide">Artikulli &amp; Përshkrimi</th>
+                      <th className="text-right px-3 py-3 w-16 font-bold uppercase text-xs tracking-wide">Sasia</th>
+                      <th className="text-right px-3 py-3 w-20 font-bold uppercase text-xs tracking-wide">Çmimi</th>
+                      <th className="text-right px-3 py-3 w-24 font-bold uppercase text-xs tracking-wide">Shuma</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {inv.items.map((item, i) => (
+                      <tr key={i} className="border-t border-gray-100 hover:bg-gray-50/50">
+                        <td className="px-3 py-3.5 text-center text-gray-400 text-sm font-mono">{i + 1}</td>
+                        <td className="px-3 py-3.5">
+                          <p className="text-gray-800 font-semibold text-sm">{item.desc}</p>
+                          {item.note && <p className="text-xs text-gray-400 italic mt-0.5">{item.note}</p>}
+                        </td>
+                        <td className="px-3 py-3.5 text-right text-gray-700 text-sm font-mono">{item.qty}</td>
+                        <td className="px-3 py-3.5 text-right text-gray-700 text-sm font-mono">{fmt(item.price)}</td>
+                        <td className="px-3 py-3.5 text-right font-bold text-gray-900 text-sm font-mono">{fmt(item.qty * item.price)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Mobile: stacked cards -- no horizontal scroll needed */}
+              <div className="sm:hidden divide-y divide-gray-100">
                 {inv.items.map((item, i) => (
-                  <tr key={i} className="border-b border-gray-100 hover:bg-gray-50/50">
-                    <td className="px-3 py-2.5 text-center text-gray-400">{i + 1}</td>
-                    <td className="px-3 py-2.5">
-                      <p className="text-gray-700 font-medium">{item.desc}</p>
-                      {item.note && <p className="text-xs text-gray-400 italic mt-0.5">{item.note}</p>}
-                    </td>
-                    <td className="px-3 py-2.5 text-right text-gray-600">{item.qty}</td>
-                    <td className="px-3 py-2.5 text-right text-gray-600">{fmt(item.price)}</td>
-                    <td className="px-3 py-2.5 text-right font-bold text-gray-800">{fmt(item.qty * item.price)}</td>
-                  </tr>
+                  <div key={i} className="px-4 py-3 hover:bg-gray-50/50">
+                    <div className="flex items-start justify-between gap-2">
+                      <p className="text-gray-800 font-semibold text-sm min-w-0">{item.desc}</p>
+                      <p className="font-bold text-gray-900 text-sm font-mono flex-shrink-0">{fmt(item.qty * item.price)}</p>
+                    </div>
+                    {item.note && <p className="text-xs text-gray-400 italic mt-0.5">{item.note}</p>}
+                    <p className="text-xs text-gray-400 font-mono mt-1">{item.qty} × {fmt(item.price)}</p>
+                  </div>
                 ))}
-              </tbody>
-            </table>
-            <div className="flex justify-end mt-3 pt-3 border-t-2 border-blue-100">
-              <div className="flex items-center gap-10 text-sm">
-                <span className="font-bold text-blue-600">Totali</span>
-                <span className="font-bold text-gray-800 text-base">{fmt(inv.amount)}</span>
+              </div>
+
+              <div className="bg-gray-50 border-t border-gray-200 px-5 py-3 flex items-center justify-between">
+                <span className="font-bold text-blue-500 uppercase tracking-wide text-sm">Totali</span>
+                <span className="font-black text-gray-900 text-base font-mono">{fmt(inv.amount)}</span>
               </div>
             </div>
           </div>
 
-          <div className="bg-blue-50 px-6 py-3 text-center">
-            <p className="text-xs text-blue-500 font-medium">Faleminderit për besimin tuaj!</p>
+          <div className="mx-6 mb-6 bg-blue-50 border border-blue-100 rounded-xl py-3 px-4 text-center">
+            <p className="text-xs font-bold text-blue-600">Faleminderit për besimin tuaj!</p>
           </div>
         </div>
 
         {linkedPayment && (
-          <div className="bg-emerald-50 rounded-xl border border-emerald-100 p-4">
-            <div className="flex items-center justify-between mb-2.5">
-              <p className="text-xs font-bold text-emerald-700 flex items-center gap-1.5">
-                <CreditCard size={13}/> Pagesa e regjistruar
+          <div className="bg-emerald-50 rounded-2xl border border-emerald-100 p-5">
+            <div className="flex items-center justify-between mb-4">
+              <p className="text-sm font-bold text-emerald-700 flex items-center gap-1.5">
+                <CreditCard size={15}/> Pagesa e regjistruar
               </p>
               <div className="flex items-center gap-1">
                 <button
@@ -416,12 +434,12 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer }) {
                   title="Ndrysho pagesën"
                   onClick={() => setModal(<PaymentModal payment={linkedPayment} onClose={closeModal}/>)}
                 >
-                  <Pencil size={13}/>
+                  <Pencil size={15}/>
                 </button>
                 {confirmDelPayment ? (
                   <div className="flex items-center gap-1">
-                    <button className="px-2 py-0.5 bg-blue-500 text-white text-xs font-bold rounded" onClick={doDeletePayment}>Po</button>
-                    <button className="px-2 py-0.5 border border-gray-200 text-gray-600 text-xs font-bold rounded hover:bg-gray-50" onClick={() => setConfirmDelPayment(false)}>Jo</button>
+                    <button className="px-2 py-1 bg-blue-500 text-white text-xs font-bold rounded-lg" onClick={doDeletePayment}>Po</button>
+                    <button className="px-2 py-1 border border-gray-200 text-gray-600 text-xs font-bold rounded-lg hover:bg-gray-50" onClick={() => setConfirmDelPayment(false)}>Jo</button>
                   </div>
                 ) : (
                   <button
@@ -429,49 +447,49 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer }) {
                     title="Fshij pagesën"
                     onClick={() => setConfirmDelPayment(true)}
                   >
-                    <Trash2 size={13}/>
+                    <Trash2 size={15}/>
                   </button>
                 )}
               </div>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs">
-              <div><p className="text-gray-400 mb-0.5">Data</p><p className="font-semibold text-gray-700">{formatDate(linkedPayment.date)}</p></div>
-              <div><p className="text-gray-400 mb-0.5">Shuma</p><p className="font-bold text-emerald-600">{fmt(linkedPayment.amount)}</p></div>
-              <div><p className="text-gray-400 mb-0.5">Metoda</p><p className="font-semibold text-gray-700">{linkedPayment.method}</p></div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center text-sm">
+              <div><p className="text-gray-500 mb-1 font-semibold text-xs">Data</p><p className="font-semibold text-gray-800 font-mono">{formatDate(linkedPayment.date)}</p></div>
+              <div><p className="text-gray-500 mb-1 font-semibold text-xs">Shuma</p><p className="font-bold text-emerald-700 font-mono">{fmt(linkedPayment.amount)}</p></div>
+              <div><p className="text-gray-500 mb-1 font-semibold text-xs">Metoda</p><p className="font-semibold text-gray-800">{linkedPayment.method}</p></div>
               <div>
-                <p className="text-gray-400 mb-0.5">Tek</p>
-                <p className={`font-bold ${linkedPayment.depositedTo === 'Enndy' ? 'text-blue-500' : 'text-purple-600'}`}>
+                <p className="text-gray-500 mb-1 font-semibold text-xs">Tek</p>
+                <p className={`font-bold text-sm ${linkedPayment.depositedTo === 'Enndy' ? 'text-blue-600' : 'text-purple-700'}`}>
                   {linkedPayment.depositedTo}
                 </p>
               </div>
             </div>
             {linkedPayment.fee > 0 && (
-              <p className="text-[11px] text-amber-600 mt-2 text-center">
+              <p className="text-sm text-amber-700 mt-3 text-center font-medium font-mono">
                 Fee: -{fmt(linkedPayment.fee)} · Neto: {fmt(linkedPayment.net)}
               </p>
             )}
           </div>
         )}
 
-        <div className="bg-white rounded-xl border border-gray-100 p-4">
-          <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 flex items-center gap-1.5">
-            <MessageSquare size={12}/> Komentet e stafit
+        <div className="bg-white rounded-2xl border border-gray-200 p-5">
+          <h4 className="text-xs font-bold text-gray-800 uppercase tracking-widest mb-4 flex items-center gap-1.5">
+            <MessageSquare size={14}/> Komentet e stafit
           </h4>
           {(inv.comments || []).length === 0 ? (
-            <p className="text-xs text-gray-300 italic mb-3">Nuk ka komente ende.</p>
+            <p className="text-xs text-gray-400 italic mb-4">Nuk ka komente ende.</p>
           ) : (
-            <div className="space-y-2.5 mb-3">
+            <div className="space-y-3 mb-4">
               {(inv.comments || []).map((c, i) => (
                 <div key={i} className="flex gap-2">
-                  <div className="w-7 h-7 bg-blue-100 rounded-full flex items-center justify-center text-xs font-bold text-blue-500 flex-shrink-0 mt-0.5">
+                  <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-xs font-bold text-blue-600 flex-shrink-0 mt-0.5">
                     {c.author[0]}
                   </div>
-                  <div className="flex-1 bg-gray-50 rounded-xl px-3 py-2">
-                    <div className="flex items-center justify-between mb-0.5">
-                      <span className="text-xs font-semibold text-gray-700">{c.author}</span>
-                      <span className="text-[10px] text-gray-400">{formatDate(c.date)}</span>
+                  <div className="flex-1 bg-gray-50 rounded-xl px-3 py-2.5">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-sm font-semibold text-gray-800">{c.author}</span>
+                      <span className="text-xs text-gray-500 font-mono">{formatDate(c.date)}</span>
                     </div>
-                    <p className="text-xs text-gray-600 leading-relaxed">{c.text}</p>
+                    <p className="text-sm text-gray-700 leading-relaxed">{c.text}</p>
                   </div>
                 </div>
               ))}
@@ -479,8 +497,8 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer }) {
           )}
           <div className="flex gap-2">
             <textarea
-              className="form-control text-xs resize-none flex-1"
-              rows={2}
+              className="flex-1 px-3.5 py-2 text-xs rounded-xl border border-gray-200 bg-gray-50 text-gray-900 placeholder-gray-400 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 resize-none"
+              rows={1}
               placeholder="Shto koment rreth kësaj fature… (Enter = dërgo)"
               value={comment}
               onChange={e => setComment(e.target.value)}
@@ -489,11 +507,11 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer }) {
               }}
             />
             <button
-              className="self-end btn btn-primary btn-sm text-xs px-3 py-1.5 flex items-center gap-1"
+              className="px-4 py-2 rounded-xl bg-blue-500 hover:bg-blue-600 text-white font-bold text-xs flex items-center gap-1.5 transition-colors flex-shrink-0"
               onClick={addComment}
               disabled={!comment.trim()}
             >
-              <Send size={12}/> Dërgo
+              <Send size={14}/> Dërgo
             </button>
           </div>
         </div>
@@ -672,9 +690,10 @@ function ExportPanel({ invoices, customers, onClose, fmt }) {
 /* ══════════════════════════════════════════════════════════
    Kanban Board
 ══════════════════════════════════════════════════════════ */
-function KanbanCard({ inv, onOpen }) {
-  const { fmt, customers, setModal, closeModal } = useApp()
-  const custObj  = customers.find(c => c.name === inv.customer)
+function KanbanCard({ inv, onOpen, customerMap, hidden }) {
+  const { fmt: rawFmt, setModal, closeModal } = useApp()
+  const fmt = hidden ? () => '••••••' : rawFmt
+  const custObj  = customerMap.get(inv.customer)
   const rawPhone = cleanPhone(custObj?.phone || '')
   const today    = new Date().toISOString().slice(0, 10)
   const isOverdue = inv.status === 'overdue' ||
@@ -791,9 +810,9 @@ const RowActions = memo(function RowActions({ inv, canContact, isOverdue, rawPho
       </button>
 
       {open && (
-        <div className={`absolute right-0 top-full mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-2xl z-[9999]`}>
+        <div className={`absolute right-0 top-full mt-1.5 w-52 bg-white border border-gray-200 rounded-xl shadow-xl z-[9999] overflow-hidden`}>
           <button
-            className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 flex items-center gap-2 border-b border-gray-100"
+            className="w-full text-left px-3.5 py-2 text-[13px] font-medium text-gray-700 hover:bg-gray-50 flex items-center gap-2 border-b border-gray-100"
             onClick={() => { onNavigate(`invoices:${inv.id}:edit`); close() }}
           >
             <Pencil size={14}/> Ndrysho
@@ -803,7 +822,7 @@ const RowActions = memo(function RowActions({ inv, canContact, isOverdue, rawPho
             <a
               href={`https://wa.me/${rawPhone}?text=${msg}`}
               target="_blank" rel="noopener noreferrer"
-              className={`block w-full text-left px-4 py-2 text-sm hover:bg-green-50 flex items-center gap-2 border-b border-gray-100 ${isOverdue ? 'text-orange-600' : 'text-green-600'}`}
+              className={`block w-full text-left px-3.5 py-2 text-[13px] font-medium hover:bg-green-50 flex items-center gap-2 border-b border-gray-100 ${isOverdue ? 'text-orange-600' : 'text-green-600'}`}
               onClick={() => { MessageLogService.logWhatsAppMessage(inv.customer, rawPhone, buildReminderMsg(inv), inv.id, 'prepared'); close() }}
             >
               <MessageCircle size={14}/> Pagesa WA {isOverdue && '🔔'}
@@ -814,7 +833,7 @@ const RowActions = memo(function RowActions({ inv, canContact, isOverdue, rawPho
             <a
               href={`https://t.me/+${rawPhone}`}
               target="_blank" rel="noopener noreferrer"
-              className="block w-full text-left px-4 py-2 text-sm text-sky-600 hover:bg-sky-50 flex items-center gap-2 border-b border-gray-100"
+              className="block w-full text-left px-3.5 py-2 text-[13px] font-medium text-sky-600 hover:bg-sky-50 flex items-center gap-2 border-b border-gray-100"
               onClick={close}
             >
               <Send size={14}/> Pagesa TG
@@ -825,7 +844,7 @@ const RowActions = memo(function RowActions({ inv, canContact, isOverdue, rawPho
             <a
               href={`https://wa.me/${rawPhone}?text=${encodeURIComponent(buildInvoiceMsg(inv))}`}
               target="_blank" rel="noopener noreferrer"
-              className="block w-full text-left px-4 py-2 text-sm text-blue-500 hover:bg-blue-50 flex items-center gap-2 border-b border-gray-100"
+              className="block w-full text-left px-3.5 py-2 text-[13px] font-medium text-blue-500 hover:bg-blue-50 flex items-center gap-2 border-b border-gray-100"
               onClick={() => { MessageLogService.logWhatsAppMessage(inv.customer, rawPhone, buildInvoiceMsg(inv), inv.id, 'prepared'); close() }}
             >
               <FileText size={14}/> Dërgo faturën WA
@@ -834,7 +853,7 @@ const RowActions = memo(function RowActions({ inv, canContact, isOverdue, rawPho
 
           {(inv.status === 'pending' || inv.status === 'overdue') && (
             <button
-              className="w-full text-left px-4 py-2 text-sm text-emerald-600 hover:bg-emerald-50 flex items-center gap-2 border-b border-gray-100"
+              className="w-full text-left px-3.5 py-2 text-[13px] font-medium text-emerald-600 hover:bg-emerald-50 flex items-center gap-2 border-b border-gray-100"
               onClick={() => { onPayment(inv); close() }}
             >
               <CreditCard size={14}/> {isMobile ? 'Pagesa' : 'Regjistro Pagesën'}
@@ -842,7 +861,7 @@ const RowActions = memo(function RowActions({ inv, canContact, isOverdue, rawPho
           )}
 
           <button
-            className="w-full text-left px-4 py-2 text-sm text-blue-600 hover:bg-blue-50 flex items-center gap-2"
+            className="w-full text-left px-3.5 py-2 text-[13px] font-medium text-blue-600 hover:bg-blue-50 flex items-center gap-2"
             onClick={() => { onDelete(inv.id); close() }}
           >
             <Trash2 size={14}/> Fshi
@@ -853,7 +872,7 @@ const RowActions = memo(function RowActions({ inv, canContact, isOverdue, rawPho
   )
 })
 
-function KanbanBoard({ invoices, setPreview }) {
+function KanbanBoard({ invoices, setPreview, customerMap, hidden }) {
   const today = new Date().toISOString().slice(0, 10)
 
   const pending = invoices.filter(i => i.status === 'pending')
@@ -911,7 +930,7 @@ function KanbanBoard({ invoices, setPreview }) {
               <p className="text-xs text-gray-300 italic text-center py-6">{col.empty}</p>
             ) : (
               col.items.map(inv => (
-                <KanbanCard key={inv.id} inv={inv} onOpen={id => setPreview(id)} />
+                <KanbanCard key={inv.id} inv={inv} onOpen={id => setPreview(id)} customerMap={customerMap} hidden={hidden} />
               ))
             )}
           </div>
@@ -930,10 +949,12 @@ export default function Invoices() {
     invoices, setInvoices,
     customers,
     setModal, closeModal,
-    showToast, fmt,
+    showToast, fmt: rawFmt,
     currentOrgId, currentOrg,
     page, navigate, logActivity,
   } = useApp()
+  const [hideAmounts, setHideAmounts] = useState(true) // fshehur si parazgjedhje — mbrojtje privatësie
+  const fmt = hideAmounts ? () => '••••••' : rawFmt
 
   // Detect if we're in form mode (page like "invoices:create" or "invoices:ID:edit")
   const pageMatch = page.split(':')
@@ -995,8 +1016,25 @@ export default function Invoices() {
   const [confirmDelAll, setConfirmDelAll] = useState(false) // Confirmation dialog for bulk delete
   const [deletingInvoiceId, setDeletingInvoiceId] = useState(null) // Track which invoice is being deleted from dropdown
 
-  const customerTypeMap = useMemo(() => new Map(customers.map(c => [c.name, c.type])), [customers])
-  const getCustomerType = useCallback(name => customerTypeMap.get(name) || 'individual', [customerTypeMap])
+  // Optimize customer lookups: O(1) instead of O(n)
+  const customerMap = useMemo(() => new Map(customers.map(c => [c.name, c])), [customers])
+
+  // Memoize long overdue check to avoid scanning all invoices per row
+  const longOverdueSet = useMemo(() => {
+    const now = new Date()
+    const s = new Set()
+    invoices.forEach(inv => {
+      if (inv.status === 'paid' || inv.status === 'void' || !inv.due) return
+      const daysOverdue = Math.floor((now - new Date(inv.due)) / (1000 * 60 * 60 * 24))
+      if (daysOverdue > 21) s.add(inv.customer)
+    })
+    return s
+  }, [invoices])
+
+  const getCustomerType = useCallback(name =>
+    customerMap.get(name)?.type || 'individual',
+    [customerMap]
+  )
 
   function handleImportInvoices(rows) {
     console.error('🔴🔴🔴 IMPORT ORGID CHECK:')
@@ -1077,6 +1115,9 @@ export default function Invoices() {
 
   const today = new Date().toISOString().slice(0, 10)
 
+  // Normalize text: convert spaces and underscores to uniform format for fuzzy search
+  const normalize = (text) => (text || '').toLowerCase().replace(/[\s_-]/g, ' ').trim()
+
   const filtered = useMemo(() => invoices.filter(i => {
     // Status filter - special handling for 'overdue'
     if (statusFilter !== 'all') {
@@ -1092,14 +1133,14 @@ export default function Invoices() {
     if (typeFilter === 'reseller'   && getCustomerType(i.customer) !== 'reseller')   return false
     if (typeFilter === 'individual' && getCustomerType(i.customer) === 'reseller')    return false
     if (search) {
-      const searchLower = search.toLowerCase()
-      const matchCustomer = i.customer.toLowerCase().includes(searchLower)
+      const searchNorm = normalize(search)
+      const matchCustomer = normalize(i.customer).includes(searchNorm)
       const matchId = i.id.includes(search)
-      const matchReferent = i.referent && i.referent.toLowerCase().includes(searchLower)
+      const matchReferent = i.referent && normalize(i.referent).includes(searchNorm)
       if (!matchCustomer && !matchId && !matchReferent) return false
     }
     return true
-  }), [invoices, statusFilter, typeFilter, search, getCustomerType])
+  }), [invoices, statusFilter, typeFilter, search, customerMap])
 
   const toggleSort = field => {
     if (sortField === field) setSortDir(d => d === 'asc' ? 'desc' : 'asc')
@@ -1116,27 +1157,25 @@ export default function Invoices() {
     return sortDir === 'asc' ? cmp : -cmp
   }), [filtered, sortField, sortDir])
 
-  const getPhone = name => {
-    const c = customers.find(c => c.name === name)
+  const getPhone = useCallback(name => {
+    const c = customerMap.get(name)
     return c?.phone || ''
-  }
+  }, [customerMap])
 
-  // Pre-compute set of customers with 3+ week overdue invoices (O(n) once, then O(1) per row)
-  const longOverdueSet = useMemo(() => {
-    const now = new Date()
-    const s = new Set()
-    invoices.forEach(inv => {
-      if (inv.status === 'paid' || inv.status === 'void' || !inv.due) return
-      const daysOverdue = Math.floor((now - new Date(inv.due)) / (1000 * 60 * 60 * 24))
-      if (daysOverdue > 21) s.add(inv.customer)
-    })
-    return s
-  }, [invoices])
-  const hasLongOverdue = name => longOverdueSet.has(name)
+  const hasLongOverdue = useCallback(customerName => longOverdueSet.has(customerName), [longOverdueSet])
 
+  // Clear preview and navigate (used for create/edit buttons)
+  const navigateWithClearPreview = useCallback((path) => {
+    setPreview(null)
+    navigate(path)
+  }, [navigate])
 
-  /* ── FORM MODE takes priority over preview ── */
-  if (isFormMode) return InvoiceFormPanel
+  // Paginated slice of `sorted` -- used by both the default table view and the
+  // split-preview left rail below. Without this, opening a preview used to
+  // render an InvoiceListCard for every invoice matching the current filter
+  // (thousands on real data) instead of just the current page, which is what
+  // made clicking an invoice take several seconds to open.
+  const paged = sorted.slice((paginationPage - 1) * perPage, paginationPage * perPage)
 
   /* ── SPLIT LAYOUT (when a preview is selected) ── */
   if (preview) {
@@ -1147,22 +1186,30 @@ export default function Invoices() {
       >
         {/* Left: invoice list — hidden on mobile (show only detail panel) */}
         <div className="hidden md:flex w-[340px] flex-shrink-0 border-r border-gray-200 flex-col overflow-hidden bg-white">
-          <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
             <div>
-              <p className="font-bold text-sm text-gray-800">Të gjitha faturat</p>
-              <p className="text-[11px] text-gray-400">{filtered.length} rezultate</p>
+              <p className="font-extrabold text-sm text-gray-900">Të gjitha faturat</p>
+              <p className="text-[11px] text-gray-400 font-medium">{filtered.length.toLocaleString('en-US')} rezultate</p>
             </div>
-            <button
-              className="flex items-center gap-1 btn btn-primary btn-sm text-xs px-2.5 py-1.5"
-              onClick={() => navigate('invoices:create')}
-            >
-              <Plus size={12}/> Faturë
-            </button>
+            <div className="flex items-center gap-1.5">
+              <button
+                onClick={() => setHideAmounts(h => !h)}
+                title={hideAmounts ? 'Shfaq shumat' : 'Fshih shumat'}
+                className="w-7 h-7 flex items-center justify-center rounded-lg bg-gray-100 text-gray-500 hover:text-blue-600 transition-colors flex-shrink-0"
+              >
+                {hideAmounts ? <EyeOff size={13}/> : <Eye size={13}/>}
+              </button>
+              <button
+                className="flex items-center gap-1 px-3 py-1.5 text-xs font-bold rounded-xl bg-blue-500 hover:bg-blue-600 text-white shadow-sm transition-colors"
+                onClick={() => navigateWithClearPreview('invoices:create')}
+              >
+                <Plus size={12}/> Faturë
+              </button>
+            </div>
           </div>
 
-          <div className="px-3 py-2 border-b border-gray-100">
-            <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-2.5 py-1.5
-                            focus-within:border-blue-400 focus-within:bg-white transition-all">
+          <div className="px-3 pt-3">
+            <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl px-2.5 py-1.5 focus-within:border-blue-400 focus-within:bg-white transition-all">
               <Search size={12} className="text-gray-400 flex-shrink-0"/>
               <input
                 className="bg-transparent border-none outline-none text-xs text-gray-600 w-full placeholder-gray-400"
@@ -1185,8 +1232,8 @@ export default function Invoices() {
           <div className="flex gap-2 px-3 py-2 border-b border-gray-100">
             <select
               value={statusFilter}
-              onChange={e => setStatus(e.target.value)}
-              className="flex-1 text-xs bg-gray-50 border border-gray-200 rounded-lg px-2 py-1.5 outline-none focus:border-blue-400 cursor-pointer text-gray-600"
+              onChange={(e) => setStatus(e.target.value)}
+              className="flex-1 text-[11px] font-semibold bg-gray-50 border border-gray-200 rounded-lg px-2 py-1.5 text-gray-700 outline-none focus:border-blue-400 cursor-pointer"
             >
               <option value="all">Të gjitha</option>
               <option value="pending">Pritje</option>
@@ -1195,10 +1242,11 @@ export default function Invoices() {
               <option value="draft">Draft</option>
               <option value="void">Void</option>
             </select>
+
             <select
               value={typeFilter}
-              onChange={e => setTypeFilter(e.target.value)}
-              className="flex-1 text-xs bg-gray-50 border border-gray-200 rounded-lg px-2 py-1.5 outline-none focus:border-blue-400 cursor-pointer text-gray-600"
+              onChange={(e) => setTypeFilter(e.target.value)}
+              className="flex-1 text-[11px] font-semibold bg-gray-50 border border-gray-200 rounded-lg px-2 py-1.5 text-gray-700 outline-none focus:border-blue-400 cursor-pointer"
             >
               <option value="all">Të gjithë</option>
               <option value="individual">👤 Klientë</option>
@@ -1206,29 +1254,35 @@ export default function Invoices() {
             </select>
           </div>
 
-          <div className="flex-1 overflow-y-auto">
-            {sorted.length === 0 ? (
+          <div className="flex-1 overflow-y-auto pb-1.5">
+            {paged.length === 0 ? (
               <p className="text-xs text-gray-400 text-center py-8">Asnjë faturë nuk u gjet</p>
             ) : (
-              sorted.map(inv => (
+              paged.map(inv => (
                 <InvoiceListCard
                   key={inv.id}
                   inv={inv}
                   selected={preview === inv.id}
                   onClick={() => setPreview(inv.id)}
+                  customerMap={customerMap}
+                  hidden={hideAmounts}
                 />
               ))
             )}
           </div>
+
+          <Pagination page={paginationPage} total={filtered.length} perPage={perPage} onChange={setPaginationPage}/>
         </div>
 
         {/* Right: invoice side panel */}
-        <div className="flex-1 flex flex-col overflow-hidden">
+        <div className="flex-1 flex flex-col overflow-hidden lg:max-w-[900px]">
           <InvoiceSidePanel
             key={preview}
             invId={preview}
             onClose={() => setPreview(null)}
             setSelectedCustomer={setSelectedCustomer}
+            customerMap={customerMap}
+            hidden={hideAmounts}
           />
         </div>
 
@@ -1250,11 +1304,19 @@ export default function Invoices() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
           <div>
-            <p className="text-[11px] font-bold text-blue-500 uppercase tracking-widest mb-0.5">Faturim</p>
             <h2 className="text-xl font-bold text-gray-800">Faturat</h2>
             <p className="text-sm text-gray-400 mt-0.5">{invoices.length} fatura gjithsej</p>
           </div>
           <div className="flex items-center gap-1.5">
+            {/* Hide/show amounts */}
+            <button
+              onClick={() => setHideAmounts(h => !h)}
+              className="w-9 h-9 flex items-center justify-center rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
+              title={hideAmounts ? 'Shfaq shumat' : 'Fshih shumat'}
+            >
+              {hideAmounts ? <EyeOff size={16}/> : <Eye size={16}/>}
+            </button>
+
             {/* Switch to table view */}
             <button
               onClick={() => setViewMode('table')}
@@ -1276,7 +1338,7 @@ export default function Invoices() {
             {/* New Invoice */}
             <button
               className="w-9 h-9 flex items-center justify-center rounded-lg bg-blue-500 text-white hover:bg-blue-600 transition-colors font-bold text-lg"
-              onClick={() => navigate('invoices:create')}
+              onClick={() => navigateWithClearPreview('invoices:create')}
               title="Faturë e re"
             >
               +
@@ -1284,7 +1346,7 @@ export default function Invoices() {
           </div>
         </div>
 
-        <KanbanBoard invoices={invoices} setPreview={setPreview} />
+        <KanbanBoard invoices={invoices} setPreview={setPreview} customerMap={customerMap} hidden={hideAmounts} />
 
         {/* Customer Details Modal */}
         {selectedCustomer && (
@@ -1298,7 +1360,6 @@ export default function Invoices() {
   }
 
   /* ── DEFAULT LAYOUT (full-width table) ── */
-  const paged = sorted.slice((paginationPage - 1) * perPage, paginationPage * perPage)
 
   /* Calculate stats - based on filtered invoices */
   const pendingValue = filtered
@@ -1308,12 +1369,20 @@ export default function Invoices() {
     .filter(i => i.status === 'overdue' || (i.status === 'pending' && i.due && i.due < today))
     .reduce((sum, i) => sum + (i.amount || 0), 0)
 
+  // Counts for the KPI card badges -- same predicates as above, just .length
+  const pendingInvoicesCount = filtered.filter(i => i.status === 'pending').length
+  const overdueInvoicesCount = filtered.filter(i => i.status === 'overdue' || (i.status === 'pending' && i.due && i.due < today)).length
+
   // Calculate total unpaid invoices for resellers from filtered data
   const sellerInvoices = filtered.filter(i => {
-    const customer = customers.find(c => c.name === i.customer)
+    const customer = customerMap.get(i.customer)
     return customer?.type === 'reseller' && (i.status === 'pending' || i.status === 'overdue')
   })
   const totalUnpaidSellers = sellerInvoices.reduce((sum, i) => sum + (i.amount || 0), 0)
+
+  // Paid invoices -- new stat card, doesn't affect any existing calculation
+  const paidInvoicesList = filtered.filter(i => i.status === 'paid')
+  const paidValue = paidInvoicesList.reduce((sum, i) => sum + (i.amount || 0), 0)
 
   // If in form mode, show only the form
   if (isFormMode) {
@@ -1323,35 +1392,29 @@ export default function Invoices() {
   return (
     <div>
       {/* Header */}
-      <div className="flex flex-col gap-3 mb-6">
+      <div className="flex flex-col gap-6 mb-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <p className="text-[11px] font-bold text-blue-500 uppercase tracking-widest mb-0.5">Faturim</p>
-            <h2 className="text-xl font-bold text-gray-800">Faturat</h2>
-            <p className="text-sm text-gray-400 mt-0.5">{invoices.length} fatura gjithsej</p>
+          <div className="flex items-center gap-3">
+            <h2 className="text-xl font-bold text-gray-900 tracking-tight">Faturat</h2>
+            <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-gray-200 text-gray-700">
+              {invoices.length.toLocaleString('en-US')} fatura
+            </span>
           </div>
 
-          {/* Stats in the middle - Card style for desktop */}
-          <div className="hidden md:flex items-center gap-3">
-            <div className="bg-amber-50 rounded-lg p-3 border border-amber-100 min-w-max">
-              <p className="text-xs text-amber-600 font-medium">Në pritje</p>
-              <p className="text-base font-bold text-amber-700">{fmt(pendingValue)}</p>
-            </div>
-            <div className="bg-red-50 rounded-lg p-3 border border-red-100 min-w-max">
-              <p className="text-xs text-red-500 font-medium">Të vonuara</p>
-              <p className="text-base font-bold text-red-600">{fmt(overdueValue)}</p>
-            </div>
-            <div className="bg-blue-50 rounded-lg p-3 border border-blue-100 min-w-max">
-              <p className="text-xs text-blue-500 font-medium">Papaguara Sellers</p>
-              <p className="text-base font-bold text-blue-600">{fmt(totalUnpaidSellers)}</p>
-            </div>
-          </div>
-
-        {/* Action buttons */}
+          {/* Action buttons */}
           <div className="flex items-center gap-1.5 flex-wrap">
+            {/* Hide/show amounts */}
+            <button
+              onClick={() => setHideAmounts(h => !h)}
+              className="w-9 h-9 flex items-center justify-center rounded-xl bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
+              title={hideAmounts ? 'Shfaq shumat' : 'Fshih shumat'}
+            >
+              {hideAmounts ? <EyeOff size={16}/> : <Eye size={16}/>}
+            </button>
+
             {/* Export - Icon only - Hidden on mobile */}
             <button
-              className="hidden sm:flex w-9 h-9 items-center justify-center rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
+              className="hidden sm:flex w-9 h-9 items-center justify-center rounded-xl bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
               title="Eksporto faturat"
               onClick={() => setShowExport(true)}
             >
@@ -1360,7 +1423,7 @@ export default function Invoices() {
 
             {/* Import - Icon only - Hidden on mobile */}
             <button
-              className="hidden sm:flex w-9 h-9 items-center justify-center rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
+              className="hidden sm:flex w-9 h-9 items-center justify-center rounded-xl bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
               onClick={() => setImportOpen(true)}
               title="Importo Excel"
             >
@@ -1370,7 +1433,7 @@ export default function Invoices() {
             {/* Delete selected - Show only when items selected */}
             {selected.size > 0 && (
               <button
-                className="w-9 h-9 flex items-center justify-center rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors"
+                className="w-9 h-9 flex items-center justify-center rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors"
                 onClick={() => setConfirmDelAll(true)}
                 title={`Fshi ${selected.size}`}
               >
@@ -1378,30 +1441,61 @@ export default function Invoices() {
               </button>
             )}
 
-            {/* New Invoice - Primary button with + icon - Hidden on mobile (see FAB below) */}
+            {/* New Invoice - Primary button - Hidden on mobile (see FAB below) */}
             <button
-              className="hidden sm:flex w-9 h-9 items-center justify-center rounded-lg bg-blue-500 text-white hover:bg-blue-600 transition-colors font-bold text-lg"
-              onClick={() => navigate('invoices:create')}
+              className="hidden sm:flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-500 text-white hover:bg-blue-600 transition-colors font-bold text-xs shadow-md shadow-blue-500/20"
+              onClick={() => navigateWithClearPreview('invoices:create')}
               title="Faturë e re"
             >
-              +
+              + Krijo Faturë
             </button>
           </div>
         </div>
 
-        {/* Mobile stats (show on small screens) */}
-        <div className="md:hidden flex gap-2">
-          <div className="flex-1 bg-amber-50 rounded-lg p-3 border border-amber-100">
-            <p className="text-xs text-amber-600 font-medium">Në pritje</p>
-            <p className="text-base font-bold text-amber-700">{fmt(pendingValue)}</p>
+        {/* KPI cards */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          <div className="bg-white rounded-2xl p-4 border border-amber-200/80 shadow-sm">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-xs font-medium text-gray-500">Në pritje</span>
+              <span className="text-[11px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200 whitespace-nowrap">
+                {pendingInvoicesCount} fatura
+              </span>
+            </div>
+            <p className="text-xl sm:text-2xl font-bold text-gray-900 mt-2">{fmt(pendingValue)}</p>
+            <p className="text-[11px] text-amber-700 mt-1">Presin arkëtim brenda afatit</p>
           </div>
-          <div className="flex-1 bg-red-50 rounded-lg p-3 border border-red-100">
-            <p className="text-xs text-red-500 font-medium">Të vonuara</p>
-            <p className="text-base font-bold text-red-600">{fmt(overdueValue)}</p>
+
+          <div className="bg-white rounded-2xl p-4 border border-red-200/80 shadow-sm">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-xs font-medium text-gray-500">Të vonuara</span>
+              <span className="text-[11px] font-bold text-red-700 bg-red-50 px-2 py-0.5 rounded-full border border-red-200 whitespace-nowrap">
+                {overdueInvoicesCount} fatura
+              </span>
+            </div>
+            <p className="text-xl sm:text-2xl font-bold text-red-600 mt-2">{fmt(overdueValue)}</p>
+            <p className="text-[11px] text-red-700 mt-1">Kërkojnë ndjekje urgjente</p>
           </div>
-          <div className="flex-1 bg-blue-50 rounded-lg p-3 border border-blue-100">
-            <p className="text-xs text-blue-500 font-medium">Papaguara Sellers</p>
-            <p className="text-base font-bold text-blue-600">{fmt(totalUnpaidSellers)}</p>
+
+          <div className="bg-white rounded-2xl p-4 border border-indigo-200/80 shadow-sm">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-xs font-medium text-gray-500">Papaguara Sellers</span>
+              <span className="text-[11px] font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-full border border-indigo-200 whitespace-nowrap">
+                {sellerInvoices.length} seller
+              </span>
+            </div>
+            <p className="text-xl sm:text-2xl font-bold text-gray-900 mt-2">{fmt(totalUnpaidSellers)}</p>
+            <p className="text-[11px] text-indigo-700 mt-1">Bilanci i rishitësve</p>
+          </div>
+
+          <div className="bg-white rounded-2xl p-4 border border-emerald-200/80 shadow-sm">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-xs font-medium text-gray-500">Të paguara</span>
+              <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 whitespace-nowrap">
+                {paidInvoicesList.length.toLocaleString('en-US')} fatura
+              </span>
+            </div>
+            <p className="text-xl sm:text-2xl font-bold text-emerald-600 mt-2">{fmt(paidValue)}</p>
+            <p className="text-[11px] text-emerald-700 mt-1">Likuiduar me sukses</p>
           </div>
         </div>
       </div>
@@ -1489,7 +1583,6 @@ export default function Invoices() {
                   }
                   showToast('Fatura u fshi')
                   setDeletingInvoiceId(null)
-                  setOpenDropdown(null)
                 }}
                 className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
               >
@@ -1500,61 +1593,69 @@ export default function Invoices() {
         </div>
       )}
 
-      {/* Filters */}
-      <div className="flex flex-wrap items-center gap-2 mb-4">
-        <div className="flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-3 py-2
-                        focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-50 transition-all flex-1 min-w-[160px]">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2">
-            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-          </svg>
-          <input
-            className="bg-transparent border-none outline-none text-sm text-gray-600 w-full placeholder-gray-400"
-            placeholder="Kërko fatura..."
-            value={search}
-            onChange={e => { setSearch(e.target.value); setPaginationPage(1) }}
-          />
-          {search && (
-            <button
-              onClick={() => setSearch('')}
-              className="text-gray-400 hover:text-gray-600 flex-shrink-0 cursor-pointer p-0.5 rounded hover:bg-gray-100 transition-colors"
-              title="Fshi kërkimin"
-            >
-              <X size={14}/>
-            </button>
-          )}
-        </div>
-        <select
-          className="bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 outline-none focus:border-blue-400 cursor-pointer"
-          value={statusFilter}
-          onChange={e => { setStatus(e.target.value); setPaginationPage(1) }}
-        >
-          <option value="all">Të gjitha</option>
-          <option value="paid">Paguar</option>
-          <option value="pending">Pritje</option>
-          <option value="overdue">Vonuar</option>
-          <option value="draft">Draft</option>
-          <option value="void">Void</option>
-        </select>
+      {/* Filters — kërkimi majtas, statusi dhe tipi si dropdown, gjithçka në një rresht */}
+      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-3 sm:p-4 mb-4">
+        <div className="flex flex-wrap items-center gap-2">
 
-        <select
-          className="bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 outline-none focus:border-blue-400 cursor-pointer"
-          value={typeFilter}
-          onChange={e => { setTypeFilter(e.target.value); setPaginationPage(1) }}
-        >
-          <option value="all">Të gjithë</option>
-          <option value="individual">👤 Klientë</option>
-          <option value="reseller">🔄 Reseller</option>
-        </select>
-        <select
-          className="hidden sm:block bg-white border border-gray-200 rounded-lg px-2.5 py-2 text-sm text-gray-600 outline-none focus:border-blue-400 cursor-pointer"
-          value={perPage}
-          onChange={e => { setPerPage(Number(e.target.value)); setPaginationPage(1) }}
-        >
-          <option value={25}>25/faqe</option>
-          <option value={50}>50/faqe</option>
-          <option value={100}>100/faqe</option>
-          <option value={200}>200/faqe</option>
-        </select>
+          {/* Search — e para, majtas */}
+          <div className="w-full sm:w-64 flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl px-3 py-1.5 focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-50 transition-all">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2">
+              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+            </svg>
+            <input
+              className="bg-transparent border-none outline-none text-xs text-gray-600 w-full placeholder-gray-400"
+              placeholder="Kërko me Emër, ID apo Referent..."
+              value={search}
+              onChange={e => { setSearch(e.target.value); setPaginationPage(1) }}
+            />
+            {search && (
+              <button
+                onClick={() => setSearch('')}
+                className="text-gray-400 hover:text-gray-600 flex-shrink-0 cursor-pointer p-0.5 rounded hover:bg-gray-100 transition-colors"
+                title="Fshi kërkimin"
+              >
+                <X size={14}/>
+              </button>
+            )}
+          </div>
+
+          {/* Status — dropdown */}
+          <select
+            className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-1.5 text-xs font-medium text-gray-600 outline-none focus:border-blue-400 cursor-pointer"
+            value={statusFilter}
+            onChange={e => { setStatus(e.target.value); setPaginationPage(1) }}
+          >
+            <option value="all">Të gjitha</option>
+            <option value="paid">Paguar</option>
+            <option value="pending">Pritje</option>
+            <option value="overdue">Vonuar</option>
+            <option value="draft">Draft</option>
+            <option value="void">Void</option>
+          </select>
+
+          {/* Type + per-page — dropdown */}
+          <div className="flex items-center gap-2">
+            <select
+              className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-1.5 text-xs font-medium text-gray-600 outline-none focus:border-blue-400 cursor-pointer"
+              value={typeFilter}
+              onChange={e => { setTypeFilter(e.target.value); setPaginationPage(1) }}
+            >
+              <option value="all">Të gjithë</option>
+              <option value="individual">👤 Klientë</option>
+              <option value="reseller">🔄 Reseller</option>
+            </select>
+            <select
+              className="hidden sm:block bg-gray-50 border border-gray-200 rounded-xl px-2.5 py-1.5 text-xs font-medium text-gray-600 outline-none focus:border-blue-400 cursor-pointer"
+              value={perPage}
+              onChange={e => { setPerPage(Number(e.target.value)); setPaginationPage(1) }}
+            >
+              <option value={25}>25/faqe</option>
+              <option value={50}>50/faqe</option>
+              <option value={100}>100/faqe</option>
+              <option value={200}>200/faqe</option>
+            </select>
+          </div>
+        </div>
       </div>
 
       {/* Mobile Card View - Hidden on sm+ */}
@@ -1610,20 +1711,20 @@ export default function Invoices() {
       )}
 
       {/* Table - Hidden on Mobile */}
-      <div className="card hidden sm:block">
+      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden hidden sm:block">
         {paged.length === 0 ? (
           <EmptyState
             icon={FileText}
             title="Nuk u gjetën fatura"
             sub="Ndryshoni filtrat ose krijoni një faturë të re"
-            action={<button className="btn btn-primary mt-2" onClick={() => navigate('invoices:create')}>+ Faturë e re</button>}
+            action={<button className="btn btn-primary mt-2" onClick={() => navigateWithClearPreview('invoices:create')}>+ Faturë e re</button>}
           />
         ) : (
           <>
             <div className="overflow-y-auto overflow-x-visible" style={{ maxHeight: 'calc(100vh - 270px)' }}>
               <table className="w-full min-w-[500px]" style={{ position: 'relative' }}>
                 <thead className="sticky top-0 z-10">
-                  <tr className="border-b-2 border-gray-100 bg-white">
+                  <tr className="border-b border-gray-200 bg-gray-50">
                     <th className="table-th hidden sm:table-cell">Data</th>
                     {[
                       { key: 'id',       label: 'ID',     cls: 'hidden sm:table-cell' },
@@ -1639,9 +1740,9 @@ export default function Invoices() {
                       </th>
                     ))}
                     <th className="table-th sm:table-cell lg:table-cell">Skadimi Abonimit</th>
-                    <th className="table-th cursor-pointer select-none hover:text-blue-500"
+                    <th className="table-th cursor-pointer select-none hover:text-blue-500 text-right"
                         onClick={() => toggleSort('amount')}>
-                      <span className="flex items-center gap-1">
+                      <span className="flex items-center justify-end gap-1">
                         Shuma
                         <span className="text-[10px]">{sortField === 'amount' ? (sortDir === 'asc' ? '↑' : '↓') : <span className="text-gray-300">↕</span>}</span>
                       </span>
@@ -1672,44 +1773,47 @@ export default function Invoices() {
                     const canContact = (inv.status === 'pending' || inv.status === 'overdue' || inv.status === 'paid') && rawPhone
                     const isOverdue  = inv.status === 'overdue' ||
                       (inv.due && inv.due < today && inv.status !== 'paid' && inv.status !== 'void')
+
                     return (
                       <tr
                         key={inv.id}
-                        className={`hover:bg-blue-50/30 transition-colors group ${selected.has(inv.id) ? 'bg-blue-100' : ''}`}
+                        className={`hover:bg-gray-50 transition-colors group ${selected.has(inv.id) ? 'bg-blue-50' : ''}`}
                       >
-                        <td className="table-td text-gray-400 hidden sm:table-cell">{formatDate(inv.date)}</td>
-                        <td className="table-td text-gray-700 dark:text-gray-300 text-sm hidden sm:table-cell cursor-pointer" onClick={() => setPreview(inv.id)}>{inv.id}</td>
+                        <td className="table-td font-mono text-gray-400 hidden sm:table-cell">{formatDate(inv.date)}</td>
+                        <td className="table-td hidden sm:table-cell cursor-pointer" onClick={() => setPreview(inv.id)}>
+                          <span className="font-mono font-bold text-xs text-gray-800 bg-gray-100 px-2 py-0.5 rounded border border-gray-200">{inv.id}</span>
+                        </td>
                         <td className="table-td font-medium text-gray-800 cursor-pointer" onClick={() => setPreview(inv.id)}>
                           <div className="flex items-center gap-1.5">
                             {inv.customer}
                             {hasLongOverdue(inv.customer) && (
-                              <span className="text-red-500 flex-shrink-0" title="Fatura më shumë se 3 javë të vonuara">▲</span>
+                              <span className="text-red-600 flex-shrink-0" title="Fatura më shumë se 3 javë të vonuara">▲</span>
                             )}
                             {getCustomerType(inv.customer) === 'reseller' && (
                               <span className="text-[10px] font-bold px-1.5 py-0.5 bg-purple-100 text-purple-600 rounded-full flex-shrink-0">Reseller</span>
                             )}
                           </div>
                         </td>
-                        <td className="table-td text-gray-600 hidden sm:table-cell text-sm">
+                        <td className="table-td hidden sm:table-cell text-sm">
                           {inv.referent ? (
-                            <span className="px-2 py-1 bg-blue-50 text-blue-600 rounded-full text-xs font-medium">
+                            <span className="px-2.5 py-1 bg-indigo-50 text-indigo-700 rounded-full text-xs font-medium">
                               {inv.referent}
                             </span>
                           ) : (
-                            <span className="text-gray-300 italic text-xs">-</span>
+                            <span className="text-gray-300 italic text-xs">—</span>
                           )}
                         </td>
-                        <td className="table-td text-blue-500 sm:table-cell lg:table-cell text-sm font-medium">
+                        <td className="table-td sm:table-cell lg:table-cell text-sm font-medium">
                           {inv.subscriptionExpiry ? (
-                            <span className="px-2 py-1 bg-blue-50 rounded-full text-xs">
+                            <span className="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-600 rounded font-mono text-xs">
                               {formatDate(inv.subscriptionExpiry)}
                             </span>
                           ) : (
-                            <span className="text-gray-300 italic text-xs">-</span>
+                            <span className="text-gray-300 italic text-xs">—</span>
                           )}
                         </td>
-                        <td className="table-td font-bold text-gray-800">{fmt(inv.amount)}</td>
-                        <td className={`table-td hidden lg:table-cell ${isOverdue ? 'text-red-500 font-semibold' : 'text-gray-400'}`}>
+                        <td className="table-td font-mono font-bold text-right text-gray-800">{fmt(inv.amount)}</td>
+                        <td className={`table-td font-mono hidden lg:table-cell ${isOverdue ? 'text-red-500 font-semibold' : 'text-gray-400'}`}>
                           {formatDate(inv.due)}
                         </td>
                         <td className="table-td"><StatusBadge status={isOverdue && inv.status !== 'paid' && inv.status !== 'void' ? 'overdue' : inv.status}/></td>
@@ -1770,7 +1874,7 @@ export default function Invoices() {
       {/* Floating Action Button - Mobile only */}
       <div
         className="fab sm:hidden"
-        onClick={() => navigate('invoices:create')}
+        onClick={() => navigateWithClearPreview('invoices:create')}
         title="Faturë e re"
       >
         <Plus size={28}/>
