@@ -1,4 +1,4 @@
-﻿import { useState } from 'react'
+import { useState } from 'react'
 import {
   Truck, Phone, Link2, Plus, Pencil, Trash2,
   MessageCircle, Send, ExternalLink, Search, X,
@@ -123,59 +123,62 @@ function SupplierCard({ vendor, onEdit, onDelete }) {
 
   const hasLink  = !!vendor.panelLink
   const hasPhone = !!vendor.phone
+  const fullLink = hasLink ? (vendor.panelLink.startsWith('http') ? vendor.panelLink : `https://${vendor.panelLink}`) : null
 
   return (
-    <div className="bg-white rounded-xl border border-gray-100 p-5 hover:border-blue-200 hover:shadow-md transition-all duration-200 group flex flex-col gap-4">
+    <div className="bg-white rounded-2xl border border-gray-200/90 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col gap-3 p-4">
       {/* Header */}
-      <div className="flex items-center gap-3">
-        <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-bold text-base flex-shrink-0 select-none">
-          {initials}
+      <div className="flex items-start justify-between gap-2">
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="w-[38px] h-[38px] rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white font-black text-[13px] flex-shrink-0 select-none shadow-sm">
+            {initials}
+          </div>
+          <div className="min-w-0">
+            <p className="text-sm font-bold text-gray-900 truncate leading-tight">{vendor.name}</p>
+            <span className="text-[9px] font-extrabold text-gray-400 uppercase tracking-wider">Furnitor</span>
+          </div>
         </div>
-        <div className="flex-1 min-w-0">
-          <p className="font-bold text-gray-800 truncate">{vendor.name}</p>
-          <p className="text-[11px] text-gray-400 mt-0.5 uppercase tracking-wide">Furnitor</p>
-        </div>
-        {/* Edit / Delete */}
-        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+        {/* Edit / Delete — always visible */}
+        <div className="flex items-center gap-1 flex-shrink-0">
           <button
-            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-blue-50 text-gray-400 hover:text-blue-500 transition-colors"
+            className="w-[26px] h-[26px] flex items-center justify-center rounded-lg bg-gray-100 text-gray-500 hover:bg-gray-200 transition-colors"
             onClick={() => onEdit(vendor)}
             title="Edito"
           >
-            <Pencil size={14} />
+            <Pencil size={13} />
           </button>
           <button
-            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-blue-50 text-gray-400 hover:text-blue-500 transition-colors"
+            className="w-[26px] h-[26px] flex items-center justify-center rounded-lg bg-gray-100 text-gray-500 hover:bg-blue-50 hover:text-blue-600 transition-colors"
             onClick={() => onDelete(vendor)}
             title="Fshi"
           >
-            <Trash2 size={14} />
+            <Trash2 size={13} />
           </button>
         </div>
       </div>
 
       {/* Info */}
-      <div className="space-y-2 flex-1">
+      <div className="space-y-1.5">
         {hasPhone ? (
-          <div className="flex items-center gap-2 text-sm text-gray-600">
+          <div className="flex items-center gap-2 text-xs text-gray-700 font-mono">
             <Phone size={13} className="text-gray-400 flex-shrink-0" />
             <span>{vendor.phone}</span>
           </div>
         ) : (
-          <div className="flex items-center gap-2 text-sm text-gray-300 italic">
+          <div className="flex items-center gap-2 text-xs text-gray-400 italic">
             <Phone size={13} className="flex-shrink-0" />
             <span>Pa numër telefoni</span>
           </div>
         )}
 
         {hasLink ? (
-          <div className="flex items-center gap-2 text-sm text-blue-500 truncate">
+          <div className="flex items-center gap-2 text-xs text-blue-600 truncate">
             <Link2 size={13} className="text-gray-400 flex-shrink-0" />
             <a
-              href={vendor.panelLink.startsWith('http') ? vendor.panelLink : `https://${vendor.panelLink}`}
+              href={fullLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="truncate hover:underline"
+              className="truncate hover:underline font-mono text-[11px]"
               onClick={e => e.stopPropagation()}
             >
               {vendor.panelLink.replace(/^https?:\/\//, '')}
@@ -183,7 +186,7 @@ function SupplierCard({ vendor, onEdit, onDelete }) {
             <ExternalLink size={11} className="text-gray-400 flex-shrink-0" />
           </div>
         ) : (
-          <div className="flex items-center gap-2 text-sm text-gray-300 italic">
+          <div className="flex items-center gap-2 text-xs text-gray-400 italic">
             <Link2 size={13} className="flex-shrink-0" />
             <span>Pa link paneli</span>
           </div>
@@ -192,12 +195,12 @@ function SupplierCard({ vendor, onEdit, onDelete }) {
 
       {/* Veprimet — WhatsApp + Telegram */}
       {hasPhone && (
-        <div className="flex gap-2 pt-3 border-t border-gray-50">
+        <div className="flex gap-2 pt-3 border-t border-gray-100">
           <a
             href={`https://wa.me/${phone}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-green-50 text-green-600 text-xs font-semibold hover:bg-green-100 transition-colors"
+            className="flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-xl bg-green-50 text-green-600 text-[11px] font-bold hover:bg-green-100 transition-colors"
             title="WhatsApp"
           >
             <MessageCircle size={13} /> WhatsApp
@@ -206,17 +209,17 @@ function SupplierCard({ vendor, onEdit, onDelete }) {
             href={`https://t.me/+${phone}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-sky-50 text-sky-600 text-xs font-semibold hover:bg-sky-100 transition-colors"
+            className="flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-xl bg-sky-50 text-sky-600 text-[11px] font-bold hover:bg-sky-100 transition-colors"
             title="Telegram"
           >
             <Send size={13} /> Telegram
           </a>
           {hasLink && (
             <a
-              href={vendor.panelLink.startsWith('http') ? vendor.panelLink : `https://${vendor.panelLink}`}
+              href={fullLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-blue-50 text-blue-500 text-xs font-semibold hover:bg-blue-100 transition-colors"
+              className="flex items-center justify-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors flex-shrink-0"
               title="Hap panelin"
             >
               <ExternalLink size={13} />
@@ -227,12 +230,12 @@ function SupplierCard({ vendor, onEdit, onDelete }) {
 
       {/* Nëse nuk ka telefon por ka link */}
       {!hasPhone && hasLink && (
-        <div className="pt-3 border-t border-gray-50">
+        <div className="pt-3 border-t border-gray-100">
           <a
-            href={vendor.panelLink.startsWith('http') ? vendor.panelLink : `https://${vendor.panelLink}`}
+            href={fullLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-center gap-1.5 py-2 rounded-lg bg-blue-50 text-blue-500 text-xs font-semibold hover:bg-blue-100 transition-colors w-full"
+            className="flex items-center justify-center gap-1.5 py-1.5 rounded-xl bg-gray-100 text-gray-600 text-[11px] font-bold hover:bg-gray-200 transition-colors w-full"
           >
             <ExternalLink size={13} /> Hap panelin
           </a>
@@ -267,32 +270,38 @@ export default function Suppliers() {
   return (
     <div>
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 mb-6 border-b border-gray-200">
         <div>
-          <h2 className="text-xl font-bold text-gray-800">Furnitorët</h2>
-          <p className="text-sm text-gray-400 mt-0.5">{vendors.length} furnitor{vendors.length !== 1 ? 'ë' : ''} gjithsej</p>
+          <h2 className="text-xl font-black text-gray-900 flex items-center gap-2 tracking-tight">
+            <Truck size={20} className="text-blue-500" />
+            Furnitorët
+          </h2>
+          <p className="text-xs text-gray-500 font-medium mt-0.5">{vendors.length} furnitor{vendors.length !== 1 ? 'ë' : ''} gjithsej</p>
         </div>
-        <button className="btn btn-primary btn-sm self-start sm:self-auto" onClick={openAdd}>
-          <Plus size={16} /> Shto furnitor
+        <button
+          className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-500 text-white hover:bg-blue-600 transition-all active:scale-95 font-bold text-xs shadow-sm self-start sm:self-auto"
+          onClick={openAdd}
+        >
+          <Plus size={14} /> Shto furnitor
         </button>
       </div>
 
       {/* Kërkimi */}
-      <div className="flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-3 py-2
-                      focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-50
-                      transition-all mb-6 w-full max-w-sm">
-        <Search size={14} className="text-gray-400 flex-shrink-0" />
-        <input
-          className="bg-transparent border-none outline-none text-sm text-gray-600 w-full placeholder-gray-400"
-          placeholder="Kërko furnitor..."
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-        />
-        {search && (
-          <button onClick={() => setSearch('')} className="text-gray-300 hover:text-gray-500">
-            <X size={13} />
-          </button>
-        )}
+      <div className="bg-white p-3 rounded-2xl border border-gray-200/90 shadow-sm mb-5">
+        <div className="relative w-full sm:w-80">
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          <input
+            className="w-full pl-8 pr-8 py-1.5 text-xs rounded-xl border border-gray-200 bg-gray-50 text-gray-900 placeholder-gray-400 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-50"
+            placeholder="Kërko furnitor..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+          />
+          {search && (
+            <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+              <X size={13} />
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Grid */}
@@ -322,5 +331,3 @@ export default function Suppliers() {
     </div>
   )
 }
-
-

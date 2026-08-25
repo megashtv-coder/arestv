@@ -5,28 +5,38 @@
  */
 
 import React, { useState, useEffect, useRef } from 'react'
-import { Send, Loader, AlertCircle, CheckCircle, HelpCircle } from 'lucide-react'
+import { Send, Loader, AlertCircle, CheckCircle, HelpCircle, Sparkles, Bot, User, Lightbulb, BarChart3, RotateCcw } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import { createAICommandProcessor } from '../services/ai/AICommandProcessor'
 import { executeAction } from '../services/ai/ActionExecutor'
+
+const QUICK_PROMPTS = [
+  { cmd: '@Viktor Shemshiri @12 muaj 100 eur', desc: 'Krijon faturë të re për klientin' },
+  { cmd: 'Pagese @Viktor Shemshiri Kesh 100 Enndy', desc: 'Regjistron pagesë të marrë' },
+  { cmd: 'Shpenzim Server 56 PayPal Enndy', desc: 'Regjistron shpenzim të ri' },
+]
+
+const WELCOME_MSG = {
+  id: 'welcome',
+  type: 'system',
+  content: 'Përshëndetje! Jam AI asistenti juaj. Mund të më japni komandat në shqip.',
+  timestamp: new Date(),
+  examples: true,
+}
 
 export default function AIChat() {
   const appContext = useApp()
   const processorRef = useRef(null)
 
   const [input, setInput] = useState('')
-  const [messages, setMessages] = useState([
-    {
-      id: 'welcome',
-      type: 'system',
-      content: 'Përshëndetje! Jam AI asistenti juaj. Mund të më japni komandat në shqip.',
-      timestamp: new Date(),
-      examples: true,
-    },
-  ])
+  const [messages, setMessages] = useState([WELCOME_MSG])
   const [loading, setLoading] = useState(false)
   const [currentResult, setCurrentResult] = useState(null)
   const messagesEndRef = useRef(null)
+
+  const invoices = appContext?.invoices || []
+  const pendingInvoices = invoices.filter(i => i.status === 'pending')
+  const pendingValue = pendingInvoices.reduce((s, i) => s + (i.amount || 0), 0)
 
   // Initialize AI processor
   useEffect(() => {
@@ -242,62 +252,156 @@ export default function AIChat() {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-white dark:bg-gray-800">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-4 shadow-lg">
-        <h1 className="text-2xl font-bold">🤖 AI Asistenti</h1>
-        <p className="text-blue-100 text-sm">Komandat në shqip për menaxhimin e faturave</p>
-      </div>
-
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-4">
-        {messages.map(msg => (
-          <ChatMessage
-            key={msg.id}
-            message={msg}
-            onFollowUp={handleFollowUp}
-            onAccept={handleAcceptAction}
-          />
-        ))}
-
-        {loading && (
-          <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400">
-            <Loader size={16} className="animate-spin" />
-            Po përpunon komandën...
+    <div className="max-w-6xl mx-auto p-4 sm:p-6 space-y-5">
+      {/* Banner */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600 via-blue-500 to-amber-500 p-6 text-white shadow-lg shadow-blue-500/15">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div className="flex items-center gap-3.5">
+            <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center shrink-0 border border-white/30">
+              <Sparkles size={24} />
+            </div>
+            <div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h1 className="text-xl sm:text-2xl font-black tracking-tight">AI Asistenti A Flow</h1>
+                <span className="px-2.5 py-0.5 rounded-full bg-white/20 text-white text-[11px] font-bold border border-white/30">
+                  Motor Komandash Lokal
+                </span>
+              </div>
+              <p className="text-xs sm:text-sm text-blue-100 font-medium mt-0.5">
+                Komanda me @mention për krijim faturash, pagesash dhe shpenzimesh.
+              </p>
+            </div>
           </div>
-        )}
-
-        <div ref={messagesEndRef} />
+          <div className="flex items-center gap-2 bg-black/15 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/20">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="text-xs font-bold">Sistemi Aktiv</span>
+          </div>
+        </div>
       </div>
 
-      {/* Input */}
-      <form
-        onSubmit={handleSubmit}
-        className="border-t border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900/50"
-      >
-        <div className="flex gap-2">
-          <input
-            type="text"
-            value={input}
-            onChange={e => setInput(e.target.value)}
-            placeholder="P.sh: Krijo faturë për Viktor 12 muaj..."
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            disabled={loading}
-          />
-          <button
-            type="submit"
-            disabled={loading || !input.trim()}
-            className="bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
-          >
-            <Send size={18} />
-          </button>
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-5">
+        {/* Sidebar */}
+        <div className="lg:col-span-1 space-y-4">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200/90 dark:border-gray-700 shadow-sm p-4 space-y-3">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 flex items-center gap-1.5">
+              <Lightbulb size={14} className="text-amber-500" />
+              Komanda të Shpejta
+            </h3>
+            <div className="space-y-2">
+              {QUICK_PROMPTS.map((p, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setInput(p.cmd)}
+                  className="w-full text-left p-2.5 rounded-xl border border-gray-100 dark:border-gray-700 bg-gray-50/70 dark:bg-gray-900/40 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-200 dark:hover:border-blue-900/40 transition-all"
+                >
+                  <span className="font-mono text-[11px] font-bold text-gray-900 dark:text-white block truncate">{p.cmd}</span>
+                  <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-1">{p.desc}</p>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Business context */}
+          <div className="bg-gray-900 text-white rounded-2xl p-4 space-y-2">
+            <div className="flex items-center justify-between border-b border-gray-800 pb-2 mb-1">
+              <span className="text-xs font-bold text-gray-300 flex items-center gap-1.5">
+                <BarChart3 size={14} className="text-blue-400" />
+                Konteksti i të Dhënave
+              </span>
+              <span className="text-[10px] bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded-full font-bold">A Flow</span>
+            </div>
+            <div className="flex justify-between items-center text-xs text-gray-300">
+              <span>Gjithsej Fatura:</span>
+              <span className="font-bold font-mono text-white">{invoices.length}</span>
+            </div>
+            <div className="flex justify-between items-center text-xs text-gray-300">
+              <span>Fatura në Pritje:</span>
+              <span className="font-bold font-mono text-amber-400">{pendingInvoices.length}</span>
+            </div>
+            <div className="flex justify-between items-center text-xs text-gray-300">
+              <span>Vlera në Pritje:</span>
+              <span className="font-bold font-mono text-emerald-400">{appContext?.fmt ? appContext.fmt(pendingValue) : `€${pendingValue}`}</span>
+            </div>
+          </div>
         </div>
 
-        {/* Help text */}
-        <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
-          💡 Shembuj: "Arditi pagoi", "Shfaq faturat e papaguara", "Sa fitim kam këtë muaj"
+        {/* Chat */}
+        <div className="lg:col-span-3 flex flex-col h-[620px] bg-white dark:bg-gray-800 rounded-2xl border border-gray-200/90 dark:border-gray-700 shadow-sm overflow-hidden">
+          <div className="px-5 py-3.5 border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/50 flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-blue-500 text-white flex items-center justify-center">
+                <Bot size={16} />
+              </div>
+              <div>
+                <h3 className="text-xs font-bold text-gray-900 dark:text-white">Kanal Bisede — Komanda Shqip</h3>
+                <p className="text-[10px] text-gray-500 dark:text-gray-400">Kërkon konfirmim para se t'i ekzekutojë veprimet</p>
+              </div>
+            </div>
+            <button
+              onClick={() => setMessages([WELCOME_MSG])}
+              className="p-1.5 rounded-lg text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 text-xs font-medium flex items-center gap-1"
+              title="Pastro bisedën"
+            >
+              <RotateCcw size={13} />
+              <span className="hidden sm:inline">Pastro</span>
+            </button>
+          </div>
+
+          {/* Messages */}
+          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            {messages.map(msg => (
+              <ChatMessage
+                key={msg.id}
+                message={msg}
+                onFollowUp={handleFollowUp}
+                onAccept={handleAcceptAction}
+              />
+            ))}
+
+            {loading && (
+              <div className="flex items-center gap-2.5">
+                <div className="w-7 h-7 rounded-xl bg-blue-500 text-white flex items-center justify-center shrink-0 text-[10px] font-bold">AI</div>
+                <div className="flex items-center gap-2 bg-gray-100 dark:bg-gray-700 px-3 py-2 rounded-xl text-gray-500 dark:text-gray-400 text-xs">
+                  <Loader size={14} className="animate-spin" />
+                  Po përpunon komandën...
+                </div>
+              </div>
+            )}
+
+            <div ref={messagesEndRef} />
+          </div>
+
+          {/* Input */}
+          <form
+            onSubmit={handleSubmit}
+            className="border-t border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 p-3"
+          >
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={input}
+                onChange={e => setInput(e.target.value)}
+                placeholder='P.sh: "@Viktor Shemshiri @12 muaj 100 eur"'
+                className="flex-1 px-4 py-2.5 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 text-gray-900 dark:text-white placeholder-gray-400 outline-none focus:ring-2 focus:ring-blue-50 dark:focus:ring-blue-900/20 focus:border-blue-400"
+                disabled={loading}
+              />
+              <button
+                type="submit"
+                disabled={loading || !input.trim()}
+                className="px-4 py-2.5 rounded-xl bg-blue-500 hover:bg-blue-600 disabled:opacity-50 text-white font-bold text-xs flex items-center gap-1.5 transition-colors flex-shrink-0"
+              >
+                <span>Dërgo</span>
+                <Send size={14} />
+              </button>
+            </div>
+
+            {/* Help text */}
+            <div className="mt-2 text-[10px] text-gray-400 dark:text-gray-500">
+              💡 Shembuj: "@Klienti @Paketa Shuma" për faturë · "Pagese @Klienti Kesh Shuma Partneri" · "Shpenzim lloji shuma llogaria partneri"
+            </div>
+          </form>
         </div>
-      </form>
+      </div>
     </div>
   )
 }
@@ -309,40 +413,47 @@ function ChatMessage({ message, onFollowUp, onAccept }) {
   switch (message.type) {
     case 'user':
       return (
-        <div className="flex justify-end">
-          <div className="bg-blue-500 text-white px-4 py-2 rounded-lg max-w-xs">
+        <div className="flex gap-2.5 justify-end">
+          <div className="max-w-[74%] px-3.5 py-2.5 rounded-2xl rounded-tr-sm text-xs bg-blue-500 text-white font-medium">
             {message.content}
+          </div>
+          <div className="w-7 h-7 rounded-xl bg-gray-800 text-white flex items-center justify-center shrink-0 mt-0.5">
+            <User size={13} />
           </div>
         </div>
       )
 
     case 'system':
       return (
-        <div className="text-center text-gray-500 text-sm py-4 dark:text-gray-400">
-          {message.content}
-          {message.examples && (
-            <div className="mt-3 space-y-1 text-xs">
-              <div>📝 Provo:</div>
-              <div>"Krijo faturë për Viktor 12 muaj"</div>
-              <div>"Regjistro pagesë 100 euro"</div>
-              <div>"Shfaq faturat e papaguara"</div>
-            </div>
-          )}
+        <div className="flex gap-2.5">
+          <div className="w-7 h-7 rounded-xl bg-blue-500 text-white flex items-center justify-center shrink-0 mt-0.5 text-[10px] font-bold">AI</div>
+          <div className="max-w-[74%] px-3.5 py-2.5 rounded-2xl rounded-tl-sm text-xs bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200">
+            {message.content}
+            {message.examples && (
+              <div className="mt-3 space-y-1 text-[11px] font-mono text-gray-500 dark:text-gray-400">
+                <div className="font-sans font-semibold text-gray-600 dark:text-gray-300">📝 Provo:</div>
+                <div>"@Viktor Shemshiri @12 muaj 100 eur"</div>
+                <div>"Pagese @Viktor Kesh 100 Enndy"</div>
+                <div>"Shpenzim Server 56 PayPal Enndy"</div>
+              </div>
+            )}
+          </div>
         </div>
       )
 
     case 'question':
       return (
-        <div className="flex justify-start">
-          <div className="bg-blue-50 border border-blue-200 px-4 py-3 rounded-lg max-w-md">
+        <div className="flex gap-2.5">
+          <div className="w-7 h-7 rounded-xl bg-blue-500 text-white flex items-center justify-center shrink-0 mt-0.5 text-[10px] font-bold">AI</div>
+          <div className="max-w-[74%] px-3.5 py-2.5 rounded-2xl rounded-tl-sm bg-sky-50 dark:bg-sky-900/20 border border-sky-200 dark:border-sky-900/50">
             <div className="flex items-start gap-2">
-              <HelpCircle size={18} className="text-blue-600 flex-shrink-0 mt-0.5" />
-              <div>
-                <p className="text-blue-900 font-medium">{message.content}</p>
+              <HelpCircle size={16} className="text-sky-600 dark:text-sky-400 flex-shrink-0 mt-0.5" />
+              <div className="flex-1">
+                <p className="text-xs font-semibold text-sky-900 dark:text-sky-200">{message.content}</p>
                 <input
                   type="text"
                   placeholder="Përgjigja..."
-                  className="mt-2 w-full px-3 py-1 border border-blue-300 rounded text-sm"
+                  className="mt-2 w-full px-3 py-1.5 text-xs rounded-lg border border-sky-200 dark:border-sky-800 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:border-sky-500"
                   onKeyPress={e => {
                     if (e.key === 'Enter') {
                       onFollowUp(e.target.value)
@@ -358,16 +469,17 @@ function ChatMessage({ message, onFollowUp, onAccept }) {
 
     case 'error':
       return (
-        <div className="flex justify-start">
-          <div className="bg-red-50 border border-red-200 px-4 py-3 rounded-lg max-w-md">
+        <div className="flex gap-2.5">
+          <div className="w-7 h-7 rounded-xl bg-blue-500 text-white flex items-center justify-center shrink-0 mt-0.5 text-[10px] font-bold">AI</div>
+          <div className="max-w-[74%] px-3.5 py-2.5 rounded-2xl rounded-tl-sm bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900/50">
             <div className="flex items-start gap-2">
-              <AlertCircle size={18} className="text-red-600 flex-shrink-0 mt-0.5" />
+              <AlertCircle size={16} className="text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
               <div>
-                {message.title && <p className="text-red-900 font-medium">{message.title}</p>}
-                <p className="text-red-700 text-sm">{message.content}</p>
+                {message.title && <p className="text-xs font-bold text-red-900 dark:text-red-200">{message.title}</p>}
+                <p className="text-red-700 dark:text-red-300 text-xs">{message.content}</p>
                 {message.examples && (
-                  <div className="mt-2 text-xs text-red-600">
-                    <div>Shembuj:</div>
+                  <div className="mt-2 text-[11px] font-mono text-red-600 dark:text-red-400">
+                    <div className="font-sans font-semibold">Shembuj:</div>
                     {message.examples.map((ex, i) => <div key={i}>• {ex}</div>)}
                   </div>
                 )}
@@ -379,22 +491,23 @@ function ChatMessage({ message, onFollowUp, onAccept }) {
 
     case 'success':
       return (
-        <div className="flex justify-start">
-          <div className="bg-green-50 border border-green-200 px-4 py-3 rounded-lg max-w-md">
+        <div className="flex gap-2.5">
+          <div className="w-7 h-7 rounded-xl bg-blue-500 text-white flex items-center justify-center shrink-0 mt-0.5 text-[10px] font-bold">AI</div>
+          <div className="max-w-[74%] px-3.5 py-2.5 rounded-2xl rounded-tl-sm bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200/80 dark:border-emerald-900/50">
             <div className="flex items-start gap-2">
-              <CheckCircle size={18} className="text-green-600 flex-shrink-0 mt-0.5" />
+              <CheckCircle size={16} className="text-emerald-600 dark:text-emerald-400 flex-shrink-0 mt-0.5" />
               <div className="flex-1">
-                {message.title && <p className="text-green-900 font-medium">{message.title}</p>}
-                <p className="text-green-700 text-sm">{message.content}</p>
+                {message.title && <p className="text-xs font-bold text-emerald-900 dark:text-emerald-200">{message.title}</p>}
+                <p className="text-emerald-700 dark:text-emerald-300 text-xs">{message.content}</p>
                 {message.action && (
                   <div className="mt-2 flex gap-2">
                     <button
                       onClick={onAccept}
-                      className="px-3 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700"
+                      className="px-3 py-1.5 bg-emerald-600 text-white text-[11px] font-bold rounded-lg hover:bg-emerald-700"
                     >
                       ✓ Pranohe
                     </button>
-                    <button className="px-3 py-1 bg-gray-200 text-gray-700 text-xs rounded hover:bg-gray-300 dark:text-gray-200">
+                    <button className="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-[11px] font-bold rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600">
                       ✗ Anulo
                     </button>
                   </div>
@@ -407,8 +520,9 @@ function ChatMessage({ message, onFollowUp, onAccept }) {
 
     case 'executed':
       return (
-        <div className="flex justify-start">
-          <div className="bg-green-100 border border-green-300 px-4 py-2 rounded-lg text-green-700 text-sm">
+        <div className="flex gap-2.5">
+          <div className="w-7 h-7 rounded-xl bg-blue-500 text-white flex items-center justify-center shrink-0 mt-0.5 text-[10px] font-bold">AI</div>
+          <div className="max-w-[74%] px-3.5 py-2.5 rounded-2xl rounded-tl-sm bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 text-xs font-bold">
             {message.content}
           </div>
         </div>
