@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { Package, Plus, Search, Pencil, Trash2, X, ChevronUp, ChevronDown, Lock, Unlock } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import { Modal, FormGroup, EmptyState, Pagination } from '../components/UI'
@@ -308,7 +308,7 @@ export default function Items() {
   const masked = <span className="text-gray-300 font-mono text-xs tracking-widest select-none cursor-pointer" onClick={() => setShowPin(true)}>••••</span>
 
   // If in form mode, show only the form
-  if (isFormMode && pageMatch[1] !== 'delete') {
+  if (isFormMode && pageMatch[2] !== 'delete') {
     return (
       <div key={`item-form-${editItemId || 'create'}`}>
         <FormPageWrapper
@@ -338,13 +338,19 @@ export default function Items() {
   return (
     <div>
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 mb-6 border-b border-gray-200">
         <div>
-          <h2 className="text-xl font-bold text-gray-800">Produktet &amp; Shërbimet</h2>
-          <p className="text-sm text-gray-400 mt-0.5">{totalItems} artikuj aktiv</p>
+          <h2 className="text-xl font-black text-gray-900 flex items-center gap-2 tracking-tight">
+            <Package size={20} className="text-blue-500" />
+            Produktet &amp; Shërbimet
+          </h2>
+          <p className="text-xs text-gray-500 font-medium mt-0.5">{totalItems} artikuj aktiv</p>
         </div>
-        <button className="hidden sm:flex btn btn-primary btn-sm self-start sm:self-auto" onClick={openAdd}>
-          <Plus size={16} /> Shto produkt
+        <button
+          className="hidden sm:flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-500 text-white hover:bg-blue-600 transition-all active:scale-95 font-bold text-xs shadow-sm"
+          onClick={openAdd}
+        >
+          <Plus size={14} /> Shto produkt
         </button>
       </div>
 
@@ -356,56 +362,66 @@ export default function Items() {
         />
       )}
 
+      {/* Delete confirmation */}
+      {pageMatch[2] === 'delete' && editItem && (
+        <DeleteConfirm item={editItem} onClose={() => navigate('items')} />
+      )}
+
       {/* Stat mini-cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white rounded-xl border border-gray-100 px-5 py-4">
-          <p className="text-2xl font-bold text-gray-800">{totalItems}</p>
-          <p className="text-xs text-gray-400 mt-0.5 font-medium">Artikuj gjithsej</p>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-5">
+        <div className="bg-white rounded-2xl border border-gray-200/90 shadow-sm px-4 py-4">
+          <span className="text-3xl font-black font-mono tracking-tight text-gray-900 block">{totalItems}</span>
+          <p className="text-xs text-gray-500 mt-1 font-bold">Artikuj gjithsej</p>
         </div>
-        <div className="bg-white rounded-xl border border-gray-100 px-5 py-4">
-          <p className="text-2xl font-bold text-blue-500">{fmt(avgSale.toFixed(2))}</p>
-          <p className="text-xs text-gray-400 mt-0.5 font-medium">Çmimi mesatar shitje</p>
+        <div className="bg-white rounded-2xl border border-gray-200/90 shadow-sm px-4 py-4">
+          <span className="text-3xl font-black font-mono tracking-tight text-blue-600 block">{fmt(avgSale.toFixed(2))}</span>
+          <p className="text-xs text-gray-500 mt-1 font-bold">Çmimi mesatar shitje</p>
         </div>
         <div
-          className="bg-white rounded-xl border border-gray-100 px-5 py-4 cursor-pointer hover:border-gray-200 transition-colors"
+          className="bg-white rounded-2xl border border-gray-200/90 shadow-sm px-4 py-4 cursor-pointer hover:border-gray-300 transition-colors flex flex-col justify-between"
           onClick={() => !pinUnlocked && setShowPin(true)}
         >
-          {pinUnlocked
-            ? <p className="text-2xl font-bold text-emerald-600">{avgMargin.toFixed(1)}%</p>
-            : <p className="text-2xl font-bold text-gray-300 font-mono tracking-widest select-none">••••</p>
-          }
-          <p className="text-xs text-gray-400 mt-0.5 font-medium flex items-center gap-1">
+          <div className="flex items-center justify-between">
+            {pinUnlocked
+              ? <span className="text-2xl font-black font-mono tracking-tight text-emerald-600">{avgMargin.toFixed(1)}%</span>
+              : <span className="text-2xl font-black font-mono tracking-widest text-gray-300 select-none">••••</span>
+            }
+            {pinUnlocked
+              ? <Unlock size={16} className="text-emerald-400"/>
+              : <Lock size={16} className="text-gray-400"/>
+            }
+          </div>
+          <p className="text-xs text-gray-500 mt-1 font-bold flex items-center gap-1">
             Marzha mesatare
             {pinUnlocked
               ? <Unlock size={10} className="text-emerald-400"/>
-              : <Lock size={10} className="text-gray-300"/>
+              : <Lock size={10} className="text-gray-400"/>
             }
           </p>
         </div>
-        <div className="bg-white rounded-xl border border-gray-100 px-5 py-4">
-          <p className="text-2xl font-bold text-gray-800">{withVendor}</p>
-          <p className="text-xs text-gray-400 mt-0.5 font-medium">Me furnitor</p>
+        <div className="bg-white rounded-2xl border border-gray-200/90 shadow-sm px-4 py-4">
+          <span className="text-3xl font-black font-mono tracking-tight text-gray-900 block">{withVendor}</span>
+          <p className="text-xs text-gray-500 mt-1 font-bold">Me furnitor</p>
         </div>
       </div>
 
       {/* Kërkim */}
-      <div className="flex items-center gap-3 mb-4">
-        <div className="flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-3 py-2
-                        focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-50 transition-all flex-1 max-w-sm">
-          <Search size={14} className="text-gray-400 flex-shrink-0" />
+      <div className="flex items-center justify-between gap-3 bg-white p-3 rounded-2xl border border-gray-200/90 shadow-sm mb-5">
+        <div className="relative w-full sm:w-80">
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           <input
-            className="bg-transparent border-none outline-none text-sm text-gray-600 w-full placeholder-gray-400"
+            className="w-full pl-8 pr-8 py-1.5 text-xs rounded-xl border border-gray-200 bg-gray-50 text-gray-900 placeholder-gray-400 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-50"
             placeholder="Kërko produkt ose furnitor..."
             value={search}
             onChange={e => { setSearch(e.target.value); setPg(1) }}
           />
           {search && (
-            <button onClick={() => { setSearch(''); setPg(1) }} className="text-gray-300 hover:text-gray-500">
+            <button onClick={() => { setSearch(''); setPg(1) }} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
               <X size={13} />
             </button>
           )}
         </div>
-        <span className="text-xs text-gray-400">{filtered.length} rezultate</span>
+        <span className="text-xs font-semibold text-gray-400 hidden sm:inline flex-shrink-0">{filtered.length} rezultate</span>
       </div>
 
       {/* Tabela */}
@@ -421,12 +437,12 @@ export default function Items() {
           )}
         />
       ) : (
-        <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
+        <div className="bg-white rounded-2xl border border-gray-200/90 shadow-sm overflow-hidden">
           <div className="overflow-auto" style={{ maxHeight: 'calc(100vh - 300px)' }}>
           <table className="w-full text-sm">
             <thead className="sticky top-0 z-10">
-              <tr className="border-b border-gray-100 bg-gray-50">
-                <th className="text-left px-5 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wide">
+              <tr className="border-b border-gray-100 bg-gray-50/50">
+                <th className="text-left px-5 py-3 text-[10px] font-extrabold text-gray-400 uppercase tracking-wider">
                   <button
                     className="flex items-center gap-1 hover:text-gray-700 transition-colors"
                     onClick={() => toggleSort('name')}
@@ -434,7 +450,7 @@ export default function Items() {
                     Emri <SortIcon k="name" />
                   </button>
                 </th>
-                <th className="text-right px-5 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wide">
+                <th className="text-right px-5 py-3 text-[10px] font-extrabold text-gray-400 uppercase tracking-wider">
                   <button
                     className="flex items-center gap-1 hover:text-gray-700 transition-colors ml-auto"
                     onClick={() => toggleSort('salePrice')}
@@ -442,7 +458,7 @@ export default function Items() {
                     Çm. Shitjes <SortIcon k="salePrice" />
                   </button>
                 </th>
-                <th className="text-right px-5 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wide">
+                <th className="text-right px-5 py-3 text-[10px] font-extrabold text-gray-400 uppercase tracking-wider">
                   <div className="flex items-center justify-end gap-1.5">
                     {pinUnlocked && (
                       <button
@@ -454,7 +470,7 @@ export default function Items() {
                     )}
                     {!pinUnlocked && <span>Çm. Blerjes</span>}
                     <button
-                      className={`ml-1 p-0.5 rounded transition-colors ${pinUnlocked ? 'text-emerald-500 hover:text-emerald-600' : 'text-gray-300 hover:text-gray-500'}`}
+                      className={`ml-1 p-0.5 rounded transition-colors ${pinUnlocked ? 'text-emerald-500 hover:text-emerald-600' : 'text-gray-400 hover:text-gray-600'}`}
                       onClick={handleLockToggle}
                       title={pinUnlocked ? 'Mbyll' : 'Hap me PIN'}
                     >
@@ -462,19 +478,19 @@ export default function Items() {
                     </button>
                   </div>
                 </th>
-                <th className="text-right px-5 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wide hidden md:table-cell">
+                <th className="text-right px-5 py-3 text-[10px] font-extrabold text-gray-400 uppercase tracking-wider hidden md:table-cell">
                   <div className="flex items-center justify-end gap-1">
                     Marzha
                     {pinUnlocked
                       ? <Unlock size={10} className="text-emerald-400 ml-0.5"/>
-                      : <Lock size={10} className="text-gray-300 ml-0.5"/>
+                      : <Lock size={10} className="text-gray-400 ml-0.5"/>
                     }
                   </div>
                 </th>
-                <th className="text-left px-5 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wide hidden lg:table-cell">
+                <th className="text-left px-5 py-3 text-[10px] font-extrabold text-gray-400 uppercase tracking-wider hidden lg:table-cell">
                   Llogaria Kontabel
                 </th>
-                <th className="text-left px-5 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wide hidden md:table-cell">
+                <th className="text-left px-5 py-3 text-[10px] font-extrabold text-gray-400 uppercase tracking-wider hidden md:table-cell">
                   Furnitori
                 </th>
                 <th className="px-5 py-3 w-20" />
@@ -488,16 +504,16 @@ export default function Items() {
                 return (
                   <tr
                     key={item.id}
-                    className="hover:bg-blue-50/30 transition-colors group"
+                    className="hover:bg-gray-50/80 transition-colors"
                   >
                     {/* Emri */}
                     <td className="px-5 py-3.5">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
-                          <Package size={15} className="text-blue-500" />
+                        <div className="w-7 h-7 rounded-xl bg-blue-50 text-blue-500 flex items-center justify-center flex-shrink-0">
+                          <Package size={14} />
                         </div>
                         <div>
-                          <p className="font-semibold text-gray-800 text-sm">{item.name}</p>
+                          <p className="font-bold text-gray-900 text-sm">{item.name}</p>
                           <p className="text-xs text-gray-400 lg:hidden">{accountLabel(item.account)}</p>
                         </div>
                       </div>
@@ -505,14 +521,14 @@ export default function Items() {
 
                     {/* Çmimi shitjes */}
                     <td className="px-5 py-3.5 text-right">
-                      <span className="font-bold text-gray-800">{fmt(item.salePrice)}</span>
+                      <span className="font-mono font-bold text-gray-900">{fmt(item.salePrice)}</span>
                     </td>
 
                     {/* Çmimi blerjes */}
                     <td className="px-5 py-3.5 text-right">
                       {pinUnlocked
                         ? item.purchasePrice > 0
-                          ? <span className="text-gray-600">{fmt(item.purchasePrice)}</span>
+                          ? <span className="font-mono text-gray-600">{fmt(item.purchasePrice)}</span>
                           : <span className="text-gray-300">—</span>
                         : <span onClick={() => setShowPin(true)}>{masked}</span>
                       }
@@ -524,7 +540,7 @@ export default function Items() {
                         ? margin !== null
                           ? <span className={`text-xs font-bold px-2 py-1 rounded-full ${
                               Number(margin) >= 30 ? 'bg-emerald-50 text-emerald-600'
-                              : Number(margin) >= 10 ? 'bg-yellow-50 text-yellow-600'
+                              : Number(margin) >= 10 ? 'bg-amber-50 text-amber-600'
                               : 'bg-blue-50 text-blue-500'
                             }`}>{margin}%</span>
                           : <span className="text-gray-300 text-xs">—</span>
@@ -540,23 +556,23 @@ export default function Items() {
                     {/* Furnitori */}
                     <td className="px-5 py-3.5 hidden md:table-cell">
                       {item.vendor
-                        ? <span className="text-xs text-gray-600 font-medium">{item.vendor}</span>
+                        ? <span className="text-xs text-gray-700 font-semibold">{item.vendor}</span>
                         : <span className="text-gray-300 text-xs">—</span>
                       }
                     </td>
 
                     {/* Veprimet */}
                     <td className="px-5 py-3.5">
-                      <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="flex items-center justify-end gap-1.5">
                         <button
-                          className="icon-btn text-blue-500 hover:bg-blue-50"
+                          className="p-1.5 rounded-lg bg-gray-100 text-gray-500 hover:bg-blue-50 hover:text-blue-600 transition-colors"
                           title="Edito"
                           onClick={() => openEdit(item)}
                         >
                           <Pencil size={14} />
                         </button>
                         <button
-                          className="icon-btn text-blue-400 hover:bg-blue-50"
+                          className="p-1.5 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors"
                           title="Fshi"
                           onClick={() => openDelete(item)}
                         >
@@ -585,5 +601,3 @@ export default function Items() {
     </div>
   )
 }
-
-

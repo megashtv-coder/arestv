@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react'
-import { Plus, Trash2, Pencil, X, Calendar, User, CheckCircle2, Circle, ClipboardList } from 'lucide-react'
+import { Plus, Trash2, Pencil, X, Calendar, CheckCircle2, ListTodo, Search } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import { formatDate } from '../utils/dateFormat'
 import { supabase } from '../lib/supabase'
@@ -16,8 +16,9 @@ function TaskModal({ task, onClose, onSave, customers }) {
   const [customerSearch, setCustomerSearch] = useState('')
   const [showCustomerDropdown, setShowCustomerDropdown] = useState(false)
 
-  const filteredCustomers = (customers || []).filter(c =>
-    c.name.toLowerCase().includes(customerSearch.toLowerCase())
+  const filteredCustomers = useMemo(() =>
+    (customers || []).filter(c => c.name.toLowerCase().includes(customerSearch.toLowerCase())),
+    [customers, customerSearch]
   )
 
   const handleSelectCustomer = (customerName) => {
@@ -35,34 +36,39 @@ function TaskModal({ task, onClose, onSave, customers }) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
-          <h2 className="font-bold text-gray-800 text-base">{task ? 'Ndrysho Detyrën' : 'Detyrë e Re'}</h2>
-          <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors">
-            <X size={16} />
-          </button>
+    <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto dark:bg-gray-800">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 sticky top-0 bg-white dark:border-gray-700 dark:bg-gray-800">
+          <h2 className="font-bold text-gray-800 dark:text-gray-100">{task ? 'Ndrysho Detyrën' : 'Detyrë e Re'}</h2>
+          <button onClick={onClose} className="icon-btn"><X size={18} /></button>
         </div>
 
         <div className="p-6 space-y-4">
           <div className="relative">
-            <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide">Klienti</label>
+            <label className="block text-xs font-bold text-gray-600 mb-2 dark:text-gray-300">Emri i Klientit</label>
             <input
               type="text"
               placeholder="Kërko klient..."
               value={customerSearch || formData.customer}
-              onChange={(e) => { setCustomerSearch(e.target.value); setShowCustomerDropdown(true) }}
+              onChange={(e) => {
+                setCustomerSearch(e.target.value)
+                setShowCustomerDropdown(true)
+              }}
               onFocus={() => setShowCustomerDropdown(true)}
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-700"
             />
+
             {showCustomerDropdown && (
-              <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg z-10 max-h-48 overflow-y-auto">
+              <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-10 max-h-48 overflow-y-auto dark:bg-gray-800 dark:border-gray-700">
                 {filteredCustomers.length === 0 ? (
-                  <div className="px-4 py-3 text-xs text-gray-400">Nuk ka klientë</div>
+                  <div className="px-3 py-2 text-xs text-gray-400 dark:text-gray-500">Nuk ka klientë</div>
                 ) : (
                   filteredCustomers.map((c, idx) => (
-                    <button key={idx} onClick={() => handleSelectCustomer(c.name)}
-                      className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 border-b border-gray-50 last:border-b-0 transition-colors">
+                    <button
+                      key={idx}
+                      onClick={() => handleSelectCustomer(c.name)}
+                      className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-blue-50 border-b border-gray-100 last:border-b-0 transition-colors dark:text-gray-200 dark:border-gray-700"
+                    >
                       {c.name}
                     </button>
                   ))
@@ -72,33 +78,37 @@ function TaskModal({ task, onClose, onSave, customers }) {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide">Data e Kujtesës</label>
+            <label className="block text-xs font-bold text-gray-600 mb-2 dark:text-gray-300">Data e Kujtesës</label>
             <input
               type="date"
               value={formData.reminderDate}
               onChange={(e) => setFormData({ ...formData, reminderDate: e.target.value })}
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-700"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide">Përshkrimi</label>
+            <label className="block text-xs font-bold text-gray-600 mb-2 dark:text-gray-300">Përshkrimi i Punës</label>
             <textarea
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               placeholder="Përshkruaj detyrën..."
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-              rows="4"
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none dark:border-gray-700"
+              rows="6"
             />
           </div>
 
-          <div className="flex gap-2 pt-2">
-            <button onClick={handleSubmit}
-              className="flex-1 px-4 py-2.5 bg-blue-500 hover:bg-blue-600 text-white text-sm font-bold rounded-xl transition-colors">
+          <div className="flex gap-2 pt-4">
+            <button
+              onClick={handleSubmit}
+              className="flex-1 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-lg transition-colors"
+            >
               Ruaj
             </button>
-            <button onClick={onClose}
-              className="flex-1 px-4 py-2.5 border border-gray-200 text-gray-600 text-sm font-semibold rounded-xl hover:bg-gray-50 transition-colors">
+            <button
+              onClick={onClose}
+              className="flex-1 px-4 py-2 border border-gray-200 text-gray-600 font-bold rounded-lg hover:bg-gray-50 transition-colors dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-900/50"
+            >
               Anulo
             </button>
           </div>
@@ -108,71 +118,87 @@ function TaskModal({ task, onClose, onSave, customers }) {
   )
 }
 
-function TaskCard({ task, onEdit, onDelete, onToggle }) {
+function TaskCard({ task, customers, onEdit, onDelete, onToggle }) {
   const today = new Date().toISOString().slice(0, 10)
   const isOverdue = task.reminderDate < today && !task.completed
-  const isToday   = task.reminderDate === today && !task.completed
+  const isToday = task.reminderDate === today
 
-  const statusBadge = task.completed
-    ? { label: 'Kompletuar', cls: 'bg-emerald-50 text-emerald-600' }
-    : isOverdue
-    ? { label: 'Vonuar',     cls: 'bg-red-50 text-red-500' }
-    : isToday
-    ? { label: 'Sot',        cls: 'bg-orange-50 text-orange-500' }
-    : { label: 'Ardhshme',   cls: 'bg-blue-50 text-blue-500' }
+  let statusBadge, statusColor, railColor
+  if (task.completed) {
+    statusBadge = 'Kompletuar'
+    statusColor = 'bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300'
+    railColor = 'bg-emerald-500'
+  } else if (isOverdue) {
+    statusBadge = 'Vonuar'
+    statusColor = 'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300'
+    railColor = 'bg-blue-500'
+  } else if (isToday) {
+    statusBadge = 'Sot'
+    statusColor = 'bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300'
+    railColor = 'bg-amber-500'
+  } else {
+    statusBadge = 'Ardhshme'
+    statusColor = 'bg-sky-100 dark:bg-sky-900/50 text-sky-700 dark:text-sky-300'
+    railColor = 'bg-sky-500'
+  }
 
   return (
-    <div className={`bg-white rounded-2xl border transition-all duration-150 hover:shadow-md flex flex-col ${
-      task.completed  ? 'border-gray-100 opacity-60'
-      : isOverdue     ? 'border-red-200'
-      : isToday       ? 'border-orange-200'
-      : 'border-gray-100 hover:border-gray-200'
+    <div className={`relative bg-white dark:bg-gray-800 rounded-2xl border border-gray-200/90 dark:border-gray-700 shadow-sm hover:shadow-md transition-all flex flex-col justify-between overflow-hidden p-4 ${
+      task.completed ? 'opacity-60' : ''
     }`}>
-      {/* Card header */}
-      <div className="px-4 pt-4 pb-3 flex items-start justify-between gap-2">
-        <div className="flex items-start gap-2.5 flex-1 min-w-0">
-          <button onClick={() => onToggle(task.id)}
-            className="mt-0.5 flex-shrink-0 text-gray-300 hover:text-blue-500 transition-colors">
-            {task.completed
-              ? <CheckCircle2 size={18} className="text-emerald-500" />
-              : <Circle size={18} />}
-          </button>
-          <div className="flex-1 min-w-0">
-            <p className={`text-sm font-bold leading-tight truncate ${task.completed ? 'line-through text-gray-400' : 'text-gray-800'}`}>
-              {task.customer}
-            </p>
-            <span className={`inline-block mt-1 text-[10px] font-bold px-2 py-0.5 rounded-full ${statusBadge.cls}`}>
-              {statusBadge.label}
-            </span>
-          </div>
-        </div>
-        <div className="flex items-center gap-0.5 flex-shrink-0">
-          <button onClick={() => onEdit(task)}
-            className="w-7 h-7 flex items-center justify-center rounded-lg text-gray-300 hover:text-blue-500 hover:bg-blue-50 transition-colors">
-            <Pencil size={13} />
-          </button>
-          <button onClick={() => onDelete(task.id)}
-            className="w-7 h-7 flex items-center justify-center rounded-lg text-gray-300 hover:text-red-500 hover:bg-red-50 transition-colors">
-            <Trash2 size={13} />
-          </button>
-        </div>
-      </div>
+      <div className={`absolute left-0 top-0 bottom-0 w-1 ${railColor}`} />
 
-      {/* Description */}
-      <div className="px-4 pb-3 flex-1">
-        <p className={`text-xs leading-relaxed ${task.completed ? 'line-through text-gray-300' : 'text-gray-500'}`}>
+      <div>
+        <div className="flex items-start justify-between gap-2 mb-1 pl-1">
+          <p className={`text-sm font-bold truncate ${
+            task.completed ? 'line-through text-gray-400 dark:text-gray-500' : 'text-gray-900 dark:text-white'
+          }`}>
+            {task.customer}
+          </p>
+          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0 ${statusColor}`}>
+            {statusBadge}
+          </span>
+        </div>
+        <p className="text-xs text-gray-500 dark:text-gray-400 pl-1 mb-3 line-clamp-2 min-h-[32px]">
           {task.description}
         </p>
       </div>
 
-      {/* Footer */}
-      <div className={`px-4 py-2.5 border-t flex items-center gap-1.5 rounded-b-2xl ${
-        isOverdue ? 'border-red-100 bg-red-50/50' : isToday ? 'border-orange-100 bg-orange-50/50' : 'border-gray-50 bg-gray-50/50'
-      }`}>
-        <Calendar size={12} className={isOverdue ? 'text-red-400' : isToday ? 'text-orange-400' : 'text-gray-400'} />
-        <span className={`text-[11px] font-semibold ${isOverdue ? 'text-red-500' : isToday ? 'text-orange-500' : 'text-gray-400'}`}>
-          {formatDate(task.reminderDate)}
-        </span>
+      <div className="pt-3 border-t border-gray-100 dark:border-gray-700/80 pl-1 space-y-2.5">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-1 font-mono text-[11px] text-gray-400 dark:text-gray-500">
+            <Calendar size={13} />
+            <span>{formatDate(task.reminderDate)}</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => onEdit(task)}
+              className="p-1 rounded-lg text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+              title="Ndrysho"
+            >
+              <Pencil size={14} />
+            </button>
+            <button
+              onClick={() => onDelete(task.id)}
+              className="p-1 rounded-lg text-gray-400 dark:text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors"
+              title="Fshi"
+            >
+              <Trash2 size={14} />
+            </button>
+          </div>
+        </div>
+
+        <button
+          onClick={() => onToggle(task.id)}
+          className={`w-full flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-[11px] font-extrabold transition-colors ${
+            task.completed
+              ? 'bg-emerald-500 text-white hover:opacity-90'
+              : 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border border-emerald-100 dark:border-emerald-800/50 hover:bg-emerald-100 dark:hover:bg-emerald-900/50'
+          }`}
+          title="Shëno si i plotësuar"
+        >
+          {task.completed ? <><CheckCircle2 size={13}/> Kryer ✓</> : 'Done ✅'}
+        </button>
       </div>
     </div>
   )
@@ -182,11 +208,12 @@ export default function Tasks() {
   const appContext = useApp() || {}
   const { customers = [], showToast, logActivity, currentOrg } = appContext
 
-  const [tasks, setTasks]               = useState([])
-  const [showModal, setShowModal]       = useState(false)
-  const [editingTask, setEditingTask]   = useState(null)
+  const [tasks, setTasks] = useState([])
+  const [showModal, setShowModal] = useState(false)
+  const [editingTask, setEditingTask] = useState(null)
   const [activeFilter, setActiveFilter] = useState('all')
-  const [loading, setLoading]           = useState(true)
+  const [loading, setLoading] = useState(true)
+  const [search, setSearch] = useState('')
 
   useEffect(() => { loadTasks() }, [currentOrg?.id])
 
@@ -229,6 +256,16 @@ export default function Tasks() {
     } catch { return false }
   }
 
+  const handleAddTask = () => {
+    setEditingTask(null)
+    setShowModal(true)
+  }
+
+  const handleEditTask = (task) => {
+    setEditingTask(task)
+    setShowModal(true)
+  }
+
   const handleSaveTask = async (formData) => {
     try {
       const taskWithOrg = { ...formData, orgId: currentOrg?.id || 'default', createdAt: formData.createdAt || new Date().toISOString() }
@@ -258,6 +295,7 @@ export default function Tasks() {
       const deleted = await deleteTaskFromSupabase(taskId)
       if (deleted) {
         setTasks(tasks.filter(t => t.id !== taskId))
+        if (logActivity) logActivity(`Fshi detyrën: ${task.customer}`, 'Detyrat')
         if (showToast) showToast('Detyra u fshi')
       }
     }
@@ -272,124 +310,177 @@ export default function Tasks() {
   }
 
   const today = new Date().toISOString().slice(0, 10)
-
-  const stats = useMemo(() => ({
-    total:     tasks.length,
-    active:    tasks.filter(t => !t.completed).length,
-    done:      tasks.filter(t => t.completed).length,
-    overdue:   tasks.filter(t => !t.completed && t.reminderDate < today).length,
-  }), [tasks])
+  const totalTasks = tasks.length
+  const activeTasks = tasks.filter(t => !t.completed).length
+  const completedTasks = tasks.filter(t => t.completed).length
+  const overdueTasks = tasks.filter(t => t.reminderDate < today && !t.completed).length
 
   const filteredTasks = useMemo(() => {
     let result = tasks
-    if (activeFilter === 'active')   result = result.filter(t => !t.completed)
-    if (activeFilter === 'done')     result = result.filter(t =>  t.completed)
-    if (activeFilter === 'overdue')  result = result.filter(t => !t.completed && t.reminderDate < today)
-    return result.sort((a, b) => {
-      const aOver = a.reminderDate < today && !a.completed
-      const bOver = b.reminderDate < today && !b.completed
-      const aToday = a.reminderDate === today && !a.completed
-      const bToday = b.reminderDate === today && !b.completed
-      if (aOver && !bOver) return -1
-      if (!aOver && bOver) return 1
-      if (aToday && !bToday) return -1
-      if (!aToday && bToday) return 1
-      return new Date(a.reminderDate) - new Date(b.reminderDate)
-    })
-  }, [tasks, activeFilter])
+    if (activeFilter === 'active') {
+      result = result.filter(t => !t.completed)
+    } else if (activeFilter === 'done') {
+      result = result.filter(t => t.completed)
+    } else if (activeFilter === 'overdue') {
+      result = result.filter(t => t.reminderDate < today && !t.completed)
+    }
 
-  const filters = [
-    { key: 'all',    label: 'Të gjitha', count: stats.total },
-    { key: 'active', label: 'Aktive',    count: stats.active },
-    { key: 'done',   label: 'Kryera',    count: stats.done },
-    { key: 'overdue',label: 'Vonuara',   count: stats.overdue },
+    const q = search.trim().toLowerCase()
+    if (q) {
+      result = result.filter(t =>
+        (t.customer || '').toLowerCase().includes(q) ||
+        (t.description || '').toLowerCase().includes(q)
+      )
+    }
+
+    return [...result].sort((a, b) => {
+      const aIsOverdue = a.reminderDate < today && !a.completed
+      const bIsOverdue = b.reminderDate < today && !b.completed
+      const aIsToday = a.reminderDate === today && !a.completed
+      const bIsToday = b.reminderDate === today && !b.completed
+
+      if (aIsOverdue && !bIsOverdue) return -1
+      if (!aIsOverdue && bIsOverdue) return 1
+      if (aIsToday && !bIsToday) return -1
+      if (!aIsToday && bIsToday) return 1
+      return new Date(a.reminderDate).getTime() - new Date(b.reminderDate).getTime()
+    })
+  }, [tasks, activeFilter, search])
+
+  const filterOptions = [
+    { key: 'all', label: 'Të gjitha', count: totalTasks },
+    { key: 'active', label: 'Aktive', count: activeTasks },
+    { key: 'done', label: 'Kryera', count: completedTasks },
+    { key: 'overdue', label: 'Vonuara', count: overdueTasks },
   ]
 
   return (
-    <div className="space-y-5">
-
-      {/* ── Header ── */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-bold text-gray-800">Detyrat</h1>
-          <p className="text-xs text-gray-400 mt-0.5">{stats.active} aktive · {stats.done} kryera{stats.overdue > 0 ? ` · ${stats.overdue} vonuara` : ''}</p>
-        </div>
-        <button
-          onClick={() => { setEditingTask(null); setShowModal(true) }}
-          className="w-9 h-9 flex items-center justify-center bg-blue-500 hover:bg-blue-600 text-white rounded-xl shadow-sm shadow-blue-200 transition-all hover:scale-105 active:scale-95 text-lg font-bold"
-        >
-          +
-        </button>
-      </div>
-
-      {/* ── Stats strip ── */}
-      <div className="grid grid-cols-4 gap-3">
-        {[
-          { label: 'Total',    value: stats.total,   color: 'text-gray-700',   bg: 'bg-gray-50'    },
-          { label: 'Aktive',   value: stats.active,  color: 'text-blue-600',   bg: 'bg-blue-50'    },
-          { label: 'Kryera',   value: stats.done,    color: 'text-emerald-600',bg: 'bg-emerald-50' },
-          { label: 'Vonuara',  value: stats.overdue, color: 'text-red-500',    bg: 'bg-red-50'     },
-        ].map(s => (
-          <div key={s.label} className={`${s.bg} rounded-xl px-3 py-2.5 text-center`}>
-            <p className={`text-lg font-bold ${s.color}`}>{s.value}</p>
-            <p className="text-[10px] text-gray-400 font-medium">{s.label}</p>
+    <div className="h-full flex flex-col overflow-hidden bg-gray-50 dark:bg-gray-900/50">
+      {/* Header */}
+      <div className="px-4 sm:px-6 py-5 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-500 flex items-center justify-center flex-shrink-0">
+              <ListTodo size={20} />
+            </div>
+            <div>
+              <h1 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">Detyrat</h1>
+              <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">Menaxhimi i detyrave dhe rikujtimeve për abonimet</p>
+            </div>
           </div>
-        ))}
-      </div>
-
-      {/* ── Filter tabs ── */}
-      <div className="flex gap-1.5">
-        {filters.map(f => (
-          <button key={f.key} onClick={() => setActiveFilter(f.key)}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
-              activeFilter === f.key
-                ? 'bg-blue-500 text-white shadow-sm'
-                : 'bg-white border border-gray-100 text-gray-500 hover:bg-gray-50'
-            }`}>
-            {f.label}
-            {f.count > 0 && <span className={`ml-1 ${activeFilter === f.key ? 'opacity-75' : 'text-gray-400'}`}>({f.count})</span>}
+          <button
+            onClick={handleAddTask}
+            className="hidden sm:flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-500 hover:bg-blue-600 text-white font-bold text-xs shadow-sm transition-all active:scale-95"
+            title="Detyrë e re"
+          >
+            <Plus size={14} />
+            <span>Shto Detyrë</span>
           </button>
-        ))}
+          <button
+            onClick={handleAddTask}
+            className="sm:hidden w-11 h-11 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-full transition-all shadow-md flex items-center justify-center"
+            title="Detyrë e re"
+          >
+            <Plus size={22} />
+          </button>
+        </div>
+
+        {/* Stats Strip */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="bg-sky-50 dark:bg-sky-900/20 border border-sky-100 dark:border-sky-900/40 rounded-2xl p-3">
+            <p className="text-[11px] font-bold text-sky-700 dark:text-sky-300 mb-0.5">Total</p>
+            <p className="text-2xl font-black font-mono text-sky-700 dark:text-sky-300 tracking-tight">{totalTasks}</p>
+          </div>
+          <div className="bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-900/40 rounded-2xl p-3">
+            <p className="text-[11px] font-bold text-emerald-700 dark:text-emerald-300 mb-0.5">Aktive</p>
+            <p className="text-2xl font-black font-mono text-emerald-700 dark:text-emerald-300 tracking-tight">{activeTasks}</p>
+          </div>
+          <div className="bg-emerald-50/60 dark:bg-emerald-900/10 border border-emerald-100 dark:border-emerald-900/30 rounded-2xl p-3">
+            <p className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 mb-0.5">Kryera</p>
+            <p className="text-2xl font-black font-mono text-emerald-600 dark:text-emerald-400 tracking-tight">{completedTasks}</p>
+          </div>
+          <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-900/40 rounded-2xl p-3">
+            <p className="text-[11px] font-bold text-blue-700 dark:text-blue-300 mb-0.5">Vonuara</p>
+            <p className="text-2xl font-black font-mono text-blue-700 dark:text-blue-300 tracking-tight">{overdueTasks}</p>
+          </div>
+        </div>
       </div>
 
-      {/* ── Content ── */}
-      {loading ? (
-        <div className="flex items-center justify-center py-20 text-gray-300">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-2 border-blue-200 border-t-blue-500 mx-auto mb-3" />
-            <p className="text-sm">Duke ngarkuar...</p>
-          </div>
-        </div>
-      ) : filteredTasks.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 text-center">
-          <div className="w-14 h-14 bg-gray-100 rounded-2xl flex items-center justify-center mb-4">
-            <ClipboardList size={24} className="text-gray-300" />
-          </div>
-          <p className="text-sm font-semibold text-gray-400">Nuk ka detyra</p>
-          <p className="text-xs text-gray-300 mt-1">
-            {activeFilter !== 'all' ? 'Provo filtrin tjetër' : 'Krijo detyrën e parë'}
-          </p>
-          {activeFilter === 'all' && (
-            <button onClick={() => { setEditingTask(null); setShowModal(true) }}
-              className="mt-4 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold rounded-xl transition-colors">
-              + Detyrë e re
+      {/* Filter Tabs + Search */}
+      <div className="px-4 sm:px-6 py-2.5 bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2">
+        <div className="flex gap-1.5 overflow-x-auto">
+          {filterOptions.map(filter => (
+            <button
+              key={filter.key}
+              onClick={() => setActiveFilter(filter.key)}
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-colors flex-shrink-0 whitespace-nowrap ${
+                activeFilter === filter.key
+                  ? 'bg-blue-500 text-white shadow-sm'
+                  : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
+              }`}
+            >
+              {filter.label} ({filter.count})
             </button>
-          )}
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {filteredTasks.map(task => (
-            <TaskCard
-              key={task.id}
-              task={task}
-              customers={customers}
-              onEdit={(t) => { setEditingTask(t); setShowModal(true) }}
-              onDelete={handleDeleteTask}
-              onToggle={handleToggleTask}
-            />
           ))}
         </div>
-      )}
+
+        <div className="relative w-full sm:w-64 flex-shrink-0">
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
+          <input
+            type="text"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            placeholder="Kërko detyrë..."
+            className="w-full pl-8 pr-3 py-1.5 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 text-gray-900 dark:text-white placeholder-gray-400 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-50 dark:focus:ring-blue-900/20"
+          />
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+        {loading ? (
+          <div className="flex items-center justify-center h-full">
+            <div className="flex flex-col items-center gap-3">
+              <div className="relative w-12 h-12">
+                <div className="absolute inset-0 rounded-full border-4 border-gray-200 dark:border-gray-700" />
+                <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-blue-500 animate-spin" />
+              </div>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Po ngarkon detyrat...</p>
+            </div>
+          </div>
+        ) : filteredTasks.length === 0 ? (
+          <div className="flex flex-col items-center justify-center h-full text-center">
+            <div className="w-20 h-20 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-4">
+              <ListTodo size={40} className="text-gray-400 dark:text-gray-500" />
+            </div>
+            <p className="text-gray-600 font-semibold mb-1 dark:text-gray-300">Nuk ka detyra</p>
+            <p className="text-sm text-gray-400 mb-6 dark:text-gray-500">
+              {search ? 'Provo kërkim tjetër.' : activeFilter === 'done' ? 'Nuk keni detyrë të përfunduar.' : activeFilter === 'overdue' ? 'Nuk keni detyrë vonuar. 🎉' : 'Krijo detyrën e parë tënde'}
+            </p>
+            {activeFilter === 'all' && !search && (
+              <button
+                onClick={handleAddTask}
+                className="px-5 py-2.5 bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold rounded-lg transition-colors shadow-sm hover:shadow-md"
+              >
+                + Detyrë e Re
+              </button>
+            )}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {filteredTasks.map(task => (
+              <TaskCard
+                key={task.id}
+                task={task}
+                customers={customers}
+                onEdit={handleEditTask}
+                onDelete={handleDeleteTask}
+                onToggle={handleToggleTask}
+              />
+            ))}
+          </div>
+        )}
+      </div>
 
       {showModal && (
         <TaskModal
