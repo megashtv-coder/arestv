@@ -89,6 +89,12 @@ export function AppProvider({ children }) {
   const [invoicesExportOpen, setInvoicesExportOpen] = useState(false)
   const [invoicesImportOpen, setInvoicesImportOpen] = useState(false)
 
+  /* ── Filteri i faqes Dashboard, i ngjitur te header-i global (vetëm kur page==='dashboard') ──
+     Vetë Dashboard.jsx mban llogaritjet e vartura nga filtri; këto janë flamujt e ndarë. ── */
+  const [dashboardMonth,  setDashboardMonth]  = useState(null) // null = krejt vitin
+  const [dashboardYear,   setDashboardYear]   = useState(() => new Date().getFullYear().toString())
+  const [dashboardHidden, setDashboardHidden] = useState(true)
+
   /* ── Organizations ── */
   const [organizations, setOrganizations] = useState(mockOrganizations)
 
@@ -718,6 +724,9 @@ export function AppProvider({ children }) {
       invoicesHidden,     setInvoicesHidden,
       invoicesExportOpen, setInvoicesExportOpen,
       invoicesImportOpen, setInvoicesImportOpen,
+      dashboardMonth,  setDashboardMonth,
+      dashboardYear,   setDashboardYear,
+      dashboardHidden, setDashboardHidden,
       users:           contextUsers,
       setUsers:        isTester ? setTUsers : wrappedSetUsers,
       currentUser,     setCurrentUser,

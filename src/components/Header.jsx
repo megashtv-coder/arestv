@@ -1,13 +1,15 @@
 import {
   Search, Bell, Moon, Sun, Menu, ChevronDown, Check, Plus, FileText, DollarSign,
-  Eye, EyeOff, Download, FileSpreadsheet, UserPlus, Package, CreditCard, Truck,
+  Eye, EyeOff, Download, FileSpreadsheet, UserPlus, Package, CreditCard, Truck, CalendarDays,
 } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import { currencies } from '../data/mockData'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import ColumnManagerButton from './ColumnManagerButton'
 import { INVOICE_TABLE_COLUMNS } from '../constants/invoiceColumns'
 import { SupplierModal } from './SupplierModal'
+
+const MONTH_FULL = ['Janar','Shkurt','Mars','Prill','Maj','Qershor','Korrik','Gusht','Shtator','Tetor','Nëntor','Dhjetor']
 
 const PAGE_TITLES = {
   dashboard:     'Dashboard',
@@ -26,11 +28,14 @@ const PAGE_TITLES = {
 export default function Header() {
   const {
     page, currency, setCurrency, darkMode, setDarkMode,
-    setSidebarOpen, invoices, customers, navigate, currentUser,
+    setSidebarOpen, invoices, payments, expenses, customers, navigate, currentUser,
     setModal, closeModal,
     invoicesHidden, setInvoicesHidden,
     invoicesExportOpen, setInvoicesExportOpen,
     invoicesImportOpen, setInvoicesImportOpen,
+    dashboardMonth, setDashboardMonth,
+    dashboardYear, setDashboardYear,
+    dashboardHidden, setDashboardHidden,
   } = useApp()
   const [curOpen, setCurOpen] = useState(false)
   const [notifOpen, setNotifOpen] = useState(false)
@@ -107,6 +112,15 @@ export default function Header() {
     ? currentUser.name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase()
     : 'AK'
 
+  // Vitet e disponueshme për filtrin e Dashboard-it — llogaritur këtu njësoj si në
+  // Dashboard.jsx (të dyja skedarët ndajnë vetëm gjendjen e filtrit, jo llogaritjen).
+  const actualCurrentYear = new Date().getFullYear().toString()
+  const dashboardAvailableYears = useMemo(() => {
+    const set = new Set([actualCurrentYear])
+    ;[...invoices, ...payments, ...expenses].forEach(x => { if (x.date) set.add(x.date.slice(0, 4)) })
+    return [...set].sort((a, b) => b.localeCompare(a))
+  }, [invoices, payments, expenses, actualCurrentYear])
+
   return (
     <header className="h-12 sm:h-14 bg-blue-50 dark:bg-gray-800 border-b border-blue-100 dark:border-gray-700 flex items-center px-3 sm:px-5 gap-2 sm:gap-4 sticky top-0 z-30 transition-colors">
       {/* Mobile menu */}
@@ -115,11 +129,54 @@ export default function Header() {
       </button>
 
       <div className="flex items-center gap-2 flex-1 min-w-0">
-        <img src="/aflow-logo.svg" alt="A Flow" className="w-6 h-6 sm:w-8 sm:h-8 flex-shrink-0" />
-        <h1 className="text-sm sm:text-base font-bold text-gray-800 dark:text-gray-100 truncate">
-          {PAGE_TITLES[page] || 'A Flow'}
-        </h1>
+        {page === 'dashboard' ? (
+          <div className="min-w-0">
+            <h1 className="text-sm sm:text-base font-bold text-gray-800 dark:text-gray-100 truncate">
+              Përshëndetje, {currentUser?.name?.split(' ')[0] || 'Mirë se erdhe'} 👋
+            </h1>
+            <p className="hidden sm:block text-[11px] text-gray-400 dark:text-gray-500 truncate">
+              {new Date().toLocaleDateString('sq-AL', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+            </p>
+          </div>
+        ) : (
+          <h1 className="text-sm sm:text-base font-bold text-gray-800 dark:text-gray-100 truncate">
+            {PAGE_TITLES[page] || 'A Flow'}
+          </h1>
+        )}
       </div>
+
+      {/* Filtri i periudhës së Dashboard-it — shfaqet vetëm kur page === 'dashboard' */}
+      {page === 'dashboard' && (
+        <div className="flex items-center gap-1 sm:gap-1.5 flex-shrink-0 pr-1 sm:pr-2 mr-0.5 border-r border-blue-200/70 dark:border-gray-700">
+          <div className="hidden sm:flex items-center gap-1.5 bg-white dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 rounded-lg px-2 py-1">
+            <CalendarDays size={13} className="text-gray-400 dark:text-gray-500 flex-shrink-0" />
+            <select
+              value={dashboardMonth ?? 'all'}
+              onChange={e => setDashboardMonth(e.target.value === 'all' ? null : parseInt(e.target.value))}
+              className="bg-transparent border-none outline-none text-xs font-semibold text-gray-700 dark:text-gray-200 cursor-pointer"
+            >
+              <option value="all">Krejt vitin</option>
+              {MONTH_FULL.map((m, i) => <option key={i} value={i}>{m}</option>)}
+            </select>
+          </div>
+          <div className="hidden sm:flex items-center gap-1.5 bg-white dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 rounded-lg px-2 py-1">
+            <select
+              value={dashboardYear}
+              onChange={e => setDashboardYear(e.target.value)}
+              className="bg-transparent border-none outline-none text-xs font-semibold text-gray-700 dark:text-gray-200 cursor-pointer"
+            >
+              {dashboardAvailableYears.map(y => <option key={y} value={y}>{y}</option>)}
+            </select>
+          </div>
+          <button
+            onClick={() => setDashboardHidden(h => !h)}
+            title={dashboardHidden ? 'Shfaq të dhënat' : 'Fshih të dhënat'}
+            className="icon-btn p-1.5 sm:p-2"
+          >
+            {dashboardHidden ? <EyeOff size={16} /> : <Eye size={16} />}
+          </button>
+        </div>
+      )}
 
       {/* Search - hidden on mobile */}
       <div className="hidden lg:flex items-center gap-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2 w-48 focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-50 transition-all flex-shrink-0">
