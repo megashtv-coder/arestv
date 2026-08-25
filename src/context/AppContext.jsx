@@ -81,6 +81,14 @@ export function AppProvider({ children }) {
   const [sidebarOpen,      setSidebarOpen]      = useState(false)
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => localStorage.getItem('arestv_sidebar') === 'true')
 
+  /* ── Veprimet e faqes Faturat, të ngjitura te header-i global (vetëm kur page==='invoices') ──
+     Vetë Invoices.jsx mban logjikën/handler-at; këto janë thjesht flamujt e ndarë që header-i
+     dhe faqja të bien dakord mbi gjendjen (fsheh shumat, eksporto, importo). Nëse edhe faqe të
+     tjera marrin të njëjtin trajtim më vonë, kjo mund të bëhet e përgjithshme (keyed by page). */
+  const [invoicesHidden,     setInvoicesHidden]     = useState(true)
+  const [invoicesExportOpen, setInvoicesExportOpen] = useState(false)
+  const [invoicesImportOpen, setInvoicesImportOpen] = useState(false)
+
   /* ── Organizations ── */
   const [organizations, setOrganizations] = useState(mockOrganizations)
 
@@ -707,6 +715,9 @@ export function AppProvider({ children }) {
       loading,         dbLoading,
       sidebarOpen,     setSidebarOpen,
       sidebarCollapsed,setSidebarCollapsed,
+      invoicesHidden,     setInvoicesHidden,
+      invoicesExportOpen, setInvoicesExportOpen,
+      invoicesImportOpen, setInvoicesImportOpen,
       users:           contextUsers,
       setUsers:        isTester ? setTUsers : wrappedSetUsers,
       currentUser,     setCurrentUser,

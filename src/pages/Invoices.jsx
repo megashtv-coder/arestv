@@ -9,8 +9,8 @@ import { useApp } from '../context/AppContext'
 import { formatDate } from '../utils/dateFormat'
 import { StatusBadge, EmptyState, Pagination } from '../components/UI'
 import FormPageWrapper from '../components/FormPageWrapper'
-import ColumnManagerButton from '../components/ColumnManagerButton'
 import { useColumnPrefs } from '../hooks/useColumnPrefs'
+import { INVOICE_TABLE_COLUMNS } from '../constants/invoiceColumns'
 import InvoiceModal from './InvoiceModal'
 import PaymentModal from './PaymentModal'
 import { downloadTemplate } from '../components/ImportExcelModal'
@@ -19,20 +19,6 @@ import CustomerDetailsModal from './CustomerDetailsModal'
 import MessageLogService from '../services/MessageLogService'
 
 const STATUS_ORDER = { overdue: 0, pending: 1, partial: 1.5, draft: 2, paid: 3, void: 4 }
-
-/* ── Kolonat e tabelës kryesore — të editueshme (shfaq/fshih/rendit) nga çdo user,
-   ruajtur vetëm për llogarinë e tij (shih useColumnPrefs). 'Veprimet' dhe kolona e
-   checkbox-it mbeten fikse në fund, jashtë këtij editori. ── */
-const INVOICE_TABLE_COLUMNS = [
-  { key: 'date',     label: 'Data' },
-  { key: 'id',       label: 'ID' },
-  { key: 'customer', label: 'Klienti' },
-  { key: 'referent', label: 'Referenti' },
-  { key: 'expiry',   label: 'Skadimi Abonimit' },
-  { key: 'amount',   label: 'Shuma' },
-  { key: 'due',      label: 'Afati' },
-  { key: 'status',   label: 'Statusi' },
-]
 
 // Radhitja e kolonave tërhiqet drejt e nga kokat e tabelës (drag & drop), si alternativë
 // e shpejtë ndaj hapjes së panelit "Kolonat e tabelës". Klikimi për renditje (sort) vazhdon
@@ -1078,8 +1064,10 @@ export default function Invoices() {
     showToast, fmt: rawFmt,
     currentOrgId, currentOrg,
     page, navigate, logActivity,
+    invoicesHidden: hideAmounts, setInvoicesHidden: setHideAmounts,
+    invoicesExportOpen: showExport, setInvoicesExportOpen: setShowExport,
+    invoicesImportOpen: importOpen, setInvoicesImportOpen: setImportOpen,
   } = useApp()
-  const [hideAmounts, setHideAmounts] = useState(true) // fshehur si parazgjedhje — mbrojtje privatësie
   const fmt = hideAmounts ? () => '••••••' : rawFmt
 
   // Detect if we're in form mode (page like "invoices:create" or "invoices:ID:edit")
@@ -1135,8 +1123,6 @@ export default function Invoices() {
   const [sortDir,      setSortDir]  = useState('desc')
   const [preview,      setPreview]   = useState(null)
   const [viewMode,     setViewMode] = useState('table')
-  const [importOpen,   setImportOpen] = useState(false)
-  const [showExport,   setShowExport] = useState(false)
   const [selectedCustomer, setSelectedCustomer] = useState(null) // Customer details modal
   const [selected,     setSelected] = useState(new Set()) // Selected invoices for bulk delete
   const [confirmDelAll, setConfirmDelAll] = useState(false) // Confirmation dialog for bulk delete
@@ -1552,71 +1538,20 @@ export default function Invoices() {
       onDragOver={e => { if (draggedCol) e.preventDefault() }}
       onDrop={e => { if (draggedCol) { e.preventDefault(); handleColDropOutside() } }}
     >
-      {/* Header */}
+      {/* Header — titulli, hide/columns/eksporto/importo/+Faturë tani jetojnë te header-i global
+         (Header.jsx, kur page === 'invoices'); këtu mbetet vetëm veprimi kontekstual i tabelës
+         (fshi të zgjedhurat), kur ka rreshta të selektuar. */}
       <div className="flex flex-col gap-6 mb-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <h2 className="text-xl font-bold text-gray-900 tracking-tight">Faturat</h2>
-            <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-gray-200 text-gray-700">
-              {invoices.length.toLocaleString('en-US')} fatura
-            </span>
-          </div>
-
-          {/* Action buttons */}
-          <div className="flex items-center gap-1.5 flex-wrap">
-            {/* Hide/show amounts */}
+        {selected.size > 0 && (
+          <div className="flex justify-end">
             <button
-              onClick={() => setHideAmounts(h => !h)}
-              className="w-9 h-9 flex items-center justify-center rounded-xl bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
-              title={hideAmounts ? 'Shfaq shumat' : 'Fshih shumat'}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors text-xs font-bold"
+              onClick={() => setConfirmDelAll(true)}
             >
-              {hideAmounts ? <EyeOff size={16}/> : <Eye size={16}/>}
-            </button>
-
-            {/* Kolonat e tabelës — vetëm në pamjen tabelë, jo mobile (tabela s'shfaqet aty) */}
-            <div className="hidden sm:block">
-              <ColumnManagerButton tableKey="invoices" defaultColumns={INVOICE_TABLE_COLUMNS} />
-            </div>
-
-            {/* Export - Icon only - Hidden on mobile */}
-            <button
-              className="hidden sm:flex w-9 h-9 items-center justify-center rounded-xl bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
-              title="Eksporto faturat"
-              onClick={() => setShowExport(true)}
-            >
-              <Download size={16}/>
-            </button>
-
-            {/* Import - Icon only - Hidden on mobile */}
-            <button
-              className="hidden sm:flex w-9 h-9 items-center justify-center rounded-xl bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
-              onClick={() => setImportOpen(true)}
-              title="Importo Excel"
-            >
-              <FileSpreadsheet size={16}/>
-            </button>
-
-            {/* Delete selected - Show only when items selected */}
-            {selected.size > 0 && (
-              <button
-                className="w-9 h-9 flex items-center justify-center rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors"
-                onClick={() => setConfirmDelAll(true)}
-                title={`Fshi ${selected.size}`}
-              >
-                <Trash2 size={16}/>
-              </button>
-            )}
-
-            {/* New Invoice - Primary button - Hidden on mobile (see FAB below) */}
-            <button
-              className="hidden sm:flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-500 text-white hover:bg-blue-600 transition-colors font-bold text-xs shadow-md shadow-blue-500/20"
-              onClick={() => navigateWithClearPreview('invoices:create')}
-              title="Faturë e re"
-            >
-              + Krijo Faturë
+              <Trash2 size={14}/> Fshi {selected.size}
             </button>
           </div>
-        </div>
+        )}
 
         {/* KPI cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">

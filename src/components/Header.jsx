@@ -1,7 +1,13 @@
-import { Search, Bell, Moon, Sun, Menu, ChevronDown, Zap, Check, Plus, FileText, DollarSign } from 'lucide-react'
+import {
+  Search, Bell, Moon, Sun, Menu, ChevronDown, Check, Plus, FileText, DollarSign,
+  Eye, EyeOff, Download, FileSpreadsheet, UserPlus, Package, CreditCard, Truck,
+} from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import { currencies } from '../data/mockData'
 import { useState, useEffect, useRef } from 'react'
+import ColumnManagerButton from './ColumnManagerButton'
+import { INVOICE_TABLE_COLUMNS } from '../constants/invoiceColumns'
+import { SupplierModal } from './SupplierModal'
 
 const PAGE_TITLES = {
   dashboard:     'Dashboard',
@@ -21,6 +27,10 @@ export default function Header() {
   const {
     page, currency, setCurrency, darkMode, setDarkMode,
     setSidebarOpen, invoices, customers, navigate, currentUser,
+    setModal, closeModal,
+    invoicesHidden, setInvoicesHidden,
+    invoicesExportOpen, setInvoicesExportOpen,
+    invoicesImportOpen, setInvoicesImportOpen,
   } = useApp()
   const [curOpen, setCurOpen] = useState(false)
   const [notifOpen, setNotifOpen] = useState(false)
@@ -98,7 +108,7 @@ export default function Header() {
     : 'AK'
 
   return (
-    <header className="h-12 sm:h-14 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 flex items-center px-3 sm:px-5 gap-2 sm:gap-4 sticky top-0 z-30 transition-colors">
+    <header className="h-12 sm:h-14 bg-blue-50 dark:bg-gray-800 border-b border-blue-100 dark:border-gray-700 flex items-center px-3 sm:px-5 gap-2 sm:gap-4 sticky top-0 z-30 transition-colors">
       {/* Mobile menu */}
       <button className="icon-btn lg:hidden flex-shrink-0 p-1.5 sm:p-2" onClick={() => setSidebarOpen(true)}>
         <Menu size={18} />
@@ -135,6 +145,34 @@ export default function Header() {
         )}
       </div>
 
+      {/* Veprimet e faqes Faturat — shfaqen vetëm kur page === 'invoices' */}
+      {page === 'invoices' && (
+        <div className="flex items-center gap-1 sm:gap-1.5 flex-shrink-0 pr-1 sm:pr-2 mr-0.5 border-r border-blue-200/70 dark:border-gray-700">
+          <button
+            onClick={() => setInvoicesHidden(h => !h)}
+            title={invoicesHidden ? 'Shfaq shumat' : 'Fshih shumat'}
+            className="icon-btn p-1.5 sm:p-2"
+          >
+            {invoicesHidden ? <EyeOff size={16} /> : <Eye size={16} />}
+          </button>
+          <ColumnManagerButton tableKey="invoices" defaultColumns={INVOICE_TABLE_COLUMNS} />
+          <button
+            onClick={() => setInvoicesExportOpen(true)}
+            title="Eksporto"
+            className="icon-btn p-1.5 sm:p-2"
+          >
+            <Download size={16} />
+          </button>
+          <button
+            onClick={() => setInvoicesImportOpen(true)}
+            title="Importo"
+            className="icon-btn p-1.5 sm:p-2"
+          >
+            <FileSpreadsheet size={16} />
+          </button>
+        </div>
+      )}
+
       {/* Quick Add Button - Context Aware */}
       <div className="relative flex-shrink-0">
         <button
@@ -165,6 +203,46 @@ export default function Header() {
             >
               <DollarSign size={16} />
               Shpenzim i Ri
+            </button>
+            <button
+              onClick={() => {
+                navigate('customers:create')
+                setAddOpen(false)
+              }}
+              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+            >
+              <UserPlus size={16} />
+              Klient i Ri
+            </button>
+            <button
+              onClick={() => {
+                navigate('items:create')
+                setAddOpen(false)
+              }}
+              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+            >
+              <Package size={16} />
+              Produkt i Ri
+            </button>
+            <button
+              onClick={() => {
+                navigate('payments:create')
+                setAddOpen(false)
+              }}
+              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+            >
+              <CreditCard size={16} />
+              Pagesë e Re
+            </button>
+            <button
+              onClick={() => {
+                setModal(<SupplierModal onClose={closeModal} />)
+                setAddOpen(false)
+              }}
+              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+            >
+              <Truck size={16} />
+              Furnitor i Ri
             </button>
           </div>
         )}
