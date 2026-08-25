@@ -84,7 +84,7 @@ export default function Sidebar() {
       )}
 
       <aside className={`
-        fixed top-0 left-0 h-full bg-white dark:bg-gray-900 border-r border-gray-100 dark:border-gray-800 flex flex-col z-50
+        fixed top-0 left-0 h-full bg-gray-100 dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col z-50
         transition-all duration-300
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
         lg:translate-x-0 lg:static lg:z-auto
@@ -173,7 +173,7 @@ export default function Sidebar() {
         {!sidebarCollapsed && (
           <div className="px-2 py-2 border-t border-gray-100">
             <div
-              className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition-colors"
+              className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg hover:bg-gray-200/70 dark:hover:bg-gray-700 cursor-pointer transition-colors"
               onClick={() => navigate('settings')}
             >
               <div

@@ -16,7 +16,7 @@
     @apply flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer text-gray-500 text-sm font-medium transition-all duration-150 select-none;
   }
   .sidebar-item:hover {
-    @apply bg-gray-100/70 text-gray-700;
+    @apply bg-gray-200/70 text-gray-700;
   }
   .sidebar-item.active {
     @apply bg-blue-500 text-white font-semibold shadow-sm;
