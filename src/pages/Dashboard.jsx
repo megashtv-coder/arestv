@@ -1,8 +1,9 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import {
   Users, TrendingUp, TrendingDown, Clock, FilePlus,
   UserPlus, ReceiptText, AlertCircle, UserCheck, Layers,
   ArrowUp, ArrowDown, PieChart as PieIcon, CalendarDays, Eye, EyeOff,
+  ListTodo, CheckCircle2, Trash2,
 } from 'lucide-react'
 import {
   ComposedChart, Area, Line, PieChart, Pie, Cell,
@@ -10,6 +11,7 @@ import {
   ResponsiveContainer,
 } from 'recharts'
 import { useApp } from '../context/AppContext'
+import { supabase } from '../lib/supabase'
 import InvoiceModal from './InvoiceModal'
 import { CustomerModal } from './Customers'
 import { ExpenseModal }  from './Expenses'
@@ -201,10 +203,156 @@ function YoYChart({ title, sub, data, curKey, prevKey, color, softColor, gradId,
   )
 }
 
+/* ── Detyra afër afatit — panel anash grafikut "Shitje sipas muajit".
+   Detyrat s'kalojnë nëpër AppContext (Tasks.jsx i merr drejt nga Supabase), prandaj
+   ky panel bën fetch/toggle/delete të vetin, i pavarur nga faqja Detyrat. ── */
+const TASK_STATUS_STYLE = {
+  overdue: { label: 'Vonuar', cls: 'bg-red-50 text-red-600', rail: '#dc2626' },
+  today:   { label: 'Sot',    cls: 'bg-amber-50 text-amber-600', rail: '#d97706' },
+  soon:    { label: 'Afër',   cls: 'bg-sky-50 text-sky-600', rail: '#0284c7' },
+}
+
+function TasksUrgentPanel({ tasks, loading, hidden, onToggle, onDelete, onSeeAll }) {
+  const today = new Date().toISOString().slice(0, 10)
+  const soonCutoff = new Date(Date.now() + 3 * 86400000).toISOString().slice(0, 10)
+
+  const urgentTasks = useMemo(() =>
+    tasks
+      .filter(t => !t.completed && t.reminderDate && t.reminderDate <= soonCutoff)
+      .sort((a, b) => a.reminderDate.localeCompare(b.reminderDate)),
+    [tasks, soonCutoff]
+  )
+  const preview = urgentTasks.slice(0, 4)
+
+  const statusOf = t => t.reminderDate < today ? 'overdue' : t.reminderDate === today ? 'today' : 'soon'
+
+  return (
+    <div className="bg-white rounded-2xl border border-gray-100 flex flex-col h-full">
+      <div className="flex items-center justify-between gap-3 px-5 py-4 border-b border-gray-50">
+        <div>
+          <p className="text-sm font-bold text-gray-800">Detyra afër afatit</p>
+          <p className="text-xs text-gray-400 mt-0.5">Brenda 3 ditësh ose vonuar</p>
+        </div>
+        <span className="font-mono text-sm font-bold px-2.5 py-1 rounded-full bg-amber-50 text-amber-600">
+          {hidden ? '••' : urgentTasks.length}
+        </span>
+      </div>
+
+      <div className="flex-1 px-2.5 py-1.5 flex flex-col">
+        {loading ? (
+          <p className="text-xs text-gray-400 text-center py-8 italic">Duke ngarkuar...</p>
+        ) : preview.length === 0 ? (
+          <p className="text-xs text-gray-400 text-center py-8">S'ka detyra urgjente ✓</p>
+        ) : (
+          preview.map(t => {
+            const st = TASK_STATUS_STYLE[statusOf(t)]
+            return (
+              <div key={t.id} className="flex gap-2.5 px-1.5 py-2 rounded-lg hover:bg-gray-50 transition-colors">
+                <span className="w-[3px] self-stretch rounded-full mt-0.5 flex-shrink-0" style={{ background: st.rail }} />
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-xs font-semibold text-gray-800 truncate flex-1">
+                      {hidden ? '••••••' : t.customer}
+                    </span>
+                    <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0 ${st.cls}`}>{st.label}</span>
+                    <button
+                      onClick={() => onToggle(t.id)}
+                      title="Shëno të kryer"
+                      className="w-[21px] h-[21px] flex items-center justify-center rounded-md bg-emerald-50 text-emerald-600 hover:bg-emerald-500 hover:text-white transition-colors flex-shrink-0"
+                    >
+                      <CheckCircle2 size={12} />
+                    </button>
+                    <button
+                      onClick={() => onDelete(t.id)}
+                      title="Fshi detyrën"
+                      className="w-[21px] h-[21px] flex items-center justify-center rounded-md bg-gray-100 text-gray-400 hover:bg-red-50 hover:text-red-500 transition-colors flex-shrink-0"
+                    >
+                      <Trash2 size={12} />
+                    </button>
+                  </div>
+                  {t.description && (
+                    <p className="text-[11px] text-gray-400 truncate mt-0.5">
+                      {hidden ? '••••••••' : t.description}
+                    </p>
+                  )}
+                </div>
+              </div>
+            )
+          })
+        )}
+      </div>
+
+      <div className="px-5 py-3 border-t border-gray-50">
+        <button
+          onClick={onSeeAll}
+          className="w-full flex items-center justify-center gap-1.5 text-xs font-bold text-blue-600 hover:bg-blue-50 rounded-lg py-1.5 transition-colors"
+        >
+          Shiko të gjitha {urgentTasks.length > 0 ? `(${urgentTasks.length})` : ''} →
+        </button>
+      </div>
+    </div>
+  )
+}
+
 export default function Dashboard() {
-  const { invoices, customers, expenses, payments, navigate, setModal, closeModal, fmt, currentUser } = useApp()
+  const { invoices, customers, expenses, payments, navigate, setModal, closeModal, fmt, currentUser, logActivity, showToast } = useApp()
   const [activeCat, setActiveCat] = useState(null)   // indeksi i segmentit nën kursor
   const [hideData, setHideData] = useState(true)      // fshehur si parazgjedhje — mbrojtje privatësie
+
+  /* ── Detyra afër afatit — fetch i vetin nga Supabase, s'kalon nëpër AppContext ── */
+  const [dashTasks, setDashTasks] = useState([])
+  const [dashTasksLoading, setDashTasksLoading] = useState(true)
+
+  useEffect(() => {
+    let cancelled = false
+    ;(async () => {
+      try {
+        const { data, error } = await supabase.from('tasks').select('*').order('reminderdate', { ascending: true })
+        if (error) throw error
+        if (!cancelled) setDashTasks((data || []).map(t => ({ ...t, reminderDate: t.reminderdate })))
+      } catch (e) {
+        console.error('Dashboard: gabim gjatë marrjes së detyrave:', e)
+        if (!cancelled) setDashTasks([])
+      } finally {
+        if (!cancelled) setDashTasksLoading(false)
+      }
+    })()
+    return () => { cancelled = true }
+  }, [])
+
+  const handleToggleDashTask = async (taskId) => {
+    const task = dashTasks.find(t => t.id === taskId)
+    if (!task) return
+    const updated = { ...task, completed: !task.completed }
+    try {
+      const { error } = await supabase.from('tasks').update({
+        id: updated.id, customer: updated.customer, description: updated.description,
+        completed: updated.completed, reminderdate: updated.reminderDate,
+      }).eq('id', updated.id)
+      if (error) throw error
+      setDashTasks(prev => prev.map(t => t.id === taskId ? updated : t))
+      logActivity?.(`Ndrysho detyrën: ${task.customer}`, 'Detyrat')
+    } catch (e) {
+      console.error('Dashboard: gabim gjatë ndryshimit të detyrës:', e)
+      showToast?.('Gabim në ndryshimin e detyrës', 'error')
+    }
+  }
+
+  const handleDeleteDashTask = async (taskId) => {
+    const task = dashTasks.find(t => t.id === taskId)
+    if (!task) return
+    if (!window.confirm(`Fshi detyrën për ${task.customer}?`)) return
+    try {
+      const { error } = await supabase.from('tasks').delete().eq('id', taskId)
+      if (error) throw error
+      setDashTasks(prev => prev.filter(t => t.id !== taskId))
+      logActivity?.(`Fshi detyrën: ${task.customer}`, 'Detyrat')
+      showToast?.('Detyra u fshi')
+    } catch (e) {
+      console.error('Dashboard: gabim gjatë fshirjes së detyrës:', e)
+      showToast?.('Gabim në fshirjen e detyrës', 'error')
+    }
+  }
 
   const today             = new Date().toISOString().slice(0, 10)
   const actualCurrentYear = new Date().getFullYear().toString()
@@ -580,16 +728,23 @@ export default function Dashboard() {
         />
       </div>
 
-      {/* ── Shitje sipas muajit (nga faturat) ── */}
-      <YoYChart
-        title="Shitje sipas muajit"
-        sub={`Nga faturat e lëshuara — ${filterYear} vs. ${chartPrevYear}`}
-        data={salesYoY}
-        curKey="sales"  prevKey="salesPrev"
-        color="#6366f1" softColor="#c7d2fe" gradId="yoy-sales"
-        curLabel={filterYear} prevLabel={chartPrevYear} fmt={fmt}
-        hidden={hideData}
-      />
+      {/* ── Shitje sipas muajit + Detyra afër afatit, në të njëjtin rresht ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-[1.85fr_1fr] gap-4 items-stretch">
+        <YoYChart
+          title="Shitje sipas muajit"
+          sub={`Nga faturat e lëshuara — ${filterYear} vs. ${chartPrevYear}`}
+          data={salesYoY}
+          curKey="sales"  prevKey="salesPrev"
+          color="#6366f1" softColor="#c7d2fe" gradId="yoy-sales"
+          curLabel={filterYear} prevLabel={chartPrevYear} fmt={fmt}
+          hidden={hideData}
+        />
+        <TasksUrgentPanel
+          tasks={dashTasks} loading={dashTasksLoading} hidden={hideData}
+          onToggle={handleToggleDashTask} onDelete={handleDeleteDashTask}
+          onSeeAll={() => navigate('tasks')}
+        />
+      </div>
 
       {/* ── Të ardhura & shpenzime sipas muajit ── */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 items-stretch">
