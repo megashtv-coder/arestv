@@ -130,11 +130,11 @@ export default function Header() {
 
       <div className="flex items-center gap-2 flex-1 min-w-0">
         {page === 'dashboard' ? (
-          <div className="min-w-0">
+          <div className="hidden sm:block min-w-0">
             <h1 className="text-sm sm:text-base font-bold text-gray-800 dark:text-gray-100 truncate">
               Përshëndetje, {currentUser?.name?.split(' ')[0] || 'Mirë se erdhe'} 👋
             </h1>
-            <p className="hidden sm:block text-[11px] text-gray-400 dark:text-gray-500 truncate">
+            <p className="text-[11px] text-gray-400 dark:text-gray-500 truncate">
               {new Date().toLocaleDateString('sq-AL', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
             </p>
           </div>
@@ -148,8 +148,8 @@ export default function Header() {
       {/* Filtri i periudhës së Dashboard-it — shfaqet vetëm kur page === 'dashboard' */}
       {page === 'dashboard' && (
         <div className="flex items-center gap-1 sm:gap-1.5 flex-shrink-0 pr-1 sm:pr-2 mr-0.5 border-r border-blue-200/70 dark:border-gray-700">
-          <div className="hidden sm:flex items-center gap-1.5 bg-white dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 rounded-lg px-2 py-1">
-            <CalendarDays size={13} className="text-gray-400 dark:text-gray-500 flex-shrink-0" />
+          <div className="flex items-center gap-1.5 bg-white dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 rounded-lg px-2 py-1">
+            <CalendarDays size={13} className="hidden sm:block text-gray-400 dark:text-gray-500 flex-shrink-0" />
             <select
               value={dashboardMonth ?? 'all'}
               onChange={e => setDashboardMonth(e.target.value === 'all' ? null : parseInt(e.target.value))}
@@ -159,7 +159,7 @@ export default function Header() {
               {MONTH_FULL.map((m, i) => <option key={i} value={i}>{m}</option>)}
             </select>
           </div>
-          <div className="hidden sm:flex items-center gap-1.5 bg-white dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 rounded-lg px-2 py-1">
+          <div className="flex items-center gap-1.5 bg-white dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 rounded-lg px-2 py-1">
             <select
               value={dashboardYear}
               onChange={e => setDashboardYear(e.target.value)}
