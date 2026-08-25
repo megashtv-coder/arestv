@@ -5,7 +5,12 @@ import { useApp } from '../context/AppContext'
 import BackupService from '../services/BackupService'
 
 export default function Settings() {
-  const { showToast, paymentModes, setPaymentModes, depositAccounts, setDepositAccounts, logout, invoices, customers, items, payments, expenses, users, setInvoices, setCustomers, setItems, setPayments, setExpenses, currentUser } = useApp()
+  const {
+    showToast, logout, currentUser,
+    invoices, customers, items, payments, expenses, users, vendors, transfers, activityLog, representatives, organizations,
+    paymentModes, setPaymentModes, depositAccounts, setDepositAccounts,
+    setInvoices, setCustomers, setItems, setPayments, setExpenses, setUsers, setVendors, setTransfers, setActivityLog, setRepresentatives,
+  } = useApp()
   const fileInputRef = useRef(null)
   const [editingField, setEditingField] = useState(null)
   const [editValue, setEditValue] = useState('')
@@ -35,6 +40,7 @@ export default function Settings() {
   const [autoBackups, setAutoBackups] = useState([])
   const [showAutoBackupConfirm, setShowAutoBackupConfirm] = useState(false)
   const [selectedAutoBackup, setSelectedAutoBackup] = useState(null)
+  const [isBackingUp, setIsBackingUp] = useState(false)
   const tog = k => setToggles(p => ({ ...p, [k]: !p[k] }))
 
   // Load auto-backups on mount
@@ -62,16 +68,27 @@ export default function Settings() {
     window.location.reload()
   }
 
-  const handleDownloadBackup = () => {
-    const appState = {
-      invoices,
-      customers,
-      items,
-      payments,
-      expenses,
-      users,
+  const buildFullAppState = () => ({
+    invoices, customers, items, payments, expenses, users,
+    vendors, transfers, activityLog, representatives, paymentModes, depositAccounts, organizations,
+  })
+
+  const handleDownloadBackup = async () => {
+    setIsBackingUp(true)
+    const result = await BackupService.downloadBackup(buildFullAppState())
+    setIsBackingUp(false)
+    showToast(result.message, result.success ? 'success' : 'error')
+  }
+
+  // Backup i menjëhershëm — krijon një auto-backup tani (shkarkim + listë) pa pritur ciklin periodik
+  const handleCreateBackupNow = async () => {
+    setIsBackingUp(true)
+    const result = await BackupService.createAutoBackup(buildFullAppState())
+    if (result.success) {
+      localStorage.setItem('arestv_last_backup_time', Date.now().toString())
+      setAutoBackups(BackupService.getAutoBackups())
     }
-    const result = BackupService.downloadBackup(appState)
+    setIsBackingUp(false)
     showToast(result.message, result.success ? 'success' : 'error')
   }
 
@@ -98,16 +115,40 @@ export default function Settings() {
     if (fileInputRef.current) fileInputRef.current.value = ''
   }
 
+  // Rivendos çdo entitet të pranishëm në backup — fushat e reja (vendors, transfers, ...)
+  // mungojnë te backup-et e vjetra (v1.0), prandaj kontrollohen para se të shkruhen,
+  // që një backup i vjetër të mos fshijë aksidentalisht të dhëna që s'i kishte kapur fare.
+  const applyRestoreData = (data) => {
+    if (data.invoices)   setInvoices(data.invoices)
+    if (data.customers)  setCustomers(data.customers)
+    if (data.items)      setItems(data.items)
+    if (data.payments)   setPayments(data.payments)
+    if (data.expenses)   setExpenses(data.expenses)
+    if (data.users)      setUsers(data.users)
+    if (data.vendors)    setVendors(data.vendors)
+    if (data.transfers)  setTransfers(data.transfers)
+    if (data.activityLog)     setActivityLog(data.activityLog)
+    if (data.representatives) setRepresentatives(data.representatives)
+    if (data.paymentModes)    setPaymentModes(data.paymentModes)
+    if (data.depositAccounts) setDepositAccounts(data.depositAccounts)
+    if (data.companyData) {
+      localStorage.setItem('arestv_company_data', JSON.stringify(data.companyData))
+      setCompanyData(data.companyData)
+    }
+    if (data.notifAdvanceDays != null) {
+      localStorage.setItem('arestv_notif_advance_days', data.notifAdvanceDays.toString())
+      setAdvanceDays(data.notifAdvanceDays)
+    }
+    if (data.messageLogs) {
+      localStorage.setItem('arestv_message_logs', JSON.stringify(data.messageLogs))
+    }
+  }
+
   const handleConfirmRestore = () => {
     if (!restoreData) return
 
     try {
-      setInvoices(restoreData.invoices)
-      setCustomers(restoreData.customers)
-      setItems(restoreData.items)
-      setPayments(restoreData.payments)
-      setExpenses(restoreData.expenses)
-
+      applyRestoreData(restoreData)
       showToast('Të dhënat u rivendosën me sukses ✓', 'success')
       setShowRestoreConfirm(false)
       setRestoreData(null)
@@ -132,12 +173,7 @@ export default function Settings() {
     if (!restoreData) return
 
     try {
-      setInvoices(restoreData.invoices)
-      setCustomers(restoreData.customers)
-      setItems(restoreData.items)
-      setPayments(restoreData.payments)
-      setExpenses(restoreData.expenses)
-
+      applyRestoreData(restoreData)
       showToast('Auto-backup-i u rivendos me sukses ✓', 'success')
       setShowAutoBackupConfirm(false)
       setRestoreData(null)
@@ -333,19 +369,33 @@ export default function Settings() {
             <div className="flex items-center justify-between px-5 py-3.5 border-b border-gray-50">
               <div>
                 <p className="text-sm font-semibold text-gray-800">Shkarko Backup</p>
-                <p className="text-xs text-gray-400 mt-0.5">Shkarko të gjitha të dhënat si JSON file</p>
+                <p className="text-xs text-gray-400 mt-0.5">Çdo të dhënë (fatura, klientë, furnitorë, detyra, cilësime...) si file i kompresuar</p>
               </div>
               <button
                 onClick={handleDownloadBackup}
-                className="btn btn-outline btn-sm flex items-center gap-1.5"
+                disabled={isBackingUp}
+                className="btn btn-outline btn-sm flex items-center gap-1.5 disabled:opacity-50"
               >
-                <Download size={13}/>Shkarko
+                <Download size={13}/>{isBackingUp ? 'Duke shkarkuar...' : 'Shkarko'}
+              </button>
+            </div>
+            <div className="flex items-center justify-between px-5 py-3.5 border-b border-gray-50">
+              <div>
+                <p className="text-sm font-semibold text-gray-800">Krijo Backup Tani</p>
+                <p className="text-xs text-gray-400 mt-0.5">Shkarko + shto në listën e auto-backup-eve, pa pritur ciklin periodik</p>
+              </div>
+              <button
+                onClick={handleCreateBackupNow}
+                disabled={isBackingUp}
+                className="btn btn-outline btn-sm flex items-center gap-1.5 disabled:opacity-50"
+              >
+                <Clock size={13}/>{isBackingUp ? 'Duke krijuar...' : 'Krijo tani'}
               </button>
             </div>
             <div className="flex items-center justify-between px-5 py-3.5">
               <div>
                 <p className="text-sm font-semibold text-gray-800">Rivendos Backup</p>
-                <p className="text-xs text-gray-400 mt-0.5">Importo të dhënat nga JSON file</p>
+                <p className="text-xs text-gray-400 mt-0.5">Importo nga file .json ose .json.gz</p>
               </div>
               <button
                 onClick={() => fileInputRef.current?.click()}
@@ -357,7 +407,7 @@ export default function Settings() {
             <input
               ref={fileInputRef}
               type="file"
-              accept=".json"
+              accept=".json,.gz"
               onChange={handleFileSelect}
               className="hidden"
             />
@@ -378,7 +428,14 @@ export default function Settings() {
                 <li>• Produktet: {restoreData.items?.length || 0}</li>
                 <li>• Pagesat: {restoreData.payments?.length || 0}</li>
                 <li>• Shpenzimet: {restoreData.expenses?.length || 0}</li>
+                <li>• Furnitorët: {restoreData.vendors?.length || 0}</li>
+                <li>• Përdoruesit: {restoreData.users?.length || 0}</li>
               </ul>
+              {restoreData.tasks?.length > 0 && (
+                <p className="text-xs text-amber-700 mb-3">
+                  ℹ️ Backup-i ka {restoreData.tasks.length} detyra — ato NUK rivendosen automatikisht (kërkojnë rivendosje të veçantë, kontakto zhvilluesin).
+                </p>
+              )}
               <p className="text-xs text-blue-600 font-semibold">Kjo nuk mund të rikthehej!</p>
             </div>
             <div className="flex gap-2">
@@ -405,13 +462,13 @@ export default function Settings() {
         <div>
           <div className="flex items-center gap-2 mb-2 px-1">
             <Clock size={14} className="text-gray-400"/>
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Auto-backup-et (çdo 3 ore)</p>
+            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Auto-backup-et (çdo 3 ore, {autoBackups.length}/3 të fundit)</p>
           </div>
           <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
             {autoBackups.length === 0 ? (
               <div className="px-5 py-8 text-center">
                 <p className="text-sm text-gray-500">Nuk ka auto-backup-e ende</p>
-                <p className="text-xs text-gray-400 mt-1">Auto-backup-et do të krijohen automatikisht çdo 3 ore</p>
+                <p className="text-xs text-gray-400 mt-1">Auto-backup-et do të krijohen automatikisht çdo 3 ore (edhe u shkarkojnë vetë si file .gz)</p>
               </div>
             ) : (
               <div className="divide-y divide-gray-100">
@@ -463,7 +520,14 @@ export default function Settings() {
                 <li>• Produktet: {restoreData.items?.length || 0}</li>
                 <li>• Pagesat: {restoreData.payments?.length || 0}</li>
                 <li>• Shpenzimet: {restoreData.expenses?.length || 0}</li>
+                <li>• Furnitorët: {restoreData.vendors?.length || 0}</li>
+                <li>• Përdoruesit: {restoreData.users?.length || 0}</li>
               </ul>
+              {restoreData.tasks?.length > 0 && (
+                <p className="text-xs text-amber-700 mb-3">
+                  ℹ️ Backup-i ka {restoreData.tasks.length} detyra — ato NUK rivendosen automatikisht.
+                </p>
+              )}
               <p className="text-xs text-blue-600 font-semibold">Kjo nuk mund të rikthehej!</p>
             </div>
             <div className="flex gap-2">

@@ -45,7 +45,11 @@ const ORG_PAGES = {
 }
 
 function OrgAppLayout() {
-  const { page, navigate, loading, toast, setToast, modal, darkMode, invoices, customers, items, payments, expenses, users, showToast } = useApp()
+  const {
+    page, navigate, loading, toast, setToast, modal, darkMode, showToast,
+    invoices, customers, items, payments, expenses, users,
+    vendors, transfers, activityLog, representatives, paymentModes, depositAccounts, organizations,
+  } = useApp()
 
   // Parse nested routes like "invoices:create" or "invoices:INV-123:edit"
   const pageMatch = page.split(':')
@@ -82,14 +86,17 @@ function OrgAppLayout() {
     const CHECK_INTERVAL_MS = 5 * 60 * 1000 // Check every 5 minutes
 
     // Function to check if it's time to backup and create if needed
-    const checkAndCreateBackup = () => {
+    const checkAndCreateBackup = async () => {
       const lastBackupTime = localStorage.getItem(LAST_BACKUP_KEY)
       const now = Date.now()
 
       // If no backup exists or 3 hours have passed, create a backup
       if (!lastBackupTime || (now - parseInt(lastBackupTime)) >= BACKUP_INTERVAL_MS) {
-        const appState = { invoices, customers, items, payments, expenses, users }
-        const result = BackupService.createAutoBackup(appState)
+        const appState = {
+          invoices, customers, items, payments, expenses, users,
+          vendors, transfers, activityLog, representatives, paymentModes, depositAccounts, organizations,
+        }
+        const result = await BackupService.createAutoBackup(appState)
         if (result.success) {
           localStorage.setItem(LAST_BACKUP_KEY, now.toString())
           console.log('✅ Auto-backup created successfully')
@@ -107,7 +114,7 @@ function OrgAppLayout() {
 
     // Cleanup interval on unmount
     return () => clearInterval(backupCheckInterval)
-  }, [invoices, customers, items, payments, expenses, users])
+  }, [invoices, customers, items, payments, expenses, users, vendors, transfers, activityLog, representatives, paymentModes, depositAccounts, organizations])
 
   return (
     <div className={`app flex min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
