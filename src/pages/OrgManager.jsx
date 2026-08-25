@@ -69,7 +69,7 @@ function OrgModal({ org, onClose }) {
       <div className="grid grid-cols-2 gap-4">
         <FormGroup label="Emri i plotë *">
           <input className="form-control" value={form.name} onChange={e => set('name', e.target.value)}
-            placeholder="p.sh. MEGA SH TV" autoFocus />
+            placeholder="p.sh. Ares TV" autoFocus />
         </FormGroup>
         <FormGroup label="Emri i shkurtër *">
           <input className="form-control" value={form.shortName} onChange={e => set('shortName', e.target.value.toUpperCase())}

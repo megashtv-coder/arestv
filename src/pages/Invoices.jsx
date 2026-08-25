@@ -27,8 +27,8 @@ function buildReminderMsg(inv) {
   const late = inv.status === 'overdue' ||
     (inv.due && inv.due < today && inv.status !== 'paid' && inv.status !== 'void')
   if (late)
-    return `Pershendetje ${firstName}!\nFatura juaj me vlere €${inv.amount} ka kaluar afatin e pageses (${formatDate(inv.due)}).\nJu lutem kryeni pagesen urgjentisht per te shmangur nderprerjene sherbimit tuaj.\nFaleminderit!\nMe respekt, PREDATOR - MEGA SH TV`
-  return `Pershendetje ${firstName}!\nFatura juaj me vlere €${inv.amount} eshte ne pritje te pageses deri me date ${formatDate(inv.due)}.\nJu lutem kryeni pagesen ne kohe.\nFaleminderit!\nMe respekt, PREDATOR - MEGA SH TV`
+    return `Pershendetje ${firstName}!\nFatura juaj me vlere €${inv.amount} ka kaluar afatin e pageses (${formatDate(inv.due)}).\nJu lutem kryeni pagesen urgjentisht per te shmangur nderprerjene sherbimit tuaj.\nFaleminderit!\nMe respekt, Ares TV`
+  return `Pershendetje ${firstName}!\nFatura juaj me vlere €${inv.amount} eshte ne pritje te pageses deri me date ${formatDate(inv.due)}.\nJu lutem kryeni pagesen ne kohe.\nFaleminderit!\nMe respekt, Ares TV`
 }
 
 function buildInvoiceMsg(inv) {

@@ -16,7 +16,7 @@ function addDays(dateStr, days) {
 
 function buildRenewalMsg(inv) {
   const firstName = (inv.customer || '').split(' ')[0]
-  return `Pershendetje ${firstName}!\nDeshironim t'ju kujtojme se abonimi juaj per TV skadon me date ${formatDate(inv.subscriptionExpiry)}.\nJu lutem na kontaktoni per rinovim.\nFaleminderit!\nMe respekt, PREDATOR - MEGA SH TV`
+  return `Pershendetje ${firstName}!\nDeshironim t'ju kujtojme se abonimi juaj per TV skadon me date ${formatDate(inv.subscriptionExpiry)}.\nJu lutem na kontaktoni per rinovim.\nFaleminderit!\nMe respekt, Ares TV`
 }
 
 /* Çelësi i localStorage ku ruajmë { invId: 'YYYY-MM-DD' } */

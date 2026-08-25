@@ -8,7 +8,7 @@ import MessageLogService from './MessageLogService'
 // Message template for subscription expiry notifications
 function buildSubscriptionExpiryMessage(customer, subscriptionExpiry, daysLeft) {
   const firstName = customer.split(' ')[0]
-  const organizationName = 'PREDATOR - MEGA SH TV'
+  const organizationName = 'Ares TV'
 
   if (daysLeft <= 0) {
     return `Përshëndetje ${firstName}!\nAbonimit juaj ka skaduar më ${subscriptionExpiry}.\nJu lutem rinovoni abonimin për të vazhduar shërbimin.\nFaleminderit!\nMe respekt, ${organizationName}`
