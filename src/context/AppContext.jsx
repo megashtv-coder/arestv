@@ -660,7 +660,7 @@ export function AppProvider({ children }) {
   }, [currentOrgId])
 
   const fmt = useCallback(
-    (amount) => currency.symbol + new Intl.NumberFormat('de-DE', {
+    (amount) => currency.symbol + new Intl.NumberFormat('en-US', {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     }).format(amount ?? 0),

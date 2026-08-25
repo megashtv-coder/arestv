@@ -329,7 +329,7 @@ function QuickAddCustomer({ initialName, onSave, onCancel }) {
 ───────────────────────────────────────────────────────────── */
 function ItemRow({ item, products, onUpdate, onRemove, canRemove }) {
   const lineTotal = (Number(item.qty) || 0) * (Number(item.unitPrice) || 0)
-  const fmtN = v => new Intl.NumberFormat('de-DE').format(v)
+  const fmtN = v => new Intl.NumberFormat('en-US').format(v)
   const isMobile = useIsMobile()
 
   return (
@@ -481,7 +481,7 @@ export default function InvoiceModal({ initialData, isFormPage, onClose }) {
   const discVal    = Number(discount.value) || 0
   const discAmount = discount.type === '%' ? subTotal * discVal / 100 : Math.min(discVal, subTotal)
   const total      = Math.max(0, subTotal - discAmount)
-  const fmtN       = v => new Intl.NumberFormat('de-DE').format(v)
+  const fmtN       = v => new Intl.NumberFormat('en-US').format(v)
 
   /* ── Line item actions ── */
   const addItem    = () => setLineItems(p => [...p, { id: Math.random(), desc: '', note: '', qty: 1, unitPrice: '' }])

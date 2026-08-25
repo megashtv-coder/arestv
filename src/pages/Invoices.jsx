@@ -665,7 +665,7 @@ function ExportPanel({ invoices, customers, onClose, fmt }) {
           <div className="bg-blue-50 rounded-xl px-4 py-3 flex items-center justify-between">
             <div>
               <p className="text-xs text-blue-500 font-semibold">{filtered.length} fatura të zgjedhura</p>
-              <p className="text-sm font-bold text-blue-700 mt-0.5">Totali: €{totalAmt.toLocaleString('de-DE', { minimumFractionDigits: 2 })}</p>
+              <p className="text-sm font-bold text-blue-700 mt-0.5">Totali: €{totalAmt.toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
             </div>
             <CheckCircle2 size={20} className={filtered.length > 0 ? 'text-blue-400' : 'text-gray-300'}/>
           </div>
