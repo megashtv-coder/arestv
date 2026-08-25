@@ -1,7 +1,7 @@
 import { useState, useRef, useMemo, useEffect, lazy, Suspense } from 'react'
 import {
   Receipt, Trash2, Plus, Search, X, RefreshCw,
-  ChevronLeft, ChevronRight, Filter, Users, Wallet, FileSpreadsheet,
+  ChevronLeft, ChevronRight, Users, Wallet, FileSpreadsheet,
   Download, CheckCircle2,
 } from 'lucide-react'
 import { useApp } from '../context/AppContext'
@@ -504,6 +504,8 @@ export default function ExpensesPage() {
   const enndiTotal = expenses.filter(e => e.paidBy === 'Enndy').reduce((s, e) => s + e.amount, 0)
   const beltiTotal = expenses.filter(e => e.paidBy === 'Belti').reduce((s, e) => s + e.amount, 0)
   const recurTotal = expenses.filter(e => e.recurring).reduce((s, e) => s + e.amount, 0)
+  const filteredEnndiTotal = filtered.filter(e => e.paidBy === 'Enndy').reduce((s, e) => s + e.amount, 0)
+  const filteredBeltiTotal = filtered.filter(e => e.paidBy === 'Belti').reduce((s, e) => s + e.amount, 0)
 
   const openAdd    = ()  => navigate('expenses:create')
   const openEdit   = e   => navigate(`expenses:${e.id}:edit`)
@@ -552,16 +554,18 @@ export default function ExpensesPage() {
   return (
     <div>
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 mb-6 border-b border-gray-200">
         <div>
-          <p className="text-[11px] font-bold text-orange-500 uppercase tracking-widest mb-0.5">Financa</p>
-          <h2 className="text-xl font-bold text-gray-800">Shpenzimet</h2>
-          <p className="text-sm text-gray-400 mt-0.5">Totali: {fmt(allTotal)}</p>
+          <h2 className="text-xl font-black text-gray-900 flex items-center gap-2 tracking-tight">
+            <Receipt size={20} className="text-blue-500" />
+            Shpenzimet
+          </h2>
+          <p className="text-xs text-gray-500 font-medium mt-0.5">{expenses.length} shpenzime gjithsej në sistem</p>
         </div>
         <div className="flex items-center gap-1.5">
           {/* Export - Hidden on mobile */}
           <button
-            className="hidden sm:flex w-9 h-9 items-center justify-center rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
+            className="hidden sm:flex w-9 h-9 items-center justify-center rounded-xl border border-gray-200 bg-white text-gray-600 hover:bg-gray-100 transition-colors"
             onClick={() => setShowExport(true)}
             title="Eksporto"
           >
@@ -570,7 +574,7 @@ export default function ExpensesPage() {
 
           {/* Import - Hidden on mobile */}
           <button
-            className="hidden sm:flex w-9 h-9 items-center justify-center rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
+            className="hidden sm:flex w-9 h-9 items-center justify-center rounded-xl border border-gray-200 bg-white text-gray-600 hover:bg-gray-100 transition-colors"
             onClick={() => setImportOpen(true)}
             title="Importo Excel"
           >
@@ -579,11 +583,11 @@ export default function ExpensesPage() {
 
           {/* New Expense - Hidden on mobile (see FAB below) */}
           <button
-            className="hidden sm:flex w-9 h-9 items-center justify-center rounded-lg bg-blue-500 text-white hover:bg-blue-600 transition-colors font-bold text-lg"
+            className="hidden sm:flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-500 text-white hover:bg-blue-600 transition-all active:scale-95 font-bold text-xs shadow-sm"
             onClick={openAdd}
             title="Shpenzim i ri"
           >
-            +
+            <Plus size={14}/> Shpenzim i ri
           </button>
         </div>
       </div>
@@ -598,26 +602,35 @@ export default function ExpensesPage() {
       )}
 
       {/* Stat cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
-        <div className="bg-white rounded-xl border border-gray-100 border-l-4 border-l-blue-400 px-4 py-3">
-          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Totali</p>
-          <p className="text-base font-bold text-blue-500">- {fmt(allTotal)}</p>
-          <p className="text-[11px] text-gray-400 mt-0.5">{expenses.length} shpenzime</p>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-5">
+        <div className="bg-white rounded-2xl border border-gray-200/90 shadow-sm px-4 py-4">
+          <p className="text-xs text-gray-500 font-bold mb-1">Totali</p>
+          <p className="text-2xl font-black font-mono tracking-tight text-blue-600">- {fmt(allTotal)}</p>
+          <p className="text-[11px] text-gray-400 mt-1">{expenses.length} shpenzime</p>
         </div>
-        <div className="bg-white rounded-xl border border-gray-100 border-l-4 border-l-blue-300 px-4 py-3">
-          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Enndy</p>
-          <p className="text-base font-bold text-blue-500">- {fmt(enndiTotal)}</p>
-          <p className="text-[11px] text-gray-400 mt-0.5">{Math.round(enndiTotal/allTotal*100)||0}% e totalit</p>
+        <div className="bg-white rounded-2xl border border-gray-200/90 shadow-sm px-4 py-4">
+          <div className="flex items-center gap-1.5 mb-1">
+            <Users size={12} className="text-blue-400" />
+            <p className="text-xs text-gray-500 font-bold">Enndy</p>
+          </div>
+          <p className="text-2xl font-black font-mono tracking-tight text-blue-600">- {fmt(enndiTotal)}</p>
+          <p className="text-[11px] text-gray-400 mt-1">{Math.round(enndiTotal/allTotal*100)||0}% e totalit</p>
         </div>
-        <div className="bg-white rounded-xl border border-gray-100 border-l-4 border-l-purple-400 px-4 py-3">
-          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Belti</p>
-          <p className="text-base font-bold text-purple-600">- {fmt(beltiTotal)}</p>
-          <p className="text-[11px] text-gray-400 mt-0.5">{Math.round(beltiTotal/allTotal*100)||0}% e totalit</p>
+        <div className="bg-white rounded-2xl border border-gray-200/90 shadow-sm px-4 py-4">
+          <div className="flex items-center gap-1.5 mb-1">
+            <Users size={12} className="text-purple-400" />
+            <p className="text-xs text-gray-500 font-bold">Belti</p>
+          </div>
+          <p className="text-2xl font-black font-mono tracking-tight text-purple-600">- {fmt(beltiTotal)}</p>
+          <p className="text-[11px] text-gray-400 mt-1">{Math.round(beltiTotal/allTotal*100)||0}% e totalit</p>
         </div>
-        <div className="bg-white rounded-xl border border-gray-100 border-l-4 border-l-emerald-400 px-4 py-3">
-          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Të Rregullta</p>
-          <p className="text-base font-bold text-gray-700">- {fmt(recurTotal)}</p>
-          <p className="text-[11px] text-gray-400 mt-0.5">{recurringItems.length} aktive</p>
+        <div className="bg-white rounded-2xl border border-gray-200/90 shadow-sm px-4 py-4">
+          <div className="flex items-center gap-1.5 mb-1">
+            <RefreshCw size={12} className="text-emerald-500" />
+            <p className="text-xs text-gray-500 font-bold">Të Rregullta</p>
+          </div>
+          <p className="text-2xl font-black font-mono tracking-tight text-gray-900">- {fmt(recurTotal)}</p>
+          <p className="text-[11px] text-gray-400 mt-1">{recurringItems.length} shpenzime aktive</p>
         </div>
       </div>
 
@@ -625,107 +638,110 @@ export default function ExpensesPage() {
       {recurringItems.length > 0 && (
         <div className="mb-6">
           <div className="flex items-center gap-2 mb-3">
-            <RefreshCw size={14} className="text-blue-500" />
-            <h3 className="text-sm font-bold text-gray-700">Shpenzime të Rregullta</h3>
-            <span className="bg-blue-50 text-blue-500 text-xs font-bold px-2 py-0.5 rounded-full">{recurringItems.length} aktive</span>
+            <RefreshCw size={16} className="text-blue-500" />
+            <h3 className="text-sm font-bold text-blue-600 tracking-tight">Shpenzime të Rregullta</h3>
+            <span className="bg-blue-100 text-blue-600 text-[11px] font-extrabold px-2 py-0.5 rounded-full">{recurringItems.length} aktive</span>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             {recurringItems.map(e => (
-              <div key={e.id} className="bg-white border border-gray-100 rounded-xl px-4 py-3 flex items-center gap-3 hover:border-blue-200 transition-colors">
-                <div className="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
-                  <RefreshCw size={15} className="text-blue-400" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-gray-800 truncate">{e.type}</p>
-                  <p className="text-xs text-gray-400 truncate">{e.vendor || '—'}</p>
+              <button key={e.id} onClick={() => navigate(`expenses:${e.id}:edit`)} className="text-left bg-white rounded-2xl border border-gray-200/90 shadow-sm px-3.5 py-3 flex items-center justify-between gap-3 hover:shadow-md transition-all cursor-pointer">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-8 h-8 rounded-xl bg-blue-50 text-blue-500 flex items-center justify-center flex-shrink-0">
+                    <RefreshCw size={15} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-bold text-gray-900 truncate">{e.type}</p>
+                    <p className="text-[11px] text-gray-400 truncate">{e.vendor || '—'}</p>
+                  </div>
                 </div>
                 <div className="text-right flex-shrink-0">
-                  <p className="text-sm font-bold text-blue-500">- {fmt(e.amount)}</p>
-                  <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${FREQ_COLOR[e.recurringFreq] || 'bg-gray-50 text-gray-400'}`}>
+                  <span className="text-sm font-black font-mono text-blue-600 block">- {fmt(e.amount)}</span>
+                  <span className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md ${FREQ_COLOR[e.recurringFreq] || 'bg-gray-50 text-gray-400'}`}>
                     {e.recurringFreq}
                   </span>
                 </div>
-              </div>
+              </button>
             ))}
           </div>
         </div>
       )}
 
       {/* Filtrat */}
-      <div className="flex flex-wrap items-center gap-2 mb-4">
-        <div className="flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-3 py-2
-                        focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-50 transition-all flex-1 min-w-[160px]">
-          <Search size={14} className="text-gray-400" />
-          <input className="bg-transparent border-none outline-none text-sm text-gray-600 w-full placeholder-gray-400"
+      <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 bg-white p-3 rounded-2xl border border-gray-200/90 shadow-sm mb-5">
+        <div className="relative flex-1 min-w-[160px]">
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          <input className="w-full pl-8 pr-8 py-1.5 text-xs rounded-xl border border-gray-200 bg-gray-50 text-gray-900 placeholder-gray-400 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-50"
             placeholder="Kërko shpenzime..."
             value={search} onChange={e => { setSearch(e.target.value); setPg(1) }} />
           {search && (
-            <button onClick={() => { setSearch(''); setPg(1) }} className="text-gray-300 hover:text-gray-500">
+            <button onClick={() => { setSearch(''); setPg(1) }} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
               <X size={13} />
             </button>
           )}
         </div>
 
-        <select className="bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 outline-none focus:border-blue-400 cursor-pointer"
-          value={partnerFilt} onChange={e => { setPartner(e.target.value); setPg(1) }}>
-          <option value="all">Të dy partnerët</option>
-          <option value="Enndy">Enndy</option>
-          <option value="Belti">Belti</option>
-        </select>
+        <div className="flex flex-wrap items-center gap-2">
+          <select className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 font-semibold outline-none focus:border-blue-400 cursor-pointer"
+            value={partnerFilt} onChange={e => { setPartner(e.target.value); setPg(1) }}>
+            <option value="all">Të dy partnerët</option>
+            <option value="Enndy">Enndy</option>
+            <option value="Belti">Belti</option>
+          </select>
 
-        <select className="bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 outline-none focus:border-blue-400 cursor-pointer max-w-[200px]"
-          value={typeFilt} onChange={e => { setType(e.target.value); setPg(1) }}>
-          <option value="all">Të gjitha llojet</option>
-          {usedTypes.map(t => <option key={t} value={t}>{t}</option>)}
-        </select>
+          <select className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 font-semibold outline-none focus:border-blue-400 cursor-pointer max-w-[200px]"
+            value={typeFilt} onChange={e => { setType(e.target.value); setPg(1) }}>
+            <option value="all">Të gjitha llojet</option>
+            {usedTypes.map(t => <option key={t} value={t}>{t}</option>)}
+          </select>
 
-        <select className="bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 outline-none focus:border-blue-400 cursor-pointer"
-          value={recurFilt} onChange={e => { setRecurFilt(e.target.value); setPg(1) }}>
-          <option value="all">Të gjitha</option>
-          <option value="recurring">Vetëm të rregullta</option>
-          <option value="once">Vetëm njëherësh</option>
-        </select>
+          <select className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 font-semibold outline-none focus:border-blue-400 cursor-pointer"
+            value={recurFilt} onChange={e => { setRecurFilt(e.target.value); setPg(1) }}>
+            <option value="all">Të gjitha</option>
+            <option value="recurring">Vetëm të rregullta</option>
+            <option value="once">Vetëm njëherësh</option>
+          </select>
 
-        <select className="hidden sm:block bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 outline-none focus:border-blue-400 cursor-pointer"
-          value={perPage} onChange={e => { setPerPage(Number(e.target.value)); setPg(1) }}>
-          <option value={25}>25 / faqe</option>
-          <option value={50}>50 / faqe</option>
-          <option value={100}>100 / faqe</option>
-          <option value={200}>200 / faqe</option>
-        </select>
+          <select className="hidden sm:block text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 font-semibold outline-none focus:border-blue-400 cursor-pointer"
+            value={perPage} onChange={e => { setPerPage(Number(e.target.value)); setPg(1) }}>
+            <option value={25}>25 / faqe</option>
+            <option value={50}>50 / faqe</option>
+            <option value={100}>100 / faqe</option>
+            <option value={200}>200 / faqe</option>
+          </select>
 
-        <span className="text-xs text-gray-400 flex items-center gap-1 ml-auto">
-          <Filter size={12} /> {filtered.length}
-          {partnerFilt !== 'all' && <span className="font-semibold text-gray-600 ml-1">· {fmt(total)}</span>}
-        </span>
+          <span className="text-xs font-bold text-gray-400 font-mono px-2 flex items-center gap-1">
+            {filtered.length}
+            {partnerFilt !== 'all' && <span className="text-gray-600">· {fmt(total)}</span>}
+          </span>
+        </div>
       </div>
 
       {/* Mobile Card View - Hidden on sm+ */}
       {paged.length > 0 && (
         <div className="sm:hidden space-y-2 mb-4">
           {paged.map(e => (
-              <div key={e.id} className="bg-white border border-gray-200 rounded-lg p-3">
+              <div key={e.id} className="bg-white rounded-2xl border border-gray-200 shadow-sm p-3">
                 <div className="flex justify-between items-start gap-2">
                   {/* Col 1: Type + Date + Vendor */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5">
-                      <p className="font-bold text-gray-800 text-sm">{e.type}</p>
+                      <p className="font-bold text-gray-900 text-sm">{e.type}</p>
                       {e.recurring && (
-                        <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${FREQ_COLOR[e.recurringFreq] || 'bg-gray-50 text-gray-400'}`}>
+                        <span className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md ${FREQ_COLOR[e.recurringFreq] || 'bg-gray-50 text-gray-400'}`}>
                           {e.recurringFreq}
                         </span>
                       )}
                     </div>
-                    <p className="text-xs text-gray-500 mt-0.5">{formatDate(e.date)}</p>
+                    <p className="text-xs text-gray-500 mt-0.5 font-mono">{formatDate(e.date)}</p>
                     <p className="text-xs text-gray-600 mt-0.5">{e.vendor || '—'}</p>
                   </div>
 
                   {/* Col 2: Amount + Account + Partner */}
                   <div className="text-right">
-                    <p className="font-bold text-blue-500 text-sm">- {fmt(e.amount)}</p>
+                    <p className="font-mono font-bold text-blue-600 text-sm">- {fmt(e.amount)}</p>
                     <p className="text-xs text-gray-500 mt-0.5">{e.paidFrom || '—'}</p>
-                    <span className={`inline-block px-2 py-0.5 rounded text-xs font-bold mt-0.5 ${
-                      e.paidBy === 'Enndy' ? 'bg-blue-50 text-blue-500' : 'bg-purple-50 text-purple-600'
+                    <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold mt-0.5 ${
+                      e.paidBy === 'Enndy' ? 'bg-blue-50 text-blue-600' : 'bg-purple-100 text-purple-600'
                     }`}>
                       {e.paidBy || '—'}
                     </span>
@@ -734,7 +750,7 @@ export default function ExpensesPage() {
                   {/* Col 3: Actions - Dropdown */}
                   <div className="relative flex-shrink-0">
                     <button
-                      className="w-9 h-9 flex items-center justify-center rounded-lg bg-gray-100 text-gray-600 hover:bg-blue-500 hover:text-white transition-all"
+                      className="w-9 h-9 flex items-center justify-center rounded-xl bg-gray-100 text-gray-600 hover:bg-blue-500 hover:text-white transition-colors"
                       onClick={() => setOpenDropdown(openDropdown === e.id ? null : e.id)}
                     >
                       ⋮
@@ -742,9 +758,9 @@ export default function ExpensesPage() {
 
                     {/* Dropdown Menu */}
                     {openDropdown === e.id && (
-                      <div className="absolute right-0 top-full mt-1 w-40 bg-white border border-gray-200 rounded-lg shadow-xl z-50">
+                      <div className="absolute right-0 top-full mt-1 w-40 bg-white border border-gray-200 rounded-xl shadow-xl z-50 overflow-hidden">
                         <button
-                          className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-blue-50 flex items-center gap-2 border-b"
+                          className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-blue-50 flex items-center gap-2 border-b border-gray-100"
                           onClick={() => {
                             openEdit(e)
                             setOpenDropdown(null)
@@ -783,16 +799,16 @@ export default function ExpensesPage() {
           sub="Regjistro shpenzimin e parë"
           action={<button className="btn btn-primary mt-2" onClick={openAdd}><Plus size={14}/>Shpenzim i ri</button>}/>
       ) : (
-        <div className="bg-white rounded-xl border border-gray-100 overflow-hidden hidden sm:block">
+        <div className="bg-white rounded-2xl border border-gray-200/90 shadow-sm overflow-hidden hidden sm:block">
           <div className="overflow-auto" style={{ maxHeight: 'calc(100vh - 420px)' }}>
           <table className="w-full text-sm min-w-[480px]">
             <thead className="sticky top-0 z-10">
-              <tr className="border-b border-gray-100 bg-gray-50">
+              <tr className="border-b border-gray-100 bg-gray-50/50">
                 {[
                   { key: 'date',   label: 'Data',     cls: '' },
                   { key: 'type',   label: 'Për çfarë',cls: '' },
                 ].map(col => (
-                  <th key={col.key} className={`table-th cursor-pointer select-none hover:text-blue-500 ${col.cls}`}
+                  <th key={col.key} className={`px-4 py-3 text-left text-[10px] font-extrabold text-gray-400 uppercase tracking-wider cursor-pointer select-none hover:text-gray-700 ${col.cls}`}
                       onClick={() => toggleSort(col.key)}>
                     <span className="flex items-center gap-1">
                       {col.label}
@@ -800,71 +816,71 @@ export default function ExpensesPage() {
                     </span>
                   </th>
                 ))}
-                <th className="table-th hidden md:table-cell cursor-pointer select-none hover:text-blue-500"
+                <th className="px-4 py-3 text-left text-[10px] font-extrabold text-gray-400 uppercase tracking-wider hidden md:table-cell cursor-pointer select-none hover:text-gray-700"
                     onClick={() => toggleSort('vendor')}>
                   <span className="flex items-center gap-1">
                     Furnitori
                     <span className="text-[10px]">{sortField === 'vendor' ? (sortDir === 'asc' ? '↑' : '↓') : <span className="text-gray-300">↕</span>}</span>
                   </span>
                 </th>
-                <th className="table-th hidden lg:table-cell">Llogaria</th>
-                <th className="table-th hidden md:table-cell">Referenca</th>
-                <th className="table-th cursor-pointer select-none hover:text-blue-500"
+                <th className="px-4 py-3 text-left text-[10px] font-extrabold text-gray-400 uppercase tracking-wider hidden lg:table-cell">Llogaria</th>
+                <th className="px-4 py-3 text-left text-[10px] font-extrabold text-gray-400 uppercase tracking-wider hidden md:table-cell">Referenca</th>
+                <th className="px-4 py-3 text-left text-[10px] font-extrabold text-gray-400 uppercase tracking-wider cursor-pointer select-none hover:text-gray-700"
                     onClick={() => toggleSort('paidBy')}>
                   <span className="flex items-center gap-1">
                     Partneri
                     <span className="text-[10px]">{sortField === 'paidBy' ? (sortDir === 'asc' ? '↑' : '↓') : <span className="text-gray-300">↕</span>}</span>
                   </span>
                 </th>
-                <th className="table-th text-right cursor-pointer select-none hover:text-blue-500"
+                <th className="px-4 py-3 text-right text-[10px] font-extrabold text-gray-400 uppercase tracking-wider cursor-pointer select-none hover:text-gray-700"
                     onClick={() => toggleSort('amount')}>
                   <span className="flex items-center justify-end gap-1">
                     Shuma
                     <span className="text-[10px]">{sortField === 'amount' ? (sortDir === 'asc' ? '↑' : '↓') : <span className="text-gray-300">↕</span>}</span>
                   </span>
                 </th>
-                <th className="table-th w-16 bg-gray-50"/>
+                <th className="px-4 py-3 w-16 bg-gray-50/50"/>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
               {paged.map(e => (
-                <tr key={e.id} className="hover:bg-blue-50/20 transition-colors group">
-                  <td className="table-td text-gray-400 text-xs">{formatDate(e.date)}</td>
-                  <td className="table-td">
+                <tr key={e.id} className="hover:bg-gray-50/80 transition-colors">
+                  <td className="px-4 py-3 font-mono text-gray-400 text-xs">{formatDate(e.date)}</td>
+                  <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
-                      <span className="font-semibold text-gray-800 text-xs">{e.type}</span>
+                      <span className="font-bold text-gray-900 text-xs">{e.type}</span>
                       {e.recurring && (
-                        <span className={`inline-flex items-center gap-0.5 text-[10px] font-bold px-1.5 py-0.5 rounded-full ${FREQ_COLOR[e.recurringFreq] || 'bg-gray-50 text-gray-400'}`}>
+                        <span className={`inline-flex items-center gap-0.5 text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md ${FREQ_COLOR[e.recurringFreq] || 'bg-gray-50 text-gray-400'}`}>
                           <RefreshCw size={8}/> {e.recurringFreq}
                         </span>
                       )}
                     </div>
                   </td>
-                  <td className="table-td text-gray-500 text-xs hidden md:table-cell">
+                  <td className="px-4 py-3 text-gray-500 text-xs hidden md:table-cell">
                     {e.vendor || <span className="text-gray-300">—</span>}
                   </td>
-                  <td className="table-td text-gray-500 text-xs hidden lg:table-cell max-w-[130px] truncate">
+                  <td className="px-4 py-3 text-gray-500 text-xs hidden lg:table-cell max-w-[130px] truncate">
                     {e.paidFrom || <span className="text-gray-300">—</span>}
                   </td>
-                  <td className="table-td text-gray-400 text-xs hidden md:table-cell">
+                  <td className="px-4 py-3 text-gray-400 text-xs hidden md:table-cell">
                     {e.reference || <span className="text-gray-300">—</span>}
                   </td>
-                  <td className="table-td">
-                    <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${
-                      e.paidBy === 'Enndy' ? 'bg-blue-50 text-blue-500' : 'bg-purple-50 text-purple-600'
+                  <td className="px-4 py-3">
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                      e.paidBy === 'Enndy' ? 'bg-blue-50 text-blue-600' : 'bg-purple-100 text-purple-600'
                     }`}>
                       {e.paidBy || '—'}
                     </span>
                   </td>
-                  <td className="table-td text-right font-bold text-blue-500">
+                  <td className="px-4 py-3 text-right font-mono font-bold text-blue-600">
                     - {fmt(e.amount)}
                   </td>
-                  <td className="table-td">
-                    <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button className="icon-btn text-blue-400 hover:bg-blue-50" onClick={() => openEdit(e)} title="Edito">
+                  <td className="px-4 py-3">
+                    <div className="flex items-center justify-end gap-1.5">
+                      <button className="p-1.5 rounded-lg bg-gray-100 text-gray-500 hover:bg-blue-50 hover:text-blue-600 transition-colors" onClick={() => openEdit(e)} title="Edito">
                         ✏
                       </button>
-                      <button className="icon-btn text-blue-300 hover:bg-blue-50 hover:text-blue-500" onClick={() => openDelete(e)} title="Fshi">
+                      <button className="p-1.5 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors" onClick={() => openDelete(e)} title="Fshi">
                         <Trash2 size={14}/>
                       </button>
                     </div>
@@ -877,13 +893,13 @@ export default function ExpensesPage() {
 
           {/* Footer totals - hidden on mobile */}
           {filtered.length > 0 && (
-            <div className="hidden sm:flex items-center justify-between px-5 py-3 border-t border-gray-100 bg-gray-50/40 text-xs">
-              <div className="flex gap-4 text-gray-400">
-                <span>Enndy: <span className="font-bold text-blue-500">- {fmt(filtered.filter(e=>e.paidBy==='Enndy').reduce((s,e)=>s+e.amount,0))}</span></span>
-                <span>Belti: <span className="font-bold text-purple-600">- {fmt(filtered.filter(e=>e.paidBy==='Belti').reduce((s,e)=>s+e.amount,0))}</span></span>
+            <div className="hidden sm:flex items-center justify-between px-5 py-2.5 border-t border-gray-100 bg-gray-50/50 text-xs">
+              <div className="flex gap-4 text-gray-400 font-bold">
+                <span>Enndy: <span className="font-mono text-blue-600">- {fmt(filteredEnndiTotal)}</span></span>
+                <span>Belti: <span className="font-mono text-purple-600">- {fmt(filteredBeltiTotal)}</span></span>
               </div>
-              <span className="font-semibold text-gray-500">
-                Total: <span className="text-blue-500 font-bold">{fmt(total)}</span>
+              <span className="font-bold text-gray-400">
+                Total: <span className="font-mono text-blue-600 text-sm">{fmt(total)}</span>
               </span>
             </div>
           )}
