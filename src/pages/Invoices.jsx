@@ -9,6 +9,8 @@ import { useApp } from '../context/AppContext'
 import { formatDate } from '../utils/dateFormat'
 import { StatusBadge, EmptyState, Pagination } from '../components/UI'
 import FormPageWrapper from '../components/FormPageWrapper'
+import ColumnManagerButton from '../components/ColumnManagerButton'
+import { useColumnPrefs } from '../hooks/useColumnPrefs'
 import InvoiceModal from './InvoiceModal'
 import PaymentModal from './PaymentModal'
 import { downloadTemplate } from '../components/ImportExcelModal'
@@ -17,6 +19,129 @@ import CustomerDetailsModal from './CustomerDetailsModal'
 import MessageLogService from '../services/MessageLogService'
 
 const STATUS_ORDER = { overdue: 0, pending: 1, partial: 1.5, draft: 2, paid: 3, void: 4 }
+
+/* ── Kolonat e tabelës kryesore — të editueshme (shfaq/fshih/rendit) nga çdo user,
+   ruajtur vetëm për llogarinë e tij (shih useColumnPrefs). 'Veprimet' dhe kolona e
+   checkbox-it mbeten fikse në fund, jashtë këtij editori. ── */
+const INVOICE_TABLE_COLUMNS = [
+  { key: 'date',     label: 'Data' },
+  { key: 'id',       label: 'ID' },
+  { key: 'customer', label: 'Klienti' },
+  { key: 'referent', label: 'Referenti' },
+  { key: 'expiry',   label: 'Skadimi Abonimit' },
+  { key: 'amount',   label: 'Shuma' },
+  { key: 'due',      label: 'Afati' },
+  { key: 'status',   label: 'Statusi' },
+]
+
+function renderInvoiceColHeader(col, { sortField, sortDir, toggleSort }) {
+  const sortIcon = key => (
+    <span className="text-[10px]">{sortField === key ? (sortDir === 'asc' ? '↑' : '↓') : <span className="text-gray-300">↕</span>}</span>
+  )
+  switch (col.key) {
+    case 'date':
+      return <th key={col.key} className="table-th hidden sm:table-cell">Data</th>
+    case 'id':
+      return (
+        <th key={col.key} className="table-th cursor-pointer select-none hover:text-blue-500 hidden sm:table-cell" onClick={() => toggleSort('id')}>
+          <span className="flex items-center gap-1">ID {sortIcon('id')}</span>
+        </th>
+      )
+    case 'customer':
+      return (
+        <th key={col.key} className="table-th cursor-pointer select-none hover:text-blue-500" onClick={() => toggleSort('customer')}>
+          <span className="flex items-center gap-1">Klienti {sortIcon('customer')}</span>
+        </th>
+      )
+    case 'referent':
+      return (
+        <th key={col.key} className="table-th cursor-pointer select-none hover:text-blue-500 hidden sm:table-cell" onClick={() => toggleSort('referent')}>
+          <span className="flex items-center gap-1">Referenti {sortIcon('referent')}</span>
+        </th>
+      )
+    case 'expiry':
+      return <th key={col.key} className="table-th sm:table-cell lg:table-cell">Skadimi Abonimit</th>
+    case 'amount':
+      return (
+        <th key={col.key} className="table-th cursor-pointer select-none hover:text-blue-500 text-right" onClick={() => toggleSort('amount')}>
+          <span className="flex items-center justify-end gap-1">Shuma {sortIcon('amount')}</span>
+        </th>
+      )
+    case 'due':
+      return <th key={col.key} className="table-th hidden lg:table-cell">Afati</th>
+    case 'status':
+      return (
+        <th key={col.key} className="table-th cursor-pointer select-none hover:text-blue-500" onClick={() => toggleSort('status')}>
+          <span className="flex items-center gap-1">Statusi {sortIcon('status')}</span>
+        </th>
+      )
+    default:
+      return null
+  }
+}
+
+function renderInvoiceColCell(col, inv, { isOverdue, fmt, hasLongOverdue, getCustomerType, setPreview }) {
+  switch (col.key) {
+    case 'date':
+      return <td key={col.key} className="table-td font-mono text-gray-400 hidden sm:table-cell">{formatDate(inv.date)}</td>
+    case 'id':
+      return (
+        <td key={col.key} className="table-td hidden sm:table-cell cursor-pointer" onClick={() => setPreview(inv.id)}>
+          <span className="font-mono font-bold text-xs text-gray-800 bg-gray-100 px-2 py-0.5 rounded border border-gray-200">{inv.id}</span>
+        </td>
+      )
+    case 'customer':
+      return (
+        <td key={col.key} className="table-td font-medium text-gray-800 cursor-pointer" onClick={() => setPreview(inv.id)}>
+          <div className="flex items-center gap-1.5">
+            {inv.customer}
+            {hasLongOverdue(inv.customer) && (
+              <span className="text-red-600 flex-shrink-0" title="Fatura më shumë se 3 javë të vonuara">▲</span>
+            )}
+            {getCustomerType(inv.customer) === 'reseller' && (
+              <span className="text-[10px] font-bold px-1.5 py-0.5 bg-purple-100 text-purple-600 rounded-full flex-shrink-0">Reseller</span>
+            )}
+          </div>
+        </td>
+      )
+    case 'referent':
+      return (
+        <td key={col.key} className="table-td hidden sm:table-cell text-sm">
+          {inv.referent ? (
+            <span className="px-2.5 py-1 bg-indigo-50 text-indigo-700 rounded-full text-xs font-medium">
+              {inv.referent}
+            </span>
+          ) : (
+            <span className="text-gray-300 italic text-xs">—</span>
+          )}
+        </td>
+      )
+    case 'expiry':
+      return (
+        <td key={col.key} className="table-td sm:table-cell lg:table-cell text-sm font-medium">
+          {inv.subscriptionExpiry ? (
+            <span className="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-600 rounded font-mono text-xs">
+              {formatDate(inv.subscriptionExpiry)}
+            </span>
+          ) : (
+            <span className="text-gray-300 italic text-xs">—</span>
+          )}
+        </td>
+      )
+    case 'amount':
+      return <td key={col.key} className="table-td font-mono font-bold text-right text-gray-800">{fmt(inv.amount)}</td>
+    case 'due':
+      return (
+        <td key={col.key} className={`table-td font-mono hidden lg:table-cell ${isOverdue ? 'text-red-500 font-semibold' : 'text-gray-400'}`}>
+          {formatDate(inv.due)}
+        </td>
+      )
+    case 'status':
+      return <td key={col.key} className="table-td"><StatusBadge status={isOverdue && inv.status !== 'paid' && inv.status !== 'void' ? 'overdue' : inv.status}/></td>
+    default:
+      return null
+  }
+}
 
 /* ── helpers ─────────────────────────────────────────── */
 const cleanPhone = p => (p || '').replace(/[\s+\-()]/g, '')
@@ -1015,6 +1140,7 @@ export default function Invoices() {
   const [selected,     setSelected] = useState(new Set()) // Selected invoices for bulk delete
   const [confirmDelAll, setConfirmDelAll] = useState(false) // Confirmation dialog for bulk delete
   const [deletingInvoiceId, setDeletingInvoiceId] = useState(null) // Track which invoice is being deleted from dropdown
+  const { columns: invoiceColumns } = useColumnPrefs('invoices', INVOICE_TABLE_COLUMNS)
 
   // Optimize customer lookups: O(1) instead of O(n)
   const customerMap = useMemo(() => new Map(customers.map(c => [c.name, c])), [customers])
@@ -1412,6 +1538,11 @@ export default function Invoices() {
               {hideAmounts ? <EyeOff size={16}/> : <Eye size={16}/>}
             </button>
 
+            {/* Kolonat e tabelës — vetëm në pamjen tabelë, jo mobile (tabela s'shfaqet aty) */}
+            <div className="hidden sm:block">
+              <ColumnManagerButton tableKey="invoices" defaultColumns={INVOICE_TABLE_COLUMNS} />
+            </div>
+
             {/* Export - Icon only - Hidden on mobile */}
             <button
               className="hidden sm:flex w-9 h-9 items-center justify-center rounded-xl bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
@@ -1725,36 +1856,7 @@ export default function Invoices() {
               <table className="w-full min-w-[500px]" style={{ position: 'relative' }}>
                 <thead className="sticky top-0 z-10">
                   <tr className="border-b border-gray-200 bg-gray-50">
-                    <th className="table-th hidden sm:table-cell">Data</th>
-                    {[
-                      { key: 'id',       label: 'ID',     cls: 'hidden sm:table-cell' },
-                      { key: 'customer', label: 'Klienti',cls: '' },
-                      { key: 'referent', label: 'Referenti', cls: 'hidden sm:table-cell' },
-                    ].map(col => (
-                      <th key={col.key} className={`table-th cursor-pointer select-none hover:text-blue-500 ${col.cls}`}
-                          onClick={() => toggleSort(col.key)}>
-                        <span className="flex items-center gap-1">
-                          {col.label}
-                          <span className="text-[10px]">{sortField === col.key ? (sortDir === 'asc' ? '↑' : '↓') : <span className="text-gray-300">↕</span>}</span>
-                        </span>
-                      </th>
-                    ))}
-                    <th className="table-th sm:table-cell lg:table-cell">Skadimi Abonimit</th>
-                    <th className="table-th cursor-pointer select-none hover:text-blue-500 text-right"
-                        onClick={() => toggleSort('amount')}>
-                      <span className="flex items-center justify-end gap-1">
-                        Shuma
-                        <span className="text-[10px]">{sortField === 'amount' ? (sortDir === 'asc' ? '↑' : '↓') : <span className="text-gray-300">↕</span>}</span>
-                      </span>
-                    </th>
-                    <th className="table-th hidden lg:table-cell">Afati</th>
-                    <th className="table-th cursor-pointer select-none hover:text-blue-500"
-                        onClick={() => toggleSort('status')}>
-                      <span className="flex items-center gap-1">
-                        Statusi
-                        <span className="text-[10px]">{sortField === 'status' ? (sortDir === 'asc' ? '↑' : '↓') : <span className="text-gray-300">↕</span>}</span>
-                      </span>
-                    </th>
+                    {invoiceColumns.map(col => renderInvoiceColHeader(col, { sortField, sortDir, toggleSort }))}
                     <th className="table-th text-right">Veprimet</th>
                     <th className="table-th w-8 text-center hidden sm:table-cell">
                       <input
@@ -1779,44 +1881,7 @@ export default function Invoices() {
                         key={inv.id}
                         className={`hover:bg-gray-50 transition-colors group ${selected.has(inv.id) ? 'bg-blue-50' : ''}`}
                       >
-                        <td className="table-td font-mono text-gray-400 hidden sm:table-cell">{formatDate(inv.date)}</td>
-                        <td className="table-td hidden sm:table-cell cursor-pointer" onClick={() => setPreview(inv.id)}>
-                          <span className="font-mono font-bold text-xs text-gray-800 bg-gray-100 px-2 py-0.5 rounded border border-gray-200">{inv.id}</span>
-                        </td>
-                        <td className="table-td font-medium text-gray-800 cursor-pointer" onClick={() => setPreview(inv.id)}>
-                          <div className="flex items-center gap-1.5">
-                            {inv.customer}
-                            {hasLongOverdue(inv.customer) && (
-                              <span className="text-red-600 flex-shrink-0" title="Fatura më shumë se 3 javë të vonuara">▲</span>
-                            )}
-                            {getCustomerType(inv.customer) === 'reseller' && (
-                              <span className="text-[10px] font-bold px-1.5 py-0.5 bg-purple-100 text-purple-600 rounded-full flex-shrink-0">Reseller</span>
-                            )}
-                          </div>
-                        </td>
-                        <td className="table-td hidden sm:table-cell text-sm">
-                          {inv.referent ? (
-                            <span className="px-2.5 py-1 bg-indigo-50 text-indigo-700 rounded-full text-xs font-medium">
-                              {inv.referent}
-                            </span>
-                          ) : (
-                            <span className="text-gray-300 italic text-xs">—</span>
-                          )}
-                        </td>
-                        <td className="table-td sm:table-cell lg:table-cell text-sm font-medium">
-                          {inv.subscriptionExpiry ? (
-                            <span className="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-600 rounded font-mono text-xs">
-                              {formatDate(inv.subscriptionExpiry)}
-                            </span>
-                          ) : (
-                            <span className="text-gray-300 italic text-xs">—</span>
-                          )}
-                        </td>
-                        <td className="table-td font-mono font-bold text-right text-gray-800">{fmt(inv.amount)}</td>
-                        <td className={`table-td font-mono hidden lg:table-cell ${isOverdue ? 'text-red-500 font-semibold' : 'text-gray-400'}`}>
-                          {formatDate(inv.due)}
-                        </td>
-                        <td className="table-td"><StatusBadge status={isOverdue && inv.status !== 'paid' && inv.status !== 'void' ? 'overdue' : inv.status}/></td>
+                        {invoiceColumns.map(col => renderInvoiceColCell(col, inv, { isOverdue, fmt, hasLongOverdue, getCustomerType, setPreview }))}
                         <td className="table-td" onClick={e => e.stopPropagation()}>
                           <div className="flex items-center justify-end">
                             <RowActions
