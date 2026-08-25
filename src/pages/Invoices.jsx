@@ -37,7 +37,7 @@ const INVOICE_TABLE_COLUMNS = [
 // Radhitja e kolonave tërhiqet drejt e nga kokat e tabelës (drag & drop), si alternativë
 // e shpejtë ndaj hapjes së panelit "Kolonat e tabelës". Klikimi për renditje (sort) vazhdon
 // të funksionojë njësoj — draggable s'e prish click-in, vetëm shton edhe tërheqjen.
-function renderInvoiceColHeader(col, { sortField, sortDir, toggleSort, draggedCol, onColDragStart, onColDrop, onColDragEnd }) {
+function renderInvoiceColHeader(col, { sortField, sortDir, toggleSort, draggedCol, dragOverCol, onColDragStart, onColDragOver, onColDrop, onColDragEnd }) {
   const sortIcon = key => (
     <span className="text-[10px]">{sortField === key ? (sortDir === 'asc' ? '↑' : '↓') : <span className="text-gray-300">↕</span>}</span>
   )
@@ -61,18 +61,21 @@ function renderInvoiceColHeader(col, { sortField, sortDir, toggleSort, draggedCo
 
   const sortable = ['id', 'customer', 'referent', 'amount', 'status'].includes(col.key)
   const isDragging = draggedCol === col.key
+  // Shenja e vendit ku do të futet kolona — vetëm kur po tërheq një tjetër mbi këtë
+  const showDropMark = dragOverCol === col.key && draggedCol && draggedCol !== col.key
 
   return (
     <th
       key={col.key}
-      className={`table-th select-none cursor-move ${sortable ? 'cursor-pointer hover:text-blue-500' : ''} ${respCls} ${isDragging ? 'opacity-30' : ''}`}
+      className={`table-th select-none cursor-move relative ${sortable ? 'cursor-pointer hover:text-blue-500' : ''} ${respCls} ${isDragging ? 'opacity-30' : ''} ${showDropMark ? 'bg-blue-50' : ''}`}
       onClick={sortable ? () => toggleSort(col.key) : undefined}
       draggable
       onDragStart={() => onColDragStart(col.key)}
-      onDragOver={e => e.preventDefault()}
-      onDrop={e => { e.preventDefault(); onColDrop(col.key) }}
+      onDragOver={e => { e.preventDefault(); e.stopPropagation(); onColDragOver(col.key) }}
+      onDrop={e => { e.preventDefault(); e.stopPropagation(); onColDrop(col.key) }}
       onDragEnd={onColDragEnd}
     >
+      {showDropMark && <span className="absolute left-0 top-0 bottom-0 w-[3px] bg-blue-500 rounded-full" />}
       {content}
     </th>
   )
@@ -1140,20 +1143,35 @@ export default function Invoices() {
   const [deletingInvoiceId, setDeletingInvoiceId] = useState(null) // Track which invoice is being deleted from dropdown
   const { columns: invoiceColumns, allColumns: allInvoiceColumns, savePrefs: saveInvoiceColumnPrefs } = useColumnPrefs('invoices', INVOICE_TABLE_COLUMNS)
   const [draggedCol, setDraggedCol] = useState(null)
+  const [dragOverCol, setDragOverCol] = useState(null)
 
   // Rendit kolonën e tërhequr pikërisht te pozita e kolonës mbi të cilën u lëshua
   // (futet para saj) — ndikon radhën e RUAJTUR (të gjitha kolonat, jo vetëm ato
   // të dukshme), që kolonat e fshehura të mos i humbin vendin kur rishfaqen.
   const handleColDrop = useCallback((targetKey) => {
-    if (!draggedCol || draggedCol === targetKey) { setDraggedCol(null); return }
+    if (!draggedCol || draggedCol === targetKey) { setDraggedCol(null); setDragOverCol(null); return }
     const order = allInvoiceColumns.map(c => c.key)
     const hidden = allInvoiceColumns.filter(c => c.hidden).map(c => c.key)
     const withoutDragged = order.filter(k => k !== draggedCol)
     const targetIdx = withoutDragged.indexOf(targetKey)
-    if (targetIdx === -1) { setDraggedCol(null); return }
+    if (targetIdx === -1) { setDraggedCol(null); setDragOverCol(null); return }
     withoutDragged.splice(targetIdx, 0, draggedCol)
     saveInvoiceColumnPrefs(withoutDragged, hidden)
     setDraggedCol(null)
+    setDragOverCol(null)
+  }, [draggedCol, allInvoiceColumns, saveInvoiceColumnPrefs])
+
+  // E lëshove kolonën jashtë rreshtit të kokave (diku tjetër në faqe) — e njëjta
+  // logjikë si të çkyçje-shosh checkbox-in e saj te paneli "Kolonat e tabelës".
+  const handleColDropOutside = useCallback(() => {
+    if (!draggedCol) return
+    const order = allInvoiceColumns.map(c => c.key)
+    const hidden = allInvoiceColumns.filter(c => c.hidden).map(c => c.key)
+    if (hidden.length + 1 < order.length) { // mos lejo me fsheh kolonën e fundit të dukshme
+      saveInvoiceColumnPrefs(order, [...hidden, draggedCol])
+    }
+    setDraggedCol(null)
+    setDragOverCol(null)
   }, [draggedCol, allInvoiceColumns, saveInvoiceColumnPrefs])
 
   // Optimize customer lookups: O(1) instead of O(n)
@@ -1530,7 +1548,10 @@ export default function Invoices() {
   }
 
   return (
-    <div>
+    <div
+      onDragOver={e => { if (draggedCol) e.preventDefault() }}
+      onDrop={e => { if (draggedCol) { e.preventDefault(); handleColDropOutside() } }}
+    >
       {/* Header */}
       <div className="flex flex-col gap-6 mb-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -1872,10 +1893,11 @@ export default function Invoices() {
                 <thead className="sticky top-0 z-10">
                   <tr className="border-b border-gray-200 bg-gray-50">
                     {invoiceColumns.map(col => renderInvoiceColHeader(col, {
-                      sortField, sortDir, toggleSort, draggedCol,
+                      sortField, sortDir, toggleSort, draggedCol, dragOverCol,
                       onColDragStart: setDraggedCol,
+                      onColDragOver: setDragOverCol,
                       onColDrop: handleColDrop,
-                      onColDragEnd: () => setDraggedCol(null),
+                      onColDragEnd: () => { setDraggedCol(null); setDragOverCol(null) },
                     }))}
                     <th className="table-th text-right">Veprimet</th>
                     <th className="table-th w-8 text-center hidden sm:table-cell">
