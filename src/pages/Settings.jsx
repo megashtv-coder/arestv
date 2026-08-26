@@ -1,8 +1,15 @@
 import { useState, useRef, useEffect } from 'react'
-import { Save, LogOut, Shield, Bell, Building2, Globe, MessageCircle, Download, Upload, Clock, Trash2 } from 'lucide-react'
+import { Save, LogOut, Shield, Building2, Globe, MessageCircle, Download, Upload, Clock, Trash2 } from 'lucide-react'
 import { Toggle } from '../components/UI'
 import { useApp } from '../context/AppContext'
 import BackupService from '../services/BackupService'
+
+const TIMEZONE_OPTIONS = [
+  'UTC-12', 'UTC-11', 'UTC-10', 'UTC-9', 'UTC-8', 'UTC-7', 'UTC-6', 'UTC-5',
+  'UTC-4', 'UTC-3', 'UTC-2', 'UTC-1', 'UTC+0', 'UTC+1', 'UTC+2', 'UTC+3',
+  'UTC+4', 'UTC+5', 'UTC+5:30', 'UTC+6', 'UTC+7', 'UTC+8', 'UTC+9', 'UTC+9:30',
+  'UTC+10', 'UTC+11', 'UTC+12', 'UTC+13', 'UTC+14',
+]
 
 export default function Settings() {
   const {
@@ -21,14 +28,13 @@ export default function Settings() {
       email: 'info@arestv.ks',
       phone: '+383 44 100 200',
       address: 'Rruga Nënë Tereza 12, Prishtinë',
-      language: 'Shqip (Kosovë)',
-      dateFormat: 'DD/MM/YYYY',
-      timezone: 'UTC+1 (CET)',
+      gjuha: 'Shqip',
+      formatiidatës: 'DD/MM/YYYY',
+      zonakohore: 'UTC+1',
     }
   })
   const [toggles, setToggles] = useState({
-    emailNotif: true, smsNotif: false, autoInvoice: true,
-    twofa: false, darkReports: false, weeklyDigest: true,
+    twofa: false,
     autoWhatsApp: true,
   })
   const [advanceDays, setAdvanceDays] = useState(() => {
@@ -219,18 +225,9 @@ export default function Settings() {
     {
       title: 'Gjuha & Rajoni', icon: Globe,
       rows: [
-        { label: 'Gjuha', sub: 'Shqip (Kosovë)', type: 'field' },
-        { label: 'Formati i datës', sub: 'DD/MM/YYYY', type: 'field' },
-        { label: 'Zona kohore', sub: 'UTC+1 (CET)', type: 'field' },
-      ]
-    },
-    {
-      title: 'Njoftimet', icon: Bell,
-      rows: [
-        { label: 'Njoftime me email', sub: 'Merr email për fatura dhe pagesa', key: 'emailNotif' },
-        { label: 'Njoftime SMS', sub: 'SMS kur faturat janë pranë afatit', key: 'smsNotif' },
-        { label: 'Fatura automatike', sub: 'Dërgo fatura automatikisht', key: 'autoInvoice' },
-        { label: 'Raport javor', sub: 'Merr përmbledhje javore me email', key: 'weeklyDigest' },
+        { label: 'Gjuha', sub: 'Shqip', type: 'select', options: ['Shqip', 'Anglisht', 'Italisht', 'Gjermanisht', 'Frëngjisht'] },
+        { label: 'Formati i datës', sub: 'DD/MM/YYYY', type: 'select', options: ['DD/MM/YYYY', 'MM/DD/YYYY', 'YYYY-MM-DD', 'DD.MM.YYYY', 'DD-MM-YYYY', 'YYYY/MM/DD'] },
+        { label: 'Zona kohore', sub: 'UTC+1', type: 'select', options: TIMEZONE_OPTIONS },
       ]
     },
     {
@@ -243,7 +240,6 @@ export default function Settings() {
       title: 'Siguria', icon: Shield,
       rows: [
         { label: 'Autentifikim 2FA', sub: 'Mbroje llogarinë me dy faktorë', key: 'twofa' },
-        { label: 'Raportet dark mode', sub: 'Shfaq raportet në temë të errët', key: 'darkReports' },
       ]
     },
   ]
@@ -275,7 +271,7 @@ export default function Settings() {
                 <div key={i} className="flex items-center justify-between px-5 py-3.5 border-b border-gray-50 last:border-0 hover:bg-gray-50/50 transition-colors">
                   <div className="flex-1">
                     <p className="text-sm font-semibold text-gray-800">{row.label}</p>
-                    {isEditing && isAdmin && !row.key ? (
+                    {isEditing && isAdmin && row.type === 'field' ? (
                       <input
                         autoFocus
                         className="form-control text-xs mt-1.5 w-full"
@@ -294,12 +290,24 @@ export default function Settings() {
                           }
                         }}
                       />
-                    ) : (
+                    ) : row.type !== 'select' ? (
                       <p className="text-xs text-gray-400 mt-0.5">{companyData[fieldKey] || row.sub}</p>
-                    )}
+                    ) : null}
                   </div>
                   {row.key ? (
                     <Toggle on={toggles[row.key]} onToggle={() => tog(row.key)}/>
+                  ) : row.type === 'select' ? (
+                    <select
+                      className="form-control text-xs w-40 disabled:opacity-50 disabled:cursor-not-allowed"
+                      value={companyData[fieldKey] || row.sub}
+                      disabled={isLockedSection && !isAdmin}
+                      onChange={e => {
+                        setCompanyData(p => ({ ...p, [fieldKey]: e.target.value }))
+                        showToast(`${row.label} u përditësua ✓`)
+                      }}
+                    >
+                      {row.options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                    </select>
                   ) : isLockedSection && !isAdmin ? (
                     <button className="btn btn-outline btn-sm text-xs opacity-50 cursor-not-allowed" disabled>Nuk mund të ndryshohet</button>
                   ) : (

@@ -23,7 +23,6 @@ const PAGE_TITLES = {
   expenses:      'Shpenzimet',
   suppliers:     'Furnitorët',
   reports:       'Raportet',
-  communicationHistory: 'Komunikimet',
   users:         'Përdoruesit',
   settings:      'Cilësimet',
 }

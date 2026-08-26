@@ -561,13 +561,13 @@ export default function Payments() {
           <div className="overflow-auto" style={{ maxHeight: 'calc(100vh - 320px)' }}>
           <table className="w-full text-sm min-w-[560px]">
             <thead className="sticky top-0 z-10">
-              <tr className="border-b border-gray-100 bg-gray-50/50">
+              <tr className="border-b border-gray-200 bg-gray-50">
                 {[
                   { key: 'date',        label: 'Data',    cls: '' },
                   { key: 'invoiceId',   label: 'Fatura',  cls: '' },
                   { key: 'customer',    label: 'Klienti', cls: '' },
                 ].map(col => (
-                  <th key={col.key} className={`px-4 py-3 text-left text-[10px] font-extrabold text-gray-400 uppercase tracking-wider cursor-pointer select-none hover:text-gray-700 ${col.cls}`}
+                  <th key={col.key} className={`table-th cursor-pointer select-none hover:text-gray-700 ${col.cls}`}
                       onClick={() => toggleSort(col.key)}>
                     <span className="flex items-center gap-1">
                       {col.label}
@@ -575,63 +575,63 @@ export default function Payments() {
                     </span>
                   </th>
                 ))}
-                <th className="px-4 py-3 text-right text-[10px] font-extrabold text-gray-400 uppercase tracking-wider cursor-pointer select-none hover:text-gray-700"
+                <th className="table-th text-right cursor-pointer select-none hover:text-gray-700"
                     onClick={() => toggleSort('amount')}>
                   <span className="flex items-center justify-end gap-1">
                     Shuma
                     <span className="text-[10px]">{sortField === 'amount' ? (sortDir === 'asc' ? '↑' : '↓') : <span className="text-gray-300">↕</span>}</span>
                   </span>
                 </th>
-                <th className="px-4 py-3 text-right text-[10px] font-extrabold text-gray-400 uppercase tracking-wider hidden md:table-cell">Fee</th>
-                <th className="px-4 py-3 text-right text-[10px] font-extrabold text-gray-400 uppercase tracking-wider cursor-pointer select-none hover:text-gray-700"
+                <th className="table-th text-right hidden md:table-cell">Fee</th>
+                <th className="table-th text-right cursor-pointer select-none hover:text-gray-700"
                     onClick={() => toggleSort('net')}>
                   <span className="flex items-center justify-end gap-1">
                     Neto
                     <span className="text-[10px]">{sortField === 'net' ? (sortDir === 'asc' ? '↑' : '↓') : <span className="text-gray-300">↕</span>}</span>
                   </span>
                 </th>
-                <th className="px-4 py-3 text-left text-[10px] font-extrabold text-gray-400 uppercase tracking-wider hidden lg:table-cell cursor-pointer select-none hover:text-gray-700"
+                <th className="table-th hidden lg:table-cell cursor-pointer select-none hover:text-gray-700"
                     onClick={() => toggleSort('method')}>
                   <span className="flex items-center gap-1">
                     Metoda
                     <span className="text-[10px]">{sortField === 'method' ? (sortDir === 'asc' ? '↑' : '↓') : <span className="text-gray-300">↕</span>}</span>
                   </span>
                 </th>
-                <th className="px-4 py-3 text-left text-[10px] font-extrabold text-gray-400 uppercase tracking-wider hidden lg:table-cell">Llogaria</th>
-                <th className="px-4 py-3 text-left text-[10px] font-extrabold text-gray-400 uppercase tracking-wider hidden md:table-cell">Referenca</th>
-                <th className="px-4 py-3 text-left text-[10px] font-extrabold text-gray-400 uppercase tracking-wider cursor-pointer select-none hover:text-gray-700"
+                <th className="table-th hidden lg:table-cell">Llogaria</th>
+                <th className="table-th hidden md:table-cell">Referenca</th>
+                <th className="table-th cursor-pointer select-none hover:text-gray-700"
                     onClick={() => toggleSort('depositedTo')}>
                   <span className="flex items-center gap-1">
                     Partneri
                     <span className="text-[10px]">{sortField === 'depositedTo' ? (sortDir === 'asc' ? '↑' : '↓') : <span className="text-gray-300">↕</span>}</span>
                   </span>
                 </th>
-                <th className="px-4 py-3 text-right text-[10px] font-extrabold text-gray-400 uppercase tracking-wider">Veprimet</th>
+                <th className="table-th text-right">Veprimet</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50">
+            <tbody>
               {paged.map(p => (
-                <tr key={p.id} className="hover:bg-gray-50/80 transition-colors">
-                  <td className="px-4 py-3 font-mono text-gray-400 text-xs">{formatDate(p.date)}</td>
-                  <td className="px-4 py-3 font-mono font-bold text-blue-600 text-xs">{p.invoiceId}</td>
-                  <td className="px-4 py-3 font-bold text-gray-900 text-xs max-w-[140px] truncate">{p.customer}</td>
-                  <td className="px-4 py-3 text-right font-mono font-bold text-gray-900">{fmt(p.amount)}</td>
-                  <td className="px-4 py-3 text-right font-mono text-amber-600 text-xs hidden md:table-cell">
+                <tr key={p.id} className="hover:bg-gray-50 transition-colors group">
+                  <td className="table-td font-mono text-xs">{formatDate(p.date)}</td>
+                  <td className="table-td font-mono font-bold text-blue-600 text-xs">{p.invoiceId}</td>
+                  <td className="table-td font-bold text-gray-900 text-xs max-w-[140px] truncate">{p.customer}</td>
+                  <td className="table-td text-right font-mono font-bold text-gray-900">{fmt(p.amount)}</td>
+                  <td className="table-td text-right font-mono text-amber-600 text-xs hidden md:table-cell">
                     {p.fee > 0 ? `- ${fmt(p.fee)}` : <span className="text-gray-300">—</span>}
                   </td>
-                  <td className="px-4 py-3 text-right font-mono font-bold text-emerald-600">{fmt(p.net)}</td>
-                  <td className="px-4 py-3 hidden lg:table-cell">
+                  <td className="table-td text-right font-mono font-bold text-emerald-600">{fmt(p.net)}</td>
+                  <td className="table-td hidden lg:table-cell">
                     <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[11px] font-bold ${METHOD_COLOR[p.method] || 'bg-gray-50 text-gray-600'}`}>
                       {METHOD_ICON[p.method] || '💳'} {p.method}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-xs text-gray-500 hidden lg:table-cell max-w-[130px] truncate">
+                  <td className="table-td text-xs hidden lg:table-cell max-w-[130px] truncate">
                     {p.depositAccount || <span className="text-gray-300">—</span>}
                   </td>
-                  <td className="px-4 py-3 text-xs text-gray-500 hidden md:table-cell">
+                  <td className="table-td text-xs hidden md:table-cell">
                     {p.reference || <span className="text-gray-300">—</span>}
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="table-td">
                     <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
                       p.depositedTo === 'Enndy'
                         ? 'bg-blue-50 text-blue-600'
@@ -642,7 +642,7 @@ export default function Payments() {
                   </td>
 
                   {/* ── Actions cell ── */}
-                  <td className="px-4 py-3 text-right">
+                  <td className="table-td text-right">
                     {deletingId === p.id ? (
                       <div className="flex items-center justify-end gap-1.5">
                         <span className="text-xs text-blue-600 font-semibold whitespace-nowrap">Fshij?</span>

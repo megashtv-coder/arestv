@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import {
   LayoutDashboard, FileText, Users as UsersIcon, Receipt, BarChart2,
   Package, CreditCard, Settings, ChevronRight, X, Bell,
-  Truck, TrendingUp, ChevronLeft, UserCog, LogOut, MessageSquare, CheckSquare,
+  Truck, TrendingUp, ChevronLeft, UserCog, LogOut, CheckSquare,
   Zap,
 } from 'lucide-react'
 import { useApp } from '../context/AppContext'
@@ -65,7 +65,6 @@ export default function Sidebar() {
     // Suppliers only visible if feature enabled
     ...(canAccessSuppliers ? [{ id: 'suppliers', icon: Truck, label: 'Furnitorët' }] : []),
     { id: 'reports',       icon: BarChart2,       label: 'Raportet' },
-    { id: 'communicationHistory', icon: MessageSquare, label: 'Komunikimet' },
     { id: 'ai-chat',       icon: Zap,             label: '🤖 AI Asistenti' },
   ]
 

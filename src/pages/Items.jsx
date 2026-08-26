@@ -488,8 +488,8 @@ export default function Items() {
           <div className="overflow-auto" style={{ maxHeight: 'calc(100vh - 300px)' }}>
           <table className="w-full text-sm">
             <thead className="sticky top-0 z-10">
-              <tr className="border-b border-gray-100 bg-gray-50/50">
-                <th className="text-left px-5 py-3 text-[10px] font-extrabold text-gray-400 uppercase tracking-wider">
+              <tr className="border-b border-gray-200 bg-gray-50">
+                <th className="table-th">
                   <button
                     className="flex items-center gap-1 hover:text-gray-700 transition-colors"
                     onClick={() => toggleSort('name')}
@@ -497,7 +497,7 @@ export default function Items() {
                     Emri <SortIcon k="name" />
                   </button>
                 </th>
-                <th className="text-right px-5 py-3 text-[10px] font-extrabold text-gray-400 uppercase tracking-wider">
+                <th className="table-th text-right">
                   <button
                     className="flex items-center gap-1 hover:text-gray-700 transition-colors ml-auto"
                     onClick={() => toggleSort('salePrice')}
@@ -505,7 +505,7 @@ export default function Items() {
                     Çm. Shitjes <SortIcon k="salePrice" />
                   </button>
                 </th>
-                <th className="text-right px-5 py-3 text-[10px] font-extrabold text-gray-400 uppercase tracking-wider">
+                <th className="table-th text-right">
                   <div className="flex items-center justify-end gap-1.5">
                     {pinUnlocked && (
                       <button
@@ -525,7 +525,7 @@ export default function Items() {
                     </button>
                   </div>
                 </th>
-                <th className="text-right px-5 py-3 text-[10px] font-extrabold text-gray-400 uppercase tracking-wider hidden md:table-cell">
+                <th className="table-th text-right hidden md:table-cell">
                   <div className="flex items-center justify-end gap-1">
                     Marzha
                     {pinUnlocked
@@ -534,16 +534,16 @@ export default function Items() {
                     }
                   </div>
                 </th>
-                <th className="text-left px-5 py-3 text-[10px] font-extrabold text-gray-400 uppercase tracking-wider hidden lg:table-cell">
+                <th className="table-th hidden lg:table-cell">
                   Llogaria Kontabel
                 </th>
-                <th className="text-left px-5 py-3 text-[10px] font-extrabold text-gray-400 uppercase tracking-wider hidden md:table-cell">
+                <th className="table-th hidden md:table-cell">
                   Furnitori
                 </th>
-                <th className="px-5 py-3 w-20" />
+                <th className="table-th w-20" />
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50">
+            <tbody>
               {paged.map(item => {
                 const margin = item.purchasePrice > 0
                   ? ((item.salePrice - item.purchasePrice) / item.salePrice * 100).toFixed(1)
@@ -551,10 +551,10 @@ export default function Items() {
                 return (
                   <tr
                     key={item.id}
-                    className="hover:bg-gray-50/80 transition-colors"
+                    className="hover:bg-gray-50 transition-colors group"
                   >
                     {/* Emri */}
-                    <td className="px-5 py-3.5">
+                    <td className="table-td">
                       <div className="flex items-center gap-3">
                         <div className="w-7 h-7 rounded-xl bg-blue-50 text-blue-500 flex items-center justify-center flex-shrink-0">
                           <Package size={14} />
@@ -567,12 +567,12 @@ export default function Items() {
                     </td>
 
                     {/* Çmimi shitjes */}
-                    <td className="px-5 py-3.5 text-right">
+                    <td className="table-td text-right">
                       <span className="font-mono font-bold text-gray-900">{fmt(item.salePrice)}</span>
                     </td>
 
                     {/* Çmimi blerjes */}
-                    <td className="px-5 py-3.5 text-right">
+                    <td className="table-td text-right">
                       {pinUnlocked
                         ? item.purchasePrice > 0
                           ? <span className="font-mono text-gray-600">{fmt(item.purchasePrice)}</span>
@@ -582,7 +582,7 @@ export default function Items() {
                     </td>
 
                     {/* Marzha */}
-                    <td className="px-5 py-3.5 text-right hidden md:table-cell">
+                    <td className="table-td text-right hidden md:table-cell">
                       {pinUnlocked
                         ? margin !== null
                           ? <span className={`text-xs font-bold px-2 py-1 rounded-full ${
@@ -596,12 +596,12 @@ export default function Items() {
                     </td>
 
                     {/* Llogaria */}
-                    <td className="px-5 py-3.5 hidden lg:table-cell">
+                    <td className="table-td hidden lg:table-cell">
                       <span className="text-xs text-gray-500">{accountLabel(item.account)}</span>
                     </td>
 
                     {/* Furnitori */}
-                    <td className="px-5 py-3.5 hidden md:table-cell">
+                    <td className="table-td hidden md:table-cell">
                       {item.vendor
                         ? <span className="text-xs text-gray-700 font-semibold">{item.vendor}</span>
                         : <span className="text-gray-300 text-xs">—</span>
@@ -609,7 +609,7 @@ export default function Items() {
                     </td>
 
                     {/* Veprimet */}
-                    <td className="px-5 py-3.5">
+                    <td className="table-td">
                       <div className="flex items-center justify-end gap-1.5">
                         <button
                           className="p-1.5 rounded-lg bg-gray-100 text-gray-500 hover:bg-blue-50 hover:text-blue-600 transition-colors"

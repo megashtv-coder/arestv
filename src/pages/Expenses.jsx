@@ -769,12 +769,12 @@ export default function ExpensesPage() {
           <div className="overflow-auto" style={{ maxHeight: 'calc(100vh - 420px)' }}>
           <table className="w-full text-sm min-w-[480px]">
             <thead className="sticky top-0 z-10">
-              <tr className="border-b border-gray-100 bg-gray-50/50">
+              <tr className="border-b border-gray-200 bg-gray-50">
                 {[
                   { key: 'date',   label: 'Data',     cls: '' },
                   { key: 'type',   label: 'Për çfarë',cls: '' },
                 ].map(col => (
-                  <th key={col.key} className={`px-4 py-3 text-left text-[10px] font-extrabold text-gray-400 uppercase tracking-wider cursor-pointer select-none hover:text-gray-700 ${col.cls}`}
+                  <th key={col.key} className={`table-th cursor-pointer select-none hover:text-gray-700 ${col.cls}`}
                       onClick={() => toggleSort(col.key)}>
                     <span className="flex items-center gap-1">
                       {col.label}
@@ -782,37 +782,37 @@ export default function ExpensesPage() {
                     </span>
                   </th>
                 ))}
-                <th className="px-4 py-3 text-left text-[10px] font-extrabold text-gray-400 uppercase tracking-wider hidden md:table-cell cursor-pointer select-none hover:text-gray-700"
+                <th className="table-th hidden md:table-cell cursor-pointer select-none hover:text-gray-700"
                     onClick={() => toggleSort('vendor')}>
                   <span className="flex items-center gap-1">
                     Furnitori
                     <span className="text-[10px]">{sortField === 'vendor' ? (sortDir === 'asc' ? '↑' : '↓') : <span className="text-gray-300">↕</span>}</span>
                   </span>
                 </th>
-                <th className="px-4 py-3 text-left text-[10px] font-extrabold text-gray-400 uppercase tracking-wider hidden lg:table-cell">Llogaria</th>
-                <th className="px-4 py-3 text-left text-[10px] font-extrabold text-gray-400 uppercase tracking-wider hidden md:table-cell">Referenca</th>
-                <th className="px-4 py-3 text-left text-[10px] font-extrabold text-gray-400 uppercase tracking-wider cursor-pointer select-none hover:text-gray-700"
+                <th className="table-th hidden lg:table-cell">Llogaria</th>
+                <th className="table-th hidden md:table-cell">Referenca</th>
+                <th className="table-th cursor-pointer select-none hover:text-gray-700"
                     onClick={() => toggleSort('paidBy')}>
                   <span className="flex items-center gap-1">
                     Partneri
                     <span className="text-[10px]">{sortField === 'paidBy' ? (sortDir === 'asc' ? '↑' : '↓') : <span className="text-gray-300">↕</span>}</span>
                   </span>
                 </th>
-                <th className="px-4 py-3 text-right text-[10px] font-extrabold text-gray-400 uppercase tracking-wider cursor-pointer select-none hover:text-gray-700"
+                <th className="table-th text-right cursor-pointer select-none hover:text-gray-700"
                     onClick={() => toggleSort('amount')}>
                   <span className="flex items-center justify-end gap-1">
                     Shuma
                     <span className="text-[10px]">{sortField === 'amount' ? (sortDir === 'asc' ? '↑' : '↓') : <span className="text-gray-300">↕</span>}</span>
                   </span>
                 </th>
-                <th className="px-4 py-3 w-16 bg-gray-50/50"/>
+                <th className="table-th w-16"/>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50">
+            <tbody>
               {paged.map(e => (
-                <tr key={e.id} className="hover:bg-gray-50/80 transition-colors">
-                  <td className="px-4 py-3 font-mono text-gray-400 text-xs">{formatDate(e.date)}</td>
-                  <td className="px-4 py-3">
+                <tr key={e.id} className="hover:bg-gray-50 transition-colors group">
+                  <td className="table-td font-mono text-xs">{formatDate(e.date)}</td>
+                  <td className="table-td">
                     <div className="flex items-center gap-2">
                       <span className="font-bold text-gray-900 text-xs">{e.type}</span>
                       {e.recurring && (
@@ -822,26 +822,26 @@ export default function ExpensesPage() {
                       )}
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-gray-500 text-xs hidden md:table-cell">
+                  <td className="table-td text-xs hidden md:table-cell">
                     {e.vendor || <span className="text-gray-300">—</span>}
                   </td>
-                  <td className="px-4 py-3 text-gray-500 text-xs hidden lg:table-cell max-w-[130px] truncate">
+                  <td className="table-td text-xs hidden lg:table-cell max-w-[130px] truncate">
                     {e.paidFrom || <span className="text-gray-300">—</span>}
                   </td>
-                  <td className="px-4 py-3 text-gray-400 text-xs hidden md:table-cell">
+                  <td className="table-td text-xs hidden md:table-cell">
                     {e.reference || <span className="text-gray-300">—</span>}
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="table-td">
                     <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
                       e.paidBy === 'Enndy' ? 'bg-blue-50 text-blue-600' : 'bg-purple-100 text-purple-600'
                     }`}>
                       {e.paidBy || '—'}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-right font-mono font-bold text-blue-600">
+                  <td className="table-td text-right font-mono font-bold text-blue-600">
                     - {fmt(e.amount)}
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="table-td">
                     <div className="flex items-center justify-end gap-1.5">
                       <button className="p-1.5 rounded-lg bg-gray-100 text-gray-500 hover:bg-blue-50 hover:text-blue-600 transition-colors" onClick={() => openEdit(e)} title="Edito">
                         ✏
