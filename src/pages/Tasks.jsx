@@ -356,18 +356,11 @@ export default function Tasks() {
 
   return (
     <div className="h-full flex flex-col overflow-hidden bg-gray-50 dark:bg-gray-900/50">
-      {/* Header */}
+      {/* Header — titulli "Detyrat" tani jeton te header-i global (Header.jsx, kur
+         page === 'tasks'); butoni +Shto Detyrë mbetet këtu (hap një modal lokal,
+         jo një rrugë/route, prandaj s'mund të lëvizë te dropdown-i i header-it). */}
       <div className="px-4 sm:px-6 py-5 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 space-y-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-500 flex items-center justify-center flex-shrink-0">
-              <ListTodo size={20} />
-            </div>
-            <div>
-              <h1 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">Detyrat</h1>
-              <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">Menaxhimi i detyrave dhe rikujtimeve për abonimet</p>
-            </div>
-          </div>
+        <div className="flex items-center justify-end">
           <button
             onClick={handleAddTask}
             className="hidden sm:flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-500 hover:bg-blue-600 text-white font-bold text-xs shadow-sm transition-all active:scale-95"

@@ -95,6 +95,13 @@ export function AppProvider({ children }) {
   const [dashboardYear,   setDashboardYear]   = useState(() => new Date().getFullYear().toString())
   const [dashboardHidden, setDashboardHidden] = useState(true)
 
+  /* ── I njëjti trajtim (shih më lart) për Klientët/Pagesat/Shpenzimet ── */
+  const [customersImportOpen, setCustomersImportOpen] = useState(false)
+  const [paymentsExportOpen,  setPaymentsExportOpen]   = useState(false)
+  const [paymentsImportOpen,  setPaymentsImportOpen]   = useState(false)
+  const [expensesExportOpen,  setExpensesExportOpen]   = useState(false)
+  const [expensesImportOpen,  setExpensesImportOpen]   = useState(false)
+
   /* ── Organizations ── */
   const [organizations, setOrganizations] = useState(mockOrganizations)
 
@@ -727,6 +734,11 @@ export function AppProvider({ children }) {
       dashboardMonth,  setDashboardMonth,
       dashboardYear,   setDashboardYear,
       dashboardHidden, setDashboardHidden,
+      customersImportOpen, setCustomersImportOpen,
+      paymentsExportOpen,  setPaymentsExportOpen,
+      paymentsImportOpen,  setPaymentsImportOpen,
+      expensesExportOpen,  setExpensesExportOpen,
+      expensesImportOpen,  setExpensesImportOpen,
       users:           contextUsers,
       setUsers:        isTester ? setTUsers : wrappedSetUsers,
       currentUser,     setCurrentUser,

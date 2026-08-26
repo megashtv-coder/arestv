@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
 import {
-  TrendingUp, TrendingDown, DollarSign, Download, Scale,
+  TrendingUp, TrendingDown, DollarSign, Scale,
   Users, ArrowRight, CheckCircle, ChevronDown, ChevronUp,
   Globe, Clock, Share2,
 } from 'lucide-react'
@@ -1120,16 +1120,8 @@ export default function Reports() {
 
   return (
     <div className="space-y-4">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-gray-200 dark:border-gray-700">
-        <div>
-          <h2 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">Raportet</h2>
-          <p className="text-xs text-gray-500 dark:text-gray-400 font-medium mt-0.5">Pasqyra e plotë e performancës</p>
-        </div>
-        <button className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 font-bold text-xs hover:bg-gray-50 dark:hover:bg-gray-700 shadow-sm transition-colors self-start sm:self-auto">
-          <Download size={14}/>Eksporto
-        </button>
-      </div>
+      {/* Titulli "Raportet" tani jeton te header-i global (Header.jsx, kur
+         page === 'reports'). Butoni "Eksporto" u hoq — s'kishte handler të lidhur. */}
 
       {/* Main tab switcher */}
       <div className="flex gap-1 bg-gray-200/60 dark:bg-gray-800/80 rounded-2xl p-1 overflow-x-auto">

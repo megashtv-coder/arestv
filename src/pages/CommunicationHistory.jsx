@@ -105,12 +105,10 @@ export default function CommunicationHistory() {
 
   return (
     <div>
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h2 className="text-xl font-bold text-gray-800">Përgjagjimi i Komunikimeve</h2>
-          <p className="text-sm text-gray-400 mt-0.5">Historia e të gjitha mesazheve të dërguar tek klientët</p>
-        </div>
+      {/* Titulli "Komunikimet" tani jeton te header-i global (Header.jsx, kur
+         page === 'communicationHistory'); veprimet mbeten këtu (bazohen te
+         gjendja lokale e mesazheve, jo te AppContext). */}
+      <div className="flex items-center justify-end mb-6">
         <div className="flex gap-2">
           <button
             onClick={handleDownloadCSV}

@@ -1,6 +1,6 @@
 import {
   Search, Bell, Moon, Sun, Menu, ChevronDown, Check, Plus, FileText, DollarSign,
-  Eye, EyeOff, Download, FileSpreadsheet, UserPlus, Package, CreditCard, Truck, CalendarDays,
+  Eye, EyeOff, Download, FileSpreadsheet, UserPlus, Package, CreditCard, Truck, CalendarDays, UserCog,
 } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import { currencies } from '../data/mockData'
@@ -8,6 +8,7 @@ import { useState, useEffect, useRef, useMemo } from 'react'
 import ColumnManagerButton from './ColumnManagerButton'
 import { INVOICE_TABLE_COLUMNS } from '../constants/invoiceColumns'
 import { SupplierModal } from './SupplierModal'
+import { UserModal } from './UserModal'
 
 const MONTH_FULL = ['Janar','Shkurt','Mars','Prill','Maj','Qershor','Korrik','Gusht','Shtator','Tetor','Nëntor','Dhjetor']
 
@@ -15,12 +16,14 @@ const PAGE_TITLES = {
   dashboard:     'Dashboard',
   invoices:      'Faturat',
   subscriptions: 'Njoftimet e Abonimit',
+  tasks:         'Detyrat',
   customers:     'Klientët',
   items:         'Produktet',
   payments:      'Pagesat',
   expenses:      'Shpenzimet',
   suppliers:     'Furnitorët',
   reports:       'Raportet',
+  communicationHistory: 'Komunikimet',
   users:         'Përdoruesit',
   settings:      'Cilësimet',
 }
@@ -36,6 +39,9 @@ export default function Header() {
     dashboardMonth, setDashboardMonth,
     dashboardYear, setDashboardYear,
     dashboardHidden, setDashboardHidden,
+    setCustomersImportOpen,
+    setPaymentsExportOpen, setPaymentsImportOpen,
+    setExpensesExportOpen, setExpensesImportOpen,
   } = useApp()
   const [curOpen, setCurOpen] = useState(false)
   const [notifOpen, setNotifOpen] = useState(false)
@@ -230,6 +236,59 @@ export default function Header() {
         </div>
       )}
 
+      {/* Veprimet e faqes Klientët — shfaqen vetëm kur page === 'customers' */}
+      {page === 'customers' && (
+        <div className="flex items-center gap-1 sm:gap-1.5 flex-shrink-0 pr-1 sm:pr-2 mr-0.5 border-r border-blue-200/70 dark:border-gray-700">
+          <button
+            onClick={() => setCustomersImportOpen(true)}
+            title="Importo Excel"
+            className="icon-btn p-1.5 sm:p-2"
+          >
+            <FileSpreadsheet size={16} />
+          </button>
+        </div>
+      )}
+
+      {/* Veprimet e faqes Pagesat — shfaqen vetëm kur page === 'payments' */}
+      {page === 'payments' && (
+        <div className="flex items-center gap-1 sm:gap-1.5 flex-shrink-0 pr-1 sm:pr-2 mr-0.5 border-r border-blue-200/70 dark:border-gray-700">
+          <button
+            onClick={() => setPaymentsExportOpen(true)}
+            title="Eksporto"
+            className="icon-btn p-1.5 sm:p-2"
+          >
+            <Download size={16} />
+          </button>
+          <button
+            onClick={() => setPaymentsImportOpen(true)}
+            title="Importo Excel"
+            className="icon-btn p-1.5 sm:p-2"
+          >
+            <FileSpreadsheet size={16} />
+          </button>
+        </div>
+      )}
+
+      {/* Veprimet e faqes Shpenzimet — shfaqen vetëm kur page === 'expenses' */}
+      {page === 'expenses' && (
+        <div className="flex items-center gap-1 sm:gap-1.5 flex-shrink-0 pr-1 sm:pr-2 mr-0.5 border-r border-blue-200/70 dark:border-gray-700">
+          <button
+            onClick={() => setExpensesExportOpen(true)}
+            title="Eksporto"
+            className="icon-btn p-1.5 sm:p-2"
+          >
+            <Download size={16} />
+          </button>
+          <button
+            onClick={() => setExpensesImportOpen(true)}
+            title="Importo Excel"
+            className="icon-btn p-1.5 sm:p-2"
+          >
+            <FileSpreadsheet size={16} />
+          </button>
+        </div>
+      )}
+
       {/* Quick Add Button - Context Aware */}
       <div className="relative flex-shrink-0">
         <button
@@ -301,6 +360,18 @@ export default function Header() {
               <Truck size={16} />
               Furnitor i Ri
             </button>
+            {currentUser?.role === 'admin' && (
+              <button
+                onClick={() => {
+                  setModal(<UserModal onClose={closeModal} />)
+                  setAddOpen(false)
+                }}
+                className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+              >
+                <UserCog size={16} />
+                Përdorues i Ri
+              </button>
+            )}
           </div>
         )}
       </div>

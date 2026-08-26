@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect, lazy, Suspense } from 'react'
 import {
   CreditCard, Download, Search, X,
-  Pencil, Trash2, FileSpreadsheet, Plus, Users, CheckCircle2,
+  Pencil, Trash2, Plus, Users, CheckCircle2,
 } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import { formatDate } from '../utils/dateFormat'
@@ -232,6 +232,8 @@ export default function Payments() {
     closeModal,
     showToast, fmt,
     page, navigate, logActivity,
+    paymentsExportOpen: showExport, setPaymentsExportOpen: setShowExport,
+    paymentsImportOpen: importOpen, setPaymentsImportOpen: setImportOpen,
   } = useApp()
 
   const [search,      setSearch]    = useState('')
@@ -248,8 +250,6 @@ export default function Payments() {
   const [sortField,   setSortField] = useState('date')
   const [sortDir,     setSortDir]   = useState('desc')
   const [deletingId,  setDeletingId] = useState(null)
-  const [importOpen,  setImportOpen] = useState(false)
-  const [showExport,  setShowExport] = useState(false)
 
   // Detect if we're in form mode (page like "payments:create" or "payments:ID:edit")
   const pageMatch = page.split(':')
@@ -376,44 +376,8 @@ export default function Payments() {
 
   return (
     <div>
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 mb-6 border-b border-gray-200">
-        <div>
-          <h2 className="text-xl font-black text-gray-900 flex items-center gap-2 tracking-tight">
-            <CreditCard size={20} className="text-blue-500" />
-            Pagesat e Marra
-          </h2>
-          <p className="text-xs text-gray-500 font-medium mt-0.5">{payments.length} pagesa gjithsej</p>
-        </div>
-        <div className="flex items-center gap-1.5">
-          {/* Export - Hidden on mobile */}
-          <button
-            className="hidden sm:flex w-9 h-9 items-center justify-center rounded-xl border border-gray-200 bg-white text-gray-600 hover:bg-gray-100 transition-colors"
-            onClick={() => setShowExport(true)}
-            title="Eksporto"
-          >
-            <Download size={16}/>
-          </button>
-
-          {/* Import - Hidden on mobile */}
-          <button
-            className="hidden sm:flex w-9 h-9 items-center justify-center rounded-xl border border-gray-200 bg-white text-gray-600 hover:bg-gray-100 transition-colors"
-            onClick={() => setImportOpen(true)}
-            title="Importo Excel"
-          >
-            <FileSpreadsheet size={16}/>
-          </button>
-
-          {/* New Payment - Hidden on mobile (see FAB below) */}
-          <button
-            className="hidden sm:flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-500 text-white hover:bg-blue-600 transition-all active:scale-95 font-bold text-xs shadow-sm"
-            onClick={openNewPayment}
-            title="Regjistro Pagesë"
-          >
-            <Plus size={14}/> Regjistro Pagesë
-          </button>
-        </div>
-      </div>
+      {/* Titulli, eksporti, importi dhe +Regjistro Pagesë tani jetojnë te header-i global
+         (Header.jsx, kur page === 'payments'); FAB-i mobil mbetet këtu. */}
 
       {importOpen && (
         <Suspense fallback={null}>

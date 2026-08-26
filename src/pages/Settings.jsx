@@ -250,11 +250,8 @@ export default function Settings() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h2 className="text-xl font-bold text-gray-800">Cilësimet</h2>
-          <p className="text-sm text-gray-400 mt-0.5">Menaxho preferencat e llogarisë</p>
-        </div>
+      {/* Titulli "Cilësimet" tani jeton te header-i global (Header.jsx, kur page === 'settings'). */}
+      <div className="flex items-center justify-end mb-6">
         <button className="btn btn-primary" onClick={() => showToast('Ndryshimet u ruajtën ✓')}>
           <Save size={15}/>Ruaj ndryshimet
         </button>
