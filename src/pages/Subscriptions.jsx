@@ -436,7 +436,6 @@ export default function Subscriptions() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const totalPending = urgent.length
   const unsent       = urgent.filter(i => !sentIds.has(i.id) && getPhone(i.customer)).length
 
   /* Filtrimi sipas kërkimit — vetëm shfaqja, nuk prek listat/kalkulimet burimore */
@@ -452,48 +451,33 @@ export default function Subscriptions() {
 
   return (
     <div className="space-y-6">
-      {/* Titulli "Njoftimet e Abonimit" tani jeton te header-i global (Header.jsx,
-         kur page === 'subscriptions'); numri i abonimeve/statuset mbeten këtu. */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-gray-200">
-        <div>
-          <div className="flex items-center gap-2 mt-1 flex-wrap">
-            <span className="text-xs text-gray-500 font-medium">{withNotify.length} abonim gjithsej</span>
-            {totalPending > 0 && (
-              <>
-                <span className="text-gray-300">•</span>
-                <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-200/60">
-                  {totalPending} kërkojnë vëmendje sot
-                </span>
-              </>
-            )}
-            {/* Statusi i auto-dërgimit */}
-            {autoStatus === 'sending' && (
-              <span className="flex items-center gap-1.5 text-[11px] text-blue-600 bg-blue-50 border border-blue-100 px-2 py-0.5 rounded-full font-bold">
-                <Loader2 size={12} className="animate-spin" /> Duke dërguar njoftime WA...
-              </span>
-            )}
-            {autoStatus === 'done' && (
-              <span className="flex items-center gap-1.5 text-[11px] text-emerald-600 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-full font-bold">
-                <CheckCircle2 size={12} /> {autoCount} njoftime dërguar ✓
-              </span>
-            )}
-            {autoStatus === 'no-api' && (
-              <span className="flex items-center gap-1.5 text-[11px] text-amber-600 bg-amber-50 border border-amber-100 px-2 py-0.5 rounded-full font-bold">
-                <AlertTriangle size={12} /> WhatsApp API nuk është konfiguruar
-              </span>
-            )}
-            {autoStatus === 'error' && (
-              <span className="flex items-center gap-1.5 text-[11px] text-blue-600 bg-blue-50 border border-blue-100 px-2 py-0.5 rounded-full font-bold">
-                <AlertTriangle size={12} /> Disa njoftime dështuan
-              </span>
-            )}
-          </div>
+      {/* Titulli "Njoftimet e Abonimit" dhe data tani jetojnë te header-i global
+         (Header.jsx, kur page === 'subscriptions'). Numri/badge-i i abonimeve u hoq —
+         statuset e dërgimit real (sending/done/error) mbeten, s'janë thjesht dekorim. */}
+      {(autoStatus === 'sending' || autoStatus === 'done' || autoStatus === 'no-api' || autoStatus === 'error') && (
+        <div className="flex items-center gap-2 flex-wrap pb-2 border-b border-gray-200">
+          {autoStatus === 'sending' && (
+            <span className="flex items-center gap-1.5 text-[11px] text-blue-600 bg-blue-50 border border-blue-100 px-2 py-0.5 rounded-full font-bold">
+              <Loader2 size={12} className="animate-spin" /> Duke dërguar njoftime WA...
+            </span>
+          )}
+          {autoStatus === 'done' && (
+            <span className="flex items-center gap-1.5 text-[11px] text-emerald-600 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-full font-bold">
+              <CheckCircle2 size={12} /> {autoCount} njoftime dërguar ✓
+            </span>
+          )}
+          {autoStatus === 'no-api' && (
+            <span className="flex items-center gap-1.5 text-[11px] text-amber-600 bg-amber-50 border border-amber-100 px-2 py-0.5 rounded-full font-bold">
+              <AlertTriangle size={12} /> WhatsApp API nuk është konfiguruar
+            </span>
+          )}
+          {autoStatus === 'error' && (
+            <span className="flex items-center gap-1.5 text-[11px] text-blue-600 bg-blue-50 border border-blue-100 px-2 py-0.5 rounded-full font-bold">
+              <AlertTriangle size={12} /> Disa njoftime dështuan
+            </span>
+          )}
         </div>
-        <div className="flex items-center gap-2 text-xs font-semibold text-gray-500 bg-white px-3 py-1.5 rounded-xl border border-gray-200 shadow-sm">
-          <Calendar size={14} className="text-blue-500" />
-          <span>Sot: {today}</span>
-        </div>
-      </div>
+      )}
 
       {/* API setup banner */}
       {autoStatus === 'no-api' && (

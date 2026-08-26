@@ -206,7 +206,7 @@ function TaskCard({ task, customers, onEdit, onDelete, onToggle }) {
 
 export default function Tasks() {
   const appContext = useApp() || {}
-  const { customers = [], showToast, logActivity, currentOrg } = appContext
+  const { customers = [], showToast, logActivity, currentOrg, tasksAddOpen, setTasksAddOpen } = appContext
 
   const [tasks, setTasks] = useState([])
   const [showModal, setShowModal] = useState(false)
@@ -260,6 +260,15 @@ export default function Tasks() {
     setEditingTask(null)
     setShowModal(true)
   }
+
+  // "Detyrë e Re" te dropdown-i i header-it global e navigon këtu dhe ngre këtë
+  // flamur (AppContext) — hapim modalin lokal të shtimit dhe e fikim flamurin.
+  useEffect(() => {
+    if (tasksAddOpen) {
+      handleAddTask()
+      setTasksAddOpen(false)
+    }
+  }, [tasksAddOpen])
 
   const handleEditTask = (task) => {
     setEditingTask(task)
@@ -356,28 +365,10 @@ export default function Tasks() {
 
   return (
     <div className="h-full flex flex-col overflow-hidden bg-gray-50 dark:bg-gray-900/50">
-      {/* Header — titulli "Detyrat" tani jeton te header-i global (Header.jsx, kur
-         page === 'tasks'); butoni +Shto Detyrë mbetet këtu (hap një modal lokal,
-         jo një rrugë/route, prandaj s'mund të lëvizë te dropdown-i i header-it). */}
+      {/* Header — titulli "Detyrat" dhe butoni +Shto Detyrë tani jetojnë te header-i
+         global (Header.jsx, kur page === 'tasks'); "Detyrë e Re" te dropdown-i "+"
+         navigon këtu dhe ngre flamurin tasksAddOpen (shih useEffect më lart). */}
       <div className="px-4 sm:px-6 py-5 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 space-y-4">
-        <div className="flex items-center justify-end">
-          <button
-            onClick={handleAddTask}
-            className="hidden sm:flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-500 hover:bg-blue-600 text-white font-bold text-xs shadow-sm transition-all active:scale-95"
-            title="Detyrë e re"
-          >
-            <Plus size={14} />
-            <span>Shto Detyrë</span>
-          </button>
-          <button
-            onClick={handleAddTask}
-            className="sm:hidden w-11 h-11 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-full transition-all shadow-md flex items-center justify-center"
-            title="Detyrë e re"
-          >
-            <Plus size={22} />
-          </button>
-        </div>
-
         {/* Stats Strip */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           <div className="bg-sky-50 dark:bg-sky-900/20 border border-sky-100 dark:border-sky-900/40 rounded-2xl p-3">

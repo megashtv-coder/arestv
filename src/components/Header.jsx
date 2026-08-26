@@ -1,6 +1,6 @@
 import {
   Search, Bell, Moon, Sun, Menu, ChevronDown, Check, Plus, FileText, DollarSign,
-  Eye, EyeOff, Download, FileSpreadsheet, UserPlus, Package, CreditCard, Truck, CalendarDays, UserCog,
+  Eye, EyeOff, Download, FileSpreadsheet, UserPlus, Package, CreditCard, Truck, CalendarDays, UserCog, ListTodo,
 } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import { currencies } from '../data/mockData'
@@ -42,6 +42,7 @@ export default function Header() {
     setCustomersImportOpen,
     setPaymentsExportOpen, setPaymentsImportOpen,
     setExpensesExportOpen, setExpensesImportOpen,
+    setTasksAddOpen,
   } = useApp()
   const [curOpen, setCurOpen] = useState(false)
   const [notifOpen, setNotifOpen] = useState(false)
@@ -184,6 +185,14 @@ export default function Header() {
         </div>
       )}
 
+      {/* Data e sotme — shfaqet vetëm kur page === 'subscriptions' */}
+      {page === 'subscriptions' && (
+        <div className="hidden sm:flex items-center gap-1.5 flex-shrink-0 pr-1 sm:pr-2 mr-0.5 border-r border-blue-200/70 dark:border-gray-700 text-xs font-semibold text-gray-600 dark:text-gray-300">
+          <CalendarDays size={14} className="text-blue-500 flex-shrink-0" />
+          <span>Sot: {new Date().toISOString().slice(0, 10)}</span>
+        </div>
+      )}
+
       {/* Search - hidden on mobile */}
       <div className="hidden lg:flex items-center gap-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2 w-48 focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-50 transition-all flex-shrink-0">
         <Search size={14} className="text-gray-400 flex-shrink-0" />
@@ -218,18 +227,20 @@ export default function Header() {
           >
             {invoicesHidden ? <EyeOff size={16} /> : <Eye size={16} />}
           </button>
-          <ColumnManagerButton tableKey="invoices" defaultColumns={INVOICE_TABLE_COLUMNS} />
+          <div className="hidden sm:block">
+            <ColumnManagerButton tableKey="invoices" defaultColumns={INVOICE_TABLE_COLUMNS} />
+          </div>
           <button
             onClick={() => setInvoicesExportOpen(true)}
             title="Eksporto"
-            className="icon-btn p-1.5 sm:p-2"
+            className="hidden sm:flex icon-btn p-1.5 sm:p-2"
           >
             <Download size={16} />
           </button>
           <button
             onClick={() => setInvoicesImportOpen(true)}
             title="Importo"
-            className="icon-btn p-1.5 sm:p-2"
+            className="hidden sm:flex icon-btn p-1.5 sm:p-2"
           >
             <FileSpreadsheet size={16} />
           </button>
@@ -319,6 +330,17 @@ export default function Header() {
             >
               <DollarSign size={16} />
               Shpenzim i Ri
+            </button>
+            <button
+              onClick={() => {
+                navigate('tasks')
+                setTasksAddOpen(true)
+                setAddOpen(false)
+              }}
+              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+            >
+              <ListTodo size={16} />
+              Detyrë e Re
             </button>
             <button
               onClick={() => {

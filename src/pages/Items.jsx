@@ -423,7 +423,68 @@ export default function Items() {
           )}
         />
       ) : (
-        <div className="bg-white rounded-2xl border border-gray-200/90 shadow-sm overflow-hidden">
+        <>
+        {/* Mobile Card View - Hidden on sm+ */}
+        <div className="sm:hidden space-y-2 mb-4">
+          {paged.map(item => {
+            const margin = item.purchasePrice > 0
+              ? ((item.salePrice - item.purchasePrice) / item.salePrice * 100).toFixed(1)
+              : null
+            return (
+              <div key={item.id} className="bg-white rounded-2xl border border-gray-200 shadow-sm p-3">
+                <div className="flex justify-between items-start gap-2">
+                  {/* Col 1: Emri + llogaria + furnitori */}
+                  <div className="flex-1 min-w-0 cursor-pointer" onClick={() => openEdit(item)}>
+                    <p className="font-bold text-gray-900 text-sm truncate hover:text-blue-500 transition-colors">{item.name}</p>
+                    <p className="text-xs text-gray-500 mt-0.5">{accountLabel(item.account)}</p>
+                    {item.vendor && <p className="text-xs text-gray-400 font-semibold">{item.vendor}</p>}
+                  </div>
+
+                  {/* Col 2: Çmimi + marzha */}
+                  <div className="text-right">
+                    <p className="font-mono font-bold text-gray-900 text-sm">{fmt(item.salePrice)}</p>
+                    {pinUnlocked ? (
+                      margin !== null && (
+                        <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold mt-0.5 ${
+                          Number(margin) >= 30 ? 'bg-emerald-50 text-emerald-600'
+                          : Number(margin) >= 10 ? 'bg-amber-50 text-amber-600'
+                          : 'bg-blue-50 text-blue-500'
+                        }`}>{margin}%</span>
+                      )
+                    ) : (
+                      <span className="text-xs text-gray-300 cursor-pointer" onClick={() => setShowPin(true)}>{masked}</span>
+                    )}
+                  </div>
+
+                  {/* Col 3: Veprimet */}
+                  <div className="relative flex-shrink-0 flex gap-1">
+                    <button
+                      className="w-9 h-9 flex items-center justify-center rounded-xl bg-gray-100 text-gray-500 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                      title="Edito"
+                      onClick={() => openEdit(item)}
+                    >
+                      <Pencil size={16}/>
+                    </button>
+                    <button
+                      className="w-9 h-9 flex items-center justify-center rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors"
+                      title="Fshi"
+                      onClick={() => openDelete(item)}
+                    >
+                      <Trash2 size={16}/>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+
+        {/* Mobile pagination - hidden on sm+ */}
+        <div className="sm:hidden mb-6">
+          <Pagination page={pg} total={filtered.length} perPage={PER_PAGE} onChange={setPg} />
+        </div>
+
+        <div className="bg-white rounded-2xl border border-gray-200/90 shadow-sm overflow-hidden hidden sm:block">
           <div className="overflow-auto" style={{ maxHeight: 'calc(100vh - 300px)' }}>
           <table className="w-full text-sm">
             <thead className="sticky top-0 z-10">
@@ -574,6 +635,7 @@ export default function Items() {
           </div>
           <Pagination page={pg} total={filtered.length} perPage={PER_PAGE} onChange={setPg} />
         </div>
+        </>
       )}
 
       {/* Floating Action Button - Mobile only */}

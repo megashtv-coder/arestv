@@ -102,6 +102,11 @@ export function AppProvider({ children }) {
   const [expensesExportOpen,  setExpensesExportOpen]   = useState(false)
   const [expensesImportOpen,  setExpensesImportOpen]   = useState(false)
 
+  /* ── Aktivizon "+Shto Detyrë" nga header-i global — Tasks.jsx e mban modalin/gjendjen
+     e veta lokale, kjo është vetëm një sinjal që e thërret handleAddTask() atje kur
+     useri klikon "Detyrë e Re" te dropdown-i, edhe nëse s'është ende në faqen Detyrat. ── */
+  const [tasksAddOpen, setTasksAddOpen] = useState(false)
+
   /* ── Organizations ── */
   const [organizations, setOrganizations] = useState(mockOrganizations)
 
@@ -739,6 +744,7 @@ export function AppProvider({ children }) {
       paymentsImportOpen,  setPaymentsImportOpen,
       expensesExportOpen,  setExpensesExportOpen,
       expensesImportOpen,  setExpensesImportOpen,
+      tasksAddOpen, setTasksAddOpen,
       users:           contextUsers,
       setUsers:        isTester ? setTUsers : wrappedSetUsers,
       currentUser,     setCurrentUser,
