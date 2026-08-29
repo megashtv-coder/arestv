@@ -86,7 +86,7 @@ export default function PaymentModal({ invoice, payment: editPayment, onClose, i
   const {
     invoices, setInvoices,
     setPayments, setExpenses,
-    paymentModes, depositAccounts,
+    paymentModes,
     showToast, fmt, logActivity,
   } = useApp()
 
@@ -343,24 +343,6 @@ export default function PaymentModal({ invoice, payment: editPayment, onClose, i
           modes={paymentModes}
         />
       </FormGroup>
-
-      {/* Depozituar te — dropdown - Only for organizations with feature enabled */}
-      {canUseDepositAccounts && (
-        <FormGroup label="Depozituar te">
-          <select
-            className="form-control"
-            value={form.depositAccount}
-            onChange={e => set('depositAccount', e.target.value)}
-          >
-            <option value="">— Zgjidh llogarin —</option>
-            {depositAccounts.map(acc => (
-              <option key={acc} value={acc}>
-                💰 {acc}
-              </option>
-            ))}
-          </select>
-        </FormGroup>
-      )}
 
       {/* Fee + Referenca */}
       <div className="grid grid-cols-2 gap-4">
