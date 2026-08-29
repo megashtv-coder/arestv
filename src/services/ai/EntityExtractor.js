@@ -28,6 +28,14 @@ export function extractEntities(text, context = {}) {
     )
   }
 
+  // "Detyre @Klienti ddmmyyyy Përshkrimi i punës" (create task)
+  const quickTask = extractQuickTaskFields(text, context)
+  if (quickTask) {
+    return Object.fromEntries(
+      Object.entries(quickTask).filter(([_, v]) => v !== null && v !== undefined && v !== '')
+    )
+  }
+
   // "Pagese @Klienti @FormaPageses Shuma Fee @Enndy" (register payment)
   const paymentCommand = extractPaymentCommand(text, context)
   if (paymentCommand) {
@@ -109,6 +117,50 @@ function extractQuickCustomerFields(text) {
 
 function escapeRegex(s) {
   return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
+/**
+ * Parse the quick "create task" command:
+ * "Detyre @Klienti ddmmyyyy Përshkrimi i punës"
+ * Customer is matched against known customers (same lookup style as
+ * extractPaymentCommand — a substring match anywhere in the text, longest
+ * name wins); the date is a standalone 8-digit ddmmyyyy token anywhere in
+ * the text; whatever remains after stripping the keyword, the "@", the
+ * matched customer name, and the date token is the task description.
+ */
+function extractQuickTaskFields(text, context = {}) {
+  const trimmed = text.trim()
+  if (!/^detyr[eë]\b/i.test(trimmed)) return null
+
+  const customers = context.customers || []
+  const customerMatch = customers
+    .filter(c => trimmed.toLowerCase().includes(c.name.toLowerCase()))
+    .sort((a, b) => b.name.length - a.name.length)[0]
+
+  const dateMatch = trimmed.match(/\b(\d{2})(\d{2})(\d{4})\b/)
+  let reminderDate = null
+  if (dateMatch) {
+    const day = parseInt(dateMatch[1], 10)
+    const month = parseInt(dateMatch[2], 10)
+    const year = parseInt(dateMatch[3], 10)
+    if (month >= 1 && month <= 12 && day >= 1 && day <= 31) {
+      const date = new Date(year, month - 1, day)
+      if (date.getMonth() === month - 1 && date.getDate() === day) {
+        reminderDate = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
+      }
+    }
+  }
+
+  let cleaned = trimmed.replace(/^detyr[eë]\b/i, ' ').replace(/@/g, ' ')
+  if (customerMatch) cleaned = cleaned.replace(new RegExp(escapeRegex(customerMatch.name), 'i'), ' ')
+  if (dateMatch) cleaned = cleaned.replace(dateMatch[0], ' ')
+  const description = cleaned.replace(/\s+/g, ' ').trim()
+
+  return {
+    customer: customerMatch?.name || null,
+    reminderDate,
+    description: description || null,
+  }
 }
 
 /**

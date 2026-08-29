@@ -5,6 +5,8 @@
  * this is the step that actually persists it (e.g. creates the invoice).
  */
 
+import { supabase } from '../../lib/supabase'
+
 function generateNextInvoiceId(invoices = []) {
   let maxNum = 0
   invoices.forEach(inv => {
@@ -174,6 +176,45 @@ function executeCreateCustomer(params, appContext) {
   return { success: true, customer, message: `✓ Klienti ${params.name} u shtua me sukses!` }
 }
 
+// Tasks aren't part of AppContext (Tasks.jsx owns its own local state, loaded
+// straight from Supabase on mount) — so unlike the other execute* functions
+// above, this one writes directly to Supabase instead of going through a
+// setXxx from appContext. Tasks.jsx picks it up next time it loads.
+async function executeCreateTask(params, appContext) {
+  const { logActivity } = appContext
+
+  if (!params?.customer) {
+    return { success: false, error: 'Mungon klienti për detyrën.' }
+  }
+  if (!params?.description) {
+    return { success: false, error: 'Mungon përshkrimi i detyrës.' }
+  }
+
+  const reminderDate = params.reminderDate || toISODate(new Date())
+  const newId = `TSK-${Date.now()}`
+
+  const { error } = await supabase.from('tasks').insert([{
+    id: newId,
+    customer: params.customer,
+    description: params.description,
+    completed: false,
+    reminderdate: reminderDate,
+  }])
+
+  if (error) {
+    console.error('[ActionExecutor] Task insert error:', error)
+    return { success: false, error: 'Nuk mund të krijohet detyra: ' + (error.message || 'gabim i panjohur') }
+  }
+
+  logActivity?.(`Krijoi detyrën për ${params.customer} (AI)`, 'Detyrat')
+
+  const [y, m, d] = reminderDate.split('-')
+  return {
+    success: true,
+    message: `✓ Detyra u krijua për ${params.customer} — ${d}/${m}/${y}`,
+  }
+}
+
 // Find the invoice a payment should apply against: the explicit invoiceId if
 // given, otherwise the customer's oldest unpaid (not draft/paid) invoice.
 function findTargetInvoice(params, invoices) {
@@ -308,9 +349,9 @@ function executeRegisterExpense(params, appContext) {
  * Execute an action descriptor produced by ActionRouter.generateAction()
  * @param {Object} action - {action, type, operation, parameters}
  * @param {Object} appContext - App context from useApp()
- * @returns {{success: boolean, message?: string, error?: string, [key: string]: any}}
+ * @returns {Promise<{success: boolean, message?: string, error?: string, [key: string]: any}>}
  */
-export function executeAction(action, appContext) {
+export async function executeAction(action, appContext) {
   if (!action) {
     return { success: false, error: 'Nuk ka veprim për të ekzekutuar.' }
   }
@@ -320,6 +361,8 @@ export function executeAction(action, appContext) {
       return executeCreateInvoice(action.parameters, appContext)
     case 'create_customer':
       return executeCreateCustomer(action.parameters, appContext)
+    case 'create_task':
+      return executeCreateTask(action.parameters, appContext)
     case 'register_payment':
       return executeRegisterPayment(action.parameters, appContext)
     case 'register_expense':

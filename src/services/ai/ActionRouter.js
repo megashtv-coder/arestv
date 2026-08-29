@@ -56,6 +56,9 @@ export function generateAction(intent, entities, context = {}) {
       case 'RENEW_CUSTOMER':
         action = generateRenewCustomer(entities, context)
         break
+      case 'CREATE_TASK':
+        action = generateCreateTask(entities, context)
+        break
 
       // Payment Operations
       case 'REGISTER_PAYMENT':
@@ -263,6 +266,19 @@ function generateCreateCustomer(entities, context) {
       referent: entities.referent || '',
       app: entities.app || '',
       macAddress: entities.macAddress || '',
+    },
+  }
+}
+
+function generateCreateTask(entities, context) {
+  return {
+    action: 'create_task',
+    type: 'TASK',
+    operation: 'CREATE',
+    parameters: {
+      customer: entities.customer,
+      description: entities.description,
+      reminderDate: entities.reminderDate || '',
     },
   }
 }

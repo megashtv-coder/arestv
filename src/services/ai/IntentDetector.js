@@ -56,6 +56,11 @@ const INTENT_PATTERNS = {
     /klient\s+për/i,
     /^shto\s*,/i, // "Shto, Emri Mbiemri, telefoni, shteti, referenti, aplikacioni, mac"
   ],
+
+  // Task Operations
+  CREATE_TASK: [
+    /^detyr[eë]\b/i, // "Detyre @Klienti ddmmyyyy Përshkrimi i punës"
+  ],
   EDIT_CUSTOMER: [
     /ndrysho\s+klient/i,
     /përditëso\s+klient/i,
@@ -241,6 +246,7 @@ export function getIntentLabel(intent) {
     DELETE_CUSTOMER: 'Fshi Klient',
     LIST_CUSTOMERS: 'Listo Klientët',
     RENEW_CUSTOMER: 'Rinovo Klient',
+    CREATE_TASK: 'Krijo Detyrë',
     REGISTER_PAYMENT: 'Regjistro Pagese',
     DELETE_PAYMENT: 'Fshi Pagese',
     LIST_PAYMENTS: 'Listo Pagesat',

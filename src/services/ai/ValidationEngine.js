@@ -136,6 +136,10 @@ function getRequirements(intent) {
       required: ['customer'],
       optional: ['package', 'amount'],
     },
+    CREATE_TASK: {
+      required: ['customer', 'description'],
+      optional: ['reminderDate'],
+    },
     REGISTER_PAYMENT: {
       required: ['amount'],
       optional: ['invoiceId', 'customer', 'paymentMode', 'date', 'fee', 'depositedTo'],
@@ -294,6 +298,7 @@ function generateFollowUpQuestion(intent, entities, missingFields, context = {})
     email: 'Cili është emaili?',
     query: 'Çfarë të kërkosh?',
     period: 'Për cilin muaj?',
+    description: 'Çfarë duhet të bësh?',
   }
 
   return questions[field] || `Çfarë është ${field}?`

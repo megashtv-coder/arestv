@@ -217,10 +217,10 @@ export default function AIChat() {
   /**
    * Accept and execute action
    */
-  const handleAcceptAction = () => {
+  const handleAcceptAction = async () => {
     if (!currentResult?.action) return
 
-    const execResult = executeAction(currentResult.action, appContext)
+    const execResult = await executeAction(currentResult.action, appContext)
 
     setMessages(prev => [...prev, {
       id: `ai-executed-${Date.now()}`,

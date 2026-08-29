@@ -115,7 +115,7 @@ export class AICommandProcessor {
       })
 
       // Auto-accept quick invoice / add-customer commands — no confirm click needed
-      const autoAccept = intentResult.intent === 'QUICK_INVOICE_CUSTOMER' || intentResult.intent === 'CREATE_CUSTOMER'
+      const autoAccept = intentResult.intent === 'QUICK_INVOICE_CUSTOMER' || intentResult.intent === 'CREATE_CUSTOMER' || intentResult.intent === 'CREATE_TASK'
 
       return this.formatResponse({
         success: true,
