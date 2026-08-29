@@ -11,11 +11,12 @@
  */
 
 import React, { useState, useEffect, useRef } from 'react'
-import { Send, X, Loader, AlertCircle, CheckCircle, MessageCircle, Minimize2, Users, Package, HelpCircle, CreditCard, Wallet } from 'lucide-react'
+import { Send, X, Loader, AlertCircle, CheckCircle, MessageCircle, Minimize2, Users, Package, HelpCircle, CreditCard, Wallet, Paperclip } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import { createAICommandProcessor } from '../services/ai/AICommandProcessor'
 import { extractCustomerMentions, extractProductMentions, getReferentCandidates } from '../services/ai/EntityExtractor'
 import { executeAction } from '../services/ai/ActionExecutor'
+import { extractTextFromImage, parseContactFromText } from '../services/ai/ScreenshotParser'
 import { depositedToOptions } from '../data/mockData'
 
 // Action types ActionExecutor actually knows how to run. A rule-based intent
@@ -46,8 +47,13 @@ export default function AIChatFloat() {
   const [productSuggestions, setProductSuggestions] = useState([])
   const [paymentModeSuggestions, setPaymentModeSuggestions] = useState([])
   const [depositedToSuggestions, setDepositedToSuggestions] = useState([])
+  const [ocrProgress, setOcrProgress] = useState('')
+  // Editable draft fields for each pending "photo_extract" message, keyed by
+  // message id — seeded from the OCR parse, tweakable before confirming.
+  const [photoDraft, setPhotoDraft] = useState({})
   const messagesEndRef = useRef(null)
   const inputRef = useRef(null)
+  const fileInputRef = useRef(null)
 
   // Initialize AI processor - only when customers are loaded
   useEffect(() => {
@@ -372,6 +378,116 @@ export default function AIChatFloat() {
     }
   }
 
+  // Screenshot i kontaktit WhatsApp → OCR falas (Tesseract.js, në browser,
+  // pa API) → fusha me rregulla teksti (ScreenshotParser.js) → draft i
+  // editueshëm para regjistrimit. E njëjta rrugë nga dy hyrje: butoni 📎
+  // (handleFileSelected) dhe copy-paste direkt në input (handlePaste).
+  const handleAttachClick = () => fileInputRef.current?.click()
+
+  const updatePhotoDraftField = (msgId, field, value) => {
+    setPhotoDraft(prev => ({ ...prev, [msgId]: { ...prev[msgId], [field]: value } }))
+  }
+
+  const processImageFile = async (file) => {
+    const imageUrl = URL.createObjectURL(file)
+    setMessages(prev => [...prev, {
+      id: `img-${Date.now()}`, type: 'image', imageUrl, timestamp: new Date(),
+    }])
+    setLoading(true)
+    setOcrProgress('Duke lexuar screenshot-in…')
+
+    try {
+      const text = await extractTextFromImage(file, (m) => {
+        if (m.status === 'recognizing text') {
+          setOcrProgress(`Duke lexuar… ${Math.round((m.progress || 0) * 100)}%`)
+        }
+      })
+      const parsed = parseContactFromText(text)
+      const extractMsgId = `extract-${Date.now()}`
+      setPhotoDraft(prev => ({
+        ...prev,
+        [extractMsgId]: {
+          name: parsed.name, phone: parsed.phone, country: parsed.country,
+          app: parsed.app, macAddress: parsed.macAddress,
+        },
+      }))
+      setMessages(prev => [...prev, {
+        id: extractMsgId, type: 'photo_extract', warnings: parsed.warnings, timestamp: new Date(),
+      }])
+    } catch (err) {
+      console.error('OCR error:', err)
+      setMessages(prev => [...prev, {
+        id: `ai-${Date.now()}`, type: 'error',
+        content: 'Nuk munda ta lexoj foton: ' + err.message, timestamp: new Date(),
+      }])
+    } finally {
+      setLoading(false)
+      setOcrProgress('')
+    }
+  }
+
+  const handleFileSelected = (e) => {
+    const file = e.target.files?.[0]
+    e.target.value = '' // lejo rizgjedhjen e të njëjtit file më vonë
+    if (file) processImageFile(file)
+  }
+
+  const handlePaste = (e) => {
+    const items = e.clipboardData?.items
+    if (!items) return
+    const imageItem = Array.from(items).find(item => item.type?.startsWith('image/'))
+    if (!imageItem) return // paste normal — tekst, jo screenshot
+    e.preventDefault()
+    const file = imageItem.getAsFile()
+    if (file) processImageFile(file)
+  }
+
+  const handleConfirmPhotoExtract = (msgId) => {
+    const fields = photoDraft[msgId] || {}
+    if (!fields.name?.trim()) {
+      setMessages(prev => [...prev, {
+        id: `ai-${Date.now()}`, type: 'error', content: 'Mungon emri i klientit.', timestamp: new Date(),
+      }])
+      return
+    }
+    const action = {
+      action: 'create_customer',
+      parameters: {
+        name: fields.name.trim(),
+        phone: fields.phone?.trim() || '',
+        country: fields.country?.trim() || '',
+        app: fields.app?.trim() || '',
+        macAddress: fields.macAddress?.trim() || '',
+      },
+    }
+    const execResult = executeAction(action, appContext)
+    setMessages(prev => [
+      ...prev.filter(m => m.id !== msgId),
+      {
+        id: `ai-${Date.now()}`,
+        type: execResult.success ? 'success' : 'error',
+        content: execResult.success
+          ? (execResult.message || '✓ Klienti u regjistrua!')
+          : (execResult.error || 'Regjistrimi dështoi.'),
+        timestamp: new Date(),
+      },
+    ])
+    setPhotoDraft(prev => {
+      const next = { ...prev }
+      delete next[msgId]
+      return next
+    })
+  }
+
+  const handleDismissPhotoExtract = (msgId) => {
+    setMessages(prev => prev.filter(m => m.id !== msgId))
+    setPhotoDraft(prev => {
+      const next = { ...prev }
+      delete next[msgId]
+      return next
+    })
+  }
+
   return (
     <>
       {/* Float Button */}
@@ -475,11 +591,70 @@ export default function AIChatFloat() {
                     </div>
                   </div>
                 )}
+
+                {msg.type === 'image' && (
+                  <div className="flex justify-end">
+                    <div className="max-w-[180px] rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
+                      <img src={msg.imageUrl} alt="Screenshot i ngarkuar" className="w-full block" />
+                    </div>
+                  </div>
+                )}
+
+                {msg.type === 'photo_extract' && (
+                  <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-3 space-y-2.5">
+                    <p className="font-semibold text-sm text-gray-900 dark:text-gray-50">📇 Gjeta këto të dhëna nga screenshot-i:</p>
+
+                    {msg.warnings?.length > 0 && (
+                      <div className="space-y-0.5">
+                        {msg.warnings.map((w, i) => (
+                          <p key={i} className="text-xs text-amber-600 dark:text-amber-400">⚠ {w}</p>
+                        ))}
+                      </div>
+                    )}
+
+                    <div className="space-y-1.5">
+                      {[
+                        ['name', 'Emri'],
+                        ['phone', 'Telefoni'],
+                        ['country', 'Shteti'],
+                        ['app', 'Aplikacioni'],
+                        ['macAddress', 'MAC'],
+                      ].map(([field, label]) => (
+                        <div key={field} className="flex items-center gap-2">
+                          <label className="w-16 flex-shrink-0 text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wide">{label}</label>
+                          <input
+                            value={photoDraft[msg.id]?.[field] ?? ''}
+                            onChange={e => updatePhotoDraftField(msg.id, field, e.target.value)}
+                            className="flex-1 min-w-0 px-2 py-1 text-sm border border-gray-200 dark:border-gray-600 rounded bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+                          />
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="flex gap-2 pt-1">
+                      <button
+                        onClick={() => handleConfirmPhotoExtract(msg.id)}
+                        className="flex-1 bg-green-500 hover:bg-green-600 text-white text-sm py-1.5 rounded transition-colors"
+                      >
+                        ✓ Regjistro Klientin
+                      </button>
+                      <button
+                        onClick={() => handleDismissPhotoExtract(msg.id)}
+                        className="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-700 text-sm py-1.5 rounded transition-colors dark:text-gray-200"
+                      >
+                        ✗ Anulo
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             ))}
             {loading && (
-              <div className="flex justify-center py-2">
+              <div className="flex flex-col items-center gap-1.5 py-2">
                 <Loader size={18} className="animate-spin text-blue-500" />
+                {ocrProgress && (
+                  <span className="text-[11px] text-gray-400 dark:text-gray-500">{ocrProgress}</span>
+                )}
               </div>
             )}
             <div ref={messagesEndRef} />
@@ -574,11 +749,28 @@ export default function AIChatFloat() {
 
             <div className="flex gap-2">
               <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleFileSelected}
+                className="hidden"
+              />
+              <button
+                type="button"
+                onClick={handleAttachClick}
+                disabled={loading}
+                title="Ngarko screenshot (regjistro klient nga foto)"
+                className="p-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400 hover:text-blue-500 hover:border-blue-300 dark:hover:text-blue-400 transition-colors flex-shrink-0 disabled:opacity-50"
+              >
+                <Paperclip size={18} />
+              </button>
+              <input
                 ref={inputRef}
                 type="text"
                 value={input}
                 onChange={handleInputChange}
-                placeholder="Shkruaj komandë (@Emri, shto klient, etj)..."
+                onPaste={handlePaste}
+                placeholder="Shkruaj komandë ose ngjit (Ctrl+V) një screenshot..."
                 className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-gray-50"
                 disabled={loading}
               />
