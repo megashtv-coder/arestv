@@ -584,8 +584,20 @@ export function AppProvider({ children }) {
     localStorage.setItem('arestv_representatives', JSON.stringify(representatives))
   }, [representatives])
 
-  /* ── Browser history management for page and modal navigation ── */
+  /* ── Browser history management for page and modal navigation ──
+     `navigate()` dhe `handlePopState` më poshtë e vendosin këtë flamur para se
+     të thërrasin setPage kur ata VETË e kanë trajtuar tashmë hyrjen e history-t
+     (navigate() bën pushState-in e vet me query params; popstate d.m.th. hyrja
+     ekziston tashmë). Pa këtë, ky useEffect bënte një pushState TË DYTË për
+     çdo ndryshim page-je — përfshi ndryshimet e ardhura nga vetë butoni Back —
+     duke e "ngrënë" atë hap dhe duke e bërë Back-in të duket sikur s'punon. ── */
+  const skipHistoryPush = useRef(false)
+
   useEffect(() => {
+    if (skipHistoryPush.current) {
+      skipHistoryPush.current = false
+      return
+    }
     // Sync page state with browser URL for back button support
     const url = new URL(window.location)
     if (page !== 'dashboard') {
@@ -593,7 +605,6 @@ export function AppProvider({ children }) {
     } else {
       url.searchParams.delete('page')
     }
-    // Push new state only when page changes
     window.history.pushState({ page, hasModal: !!modal }, '', url.toString())
   }, [page])
 
@@ -620,6 +631,9 @@ export function AppProvider({ children }) {
         // No modal is open, navigate to previous page
         const newPage = state.page || new URL(window.location).searchParams.get('page') || 'dashboard'
         if (newPage !== page) {
+          // Kjo hyrje ekziston tashmë në history (browser-i sapo lëvizi te ajo) —
+          // s'duhet pushState prap, përndryshe hëngram hapin tjetër të Back-ut.
+          skipHistoryPush.current = true
           setPage(newPage)
         }
       }
@@ -675,7 +689,13 @@ export function AppProvider({ children }) {
       return
     }
 
-    setPage(p)
+    // Ndalim useEffect-in e page-it që të mos bëjë pushState të dytë për të
+    // njëjtin ndryshim — por VETËM nëse page-i vërtet po ndryshon, përndryshe
+    // flamuri mbetet "ngecur" true dhe anulon pa dashje ndryshimin e radhës.
+    setPage(prev => {
+      if (prev !== p) skipHistoryPush.current = true
+      return p
+    })
     // Update URL so page state is preserved on refresh
     const url = new URL(window.location)
     url.searchParams.set('page', p)
