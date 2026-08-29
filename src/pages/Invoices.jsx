@@ -1,4 +1,5 @@
-import { useState, useEffect, lazy, Suspense, useMemo, memo, useCallback } from 'react'
+import { useState, useEffect, useRef, lazy, Suspense, useMemo, memo, useCallback } from 'react'
+import { createPortal } from 'react-dom'
 import {
   FileText, Download, Pencil, Trash2, CreditCard,
   MessageCircle, Send, XCircle, X, MessageSquare,
@@ -897,14 +898,42 @@ function KanbanCard({ inv, onOpen, customerMap, hidden }) {
 /* ── Self-contained actions dropdown — isolates open/close state so parent never re-renders ── */
 const RowActions = memo(function RowActions({ inv, canContact, isOverdue, rawPhone, onNavigate, onPayment, onDelete, isMobile }) {
   const [open, setOpen] = useState(false)
+  const [menuPos, setMenuPos] = useState(null)
+  const btnRef = useRef(null)
+  const menuRef = useRef(null)
   const close = useCallback(() => setOpen(false), [])
 
-  // Close on outside click
+  const openMenu = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect()
+    const spaceBelow = window.innerHeight - rect.bottom
+    const openUp = spaceBelow < 260 && rect.top > spaceBelow
+    setMenuPos({
+      left: Math.max(8, rect.right - 208),
+      top: openUp ? null : rect.bottom + 6,
+      bottom: openUp ? window.innerHeight - rect.top + 6 : null,
+    })
+    setOpen(true)
+  }
+
+  /* Menu-ja rendohet me portal jashtë tabelës, prandaj mbyllja në klikim jashtë
+     duhet të kontrollojë edhe butonin edhe vetë menu-në përmes ref-ave. */
   useEffect(() => {
     if (!open) return
-    const handler = () => setOpen(false)
-    document.addEventListener('click', handler)
-    return () => document.removeEventListener('click', handler)
+    const handleClick = (e) => {
+      if (btnRef.current?.contains(e.target)) return
+      if (menuRef.current?.contains(e.target)) return
+      setOpen(false)
+    }
+    const handleKey = (e) => { if (e.key === 'Escape') setOpen(false) }
+    const handleScroll = () => setOpen(false)
+    document.addEventListener('mousedown', handleClick)
+    document.addEventListener('keydown', handleKey)
+    window.addEventListener('scroll', handleScroll, true)
+    return () => {
+      document.removeEventListener('mousedown', handleClick)
+      document.removeEventListener('keydown', handleKey)
+      window.removeEventListener('scroll', handleScroll, true)
+    }
   }, [open])
 
   const msg = canContact ? encodeURIComponent(buildReminderMsg(inv)) : ''
@@ -912,17 +941,22 @@ const RowActions = memo(function RowActions({ inv, canContact, isOverdue, rawPho
   return (
     <div className="relative flex-shrink-0" onClick={e => e.stopPropagation()}>
       <button
+        ref={btnRef}
         className={isMobile
           ? "w-10 h-10 flex items-center justify-center rounded-lg bg-gray-100 text-gray-600 hover:bg-blue-500 hover:text-white"
           : "icon-btn text-gray-400 hover:text-gray-600 hover:bg-gray-100"}
         title="Veprimet"
-        onClick={e => { e.stopPropagation(); setOpen(o => !o) }}
+        onClick={e => { e.stopPropagation(); if (open) { setOpen(false); return }; openMenu(e) }}
       >
         <MoreVertical size={isMobile ? 18 : 16}/>
       </button>
 
-      {open && (
-        <div className={`absolute right-0 top-full mt-1.5 w-52 bg-white border border-gray-200 rounded-xl shadow-xl z-[9999] overflow-hidden`}>
+      {open && menuPos && createPortal(
+        <div
+          ref={menuRef}
+          className="fixed w-52 bg-white border border-gray-200 rounded-xl shadow-xl z-[9999] overflow-hidden"
+          style={{ left: menuPos.left, ...(menuPos.top != null ? { top: menuPos.top } : { bottom: menuPos.bottom }) }}
+        >
           <button
             className="w-full text-left px-3.5 py-2 text-[13px] font-medium text-gray-700 hover:bg-gray-50 flex items-center gap-2 border-b border-gray-100"
             onClick={() => { onNavigate(`invoices:${inv.id}:edit`); close() }}
@@ -978,7 +1012,8 @@ const RowActions = memo(function RowActions({ inv, canContact, isOverdue, rawPho
           >
             <Trash2 size={14}/> Fshi
           </button>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   )
