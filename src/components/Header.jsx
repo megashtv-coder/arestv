@@ -9,6 +9,7 @@ import ColumnManagerButton from './ColumnManagerButton'
 import { INVOICE_TABLE_COLUMNS } from '../constants/invoiceColumns'
 import { SupplierModal } from './SupplierModal'
 import { UserModal } from './UserModal'
+import { supabase } from '../lib/supabase'
 
 const MONTH_FULL = ['Janar','Shkurt','Mars','Prill','Maj','Qershor','Korrik','Gusht','Shtator','Tetor','Nëntor','Dhjetor']
 
@@ -56,6 +57,24 @@ export default function Header() {
   })
   const notifRef = useRef(null)
 
+  // Detyrat s'janë pjesë e AppContext (Tasks.jsx e mban gjendjen e vet lokale,
+  // e ngarkuar direkt nga Supabase) — po e njëjta ngarkesë e thjeshtë si te
+  // Sidebar.jsx (për badge-in e menusë), këtu vetëm për zilen e njoftimeve.
+  const [tasks, setTasks] = useState([])
+  useEffect(() => {
+    const loadTasks = async () => {
+      try {
+        const { data, error } = await supabase.from('tasks').select('*')
+        if (!error && data) {
+          setTasks(data.map(t => ({ ...t, reminderDate: t.reminderdate })))
+        }
+      } catch (e) {
+        console.error('Error loading tasks for notifications:', e)
+      }
+    }
+    loadTasks()
+  }, [])
+
   // Handle search - only navigate on Enter key, not on every character
   const handleSearchInput = (value) => {
     setSearchInput(value)
@@ -100,9 +119,12 @@ export default function Header() {
   }, [notifOpen])
 
   const today       = new Date().toISOString().slice(0, 10)
-  const upcomingNotifications = invoices
-    .filter(i => i.notifyDate && i.notifyDate <= today)
-    .sort((a, b) => new Date(b.notifyDate) - new Date(a.notifyDate))
+  // Vetëm njoftime nga Detyrat — jo më nga skadimet e abonimeve (invoices).
+  // Njësoj si badge-i i menusë te Sidebar.jsx: detyra jo e kryer, me
+  // reminderDate sot ose më herët (vonuar).
+  const upcomingNotifications = tasks
+    .filter(t => !t.completed && t.reminderDate && t.reminderDate <= today)
+    .sort((a, b) => new Date(a.reminderDate) - new Date(b.reminderDate))
 
   const unreadCount = upcomingNotifications.filter(i => !readNotifications[i.id]).length
 
@@ -427,7 +449,7 @@ export default function Header() {
       <div className="relative" ref={notifRef}>
         <button
           className="icon-btn relative"
-          title={unreadCount > 0 ? `${unreadCount} njoftim i palexuar` : 'Njoftimet e abonimit'}
+          title={unreadCount > 0 ? `${unreadCount} njoftim i palexuar` : 'Njoftimet e detyrave'}
           onClick={() => setNotifOpen(v => !v)}
         >
           <Bell size={18} />
@@ -447,7 +469,7 @@ export default function Header() {
             <div className="p-4 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
               <h3 className="font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
                 <Bell size={16} />
-                Njoftimet e Abonimit
+                Njoftimet e Detyrave
               </h3>
               {unreadCount > 0 ? (
                 <button
@@ -469,16 +491,17 @@ export default function Header() {
                   <p className="text-sm text-gray-500 dark:text-gray-400">Nuk ka njoftime</p>
                 </div>
               ) : (
-                upcomingNotifications.map(inv => {
-                  const isRead = readNotifications[inv.id]
-                  const daysLeft = Math.round((new Date(inv.notifyDate) - new Date(today)) / 86400000)
+                upcomingNotifications.map(t => {
+                  const isRead = readNotifications[t.id]
+                  const daysOverdue = Math.round((new Date(today) - new Date(t.reminderDate)) / 86400000)
 
                   return (
                     <button
-                      key={inv.id}
+                      key={t.id}
                       onClick={() => {
-                        setReadNotifications(p => ({ ...p, [inv.id]: true }))
-                        navigate('subscriptions')
+                        setReadNotifications(p => ({ ...p, [t.id]: true }))
+                        navigate('tasks')
+                        setNotifOpen(false)
                       }}
                       className={`w-full px-4 py-3 border-b border-gray-50 dark:border-gray-700 text-left hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors ${
                         isRead ? 'opacity-60' : 'opacity-100 bg-blue-50/30 dark:bg-blue-800/10'
@@ -487,20 +510,16 @@ export default function Header() {
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-semibold text-gray-800 dark:text-gray-100 truncate">
-                            {inv.customer}
+                            {t.customer}
                           </p>
-                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                            Skadon: {inv.subscriptionExpiry}
+                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 truncate">
+                            {t.description}
                           </p>
                         </div>
                         <div className={`text-xs font-semibold whitespace-nowrap flex-shrink-0 ${
-                          daysLeft < 0 ? 'text-blue-600' :
-                          daysLeft === 0 ? 'text-blue-600 font-bold' :
-                          'text-amber-600'
+                          daysOverdue > 0 ? 'text-blue-600' : 'text-blue-600 font-bold'
                         }`}>
-                          {daysLeft < 0 ? `${Math.abs(daysLeft)} ditë më parë` :
-                           daysLeft === 0 ? 'Sot!' :
-                           `${daysLeft}d`}
+                          {daysOverdue > 0 ? `${daysOverdue} ditë vonuar` : 'Sot!'}
                         </div>
                       </div>
                     </button>
@@ -514,7 +533,7 @@ export default function Header() {
               <div className="p-3 border-t border-gray-100 dark:border-gray-700 text-center">
                 <button
                   onClick={() => {
-                    navigate('subscriptions')
+                    navigate('tasks')
                     setNotifOpen(false)
                   }}
                   className="text-sm text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 font-semibold"
