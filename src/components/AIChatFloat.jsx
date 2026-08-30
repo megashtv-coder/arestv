@@ -67,6 +67,18 @@ export default function AIChatFloat() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
 
+  // Fokusi shkon direkt te inputi i tekstit kur hapet chat-i, dhe Esc e mbyll
+  // — pa pasur nevojë të shkosh te butoni X.
+  useEffect(() => {
+    if (!isOpen) return
+    inputRef.current?.focus()
+    const handleEscape = (e) => {
+      if (e.key === 'Escape') setIsOpen(false)
+    }
+    document.addEventListener('keydown', handleEscape)
+    return () => document.removeEventListener('keydown', handleEscape)
+  }, [isOpen])
+
   // Handle @ mentions for customers and products
   const handleInputChange = (e) => {
     const value = e.target.value
