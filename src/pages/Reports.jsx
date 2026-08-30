@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react'
 import {
   TrendingUp, TrendingDown, DollarSign, Scale,
   Users, ArrowRight, CheckCircle, ChevronDown, ChevronUp,
-  Globe, Clock, Share2,
+  Globe, Clock, Share2, CreditCard,
 } from 'lucide-react'
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
@@ -1094,6 +1094,157 @@ function ReferuesitTab() {
 }
 
 /* ══════════════════════════════════════════════════════════
+   TAB 7: Referencat e Pagesave — matricë emri × forma pagese: sa herë është
+   përdorur secili emër te "Referenca (kush pranoi)" për secilën formë, me
+   filtra muaj/vit. Jo i njëjti koncept si "Referuesit" (ai është për klientë
+   të referuar — customer.referredBy); ky është për kush ka pranuar pagesën.
+══════════════════════════════════════════════════════════ */
+function ReferencatPagesaveTab({ payments }) {
+  const { paymentModes } = useApp()
+  const YEARS = [2025, 2026, 2027]
+
+  const [filterMonth, setFilterMonth] = useState('all')
+  const [filterYear, setFilterYear] = useState('all')
+
+  const filtered = useMemo(() => payments.filter(p => {
+    if (!p.reference?.trim()) return false
+    if (filterYear !== 'all' && (p.date || '').slice(0, 4) !== String(filterYear)) return false
+    if (filterMonth !== 'all' && (p.date || '').slice(5, 7) !== filterMonth) return false
+    return true
+  }), [payments, filterMonth, filterYear])
+
+  const { methods, names, counts, amounts } = useMemo(() => {
+    const methods = paymentModes.filter(m => filtered.some(p => p.method === m))
+
+    const nameTotals = {}
+    filtered.forEach(p => {
+      const ref = p.reference.trim()
+      nameTotals[ref] = (nameTotals[ref] || 0) + 1
+    })
+    const names = Object.keys(nameTotals).sort((a, b) => nameTotals[b] - nameTotals[a])
+
+    const counts = {}
+    const amounts = {}
+    names.forEach(n => {
+      counts[n] = {}
+      methods.forEach(m => { counts[n][m] = 0 })
+      amounts[n] = 0
+    })
+    filtered.forEach(p => {
+      const ref = p.reference.trim()
+      counts[ref][p.method]++
+      amounts[ref] += (p.amount || 0)
+    })
+
+    return { methods, names, counts, amounts }
+  }, [filtered, paymentModes])
+
+  const rowTotal = (n) => methods.reduce((s, m) => s + counts[n][m], 0)
+  const colTotal = (m) => names.reduce((s, n) => s + counts[n][m], 0)
+  const grandTotal = filtered.length
+  const grandAmount = filtered.reduce((s, p) => s + (p.amount || 0), 0)
+
+  return (
+    <div className="space-y-4">
+      {/* Filter row */}
+      <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200/90 dark:border-gray-700 shadow-sm p-4 flex flex-wrap items-center gap-3">
+        <select value={filterMonth} onChange={e => setFilterMonth(e.target.value)}
+          className="text-xs px-3 py-1.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 text-gray-900 dark:text-white font-bold outline-none focus:border-blue-400 cursor-pointer">
+          <option value="all">Të gjithë muajt</option>
+          {MONTHS_FULL.map((m, i) => (
+            <option key={m} value={String(i + 1).padStart(2, '0')}>{m}</option>
+          ))}
+        </select>
+        <select value={filterYear} onChange={e => setFilterYear(e.target.value)}
+          className="text-xs px-3 py-1.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 text-gray-900 dark:text-white font-bold outline-none focus:border-blue-400 cursor-pointer">
+          <option value="all">Të gjitha vitet</option>
+          {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
+        </select>
+        <span className="text-[11px] text-gray-400 dark:text-gray-500 sm:ml-auto">
+          Rreshtat = emrat e pranuesve · Kolonat = format e pagesës
+        </span>
+      </div>
+
+      {names.length === 0 ? (
+        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200/90 dark:border-gray-700 shadow-sm p-12 text-center">
+          <CreditCard size={36} className="text-gray-200 dark:text-gray-700 mx-auto mb-3"/>
+          <p className="text-sm font-semibold text-gray-500 dark:text-gray-400">Asnjë pagesë nuk përputhet me filtrat.</p>
+          <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Referencat shfaqen kur plotësohet fusha "Referenca (kush pranoi)" te pagesa.</p>
+        </div>
+      ) : (
+        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200/90 dark:border-gray-700 shadow-sm overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="border-separate border-spacing-0">
+              <thead>
+                <tr>
+                  <th className="sticky left-0 z-10 bg-gray-50 dark:bg-gray-900/60 border-r border-b border-gray-200 dark:border-gray-700 px-3.5 py-2.5 text-left text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wide whitespace-nowrap">
+                    Referuesi \ Forma
+                  </th>
+                  {methods.map(m => (
+                    <th key={m} className="bg-gray-50 dark:bg-gray-900/60 border-b border-gray-200 dark:border-gray-700 px-3.5 py-2.5 text-center text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wide whitespace-nowrap">
+                      {m}
+                    </th>
+                  ))}
+                  <th className="bg-blue-50 dark:bg-blue-900/20 border-l border-b border-gray-200 dark:border-gray-700 px-3.5 py-2.5 text-center text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wide whitespace-nowrap">
+                    Totali
+                  </th>
+                  <th className="bg-emerald-50 dark:bg-emerald-900/20 border-l border-b border-gray-200 dark:border-gray-700 px-3.5 py-2.5 text-center text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wide whitespace-nowrap">
+                    Shuma Totale
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {names.map(n => (
+                  <tr key={n} className="group hover:bg-gray-50 dark:hover:bg-gray-900/40 transition-colors">
+                    <th className="sticky left-0 z-10 bg-white dark:bg-gray-800 group-hover:bg-gray-50 dark:group-hover:bg-gray-900/40 border-r border-b border-gray-100 dark:border-gray-700 px-3.5 py-2.5 text-left text-sm font-bold text-gray-900 dark:text-white whitespace-nowrap transition-colors">
+                      {n}
+                    </th>
+                    {methods.map(m => {
+                      const c = counts[n][m]
+                      return (
+                        <td key={m} className={`border-b border-gray-100 dark:border-gray-700 px-3.5 py-2.5 text-center font-mono text-sm whitespace-nowrap ${
+                          c === 0 ? 'text-gray-200 dark:text-gray-700' : 'font-bold text-gray-900 dark:text-white'
+                        }`}>
+                          {c === 0 ? '–' : c}
+                        </td>
+                      )
+                    })}
+                    <td className="border-l border-b border-gray-100 dark:border-gray-700 bg-blue-50 dark:bg-blue-900/20 px-3.5 py-2.5 text-center font-mono font-black text-blue-600 dark:text-blue-400 whitespace-nowrap">
+                      {rowTotal(n)}
+                    </td>
+                    <td className="border-l border-b border-gray-100 dark:border-gray-700 bg-emerald-50 dark:bg-emerald-900/20 px-3.5 py-2.5 text-center font-mono font-black text-emerald-600 dark:text-emerald-400 whitespace-nowrap">
+                      €{amounts[n].toFixed(2)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+              <tfoot>
+                <tr className="border-t-2 border-gray-200 dark:border-gray-700">
+                  <th className="sticky left-0 z-10 bg-gray-50 dark:bg-gray-900/60 border-r border-gray-200 dark:border-gray-700 px-3.5 py-2.5 text-left text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wide whitespace-nowrap">
+                    Totali
+                  </th>
+                  {methods.map(m => (
+                    <td key={m} className="bg-gray-50 dark:bg-gray-900/60 px-3.5 py-2.5 text-center font-mono font-bold text-gray-700 dark:text-gray-300 whitespace-nowrap">
+                      {colTotal(m)}
+                    </td>
+                  ))}
+                  <td className="border-l border-gray-200 dark:border-gray-700 bg-blue-50 dark:bg-blue-900/20 px-3.5 py-2.5 text-center font-mono font-black text-blue-600 dark:text-blue-400 whitespace-nowrap">
+                    {grandTotal}
+                  </td>
+                  <td className="border-l border-gray-200 dark:border-gray-700 bg-emerald-50 dark:bg-emerald-900/20 px-3.5 py-2.5 text-center font-mono font-black text-emerald-600 dark:text-emerald-400 whitespace-nowrap">
+                    €{grandAmount.toFixed(2)}
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+/* ══════════════════════════════════════════════════════════
    FAQJA KRYESORE
 ══════════════════════════════════════════════════════════ */
 export default function Reports() {
@@ -1108,6 +1259,7 @@ export default function Reports() {
     { id: 'shtetet',    label: 'Shtetet',            icon: Globe      },
     { id: 'abonente',   label: 'Abonentët',          icon: Clock      },
     { id: 'referuesit', label: 'Referuesit',         icon: Share2     },
+    { id: 'referencat', label: 'Referencat Pagesave', icon: CreditCard },
   ]
 
   // Filter tabs based on feature availability
@@ -1145,6 +1297,7 @@ export default function Reports() {
       {mainTab === 'shtetet'    && <ShtetTab/>}
       {mainTab === 'abonente'   && <AbonentVjeterTab/>}
       {mainTab === 'referuesit' && <ReferuesitTab/>}
+      {mainTab === 'referencat' && <ReferencatPagesaveTab payments={payments}/>}
     </div>
   )
 }
