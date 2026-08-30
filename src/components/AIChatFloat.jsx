@@ -79,6 +79,22 @@ export default function AIChatFloat() {
     return () => document.removeEventListener('keydown', handleEscape)
   }, [isOpen])
 
+  // Ctrl+Shift+X hap/mbyll chat-in nga kudo në app — gjithmonë aktiv (jo vetëm
+  // kur isOpen), që të funksionojë edhe si "hape" edhe si "mbylle". Qëllimi:
+  // një mjet i jashtëm (p.sh. AutoHotkey) mund të fokusojë dritaren e AresTV
+  // dhe të dërgojë të njëjtin kombinim tastiere, pa pasur nevojë të klikojë
+  // koordinata ekrani — asnjë varësi nga cili klient/bisedë është hapur.
+  useEffect(() => {
+    const handleToggleShortcut = (e) => {
+      if (e.ctrlKey && e.shiftKey && (e.key === 'X' || e.key === 'x')) {
+        e.preventDefault()
+        setIsOpen(v => !v)
+      }
+    }
+    document.addEventListener('keydown', handleToggleShortcut)
+    return () => document.removeEventListener('keydown', handleToggleShortcut)
+  }, [])
+
   // Handle @ mentions for customers and products
   const handleInputChange = (e) => {
     const value = e.target.value
