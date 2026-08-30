@@ -6,6 +6,7 @@
  */
 
 import { supabase } from '../../lib/supabase'
+import { round2 } from '../../utils/money'
 
 function generateNextInvoiceId(invoices = []) {
   let maxNum = 0
@@ -79,6 +80,7 @@ function executeCreateInvoice(params, appContext) {
 
   const custObj = customers.find(c => c.name === params.customer)
   const newId = generateNextInvoiceId(invoices)
+  const amount = round2(params.amount)
 
   // An explicit expiry date always wins; otherwise derive it from the
   // package's duration (e.g. "12 muaj" -> +12 months from the invoice date).
@@ -106,18 +108,18 @@ function executeCreateInvoice(params, appContext) {
     referent: params.referent || '',
     country: custObj?.country || '',
     email: custObj?.email || '',
-    amount: params.amount,
+    amount,
     due: params.due,
     subscriptionExpiry,
     notifyDate,
     status: params.status || 'pending',
-    items: params.items?.length ? params.items : [{ desc: 'Shërbim', qty: 1, price: params.amount }],
+    items: params.items?.length ? params.items : [{ desc: 'Shërbim', qty: 1, price: amount }],
     discount: null,
     comments: [],
   }
 
   setInvoices(prev => [invoice, ...prev])
-  logActivity?.(`Krijoi faturën ${newId} — ${params.customer} €${params.amount} (AI)`, 'Faturat')
+  logActivity?.(`Krijoi faturën ${newId} — ${params.customer} €${amount} (AI)`, 'Faturat')
 
   return { success: true, invoice, message: `✓ Fatura ${newId} u krijua me sukses!` }
 }
@@ -250,15 +252,16 @@ function executeRegisterPayment(params, appContext) {
     }
   }
 
-  const fee = params.fee || 0
-  const net = params.amount - fee
+  const fee = round2(params.fee || 0)
+  const amount = round2(params.amount)
+  const net = round2(amount - fee)
   const newId = `PAY-${Date.now()}`
 
   const payment = {
     id: newId,
     invoiceId: targetInvoice.id,
     customer: targetInvoice.customer,
-    amount: params.amount,
+    amount,
     fee,
     net,
     date: params.date,
@@ -275,7 +278,7 @@ function executeRegisterPayment(params, appContext) {
 
   setInvoices(prev => prev.map(i => {
     if (i.id !== targetInvoice.id) return i
-    const newPaidAmount = (i.paidAmount || 0) + params.amount
+    const newPaidAmount = round2((i.paidAmount || 0) + amount)
     let status = 'pending'
     if (newPaidAmount >= i.amount) status = 'paid'
     else if (newPaidAmount > 0) status = 'partial'
@@ -301,7 +304,7 @@ function executeRegisterPayment(params, appContext) {
     }, ...prev])
   }
 
-  logActivity?.(`Regjistroi pagesën ${newId} — ${targetInvoice.customer} €${params.amount} (AI)`, 'Pagesat')
+  logActivity?.(`Regjistroi pagesën ${newId} — ${targetInvoice.customer} €${amount} (AI)`, 'Pagesat')
 
   return {
     success: true,

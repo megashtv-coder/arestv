@@ -8,6 +8,7 @@ import {
 } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import { formatDate } from '../utils/dateFormat'
+import { round2 } from '../utils/money'
 import { StatusBadge, EmptyState, Pagination } from '../components/UI'
 import FormPageWrapper from '../components/FormPageWrapper'
 import { useColumnPrefs } from '../hooks/useColumnPrefs'
@@ -252,9 +253,9 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer, customerMap, hi
   const doDeletePayment = () => {
     // Kalkuloj pagesën e mbetur pas fshirjes
     const allPaymentsForInvoice = payments.filter(p => p.invoiceId === inv.id)
-    const remainingAmount = allPaymentsForInvoice
+    const remainingAmount = round2(allPaymentsForInvoice
       .filter(p => p.id !== linkedPayment.id)
-      .reduce((sum, p) => sum + Number(p.amount), 0)
+      .reduce((sum, p) => sum + Number(p.amount), 0))
 
     setPayments(prev => prev.filter(p => p.id !== linkedPayment.id))
     setInvoices(prev => prev.map(i => {
