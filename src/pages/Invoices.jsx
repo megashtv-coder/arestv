@@ -1299,12 +1299,15 @@ export default function Invoices() {
   const normalize = (text) => (text || '').toLowerCase().replace(/[\s_-]/g, ' ').trim()
 
   const filtered = useMemo(() => invoices.filter(i => {
-    // Status filter - special handling for 'overdue'
+    // Status filter - special handling for 'overdue' and 'unpaid'
     if (statusFilter !== 'all') {
       if (statusFilter === 'overdue') {
         // Overdue includes: explicit 'overdue' status OR pending with past due date
         const isOverdue = i.status === 'overdue' || (i.status === 'pending' && i.due && i.due < today)
         if (!isOverdue) return false
+      } else if (statusFilter === 'unpaid') {
+        // "Papaguara Sellers" KPI card — pending or overdue, matches sellerInvoices below
+        if (i.status !== 'pending' && i.status !== 'overdue') return false
       } else {
         if (i.status !== statusFilter) return false
       }
@@ -1419,6 +1422,7 @@ export default function Invoices() {
               <option value="pending">Pritje</option>
               <option value="overdue">Vonuar</option>
               <option value="paid">Paguar</option>
+              <option value="unpaid">Papaguar (Pritje+Vonuar)</option>
               <option value="draft">Draft</option>
               <option value="void">Void</option>
             </select>
@@ -1564,6 +1568,25 @@ export default function Invoices() {
   const paidInvoicesList = filtered.filter(i => i.status === 'paid')
   const paidValue = paidInvoicesList.reduce((sum, i) => sum + (i.amount || 0), 0)
 
+  // KPI cards double as filters for the list below — clicking one sets
+  // statusFilter/typeFilter; clicking the same (already-active) card again
+  // clears back to "all" instead of getting stuck filtered.
+  const toggleStatusFilter = (value) => {
+    setStatus(prev => prev === value ? 'all' : value)
+    setPaginationPage(1)
+  }
+  const isSellerFilterActive = statusFilter === 'unpaid' && typeFilter === 'reseller'
+  const toggleSellerFilter = () => {
+    if (isSellerFilterActive) {
+      setStatus('all')
+      setTypeFilter('all')
+    } else {
+      setStatus('unpaid')
+      setTypeFilter('reseller')
+    }
+    setPaginationPage(1)
+  }
+
   // If in form mode, show only the form
   if (isFormMode) {
     return InvoiceFormPanel
@@ -1589,9 +1612,16 @@ export default function Invoices() {
           </div>
         )}
 
-        {/* KPI cards */}
+        {/* KPI cards — klikueshme, veprojnë si filtra për listën poshtë */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-          <div className="bg-white rounded-2xl p-4 border border-amber-200/80 shadow-sm">
+          <button
+            type="button"
+            onClick={() => toggleStatusFilter('pending')}
+            title="Filtro: fatura në pritje"
+            className={`text-left bg-white rounded-2xl p-4 border shadow-sm cursor-pointer transition-all hover:shadow-md hover:-translate-y-0.5 ${
+              statusFilter === 'pending' ? 'border-amber-400 ring-2 ring-amber-200' : 'border-amber-200/80'
+            }`}
+          >
             <div className="flex items-center justify-between gap-2">
               <span className="text-xs font-medium text-gray-500">Në pritje</span>
               <span className="text-[11px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200 whitespace-nowrap">
@@ -1600,9 +1630,16 @@ export default function Invoices() {
             </div>
             <p className="text-xl sm:text-2xl font-bold text-gray-900 mt-2">{fmt(pendingValue)}</p>
             <p className="text-[11px] text-amber-700 mt-1">Presin arkëtim brenda afatit</p>
-          </div>
+          </button>
 
-          <div className="bg-white rounded-2xl p-4 border border-red-200/80 shadow-sm">
+          <button
+            type="button"
+            onClick={() => toggleStatusFilter('overdue')}
+            title="Filtro: fatura të vonuara"
+            className={`text-left bg-white rounded-2xl p-4 border shadow-sm cursor-pointer transition-all hover:shadow-md hover:-translate-y-0.5 ${
+              statusFilter === 'overdue' ? 'border-red-400 ring-2 ring-red-200' : 'border-red-200/80'
+            }`}
+          >
             <div className="flex items-center justify-between gap-2">
               <span className="text-xs font-medium text-gray-500">Të vonuara</span>
               <span className="text-[11px] font-bold text-red-700 bg-red-50 px-2 py-0.5 rounded-full border border-red-200 whitespace-nowrap">
@@ -1611,9 +1648,16 @@ export default function Invoices() {
             </div>
             <p className="text-xl sm:text-2xl font-bold text-red-600 mt-2">{fmt(overdueValue)}</p>
             <p className="text-[11px] text-red-700 mt-1">Kërkojnë ndjekje urgjente</p>
-          </div>
+          </button>
 
-          <div className="bg-white rounded-2xl p-4 border border-indigo-200/80 shadow-sm">
+          <button
+            type="button"
+            onClick={toggleSellerFilter}
+            title="Filtro: fatura të papaguara të rishitësve"
+            className={`text-left bg-white rounded-2xl p-4 border shadow-sm cursor-pointer transition-all hover:shadow-md hover:-translate-y-0.5 ${
+              isSellerFilterActive ? 'border-indigo-400 ring-2 ring-indigo-200' : 'border-indigo-200/80'
+            }`}
+          >
             <div className="flex items-center justify-between gap-2">
               <span className="text-xs font-medium text-gray-500">Papaguara Sellers</span>
               <span className="text-[11px] font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-full border border-indigo-200 whitespace-nowrap">
@@ -1622,9 +1666,16 @@ export default function Invoices() {
             </div>
             <p className="text-xl sm:text-2xl font-bold text-gray-900 mt-2">{fmt(totalUnpaidSellers)}</p>
             <p className="text-[11px] text-indigo-700 mt-1">Bilanci i rishitësve</p>
-          </div>
+          </button>
 
-          <div className="bg-white rounded-2xl p-4 border border-emerald-200/80 shadow-sm">
+          <button
+            type="button"
+            onClick={() => toggleStatusFilter('paid')}
+            title="Filtro: fatura të paguara"
+            className={`text-left bg-white rounded-2xl p-4 border shadow-sm cursor-pointer transition-all hover:shadow-md hover:-translate-y-0.5 ${
+              statusFilter === 'paid' ? 'border-emerald-400 ring-2 ring-emerald-200' : 'border-emerald-200/80'
+            }`}
+          >
             <div className="flex items-center justify-between gap-2">
               <span className="text-xs font-medium text-gray-500">Të paguara</span>
               <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 whitespace-nowrap">
@@ -1633,7 +1684,7 @@ export default function Invoices() {
             </div>
             <p className="text-xl sm:text-2xl font-bold text-emerald-600 mt-2">{fmt(paidValue)}</p>
             <p className="text-[11px] text-emerald-700 mt-1">Likuiduar me sukses</p>
-          </div>
+          </button>
         </div>
       </div>
       {importOpen && (
@@ -1766,6 +1817,7 @@ export default function Invoices() {
             <option value="paid">Paguar</option>
             <option value="pending">Pritje</option>
             <option value="overdue">Vonuar</option>
+            <option value="unpaid">Papaguar (Pritje+Vonuar)</option>
             <option value="draft">Draft</option>
             <option value="void">Void</option>
           </select>
