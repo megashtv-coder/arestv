@@ -232,6 +232,49 @@ function findTargetInvoice(params, invoices) {
   return null
 }
 
+// Find the invoice to void: the explicit invoiceId if given, otherwise the
+// customer's most recent unpaid invoice ("fatura e fundit qe ka te pa
+// paguar" — latest by date among pending/overdue, not already paid/void/draft).
+function findLatestUnpaidInvoice(params, invoices) {
+  if (params.invoiceId) {
+    return invoices.find(i => i.id === params.invoiceId) || null
+  }
+  if (params.customer) {
+    const unpaid = invoices
+      .filter(i => i.customer === params.customer && (i.status === 'pending' || i.status === 'overdue'))
+      .sort((a, b) => new Date(b.date) - new Date(a.date))
+    return unpaid[0] || null
+  }
+  return null
+}
+
+function executeVoidInvoice(params, appContext) {
+  const { invoices = [], setInvoices, logActivity } = appContext
+
+  if (typeof setInvoices !== 'function') {
+    return { success: false, error: 'Nuk mund të bëhet void fatura (sistemi nuk është gati).' }
+  }
+
+  const targetInvoice = findLatestUnpaidInvoice(params, invoices)
+  if (!targetInvoice) {
+    return {
+      success: false,
+      error: params.customer
+        ? `${params.customer} nuk ka fatura të papaguara.`
+        : 'Nuk u gjet fatura për void.',
+    }
+  }
+
+  setInvoices(prev => prev.map(i => i.id === targetInvoice.id ? { ...i, status: 'void' } : i))
+  logActivity?.(`Bëri void faturën ${targetInvoice.id} — ${targetInvoice.customer} (AI)`, 'Faturat')
+
+  return {
+    success: true,
+    invoice: targetInvoice,
+    message: `✓ Fatura ${targetInvoice.id} (${targetInvoice.customer}) u bë void.`,
+  }
+}
+
 function executeRegisterPayment(params, appContext) {
   const { invoices = [], setInvoices, setPayments, setExpenses, logActivity, currentOrgId } = appContext
 
@@ -370,6 +413,8 @@ export async function executeAction(action, appContext) {
       return executeRegisterPayment(action.parameters, appContext)
     case 'register_expense':
       return executeRegisterExpense(action.parameters, appContext)
+    case 'void_invoice':
+      return executeVoidInvoice(action.parameters, appContext)
     default:
       return {
         success: false,

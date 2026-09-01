@@ -244,6 +244,7 @@ function generateVoidInvoice(entities, context) {
     operation: 'UPDATE_STATUS',
     parameters: {
       invoiceId: entities.invoiceId,
+      customer: entities.customer,
       status: 'void',
     },
   }

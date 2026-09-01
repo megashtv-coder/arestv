@@ -52,6 +52,13 @@ export function validateAction(intent, entities, context = {}) {
     missingFields.push('customer')
   }
 
+  // VOID_INVOICE: same dual-identifier shape as REGISTER_PAYMENT — either an
+  // explicit invoiceId, or a customer name (whose most recent unpaid invoice
+  // gets voided instead).
+  if (intent === 'VOID_INVOICE' && !entities.invoiceId && !entities.customer) {
+    missingFields.push('customer')
+  }
+
   // Validate specific fields
   try {
     validateEntities(intent, entities, context)
@@ -113,8 +120,12 @@ function getRequirements(intent) {
       optional: ['amount', 'paymentMode', 'date'],
     },
     VOID_INVOICE: {
-      required: ['invoiceId'],
-      optional: [],
+      // "void @Klienti" voids their most recent unpaid invoice — invoiceId
+      // stays a valid alternative for "void FATURA-ID" style, so neither is
+      // individually required (see the dual-identifier check below, same
+      // pattern as REGISTER_PAYMENT).
+      required: [],
+      optional: ['invoiceId', 'customer'],
     },
     CREATE_CUSTOMER: {
       required: ['customer'],

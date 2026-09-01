@@ -22,7 +22,7 @@ import { depositedToOptions } from '../data/mockData'
 // Action types ActionExecutor actually knows how to run. A rule-based intent
 // can match (e.g. "sa fitim kam" -> PROFIT_REPORT) without ever being wired
 // up to a real executor — those fall back to the "not understood" message.
-const SUPPORTED_ACTIONS = ['create_invoice', 'create_customer', 'create_task', 'register_payment', 'register_expense']
+const SUPPORTED_ACTIONS = ['create_invoice', 'create_customer', 'create_task', 'register_payment', 'register_expense', 'void_invoice']
 
 const NOT_UNDERSTOOD_MSG = 'Nuk e kuptova komandën. Provo diçka si:\n"@Emri i Klientit @Paketa Shuma"\n"Pagese @Klienti @FormaPageses Shuma"\n"Shpenzim lloji, shuma, llogaria"'
 
