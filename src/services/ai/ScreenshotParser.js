@@ -12,7 +12,7 @@ import { createWorker } from 'tesseract.js'
 import { detectCountryFromPhone } from './PhoneCountry'
 
 // Chrome/WhatsApp-Web UI labels that show up on a contact card but are never
-// the contact's name — skip these when guessing which line is the name.
+// the contact's name (or the app name) — skip these when guessing either.
 const UI_NOISE = [
   'voice', 'video', 'search', 'contact info', 'media, links, and docs',
   'mute notifications', 'disappearing messages', 'encryption', 'block',
@@ -22,6 +22,21 @@ const UI_NOISE = [
 
 const MAC_RE = /\b([0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2}\b/
 const PHONE_RE = /\+\d[\d\s().-]{6,}\d/
+// "Updated today at 9:27 PM" — WhatsApp's edit-timestamp line, sits right
+// next to the MAC/app note and would otherwise get mistaken for the app name.
+const TIMESTAMP_LINE_RE = /\bupdated\b/i
+
+// A line the app-name guess should never land on — reused for whichever
+// line ends up adjacent to the MAC address.
+function isAppNameNoise(line) {
+  if (!line) return true
+  const trimmed = line.trim()
+  if (!trimmed) return true
+  if (MAC_RE.test(trimmed) || PHONE_RE.test(trimmed)) return true
+  if (TIMESTAMP_LINE_RE.test(trimmed)) return true
+  const lower = trimmed.toLowerCase()
+  return UI_NOISE.some(noise => lower.includes(noise))
+}
 
 /**
  * @param {File|Blob} imageFile
@@ -53,20 +68,38 @@ export function parseContactFromText(rawText) {
 
   const warnings = []
 
-  // MAC address + app name ("64:1C:B0:A0:DA:38 - Ibo Player")
+  // MAC address + app name. Two layouts seen in practice:
+  //  1) same line, dash-separated: "64:1C:B0:A0:DA:38 - Ibo Player"
+  //  2) separate lines, order not guaranteed: the app name can be the line
+  //     right before OR right after the MAC line (WhatsApp's own layout
+  //     varies), e.g.:
+  //       6b:bc:a6:2f:6f:75
+  //       Ibo Player
+  //       Updated today at 9:27 PM   <- must not be mistaken for the app name
   let macAddress = ''
   let app = ''
-  const macLine = lines.find(l => MAC_RE.test(l))
-  if (macLine) {
+  const macLineIndex = lines.findIndex(l => MAC_RE.test(l))
+  if (macLineIndex !== -1) {
+    const macLine = lines[macLineIndex]
     macAddress = macLine.match(MAC_RE)[0].toUpperCase().replace(/-/g, ':')
+
     const afterMac = macLine.slice(macLine.search(MAC_RE) + macAddress.length)
-    const appMatch = afterMac.match(/[-–—]\s*(.+)/)
-    if (appMatch) {
-      app = appMatch[1]
+    const sameLineMatch = afterMac.match(/[-–—]\s*(.+)/)
+    if (sameLineMatch) {
+      app = sameLineMatch[1]
         .split(/\s{2,}/)[0]              // WhatsApp's emoji/✓ icons sit far to
         .replace(/[^\p{L}\p{N}]+$/u, '') // the right — a wide gap, or (if OCR
         .trim()                          // reads them tight) trailing symbols
     }
+
+    if (!app) {
+      const nextLine = lines[macLineIndex + 1]
+      const prevLine = lines[macLineIndex - 1]
+      if (!isAppNameNoise(nextLine)) app = nextLine.trim()
+      else if (!isAppNameNoise(prevLine)) app = prevLine.trim()
+    }
+
+    if (!app) warnings.push('S\'u gjet emri i aplikacionit — plotësoje dorazi.')
   } else {
     warnings.push('S\'u gjet MAC adresa — kontrollo foton ose plotësoje dorazi.')
   }
