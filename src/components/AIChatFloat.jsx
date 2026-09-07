@@ -36,7 +36,7 @@ export default function AIChatFloat() {
     {
       id: 'welcome',
       type: 'system',
-      content: 'Përshëndetje! 👋\n\nTips:\n\n1. Regjistro faturë, shkruaj:\n@Emer_Klientit @Paketa Shuma\nP.sh: @Viktor Shemshiri @12 muaj 100 eur\nMe referent: @Klienti @Referenti @Paketa Shuma DataSkadimit(ddmmyyyy)\n\n2. Regjistro pagesë, shkruaj:\nPagese @Klienti @FormaPageses Shuma Fee @Enndy/Belti\n\n3. Regjistro shpenzim, shkruaj:\nShpenzim lloji i shpenzimit, shuma, llogaria, Enndy/Belti',
+      content: 'Përshëndetje! 👋\n\nTips:\n\n1. Regjistro faturë, shkruaj:\n@Emer_Klientit @Paketa Shuma\nP.sh: @Viktor Shemshiri @12 muaj 100 eur\nMe referent: @Klienti @Referenti @Paketa Shuma DataSkadimit(ddmmyyyy)\n\n2. Regjistro pagesë, shkruaj:\nPagese @Klienti @FormaPageses Referenti Shuma Fee @Enndy/Belti\n\n3. Regjistro shpenzim, shkruaj:\nShpenzim lloji i shpenzimit, shuma, llogaria, Enndy/Belti',
       timestamp: new Date(),
     },
   ])

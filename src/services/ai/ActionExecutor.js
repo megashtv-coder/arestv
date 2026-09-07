@@ -311,7 +311,7 @@ function executeRegisterPayment(params, appContext) {
     paidDate: params.date,
     method: params.mode || 'Unknown',
     depositAccount: '',
-    reference: '',
+    reference: params.reference || '',
     depositedTo: params.depositedTo || '',
     notes: '',
     orgId: currentOrgId,

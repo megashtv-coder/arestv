@@ -356,6 +356,7 @@ function generateRegisterPayment(entities, context) {
       mode: entities.paymentMode || 'Unknown',
       date: entities.date || new Date().toISOString().slice(0, 10),
       depositedTo: entities.depositedTo || '',
+      reference: entities.reference || '',
     },
   }
 }

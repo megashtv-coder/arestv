@@ -165,12 +165,15 @@ function extractQuickTaskFields(text, context = {}) {
 
 /**
  * Parse the "register payment" command:
- * "Pagese @Klienti @FormaPageses ShumaEPranuar Fee @Enndy" (fee and the
- * @Enndy/@Belti "who received it" mention are optional).
+ * "Pagese @Klienti @FormaPageses Referenti Shuma Fee @Enndy" (the reference
+ * text, fee, and the @Enndy/@Belti "who received it" mention are optional).
  * Matches customer/mode/depositedTo by known-value substring (like
  * extractCustomerMentions/extractPackage), not by @mention position, since a
- * greedy @mention capture would otherwise swallow the trailing amount/fee
- * digits into the payment-mode text.
+ * greedy @mention capture would otherwise swallow the trailing reference/amount
+ * text into the payment-mode text. Of the numbers left after stripping the
+ * keyword, "@", customer, mode and depositedTo, the first is the amount and
+ * the second (if present) is the fee; whatever non-numeric text remains is
+ * the free-text reference.
  */
 function extractPaymentCommand(text, context = {}) {
   const trimmed = text.trim()
@@ -200,14 +203,17 @@ function extractPaymentCommand(text, context = {}) {
     cleaned = cleaned.replace(new RegExp(`\\b${escapeRegex(depositedTo)}\\b`, 'i'), ' ')
   }
 
-  const numbers = (cleaned.match(/\d+(?:[.,]\d+)?/g) || []).map(n => parseFloat(n.replace(',', '.')))
-  const amount = numbers.length > 0 ? numbers[0] : null
-  const fee = numbers.length > 1 ? numbers[1] : 0
+  const numbers = (cleaned.match(/\d+(?:[.,]\d+)?/g) || []).slice(0, 2)
+  const amount = numbers.length > 0 ? parseFloat(numbers[0].replace(',', '.')) : null
+  const fee = numbers.length > 1 ? parseFloat(numbers[1].replace(',', '.')) : 0
+  for (const n of numbers) cleaned = cleaned.replace(n, ' ')
+  const reference = cleaned.replace(/\s+/g, ' ').trim() || null
 
   return {
     customer: customerMatch.name,
     paymentMode: paymentMode || null,
     depositedTo,
+    reference,
     amount,
     fee,
   }
