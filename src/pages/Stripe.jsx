@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { CreditCard, Copy, Plus, Pencil, Trash2, ExternalLink, Search, X } from 'lucide-react'
+import { CreditCard, Copy, Plus, Pencil, Trash2, ExternalLink, Search, X, ArrowUpNarrowWide, ArrowDownWideNarrow } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import { EmptyState, Modal, FormGroup } from '../components/UI'
 
@@ -130,6 +130,7 @@ function StripeLinkCard({ link, onEdit, onDelete, fmt }) {
 export default function Stripe() {
   const { stripeLinks, setStripeLinks, setModal, closeModal, fmt } = useApp()
   const [search, setSearch] = useState('')
+  const [sortDir, setSortDir] = useState('asc') // 'asc' | 'desc' — sipas shumës
 
   const sorted = [...stripeLinks]
     .filter(l => {
@@ -137,7 +138,7 @@ export default function Stripe() {
       const q = search.trim().toLowerCase()
       return String(l.amount).includes(q) || l.url.toLowerCase().includes(q)
     })
-    .sort((a, b) => a.amount - b.amount)
+    .sort((a, b) => sortDir === 'asc' ? a.amount - b.amount : b.amount - a.amount)
 
   const openAdd  = ()  => setModal(<StripeLinkModal onClose={closeModal} />)
   const openEdit = (l) => setModal(<StripeLinkModal link={l} onClose={closeModal} />)
@@ -150,7 +151,7 @@ export default function Stripe() {
   return (
     <div>
       {/* Titulli "Stripe" jeton te header-i global (Header.jsx, kur page === 'stripe'). */}
-      <div className="flex items-center justify-between gap-3 mb-5 flex-wrap">
+      <div className="flex items-center gap-3 mb-5 flex-wrap">
         <div className="relative w-full sm:w-72">
           <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
           <input
@@ -165,7 +166,17 @@ export default function Stripe() {
             </button>
           )}
         </div>
-        <button className="btn btn-primary" onClick={openAdd}>
+
+        <button
+          onClick={() => setSortDir(d => d === 'asc' ? 'desc' : 'asc')}
+          title={sortDir === 'asc' ? 'Duke renditur: më e vogla te më e madhja' : 'Duke renditur: më e madhja te më e vogla'}
+          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+        >
+          {sortDir === 'asc' ? <ArrowUpNarrowWide size={14} /> : <ArrowDownWideNarrow size={14} />}
+          Shuma {sortDir === 'asc' ? '↑' : '↓'}
+        </button>
+
+        <button className="btn btn-primary sm:ml-auto" onClick={openAdd}>
           <Plus size={14} /> Link i Ri
         </button>
       </div>
