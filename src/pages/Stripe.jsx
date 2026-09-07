@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { CreditCard, Copy, Plus, Pencil, Trash2, ExternalLink } from 'lucide-react'
+import { CreditCard, Copy, Plus, Pencil, Trash2, ExternalLink, Search, X } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import { EmptyState, Modal, FormGroup } from '../components/UI'
 
@@ -129,8 +129,15 @@ function StripeLinkCard({ link, onEdit, onDelete, fmt }) {
 ══════════════════════════════════════════════════════════ */
 export default function Stripe() {
   const { stripeLinks, setStripeLinks, setModal, closeModal, fmt } = useApp()
+  const [search, setSearch] = useState('')
 
-  const sorted = [...stripeLinks].sort((a, b) => a.amount - b.amount)
+  const sorted = [...stripeLinks]
+    .filter(l => {
+      if (!search.trim()) return true
+      const q = search.trim().toLowerCase()
+      return String(l.amount).includes(q) || l.url.toLowerCase().includes(q)
+    })
+    .sort((a, b) => a.amount - b.amount)
 
   const openAdd  = ()  => setModal(<StripeLinkModal onClose={closeModal} />)
   const openEdit = (l) => setModal(<StripeLinkModal link={l} onClose={closeModal} />)
@@ -143,7 +150,21 @@ export default function Stripe() {
   return (
     <div>
       {/* Titulli "Stripe" jeton te header-i global (Header.jsx, kur page === 'stripe'). */}
-      <div className="flex justify-end mb-5">
+      <div className="flex items-center justify-between gap-3 mb-5 flex-wrap">
+        <div className="relative w-full sm:w-72">
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
+          <input
+            className="w-full pl-8 pr-8 py-1.5 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 text-gray-900 dark:text-white placeholder-gray-400 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-50 dark:focus:ring-blue-900/20"
+            placeholder="Kërko sipas shumës ose linkut..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+          />
+          {search && (
+            <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+              <X size={13} />
+            </button>
+          )}
+        </div>
         <button className="btn btn-primary" onClick={openAdd}>
           <Plus size={14} /> Link i Ri
         </button>
@@ -152,13 +173,13 @@ export default function Stripe() {
       {sorted.length === 0 ? (
         <EmptyState
           icon={CreditCard}
-          title="Nuk ka ende linqe Stripe"
-          sub="Shto linqet e tua ekzistuese të Stripe Payment Links, sipas shumës"
-          action={
+          title={search ? 'Asnjë link nuk u gjet' : 'Nuk ka ende linqe Stripe'}
+          sub={search ? 'Provo kërkim tjetër' : 'Shto linqet e tua ekzistuese të Stripe Payment Links, sipas shumës'}
+          action={!search && (
             <button className="btn btn-primary mt-2" onClick={openAdd}>
               <Plus size={14} /> Shto linkun e parë
             </button>
-          }
+          )}
         />
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
