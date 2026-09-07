@@ -22,6 +22,7 @@ const PAGE_TITLES = {
   items:         'Produktet',
   payments:      'Pagesat',
   expenses:      'Shpenzimet',
+  stripe:        'Stripe',
   suppliers:     'Furnitorët',
   reports:       'Raportet',
   users:         'Përdoruesit',
