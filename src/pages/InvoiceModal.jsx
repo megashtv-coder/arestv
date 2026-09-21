@@ -5,6 +5,7 @@ import {
 } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import { Modal, FormGroup } from '../components/UI'
+import ReferredBySelect from '../components/ReferredBySelect'
 import { countries } from '../data/mockData'
 import { ContactImportButton } from '../features/contacts'
 import { round2 } from '../utils/money'
@@ -297,9 +298,7 @@ function QuickAddCustomer({ initialName, onSave, onCancel }) {
       {/* Referuar nga */}
       <div className="mb-3">
         <label className={FLD}>Referuar nga</label>
-        <input className="form-control text-sm bg-white"
-          value={form.referredBy} onChange={e => set('referredBy', e.target.value)}
-          placeholder="Emri i personit që e referoi..." />
+        <ReferredBySelect value={form.referredBy} onChange={v => set('referredBy', v)} />
       </div>
 
       {/* Ngjyra */}
