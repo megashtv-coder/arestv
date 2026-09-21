@@ -38,10 +38,17 @@ export default function AIChat() {
   const pendingInvoices = invoices.filter(i => i.status === 'pending')
   const pendingValue = pendingInvoices.reduce((s, i) => s + (i.amount || 0), 0)
 
-  // Initialize AI processor
+  // Initialize AI processor. On every later appContext change (new customer,
+  // new invoice, etc.) keep the processor's own reference in sync too —
+  // otherwise it keeps using the stale snapshot from whenever it was first
+  // created, so a customer added via one chat command wouldn't be recognized
+  // by the very next command in the same session.
   useEffect(() => {
-    if (!processorRef.current && appContext) {
+    if (!appContext) return
+    if (!processorRef.current) {
       processorRef.current = createAICommandProcessor(appContext)
+    } else {
+      processorRef.current.appContext = appContext
     }
   }, [appContext])
 

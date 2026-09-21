@@ -55,10 +55,20 @@ export default function AIChatFloat() {
   const inputRef = useRef(null)
   const fileInputRef = useRef(null)
 
-  // Initialize AI processor - only when customers are loaded
+  // Initialize AI processor - only when customers are loaded. On every later
+  // appContext change (new customer, new invoice, etc.) keep the processor's
+  // own reference in sync too — otherwise it keeps using the stale snapshot
+  // from whenever it was first created, so a customer added via one chat
+  // command wouldn't be recognized by the very next command in the same
+  // session (e.g. creating an invoice right after creating the customer).
   useEffect(() => {
-    if (!processorRef.current && appContext && appContext.customers?.length > 0) {
-      processorRef.current = createAICommandProcessor(appContext)
+    if (!appContext) return
+    if (!processorRef.current) {
+      if (appContext.customers?.length > 0) {
+        processorRef.current = createAICommandProcessor(appContext)
+      }
+    } else {
+      processorRef.current.appContext = appContext
     }
   }, [appContext])
 
