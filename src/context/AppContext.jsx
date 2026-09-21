@@ -232,6 +232,9 @@ export function AppProvider({ children }) {
   // Linqet e gatshme të Stripe Payment Links — thjesht listë për kopjim (jo
   // lidhje me fatura, jo webhook): { id, amount, url, description?, isPopular? }[].
   const [stripeLinks, setStripeLinks] = useState([])
+  // Linqet e Hosteve — i njëjti format si stripeLinks, por filtrohen sipas
+  // rajonit (category) jo sipas shumës: { id, amount, url, description?, isPopular?, category }[].
+  const [hosts, setHosts] = useState([])
 
   /* ── Tester sandbox ── */
   const [tInvoices,  setTInvoices]  = useState([])
@@ -253,6 +256,7 @@ export function AppProvider({ children }) {
   const prevPM        = useRef(null)
   const prevDA        = useRef(null)
   const prevSL        = useRef(null)
+  const prevHosts     = useRef(null)
   const prevUsers     = useRef(null) // null = nuk është inicializuar ende nga Supabase
 
   /* ══════════════════════════════════════════════════════════
@@ -273,6 +277,7 @@ export function AppProvider({ children }) {
       prevPM.current = defaultPaymentModes
       prevDA.current = defaultDepositAccounts
       prevSL.current = []
+      prevHosts.current = []
       return
     }
 
@@ -340,16 +345,20 @@ export function AppProvider({ children }) {
         const pmRow = sett.data.find(r => r.key === 'paymentModes')
         const daRow = sett.data.find(r => r.key === 'depositAccounts')
         const slRow = sett.data.find(r => r.key === 'stripeLinks')
+        const hostsRow = sett.data.find(r => r.key === 'hosts')
         const pm = pmRow?.value ?? defaultPaymentModes
         const da = daRow?.value ?? defaultDepositAccounts
         const sl = slRow?.value ?? []
+        const hs = hostsRow?.value ?? []
         setPaymentModes(pm);    prevPM.current = pm
         setDepositAccounts(da); prevDA.current = da
         setStripeLinks(sl);     prevSL.current = sl
+        setHosts(hs);           prevHosts.current = hs
       } else {
         prevPM.current = defaultPaymentModes
         prevDA.current = defaultDepositAccounts
         prevSL.current = []
+        prevHosts.current = []
       }
 
       // Organizations — merge Supabase + mockOrganizations (kurrë mos humb ato default)
@@ -444,6 +453,7 @@ export function AppProvider({ children }) {
       prevPM.current   = defaultPaymentModes
       prevDA.current   = defaultDepositAccounts
       prevSL.current   = []
+      prevHosts.current = []
       prevUsers.current = _loadedUsers  // fallback — mos sync-o deri sa të jetë online
       setDbLoading(false)
     })
@@ -494,6 +504,13 @@ export function AppProvider({ children }) {
     prevSL.current = stripeLinks
     supabase.from('settings').upsert({ key: 'stripeLinks', value: stripeLinks }).then()
   }, [stripeLinks, canSync])
+
+  useEffect(() => {
+    if (!canSync || !supabase) return
+    if (JSON.stringify(prevHosts.current) === JSON.stringify(hosts)) return
+    prevHosts.current = hosts
+    supabase.from('settings').upsert({ key: 'hosts', value: hosts }).then()
+  }, [hosts, canSync])
 
   // Sync users — kur ndryshojnë users (shto/edito/fshi), ruhen automatikisht në Supabase
   useEffect(() => {
@@ -763,6 +780,7 @@ export function AppProvider({ children }) {
       paymentModes,    setPaymentModes,
       depositAccounts, setDepositAccounts,
       stripeLinks,     setStripeLinks,
+      hosts,           setHosts,
       currency,        setCurrency,
       darkMode,        setDarkMode,
       toast,           setToast,

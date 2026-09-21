@@ -3,7 +3,7 @@ import {
   LayoutDashboard, FileText, Users as UsersIcon, Receipt, BarChart2,
   Package, CreditCard, Settings, ChevronRight, X, Bell,
   Truck, TrendingUp, ChevronLeft, UserCog, LogOut, CheckSquare,
-  Zap, Link2,
+  Zap, Link2, Server,
 } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import { useFeatures } from '../features/useFeatures'
@@ -62,6 +62,7 @@ export default function Sidebar() {
     { id: 'items',         icon: Package,         label: 'Produktet' },
     { id: 'payments',      icon: CreditCard,      label: 'Pagesat' },
     { id: 'expenses',      icon: Receipt,         label: 'Shpenzimet' },
+    { id: 'hosts',         icon: Server,          label: 'Hostet' },
     { id: 'stripe',        icon: Link2,           label: 'Stripe' },
     // Suppliers only visible if feature enabled
     ...(canAccessSuppliers ? [{ id: 'suppliers', icon: Truck, label: 'Furnitorët' }] : []),
