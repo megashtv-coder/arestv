@@ -7,6 +7,10 @@ import { EmptyState } from '../components/UI'
 // Metodat pa evidencë automatike tërheqjeje — vetëm këto shfaqen këtu.
 const WITHDRAWAL_METHODS = ['Western Union', 'Ria', 'Money Gram']
 
+// Gjurmimi fillon nga tetori 2026 — pagesat e mëparshme s'ishin duke u
+// përcjellë me këtë logjikë, kështu që s'na duhen këtu.
+const TRACKING_START_DATE = '2026-10-01'
+
 const STATUS_OPTIONS = [
   { id: 'pending',   label: 'Në pritje' },
   { id: 'withdrawn', label: 'U tërhoq' },
@@ -37,7 +41,7 @@ export default function Settlement() {
   const [monthFilt, setMonthFilt] = useState('all')
 
   const relevant = useMemo(
-    () => payments.filter(p => WITHDRAWAL_METHODS.includes(p.method)),
+    () => payments.filter(p => WITHDRAWAL_METHODS.includes(p.method) && (p.date || '') >= TRACKING_START_DATE),
     [payments]
   )
 

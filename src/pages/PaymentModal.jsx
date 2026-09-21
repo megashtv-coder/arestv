@@ -3,6 +3,7 @@ import { CreditCard, ChevronLeft, ChevronRight, AlertCircle, Pencil } from 'luci
 import { useApp } from '../context/AppContext'
 import { useFeatures } from '../features/useFeatures'
 import { Modal, FormGroup } from '../components/UI'
+import ReferentSelect from '../components/ReferentSelect'
 import { depositedToOptions } from '../data/mockData'
 import { round2 } from '../utils/money'
 
@@ -368,12 +369,7 @@ export default function PaymentModal({ invoice, payment: editPayment, onClose, i
           )}
         </FormGroup>
         <FormGroup label="Referenca (kush pranoi)">
-          <input
-            className="form-control"
-            value={form.reference}
-            onChange={e => set('reference', e.target.value)}
-            placeholder="p.sh. Ardit Krasniqi"
-          />
+          <ReferentSelect value={form.reference} onChange={v => set('reference', v)} />
         </FormGroup>
       </div>
 
