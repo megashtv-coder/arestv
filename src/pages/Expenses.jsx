@@ -1,7 +1,7 @@
 import { useState, useRef, useMemo, useEffect, lazy, Suspense } from 'react'
 import {
   Receipt, Trash2, Plus, Search, X, RefreshCw,
-  ChevronLeft, ChevronRight, Users, Wallet,
+  ChevronLeft, ChevronRight, ChevronDown, Users, Wallet,
   Download, CheckCircle2,
 } from 'lucide-react'
 import { useApp } from '../context/AppContext'
@@ -15,6 +15,13 @@ import { downloadTemplate } from '../components/ImportExcelModal'
 const ImportExcelModal = lazy(() => import('../components/ImportExcelModal'))
 
 // sort/page defaults
+
+const MONTHS = [
+  { v: '01', l: 'Janar' },   { v: '02', l: 'Shkurt' }, { v: '03', l: 'Mars' },
+  { v: '04', l: 'Prill' },   { v: '05', l: 'Maj' },    { v: '06', l: 'Qershor' },
+  { v: '07', l: 'Korrik' },  { v: '08', l: 'Gusht' },  { v: '09', l: 'Shtator' },
+  { v: '10', l: 'Tetor' },   { v: '11', l: 'Nëntor' }, { v: '12', l: 'Dhjetor' },
+]
 
 const FREQ_OPTIONS = ['Mujore', 'Vjetore', 'Ditore']
 
@@ -428,13 +435,13 @@ export default function ExpensesPage() {
   // Viti/muaji "aktual" — default gjithmonë te periudha që po operojmë, jo "të gjitha".
   const todayISO = new Date().toISOString().slice(0, 10)
   const currentYear  = todayISO.slice(0, 4)
-  const currentMonth = todayISO.slice(0, 7)
+  const currentMonthNum = todayISO.slice(5, 7) // '01'..'12' — filtri i muajit s'e mban më vitin, ai është filtër i veçantë
 
   const [search,         setSearch]        = useState('')
   const [monthFilt,      setMonthFilt]     = useState(() => {
     const f = JSON.parse(localStorage.getItem('arestv_nav_filter') || 'null')
     if (f?.year) return 'all' // drill-down nga Dashboard-i sipas vitit — shfaq krejt muajt e atij viti
-    return currentMonth
+    return currentMonthNum
   })
   const [partnerFilt,    setPartner]       = useState('all')
   const [typeFilt,       setType]          = useState('all')
@@ -449,6 +456,7 @@ export default function ExpensesPage() {
   const [sortField,      setSortField]     = useState('date')
   const [sortDir,        setSortDir]       = useState('desc')
   const [openDropdown,   setOpenDropdown]  = useState(null)
+  const [recurringOpen,  setRecurringOpen] = useState(false) // "Shpenzime të Rregullta" — mbyllur si default, që lista kryesore të ketë më shumë hapësirë
 
   // Detect if we're in form mode (page like "expenses:create" or "expenses:ID:edit")
   const pageMatch = page.split(':')
@@ -481,13 +489,6 @@ export default function ExpensesPage() {
   /* unique types in data */
   const usedTypes = [...new Set(expenses.map(e => e.type).filter(Boolean))]
 
-  /* unique months in data (+ muaji aktual) */
-  const months = useMemo(() => {
-    const set = new Set(expenses.map(e => (e.date || '').slice(0, 7)).filter(Boolean))
-    set.add(currentMonth)
-    return Array.from(set).sort().reverse()
-  }, [expenses, currentMonth])
-
   /* unique years in data (+ viti aktual) */
   const years = useMemo(() => {
     const set = new Set(expenses.map(e => (e.date || '').slice(0, 4)).filter(Boolean))
@@ -497,7 +498,7 @@ export default function ExpensesPage() {
 
   const filtered = useMemo(() => expenses.filter(e => {
     const matchSearch  = !search || (e.type||'').toLowerCase().includes(search.toLowerCase()) || (e.vendor||'').toLowerCase().includes(search.toLowerCase())
-    const matchMonth   = monthFilt === 'all' || (e.date||'').startsWith(monthFilt)
+    const matchMonth   = monthFilt === 'all' || (e.date||'').slice(5, 7) === monthFilt
     const matchPartner = partnerFilt === 'all' || e.paidBy === partnerFilt
     const matchType    = typeFilt === 'all' || e.type === typeFilt
     const matchRecur   = recurFilt === 'all' || (recurFilt === 'recurring' ? e.recurring : !e.recurring)
@@ -626,11 +627,17 @@ export default function ExpensesPage() {
       {/* Shpenzime të Rregullta (recurring) */}
       {recurringItems.length > 0 && (
         <div className="mb-6">
-          <div className="flex items-center gap-2 mb-3">
+          <button
+            type="button"
+            onClick={() => setRecurringOpen(o => !o)}
+            className="flex items-center gap-2 mb-3 group"
+          >
             <RefreshCw size={16} className="text-blue-500" />
             <h3 className="text-sm font-bold text-blue-600 tracking-tight">Shpenzime të Rregullta</h3>
             <span className="bg-blue-100 text-blue-600 text-[11px] font-extrabold px-2 py-0.5 rounded-full">{recurringItems.length} aktive</span>
-          </div>
+            <ChevronDown size={15} className={`text-gray-400 group-hover:text-gray-600 transition-transform ${recurringOpen ? 'rotate-180' : ''}`} />
+          </button>
+          {recurringOpen && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             {recurringItems.map(e => (
               <button key={e.id} onClick={() => navigate(`expenses:${e.id}:edit`)} className="text-left bg-white rounded-2xl border border-gray-200/90 shadow-sm px-3.5 py-3 flex items-center justify-between gap-3 hover:shadow-md transition-all cursor-pointer">
@@ -652,6 +659,7 @@ export default function ExpensesPage() {
               </button>
             ))}
           </div>
+          )}
         </div>
       )}
 
@@ -671,27 +679,15 @@ export default function ExpensesPage() {
 
         <div className="flex flex-wrap items-center gap-2">
           <select className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 font-semibold outline-none focus:border-blue-400 cursor-pointer"
-            value={yearFilt} onChange={e => {
-              const v = e.target.value
-              setYearFilt(v)
-              // Zgjedhja e vitit fshin muajin nëse ai i takonte një viti tjetër — shmang kombinim pa rezultate
-              if (v !== 'all' && monthFilt !== 'all' && !monthFilt.startsWith(v)) setMonthFilt('all')
-              setPg(1)
-            }}>
+            value={yearFilt} onChange={e => { setYearFilt(e.target.value); setPg(1) }}>
             <option value="all">Të gjitha vitet</option>
             {years.map(y => <option key={y} value={y}>{y}</option>)}
           </select>
 
           <select className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 font-semibold outline-none focus:border-blue-400 cursor-pointer"
-            value={monthFilt} onChange={e => {
-              const v = e.target.value
-              setMonthFilt(v)
-              // Zgjedhja e një muaji specifik e cakton automatikisht vitin përkatës
-              if (v !== 'all') setYearFilt(v.slice(0, 4))
-              setPg(1)
-            }}>
+            value={monthFilt} onChange={e => { setMonthFilt(e.target.value); setPg(1) }}>
             <option value="all">Të gjitha muajt</option>
-            {months.map(m => <option key={m} value={m}>{m}</option>)}
+            {MONTHS.map(m => <option key={m.v} value={m.v}>{m.l}</option>)}
           </select>
 
           <select className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 font-semibold outline-none focus:border-blue-400 cursor-pointer"
