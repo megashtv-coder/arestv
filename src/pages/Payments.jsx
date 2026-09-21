@@ -1,6 +1,6 @@
-import { useState, useMemo, useEffect, lazy, Suspense } from 'react'
+import { useState, useMemo, useEffect, useRef, lazy, Suspense } from 'react'
 import {
-  CreditCard, Download, Search, X,
+  CreditCard, Download, Search, X, ChevronDown, Check,
   Pencil, Trash2, Plus, Users, CheckCircle2,
 } from 'lucide-react'
 import { useApp } from '../context/AppContext'
@@ -224,6 +224,83 @@ function getMonths(payments) {
   return Array.from(set).sort().reverse()
 }
 
+/* ══════════════════════════════════════════════════════════
+   Multi-select dropdown "Metoda" — lejon zgjedhjen e disa
+   metodave pagese njëkohësisht (p.sh. Money Gram + Western Union)
+══════════════════════════════════════════════════════════ */
+function MethodFilterDropdown({ methods, selected, onChange }) {
+  const [open, setOpen] = useState(false)
+  const wrapRef = useRef(null)
+
+  useEffect(() => {
+    const handler = e => {
+      if (wrapRef.current && !wrapRef.current.contains(e.target)) setOpen(false)
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [])
+
+  const toggle = (method) => {
+    onChange(prev => prev.includes(method) ? prev.filter(m => m !== method) : [...prev, method])
+  }
+
+  const label = selected.length === 0
+    ? 'Të gjitha metodat'
+    : selected.length === 1
+      ? selected[0]
+      : `${selected.length} metoda`
+
+  return (
+    <div ref={wrapRef} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen(o => !o)}
+        className={`text-xs px-2.5 py-1.5 rounded-xl border font-semibold outline-none cursor-pointer flex items-center gap-1.5 transition-colors ${
+          selected.length > 0
+            ? 'border-blue-300 bg-blue-50 text-blue-700'
+            : 'border-gray-200 bg-gray-50 text-gray-700 hover:border-blue-400'
+        }`}
+      >
+        {label}
+        <ChevronDown size={12} className={`transition-transform ${open ? 'rotate-180' : ''}`} />
+      </button>
+
+      {open && (
+        <div className="absolute z-50 mt-1 min-w-[180px] bg-white border border-gray-200 rounded-xl shadow-lg max-h-64 overflow-y-auto">
+          {selected.length > 0 && (
+            <button
+              type="button"
+              onClick={() => onChange([])}
+              className="w-full text-left px-3 py-2 text-xs font-semibold text-blue-500 hover:bg-blue-50 border-b border-gray-100"
+            >
+              Pastro filtrin
+            </button>
+          )}
+          {methods.map(m => (
+            <label
+              key={m}
+              className="flex items-center gap-2 px-3 py-2 text-xs text-gray-700 hover:bg-gray-50 cursor-pointer select-none"
+            >
+              <span className={`w-4 h-4 rounded border flex items-center justify-center flex-shrink-0 ${
+                selected.includes(m) ? 'bg-blue-500 border-blue-500' : 'border-gray-300'
+              }`}>
+                {selected.includes(m) && <Check size={11} className="text-white" />}
+              </span>
+              <input
+                type="checkbox"
+                className="hidden"
+                checked={selected.includes(m)}
+                onChange={() => toggle(m)}
+              />
+              {m}
+            </label>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 /* ══════════════════════════════════════════════════════════ */
 export default function Payments() {
   const {
@@ -239,7 +316,7 @@ export default function Payments() {
   const [search,      setSearch]    = useState('')
   const [monthFilt,   setMonthFilt] = useState('all')
   const [partnerFilt, setPartner]   = useState('all')
-  const [methodFilt,  setMethod]    = useState('all')
+  const [methodFilt,  setMethod]    = useState([]) // multi-select — [] = të gjitha metodat
   const [yearFilt,    setYearFilt]  = useState(() => {
     const f = JSON.parse(localStorage.getItem('arestv_nav_filter') || 'null')
     if (f?.year) { localStorage.removeItem('arestv_nav_filter'); return f.year }
@@ -250,6 +327,8 @@ export default function Payments() {
   const [sortField,   setSortField] = useState('date')
   const [sortDir,     setSortDir]   = useState('desc')
   const [deletingId,  setDeletingId] = useState(null)
+  const [selected,     setSelected]     = useState(new Set()) // Rreshtat e selektuara për fshirje masive
+  const [confirmDelAll, setConfirmDelAll] = useState(false)
 
   // Detect if we're in form mode (page like "payments:create" or "payments:ID:edit")
   const pageMatch = page.split(':')
@@ -275,7 +354,7 @@ export default function Payments() {
       || (p.reference || '').toLowerCase().includes(search.toLowerCase())
     const matchMonth   = monthFilt  === 'all' || p.date.startsWith(monthFilt)
     const matchPartner = partnerFilt === 'all' || p.depositedTo === partnerFilt
-    const matchMethod  = methodFilt  === 'all' || p.method === methodFilt
+    const matchMethod  = methodFilt.length === 0 || methodFilt.includes(p.method)
     const matchYear    = yearFilt    === 'all' || p.date?.startsWith(yearFilt)
     return matchSearch && matchMonth && matchPartner && matchMethod && matchYear
   }), [payments, search, monthFilt, partnerFilt, methodFilt, yearFilt])
@@ -354,6 +433,38 @@ export default function Payments() {
     setDeletingId(null)
   }
 
+  // Selektim masiv — njësoj si te Faturat
+  const toggleSelectPayment = (id) => {
+    setSelected(prev => {
+      const newSet = new Set(prev)
+      if (newSet.has(id)) newSet.delete(id)
+      else newSet.add(id)
+      return newSet
+    })
+  }
+
+  const toggleSelectAll = () => {
+    if (selected.size === filtered.length) {
+      setSelected(new Set())
+    } else {
+      setSelected(new Set(filtered.map(p => p.id)))
+    }
+  }
+
+  const handleDeleteSelected = () => {
+    const count = selected.size
+    const toDelete = payments.filter(p => selected.has(p.id))
+    const invoiceIds = new Set(toDelete.map(p => p.invoiceId))
+    setPayments(prev => prev.filter(p => !selected.has(p.id)))
+    setInvoices(prev => prev.map(i => invoiceIds.has(i.id) ? { ...i, status: 'pending' } : i))
+    toDelete.forEach(p => {
+      logActivity(`Fshiu pagesën ${p.id} — ${p.customer} €${Number(p.amount)}`, 'Pagesat')
+    })
+    setSelected(new Set())
+    setConfirmDelAll(false)
+    showToast(`U fshihen ${count} pagesa. Faturat kaluan në pritje.`)
+  }
+
   // If in form mode, show only the form
   if (isFormMode) {
     return (
@@ -387,6 +498,17 @@ export default function Payments() {
             onClose={() => setImportOpen(false)}
           />
         </Suspense>
+      )}
+
+      {selected.size > 0 && (
+        <div className="flex justify-end mb-3">
+          <button
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors text-xs font-bold"
+            onClick={() => setConfirmDelAll(true)}
+          >
+            <Trash2 size={14}/> Fshi {selected.size}
+          </button>
+        </div>
       )}
 
       {/* Stats strip */}
@@ -441,14 +563,11 @@ export default function Payments() {
             <option value="Belti">Tek Belti</option>
           </select>
 
-          <select
-            className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 font-semibold outline-none focus:border-blue-400 cursor-pointer"
-            value={methodFilt}
-            onChange={e => { setMethod(e.target.value); setPg(1) }}
-          >
-            <option value="all">Të gjitha metodat</option>
-            {methods.map(m => <option key={m} value={m}>{m}</option>)}
-          </select>
+          <MethodFilterDropdown
+            methods={methods}
+            selected={methodFilt}
+            onChange={updater => { setMethod(updater); setPg(1) }}
+          />
 
           <select
             className="hidden sm:block text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 font-semibold outline-none focus:border-blue-400 cursor-pointer"
@@ -607,11 +726,20 @@ export default function Payments() {
                   </span>
                 </th>
                 <th className="table-th text-right">Veprimet</th>
+                <th className="table-th w-8 text-center hidden sm:table-cell">
+                  <input
+                    type="checkbox"
+                    checked={selected.size === filtered.length && filtered.length > 0}
+                    onChange={toggleSelectAll}
+                    className="w-4 h-4 cursor-pointer"
+                    title={selected.size === filtered.length ? "Deselekto të gjitha" : "Selekto të gjitha"}
+                  />
+                </th>
               </tr>
             </thead>
             <tbody>
               {paged.map(p => (
-                <tr key={p.id} className="hover:bg-gray-50 transition-colors group">
+                <tr key={p.id} className={`hover:bg-gray-50 transition-colors group ${selected.has(p.id) ? 'bg-blue-50' : ''}`}>
                   <td className="table-td font-mono text-xs">{formatDate(p.date)}</td>
                   <td className="table-td font-mono font-bold text-blue-600 text-xs">{p.invoiceId}</td>
                   <td className="table-td font-bold text-gray-900 text-xs max-w-[140px] truncate">{p.customer}</td>
@@ -678,6 +806,14 @@ export default function Payments() {
                       </div>
                     )}
                   </td>
+                  <td className="table-td w-8 text-center hidden sm:table-cell" onClick={e => e.stopPropagation()}>
+                    <input
+                      type="checkbox"
+                      checked={selected.has(p.id)}
+                      onChange={() => toggleSelectPayment(p.id)}
+                      className="w-4 h-4 cursor-pointer"
+                    />
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -728,6 +864,44 @@ export default function Payments() {
               {enndiNet > beltiNet ? 'Enndy' : 'Belti'} ka marrë më shumë këtë muaj.
             </div>
           )}
+        </div>
+      )}
+
+      {/* Bulk delete confirmation modal */}
+      {confirmDelAll && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="bg-white rounded-2xl shadow-2xl p-6 max-w-sm">
+            <div className="flex items-start gap-4 mb-4">
+              <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+                <Trash2 size={24} className="text-blue-600" />
+              </div>
+              <div className="flex-1">
+                <h3 className="font-bold text-gray-900 text-lg">Fshi {selected.size} {selected.size === 1 ? 'pagesën' : 'pagesat'}?</h3>
+                <p className="text-sm text-gray-600 mt-1">Kjo veprim nuk mund të rikthehej. Faturat përkatëse do të kalojnë në pritje.</p>
+              </div>
+            </div>
+
+            <div className="bg-blue-50 rounded-lg p-3 mb-6 border border-blue-200">
+              <p className="text-sm text-gray-700">
+                <span className="font-semibold">{selected.size}</span> {selected.size === 1 ? 'pagesë' : 'pagesa'} do të fshihen përgjithmonë.
+              </p>
+            </div>
+
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={() => setConfirmDelAll(false)}
+                className="px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                Anulo
+              </button>
+              <button
+                onClick={handleDeleteSelected}
+                className="px-4 py-2 text-sm font-medium bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+              >
+                Fshi {selected.size}
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
