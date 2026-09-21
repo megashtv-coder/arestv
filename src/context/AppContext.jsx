@@ -3,6 +3,7 @@ import {
   mockInvoices, mockCustomers, mockExpenses, mockItems, mockVendors,
   mockPayments, mockTransfers, paymentModes as defaultPaymentModes,
   depositAccounts as defaultDepositAccounts,
+  expenseTypes as defaultExpenseTypes,
   currencies, mockUsers, mockActivityLog, mockOrganizations,
 } from '../data/mockData'
 import { supabase } from '../lib/supabase'
@@ -238,6 +239,7 @@ export function AppProvider({ children }) {
   // Lista e referentëve të njohur për fushën "Referenca (kush pranoi)" te
   // pagesat — string[], e ndarë nga XFlow/AresTV (secili ka Supabase të vet).
   const [paymentReferents, setPaymentReferents] = useState([])
+  const [expenseTypes, setExpenseTypes] = useState(defaultExpenseTypes)
 
   /* ── Tester sandbox ── */
   const [tInvoices,  setTInvoices]  = useState([])
@@ -261,6 +263,7 @@ export function AppProvider({ children }) {
   const prevSL        = useRef(null)
   const prevHosts     = useRef(null)
   const prevReferents = useRef(null)
+  const prevET        = useRef(null)
   const prevUsers     = useRef(null) // null = nuk është inicializuar ende nga Supabase
 
   /* ══════════════════════════════════════════════════════════
@@ -283,6 +286,7 @@ export function AppProvider({ children }) {
       prevSL.current = []
       prevHosts.current = []
       prevReferents.current = []
+      prevET.current = defaultExpenseTypes
       return
     }
 
@@ -352,22 +356,26 @@ export function AppProvider({ children }) {
         const slRow = sett.data.find(r => r.key === 'stripeLinks')
         const hostsRow = sett.data.find(r => r.key === 'hosts')
         const referentsRow = sett.data.find(r => r.key === 'paymentReferents')
+        const etRow = sett.data.find(r => r.key === 'expenseTypes')
         const pm = pmRow?.value ?? defaultPaymentModes
         const da = daRow?.value ?? defaultDepositAccounts
         const sl = slRow?.value ?? []
         const hs = hostsRow?.value ?? []
         const rf = referentsRow?.value ?? []
+        const et = etRow?.value ?? defaultExpenseTypes
         setPaymentModes(pm);    prevPM.current = pm
         setDepositAccounts(da); prevDA.current = da
         setStripeLinks(sl);     prevSL.current = sl
         setHosts(hs);           prevHosts.current = hs
         setPaymentReferents(rf); prevReferents.current = rf
+        setExpenseTypes(et);    prevET.current = et
       } else {
         prevPM.current = defaultPaymentModes
         prevDA.current = defaultDepositAccounts
         prevSL.current = []
         prevHosts.current = []
         prevReferents.current = []
+        prevET.current = defaultExpenseTypes
       }
 
       // Organizations — merge Supabase + mockOrganizations (kurrë mos humb ato default)
@@ -464,6 +472,7 @@ export function AppProvider({ children }) {
       prevSL.current   = []
       prevHosts.current = []
       prevReferents.current = []
+      prevET.current = defaultExpenseTypes
       prevUsers.current = _loadedUsers  // fallback — mos sync-o deri sa të jetë online
       setDbLoading(false)
     })
@@ -528,6 +537,13 @@ export function AppProvider({ children }) {
     prevReferents.current = paymentReferents
     supabase.from('settings').upsert({ key: 'paymentReferents', value: paymentReferents }).then()
   }, [paymentReferents, canSync])
+
+  useEffect(() => {
+    if (!canSync || !supabase) return
+    if (JSON.stringify(prevET.current) === JSON.stringify(expenseTypes)) return
+    prevET.current = expenseTypes
+    supabase.from('settings').upsert({ key: 'expenseTypes', value: expenseTypes }).then()
+  }, [expenseTypes, canSync])
 
   // Sync users — kur ndryshojnë users (shto/edito/fshi), ruhen automatikisht në Supabase
   useEffect(() => {
@@ -799,6 +815,7 @@ export function AppProvider({ children }) {
       stripeLinks,     setStripeLinks,
       hosts,           setHosts,
       paymentReferents, setPaymentReferents,
+      expenseTypes, setExpenseTypes,
       currency,        setCurrency,
       darkMode,        setDarkMode,
       toast,           setToast,

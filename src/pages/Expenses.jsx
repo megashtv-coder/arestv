@@ -9,7 +9,8 @@ import { formatDate } from '../utils/dateFormat'
 import { useFeatures } from '../features/useFeatures'
 import { EmptyState, Modal, FormGroup, Pagination } from '../components/UI'
 import FormPageWrapper from '../components/FormPageWrapper'
-import { expenseTypes, depositedToOptions, mockVendors } from '../data/mockData'
+import ExpenseTypeSelect from '../components/ExpenseTypeSelect'
+import { depositedToOptions, mockVendors } from '../data/mockData'
 import { downloadTemplate } from '../components/ImportExcelModal'
 const ImportExcelModal = lazy(() => import('../components/ImportExcelModal'))
 
@@ -202,7 +203,7 @@ function ExportPanel({ expenses, onClose }) {
 
 /* ── Modal shpenzimi ── */
 export function ExpenseModal({ expense, onClose, isFormPage }) {
-  const { setExpenses, depositAccounts, showToast, currentOrgId, logActivity } = useApp()
+  const { setExpenses, depositAccounts, showToast, currentOrgId, logActivity, expenseTypes } = useApp()
   const { canUsePartnerExpenseFields } = useFeatures()
   const isEdit = !!expense
   const today = new Date().toISOString().slice(0, 10)
@@ -262,10 +263,7 @@ export function ExpenseModal({ expense, onClose, isFormPage }) {
 
       {/* Lloji i shpenzimit */}
       <FormGroup label="Për çfarë është bërë shpenzimi *">
-        <select className="form-control" value={form.type}
-          onChange={e => set('type', e.target.value)}>
-          {expenseTypes.map(t => <option key={t} value={t}>{t}</option>)}
-        </select>
+        <ExpenseTypeSelect value={form.type} onChange={v => set('type', v)} />
       </FormGroup>
 
       {/* Furnitori */}
