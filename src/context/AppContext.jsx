@@ -328,9 +328,116 @@ export function AppProvider({ children }) {
 
       const loadedInvoices  = load(inv,  [])
       const loadedCustomers = load(cust, [])
-      const loadedExpenses  = load(exp,  [])
+      let loadedExpenses    = load(exp,  [])
       const loadedPayments  = load(pay,  [])
       const loadedTransfers = load(tran, [])
+
+      // Ruaj referencën origjinale (siç është vërtet në Supabase) PARA se të
+      // shtojmë instanca të gjeneruara — diffSync krahason `expenses` (gjendja
+      // e re, me instancat) me `prevExpenses.current` (kjo, e pandryshuar) për
+      // të ditur çka duhet upsert. Nëse prevExpenses.current caktohej te
+      // gjendja E ZGJERUAR, do të ishte objekti I NJËJTË me `expenses` — diffSync
+      // do të shihte "asnjë ndryshim" dhe s'do të upsertonte kurrë instancat e reja.
+      const rawLoadedExpenses = loadedExpenses
+
+      // new Date('YYYY-MM-DD') e interpreton si mesnatë UTC — në zona orare
+      // me offset negativ, .getDate()/.getMonth() lokal e kthen një ditë
+      // mbrapa. Parsojmë/formatojmë gjithmonë në kohë lokale.
+      const parseLocalDate = (dateStr) => {
+        const [y, m, d] = (dateStr || '').split('-').map(Number)
+        return new Date(y, (m || 1) - 1, d || 1)
+      }
+      const formatLocalDate = (date) => {
+        const y = date.getFullYear()
+        const m = String(date.getMonth() + 1).padStart(2, '0')
+        const d = String(date.getDate()).padStart(2, '0')
+        return `${y}-${m}-${d}`
+      }
+
+      // Data pasuese sipas frekuencës, e ankoruar te dita/muaji i shpenzimit origjinal
+      // (p.sh. Mujore me datë 5 janar → çdo 5 e muajit; Vjetore → çdo 5 janar).
+      const getNextOccurrence = (anchorDate, freq, fromDate) => {
+        const anchorDay = anchorDate.getDate()
+        const anchorMonth = anchorDate.getMonth()
+
+        if (freq === 'Ditore') {
+          const d = new Date(fromDate)
+          d.setDate(d.getDate() + 1)
+          return d
+        }
+        if (freq === 'Javore') {
+          const d = new Date(fromDate)
+          d.setDate(d.getDate() + 7)
+          return d
+        }
+        if (freq === 'Vjetore') {
+          const y = fromDate.getFullYear() + 1
+          let d = new Date(y, anchorMonth, anchorDay)
+          if (d.getMonth() !== anchorMonth) d = new Date(y, anchorMonth + 1, 0)
+          return d
+        }
+        // Mujore (default)
+        let y = fromDate.getFullYear()
+        let m = fromDate.getMonth() + 1
+        if (m > 11) { m = 0; y++ }
+        let d = new Date(y, m, anchorDay)
+        if (d.getMonth() !== m) d = new Date(y, m + 1, 0)
+        return d
+      }
+
+      // Gjenero instancat e shpenzimeve të rregullta që janë "due" (sot ose më
+      // herët) — QË NGA HERA E FUNDIT E GJENERUAR (lastGeneratedDate), jo që
+      // nga data origjinale e krijimit — pa backfill historik.
+      const expandRecurringExpenses = (expenses) => {
+        const now = new Date()
+        const todayDate = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+        const today = formatLocalDate(todayDate)
+
+        const existingIds = new Set(expenses.filter(e => e.parentId).map(e => e.id))
+        const updatedParents = new Map()
+        const newInstances = []
+
+        expenses.filter(e => e.recurring && !e.parentId).forEach(parent => {
+          const anchorDate = parseLocalDate(parent.date || today)
+
+          if (!parent.lastGeneratedDate) {
+            const baseline = anchorDate > todayDate ? (parent.date || today) : today
+            updatedParents.set(parent.id, { ...parent, lastGeneratedDate: baseline })
+            return
+          }
+
+          let cursor = parseLocalDate(parent.lastGeneratedDate)
+          let lastGenerated = parent.lastGeneratedDate
+          let guard = 0
+          while (guard++ < 1000) {
+            const next = getNextOccurrence(anchorDate, parent.recurringFreq, cursor)
+            if (next > todayDate) break
+            const dateStr = formatLocalDate(next)
+            const instId = `${parent.id}-${dateStr}`
+            if (!existingIds.has(instId)) {
+              const { lastGeneratedDate: _skip, ...parentRest } = parent
+              newInstances.push({
+                ...parentRest,
+                id: instId,
+                date: dateStr,
+                recurring: false,
+                parentId: parent.id,
+              })
+            }
+            cursor = next
+            lastGenerated = dateStr
+          }
+          if (lastGenerated !== parent.lastGeneratedDate) {
+            updatedParents.set(parent.id, { ...parent, lastGeneratedDate: lastGenerated })
+          }
+        })
+
+        if (newInstances.length === 0 && updatedParents.size === 0) return expenses
+        const merged = expenses.map(e => updatedParents.has(e.id) ? updatedParents.get(e.id) : e)
+        return [...merged, ...newInstances]
+      }
+
+      loadedExpenses = expandRecurringExpenses(loadedExpenses)
       const loadedVendors   = load(vend, mockVendors)
       // Items — merge Supabase + mockItems (ri-shto ato që mungojnë)
       const supaItems    = itm?.data?.length ? fromRows(itm.data) : []
@@ -343,7 +450,7 @@ export function AppProvider({ children }) {
       // Use wrapped setters to ensure orgId is assigned to all items from Supabase
       wrappedSetInvoices(loadedInvoices);    prevInvoices.current  = loadedInvoices
       wrappedSetCustomers(loadedCustomers);  prevCustomers.current = loadedCustomers
-      wrappedSetExpenses(loadedExpenses);    prevExpenses.current  = loadedExpenses
+      wrappedSetExpenses(loadedExpenses);    prevExpenses.current  = rawLoadedExpenses
       wrappedSetPayments(loadedPayments);    prevPayments.current  = loadedPayments
       wrappedSetTransfers(loadedTransfers);  prevTransfers.current = loadedTransfers
       setVendors(loadedVendors);             prevVendors.current   = loadedVendors

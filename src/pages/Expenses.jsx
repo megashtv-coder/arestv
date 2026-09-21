@@ -402,23 +402,42 @@ export function ExpenseModal({ expense, onClose, isFormPage }) {
 /* ── Konfirmim fshirje ── */
 function DeleteConfirm({ exp, onClose }) {
   const { setExpenses, showToast, logActivity } = useApp()
-  const del = () => {
+  const isRecurringParent = exp.recurring && !exp.parentId
+
+  const delOne = () => {
     setExpenses(prev => prev.filter(e => e.id !== exp.id))
     logActivity(`Fshiu shpenzimin ${exp.id} — ${exp.type} €${Number(exp.amount)}`, 'Shpenzimet')
     showToast('Shpenzimi u fshi! ✓')
     onClose()
   }
+
+  const delSeries = () => {
+    setExpenses(prev => prev.filter(e => e.id !== exp.id && e.parentId !== exp.id))
+    logActivity(`Fshiu serinë e shpenzimit të rregullt ${exp.id} — ${exp.type} €${Number(exp.amount)}`, 'Shpenzimet')
+    showToast('Shpenzimi i rregullt dhe krejt instancat e tij u fshinë! ✓')
+    onClose()
+  }
+
   return (
     <Modal
       title={<span className="flex items-center gap-2 text-blue-500"><Trash2 size={16}/>Fshi shpenzimin</span>}
       onClose={onClose}
-      footer={<>
-        <button className="btn btn-outline" onClick={onClose}>Anulo</button>
-        <button className="btn bg-blue-500 hover:bg-blue-600 text-white" onClick={del}>Fshi</button>
-      </>}
+      footer={isRecurringParent ? (
+        <>
+          <button className="btn btn-outline" onClick={onClose}>Anulo</button>
+          <button className="btn btn-outline" onClick={delOne}>Fshi vetëm këtë</button>
+          <button className="btn bg-blue-500 hover:bg-blue-600 text-white" onClick={delSeries}>Fshi krejt serinë</button>
+        </>
+      ) : (
+        <>
+          <button className="btn btn-outline" onClick={onClose}>Anulo</button>
+          <button className="btn bg-blue-500 hover:bg-blue-600 text-white" onClick={delOne}>Fshi</button>
+        </>
+      )}
     >
       <p className="text-sm text-gray-600">
         A jeni i sigurt? Ky veprim nuk mund të kthehet mbrapsht.
+        {isRecurringParent && ' Ky është një shpenzim i rregullt — mund të fshish vetëm këtë rresht, ose krejt serinë (të gjitha instancat e gjeneruara automatikisht prej tij).'}
       </p>
     </Modal>
   )
