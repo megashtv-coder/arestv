@@ -425,15 +425,24 @@ export default function ExpensesPage() {
     expensesImportOpen: importOpen, setExpensesImportOpen: setImportOpen,
   } = useApp()
 
+  // Viti/muaji "aktual" — default gjithmonë te periudha që po operojmë, jo "të gjitha".
+  const todayISO = new Date().toISOString().slice(0, 10)
+  const currentYear  = todayISO.slice(0, 4)
+  const currentMonth = todayISO.slice(0, 7)
+
   const [search,         setSearch]        = useState('')
-  const [monthFilt,      setMonthFilt]     = useState('all')
+  const [monthFilt,      setMonthFilt]     = useState(() => {
+    const f = JSON.parse(localStorage.getItem('arestv_nav_filter') || 'null')
+    if (f?.year) return 'all' // drill-down nga Dashboard-i sipas vitit — shfaq krejt muajt e atij viti
+    return currentMonth
+  })
   const [partnerFilt,    setPartner]       = useState('all')
   const [typeFilt,       setType]          = useState('all')
   const [recurFilt,      setRecurFilt]     = useState('all')
   const [yearFilt,       setYearFilt]      = useState(() => {
     const f = JSON.parse(localStorage.getItem('arestv_nav_filter') || 'null')
     if (f?.year) { localStorage.removeItem('arestv_nav_filter'); return f.year }
-    return 'all'
+    return currentYear
   })
   const [pg,             setPg]            = useState(1)
   const [perPage,        setPerPage]       = useState(50)
@@ -472,11 +481,19 @@ export default function ExpensesPage() {
   /* unique types in data */
   const usedTypes = [...new Set(expenses.map(e => e.type).filter(Boolean))]
 
-  /* unique months in data */
+  /* unique months in data (+ muaji aktual) */
   const months = useMemo(() => {
     const set = new Set(expenses.map(e => (e.date || '').slice(0, 7)).filter(Boolean))
+    set.add(currentMonth)
     return Array.from(set).sort().reverse()
-  }, [expenses])
+  }, [expenses, currentMonth])
+
+  /* unique years in data (+ viti aktual) */
+  const years = useMemo(() => {
+    const set = new Set(expenses.map(e => (e.date || '').slice(0, 4)).filter(Boolean))
+    set.add(currentYear)
+    return Array.from(set).sort().reverse()
+  }, [expenses, currentYear])
 
   const filtered = useMemo(() => expenses.filter(e => {
     const matchSearch  = !search || (e.type||'').toLowerCase().includes(search.toLowerCase()) || (e.vendor||'').toLowerCase().includes(search.toLowerCase())
@@ -654,7 +671,25 @@ export default function ExpensesPage() {
 
         <div className="flex flex-wrap items-center gap-2">
           <select className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 font-semibold outline-none focus:border-blue-400 cursor-pointer"
-            value={monthFilt} onChange={e => { setMonthFilt(e.target.value); setPg(1) }}>
+            value={yearFilt} onChange={e => {
+              const v = e.target.value
+              setYearFilt(v)
+              // Zgjedhja e vitit fshin muajin nëse ai i takonte një viti tjetër — shmang kombinim pa rezultate
+              if (v !== 'all' && monthFilt !== 'all' && !monthFilt.startsWith(v)) setMonthFilt('all')
+              setPg(1)
+            }}>
+            <option value="all">Të gjitha vitet</option>
+            {years.map(y => <option key={y} value={y}>{y}</option>)}
+          </select>
+
+          <select className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 font-semibold outline-none focus:border-blue-400 cursor-pointer"
+            value={monthFilt} onChange={e => {
+              const v = e.target.value
+              setMonthFilt(v)
+              // Zgjedhja e një muaji specifik e cakton automatikisht vitin përkatës
+              if (v !== 'all') setYearFilt(v.slice(0, 4))
+              setPg(1)
+            }}>
             <option value="all">Të gjitha muajt</option>
             {months.map(m => <option key={m} value={m}>{m}</option>)}
           </select>
