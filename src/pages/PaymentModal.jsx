@@ -222,6 +222,8 @@ export default function PaymentModal({ invoice, payment: editPayment, onClose, i
           recurring:     false,
           recurringFreq: '',
           amount:        fee,
+          invoiceId:     selectedInv.id,
+          paymentId:     payment.id,
         }, ...prev])
       }
       showToast(`Pagesa u regjistrua! Neto: ${fmt(net)} ✓`)
