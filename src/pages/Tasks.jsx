@@ -4,6 +4,8 @@ import { useApp } from '../context/AppContext'
 import { formatDate } from '../utils/dateFormat'
 import { supabase } from '../lib/supabase'
 
+const COMPLETED_RETENTION_DAYS = 5
+
 function TaskModal({ task, onClose, onSave, customers }) {
   const [formData, setFormData] = useState(task || {
     id: `TSK-${Date.now()}`,
@@ -222,7 +224,20 @@ export default function Tasks() {
       setLoading(true)
       const { data, error } = await supabase.from('tasks').select('*').order('reminderdate', { ascending: true })
       if (error) throw error
-      setTasks((data || []).map(t => ({ ...t, reminderDate: t.reminderdate })))
+      const formattedTasks = (data || []).map(t => ({ ...t, reminderDate: t.reminderdate, completedAt: t.completedat }))
+
+      // Detyrat e kryera qëndrojnë 5 ditë, pastaj fshihen vetë — s'na duhen më.
+      const cutoff = Date.now() - COMPLETED_RETENTION_DAYS * 24 * 60 * 60 * 1000
+      const stale = formattedTasks.filter(t => t.completed && t.completedAt && new Date(t.completedAt).getTime() < cutoff)
+      const fresh = stale.length ? formattedTasks.filter(t => !stale.includes(t)) : formattedTasks
+
+      setTasks(fresh)
+
+      if (stale.length > 0) {
+        supabase.from('tasks').delete().in('id', stale.map(t => t.id)).then(({ error: delErr }) => {
+          if (delErr) console.error('Error auto-deleting stale completed tasks:', delErr)
+        })
+      }
     } catch {
       try {
         const saved = localStorage.getItem('arestv_tasks')
@@ -235,7 +250,7 @@ export default function Tasks() {
 
   const syncTaskToSupabase = async (task) => {
     try {
-      const taskData = { id: task.id, customer: task.customer, description: task.description, reminderdate: task.reminderDate, completed: task.completed || false }
+      const taskData = { id: task.id, customer: task.customer, description: task.description, reminderdate: task.reminderDate, completed: task.completed || false, completedat: task.completedAt ?? null }
       const { data: existing } = await supabase.from('tasks').select('id').eq('id', task.id).single()
       if (existing) {
         const { error } = await supabase.from('tasks').update(taskData).eq('id', task.id)
@@ -313,7 +328,8 @@ export default function Tasks() {
   const handleToggleTask = async (taskId) => {
     const task = tasks.find(t => t.id === taskId)
     if (!task) return
-    const updatedTask = { ...task, completed: !task.completed }
+    const nowCompleted = !task.completed
+    const updatedTask = { ...task, completed: nowCompleted, completedAt: nowCompleted ? new Date().toISOString() : null }
     const synced = await syncTaskToSupabase(updatedTask)
     if (synced) setTasks(tasks.map(t => t.id === taskId ? updatedTask : t))
   }
@@ -343,6 +359,9 @@ export default function Tasks() {
     }
 
     return [...result].sort((a, b) => {
+      // Detyrat e kryera shkojnë krejt në fund, pavarësisht datës — s'na duhen më.
+      if (a.completed !== b.completed) return a.completed ? 1 : -1
+
       const aIsOverdue = a.reminderDate < today && !a.completed
       const bIsOverdue = b.reminderDate < today && !b.completed
       const aIsToday = a.reminderDate === today && !a.completed
