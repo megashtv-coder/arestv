@@ -4,7 +4,7 @@ import { useApp } from '../context/AppContext'
 import { useFeatures } from '../features/useFeatures'
 import { Modal, FormGroup } from '../components/UI'
 import ReferentSelect from '../components/ReferentSelect'
-import { depositedToOptions } from '../data/mockData'
+import { depositedToOptions, trackingMethods } from '../data/mockData'
 import { round2 } from '../utils/money'
 
 /* ── horizontal chip-slider per deposit accounts ── */
@@ -118,6 +118,7 @@ export default function PaymentModal({ invoice, payment: editPayment, onClose, i
     reference:      editPayment.reference || '',
     depositedTo:    editPayment.depositedTo || '',
     notes:          editPayment.notes || '',
+    trackingNumber: editPayment.trackingNumber || '',
   } : {
     amount:         invoice?.amount ?? '',
     date:           today,
@@ -128,6 +129,7 @@ export default function PaymentModal({ invoice, payment: editPayment, onClose, i
     reference:      '',
     depositedTo:    '',
     notes:          '',
+    trackingNumber: '',
   })
 
   const [err, setErr] = useState('')
@@ -169,6 +171,7 @@ export default function PaymentModal({ invoice, payment: editPayment, onClose, i
                 reference:      form.reference,
                 depositedTo:    form.depositedTo,
                 notes:          form.notes,
+                trackingNumber: form.trackingNumber,
               }
             : p
         ))
@@ -193,6 +196,7 @@ export default function PaymentModal({ invoice, payment: editPayment, onClose, i
       reference:      form.reference,
       depositedTo:    form.depositedTo,
       notes:          form.notes,
+      trackingNumber: form.trackingNumber,
     }
 
     onClose()
@@ -347,6 +351,21 @@ export default function PaymentModal({ invoice, payment: editPayment, onClose, i
           modes={paymentModes}
         />
       </FormGroup>
+
+      {/* Numri i tërheqjes — vetëm për metoda pa evidencë automatike (WU/Ria/MoneyGram) */}
+      {trackingMethods.includes(form.method) && (
+        <FormGroup label="Numri i tërheqjes (MTCN)">
+          <input
+            className="form-control font-mono"
+            value={form.trackingNumber}
+            onChange={e => set('trackingNumber', e.target.value)}
+            placeholder="p.sh. 1234567890"
+          />
+          <p className="text-xs text-gray-400 mt-1">
+            Opsionale — kështu e ke gati te "Barazimi" pa e kërkuar prapë
+          </p>
+        </FormGroup>
+      )}
 
       {/* Fee + Referenca */}
       <div className="grid grid-cols-2 gap-4">

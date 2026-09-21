@@ -61,6 +61,10 @@ export const paymentModes = [
   'Ria', 'Money Gram', 'Crypto', 'Stripe',
 ]
 
+// Metodat pa evidencë automatike tërheqjeje — kërkojnë numër gjurmimi
+// (MTCN etj.) dhe përcjellje manuale në menunë "Barazimi".
+export const trackingMethods = ['Western Union', 'Ria', 'Money Gram']
+
 export const depositAccounts = [
   'Kesh - Enndy',
   'Kesh - Belti',
