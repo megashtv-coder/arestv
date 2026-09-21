@@ -426,6 +426,7 @@ export default function ExpensesPage() {
   } = useApp()
 
   const [search,         setSearch]        = useState('')
+  const [monthFilt,      setMonthFilt]     = useState('all')
   const [partnerFilt,    setPartner]       = useState('all')
   const [typeFilt,       setType]          = useState('all')
   const [recurFilt,      setRecurFilt]     = useState('all')
@@ -471,14 +472,21 @@ export default function ExpensesPage() {
   /* unique types in data */
   const usedTypes = [...new Set(expenses.map(e => e.type).filter(Boolean))]
 
+  /* unique months in data */
+  const months = useMemo(() => {
+    const set = new Set(expenses.map(e => (e.date || '').slice(0, 7)).filter(Boolean))
+    return Array.from(set).sort().reverse()
+  }, [expenses])
+
   const filtered = useMemo(() => expenses.filter(e => {
     const matchSearch  = !search || (e.type||'').toLowerCase().includes(search.toLowerCase()) || (e.vendor||'').toLowerCase().includes(search.toLowerCase())
+    const matchMonth   = monthFilt === 'all' || (e.date||'').startsWith(monthFilt)
     const matchPartner = partnerFilt === 'all' || e.paidBy === partnerFilt
     const matchType    = typeFilt === 'all' || e.type === typeFilt
     const matchRecur   = recurFilt === 'all' || (recurFilt === 'recurring' ? e.recurring : !e.recurring)
     const matchYear    = yearFilt === 'all' || e.date?.startsWith(yearFilt)
-    return matchSearch && matchPartner && matchType && matchRecur && matchYear
-  }), [expenses, search, partnerFilt, typeFilt, recurFilt, yearFilt])
+    return matchSearch && matchMonth && matchPartner && matchType && matchRecur && matchYear
+  }), [expenses, search, monthFilt, partnerFilt, typeFilt, recurFilt, yearFilt])
 
   const toggleSort = field => {
     if (sortField === field) setSortDir(d => d === 'asc' ? 'desc' : 'asc')
@@ -645,6 +653,12 @@ export default function ExpensesPage() {
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
+          <select className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 font-semibold outline-none focus:border-blue-400 cursor-pointer"
+            value={monthFilt} onChange={e => { setMonthFilt(e.target.value); setPg(1) }}>
+            <option value="all">Të gjitha muajt</option>
+            {months.map(m => <option key={m} value={m}>{m}</option>)}
+          </select>
+
           <select className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 font-semibold outline-none focus:border-blue-400 cursor-pointer"
             value={partnerFilt} onChange={e => { setPartner(e.target.value); setPg(1) }}>
             <option value="all">Të dy partnerët</option>
