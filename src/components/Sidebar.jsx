@@ -3,7 +3,7 @@ import {
   LayoutDashboard, FileText, Users as UsersIcon, Receipt, BarChart2,
   Package, CreditCard, Settings, ChevronRight, X, Bell,
   Truck, TrendingUp, ChevronLeft, UserCog, LogOut, CheckSquare,
-  Zap, Link2, Server,
+  Zap, Link2, Server, Scale,
 } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import { useFeatures } from '../features/useFeatures'
@@ -61,6 +61,7 @@ export default function Sidebar() {
     { id: 'customers',     icon: UsersIcon,       label: 'Klientët' },
     { id: 'items',         icon: Package,         label: 'Produktet' },
     { id: 'payments',      icon: CreditCard,      label: 'Pagesat' },
+    { id: 'settlement',    icon: Scale,           label: 'Barazimi' },
     { id: 'expenses',      icon: Receipt,         label: 'Shpenzimet' },
     { id: 'hosts',         icon: Server,          label: 'Hostet' },
     { id: 'stripe',        icon: Link2,           label: 'Stripe' },

@@ -26,6 +26,7 @@ const UsersPage = lazy(() => import('./pages/Users'))
 const Tasks = lazy(() => import('./pages/Tasks'))
 const StripePage = lazy(() => import('./pages/Stripe'))
 const HostsPage = lazy(() => import('./pages/Hosts'))
+const SettlementPage = lazy(() => import('./pages/Settlement'))
 const AIChat = lazy(() => import('./components/AIChat'))
 
 const ORG_PAGES = {
@@ -43,6 +44,7 @@ const ORG_PAGES = {
   tasks:                 Tasks,
   stripe:                StripePage,
   hosts:                 HostsPage,
+  settlement:            SettlementPage,
   'ai-chat':             AIChat,
 }
 
