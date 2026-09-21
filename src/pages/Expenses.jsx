@@ -10,7 +10,8 @@ import { useFeatures } from '../features/useFeatures'
 import { EmptyState, Modal, FormGroup, Pagination } from '../components/UI'
 import FormPageWrapper from '../components/FormPageWrapper'
 import ExpenseTypeSelect from '../components/ExpenseTypeSelect'
-import { depositedToOptions, mockVendors } from '../data/mockData'
+import VendorSelect from '../components/VendorSelect'
+import { depositedToOptions } from '../data/mockData'
 import { downloadTemplate } from '../components/ImportExcelModal'
 const ImportExcelModal = lazy(() => import('../components/ImportExcelModal'))
 
@@ -110,11 +111,11 @@ function ExportPanel({ expenses, onClose }) {
   const totalAmt = filtered.reduce((s, e) => s + (e.amount || 0), 0)
 
   const doExport = () => {
-    const header = ['ID', 'Data', 'Kategoria', 'Tipi', 'Furnitori', 'Shuma (€)', 'Paguar nga', 'Nga llogaria', 'Referenca', 'Periodik']
+    const header = ['ID', 'Data', 'Kategoria', 'Tipi', 'Furnitori', 'Shuma (€)', 'Paguar nga', 'Referenca', 'Periodik']
     const rows = filtered.map(e => [
       e.id || '', e.date || '', e.category || '', e.type || '',
       e.vendor || '', (e.amount || 0).toFixed(2),
-      e.paidBy || '', e.paidFrom || '', e.reference || '',
+      e.paidBy || '', e.reference || '',
       e.recurring ? 'Po' : 'Jo',
     ])
     const csv = '﻿' + [header, ...rows].map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n')
@@ -210,14 +211,14 @@ function ExportPanel({ expenses, onClose }) {
 
 /* ── Modal shpenzimi ── */
 export function ExpenseModal({ expense, onClose, isFormPage }) {
-  const { setExpenses, depositAccounts, showToast, currentOrgId, logActivity, expenseTypes } = useApp()
+  const { setExpenses, showToast, currentOrgId, logActivity, expenseTypes } = useApp()
   const { canUsePartnerExpenseFields } = useFeatures()
   const isEdit = !!expense
   const today = new Date().toISOString().slice(0, 10)
 
   const empty = {
     date: today, type: expenseTypes[0], vendor: '',
-    paidFrom: '', reference: '', paidBy: 'Enndy',
+    reference: '', paidBy: 'Enndy',
     recurring: false, recurringFreq: 'Mujore', amount: '',
   }
   const [form, setForm] = useState(isEdit ? { ...expense } : empty)
@@ -275,23 +276,8 @@ export function ExpenseModal({ expense, onClose, isFormPage }) {
 
       {/* Furnitori */}
       <FormGroup label="Furnitori">
-        <select className="form-control" value={form.vendor}
-          onChange={e => set('vendor', e.target.value)}>
-          <option value="">Zgjidh furnitorin...</option>
-          {mockVendors.map(v => <option key={v.id} value={v.name}>{v.name}</option>)}
-        </select>
+        <VendorSelect value={form.vendor} onChange={v => set('vendor', v)} />
       </FormGroup>
-
-      {/* Nga cila llogari - Only for organizations with partner expense feature enabled */}
-      {canUsePartnerExpenseFields && (
-        <FormGroup label="Nga cila llogari u pagua">
-          <select className="form-control" value={form.paidFrom}
-            onChange={e => set('paidFrom', e.target.value)}>
-            <option value="">Zgjidh llogarinë...</option>
-            {depositAccounts.map(acc => <option key={acc} value={acc}>{acc}</option>)}
-          </select>
-        </FormGroup>
-      )}
 
       {/* Referenca */}
       <FormGroup label="Referenca / Shënime">
@@ -787,10 +773,9 @@ export default function ExpensesPage() {
                     <p className="text-xs text-gray-600 mt-0.5">{e.vendor || '—'}</p>
                   </div>
 
-                  {/* Col 2: Amount + Account + Partner */}
+                  {/* Col 2: Amount + Partner */}
                   <div className="text-right">
                     <p className="font-mono font-bold text-blue-600 text-sm">- {fmt(e.amount)}</p>
-                    <p className="text-xs text-gray-500 mt-0.5">{e.paidFrom || '—'}</p>
                     <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold mt-0.5 ${
                       e.paidBy === 'Enndy' ? 'bg-blue-50 text-blue-600' : 'bg-purple-100 text-purple-600'
                     }`}>
@@ -874,7 +859,6 @@ export default function ExpensesPage() {
                     <span className="text-[10px]">{sortField === 'vendor' ? (sortDir === 'asc' ? '↑' : '↓') : <span className="text-gray-300">↕</span>}</span>
                   </span>
                 </th>
-                <th className="table-th hidden lg:table-cell">Llogaria</th>
                 <th className="table-th hidden md:table-cell">Referenca</th>
                 <th className="table-th cursor-pointer select-none hover:text-gray-700"
                     onClick={() => toggleSort('paidBy')}>
@@ -909,9 +893,6 @@ export default function ExpensesPage() {
                   </td>
                   <td className="table-td text-xs hidden md:table-cell">
                     {e.vendor || <span className="text-gray-300">—</span>}
-                  </td>
-                  <td className="table-td text-xs hidden lg:table-cell max-w-[130px] truncate">
-                    {e.paidFrom || <span className="text-gray-300">—</span>}
                   </td>
                   <td className="table-td text-xs hidden md:table-cell">
                     {e.reference || <span className="text-gray-300">—</span>}

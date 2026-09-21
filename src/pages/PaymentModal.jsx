@@ -216,7 +216,6 @@ export default function PaymentModal({ invoice, payment: editPayment, onClose, i
           date:          form.date,
           type:          'Pagesa tjera',
           vendor:        form.method,
-          paidFrom:      form.depositAccount || '',
           reference:     `Fee transaksioni — ${form.method} (${selectedInv.id})`,
           paidBy:        form.depositedTo,
           recurring:     false,
