@@ -191,6 +191,11 @@ function extractPaymentCommand(text, context = {}) {
   // Strip the known matched substrings so only the amount/fee digits remain
   let cleaned = trimmed.replace(/^pagese\b/i, ' ').replace(/@/g, ' ')
   cleaned = cleaned.replace(new RegExp(escapeRegex(customerMatch.name), 'i'), ' ')
+  // Referenti: @Emri nga lista e referentëve të regjistruar (paymentReferents)
+  const referentMatch = (context.paymentReferents || [])
+    .filter(r => r && trimmed.toLowerCase().includes('@' + r.toLowerCase()))
+    .sort((x, y) => y.length - x.length)[0] || null
+  if (referentMatch) cleaned = cleaned.replace(new RegExp(escapeRegex(referentMatch), 'i'), ' ')
   if (paymentMode) {
     const knownModes = [...(context.paymentModes || []), 'PayPal', 'Transfer Bankar', 'Kesh', 'Cash',
       'Western Union', 'Ria', 'Money Gram', 'Crypto', 'Stripe', 'Wire', 'Bank']
@@ -207,7 +212,7 @@ function extractPaymentCommand(text, context = {}) {
   const amount = numbers.length > 0 ? parseFloat(numbers[0].replace(',', '.')) : null
   const fee = numbers.length > 1 ? parseFloat(numbers[1].replace(',', '.')) : 0
   for (const n of numbers) cleaned = cleaned.replace(n, ' ')
-  const reference = cleaned.replace(/\s+/g, ' ').trim() || null
+  const reference = referentMatch || cleaned.replace(/\s+/g, ' ').trim() || null
 
   return {
     customer: customerMatch.name,
