@@ -1101,10 +1101,13 @@ function ReferuesitTab() {
 ══════════════════════════════════════════════════════════ */
 function ReferencatPagesaveTab({ payments }) {
   const { paymentModes } = useApp()
-  const YEARS = [2025, 2026, 2027]
+  const now = new Date()
+  const currentYear = now.getFullYear()
+  const YEARS = [...new Set([2025, 2026, 2027, currentYear])].sort()
 
-  const [filterMonth, setFilterMonth] = useState('all')
-  const [filterYear, setFilterYear] = useState('all')
+  // Default gjithmonë muaji/viti aktual (jo "të gjithë")
+  const [filterMonth, setFilterMonth] = useState(String(now.getMonth() + 1).padStart(2, '0'))
+  const [filterYear, setFilterYear] = useState(String(currentYear))
 
   const filtered = useMemo(() => payments.filter(p => {
     if (!p.reference?.trim()) return false
