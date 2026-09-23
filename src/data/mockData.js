@@ -64,6 +64,13 @@ export const paymentModes = [
 // Metodat pa evidencë automatike tërheqjeje — kërkojnë numër gjurmimi
 // (MTCN etj.) dhe përcjellje manuale në menunë "Barazimi".
 export const trackingMethods = ['Western Union', 'Ria', 'Money Gram']
+// Kategoritë default të Hosteve — id-të përputhen me fushën `category` të hosteve ekzistues.
+export const defaultHostCategories = [
+  { id: 'general', name: 'TË PËRGJITHSHME', flag: '🌐' },
+  { id: 'italy',   name: 'ITALI',           flag: '🇮🇹' },
+  { id: 'england', name: 'ANGLI',           flag: '🇬🇧' },
+]
+
 
 export const depositAccounts = [
   'Kesh - Enndy',
