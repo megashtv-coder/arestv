@@ -222,11 +222,12 @@ async function executeCreateTask(params, appContext) {
 // given, otherwise the customer's oldest unpaid (not draft/paid) invoice.
 function findTargetInvoice(params, invoices) {
   if (params.invoiceId) {
-    return invoices.find(i => i.id === params.invoiceId) || null
+    const byId = invoices.find(i => i.id === params.invoiceId) || null
+    return byId && byId.status !== 'void' ? byId : null // fatura void s'pranon pagesë
   }
   if (params.customer) {
     const unpaid = invoices
-      .filter(i => i.customer === params.customer && i.status !== 'paid' && i.status !== 'draft')
+      .filter(i => i.customer === params.customer && i.status !== 'paid' && i.status !== 'draft' && i.status !== 'void')
       .sort((a, b) => new Date(a.date) - new Date(b.date))
     return unpaid[0] || null
   }
