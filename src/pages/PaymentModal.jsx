@@ -138,7 +138,7 @@ export default function PaymentModal({ invoice, payment: editPayment, onClose, i
 
   const unpaidInvoices = invoices.filter(i => {
     // Shfaq faturat e paguara totalisht ose në pritje/pjesërisht
-    return i.status !== 'paid' && i.status !== 'draft'
+    return i.status !== 'paid' && i.status !== 'draft' && i.status !== 'void'
   })
 
   const save = async () => {
