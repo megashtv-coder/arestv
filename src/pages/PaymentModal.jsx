@@ -6,6 +6,7 @@ import { Modal, FormGroup } from '../components/UI'
 import ReferentSelect from '../components/ReferentSelect'
 import { depositedToOptions, trackingMethods } from '../data/mockData'
 import { round2 } from '../utils/money'
+import { checkInvoiceFresh } from '../utils/freshInvoiceCheck'
 
 /* ── horizontal chip-slider per deposit accounts ── */
 function SlideSelect({ value, onChange, options }) {
@@ -140,7 +141,7 @@ export default function PaymentModal({ invoice, payment: editPayment, onClose, i
     return i.status !== 'paid' && i.status !== 'draft'
   })
 
-  const save = () => {
+  const save = async () => {
     if (!selectedInv)
       { setErr('Zgjidh faturën.'); return }
     if (!form.amount || isNaN(Number(form.amount)) || Number(form.amount) <= 0)
@@ -182,6 +183,21 @@ export default function PaymentModal({ invoice, payment: editPayment, onClose, i
     }
 
     /* ── CREATE new payment ── */
+    // Kontroll me gjendjen e fundit në Supabase: nëse një përdorues tjetër e ka
+    // paguar tashmë faturën (pajisje tjetër), mos e regjistro për së dyti.
+    const fresh = await checkInvoiceFresh(selectedInv.id, amount)
+    if (!fresh.ok) {
+      setInvoices(prev => prev.map(i => i.id === fresh.invoice.id ? { ...i, ...fresh.invoice } : i))
+      setPayments(prev => {
+        const have = new Set(prev.map(p => p.id))
+        const missing = fresh.payments.filter(p => !have.has(p.id))
+        return missing.length ? [...missing, ...prev] : prev
+      })
+      setErr(fresh.message)
+      showToast(fresh.message, 'error')
+      return
+    }
+
     const payment = {
       id:             `PAY-${Date.now()}`,
       invoiceId:      selectedInv.id,
@@ -205,7 +221,7 @@ export default function PaymentModal({ invoice, payment: editPayment, onClose, i
       logActivity(`Regjistroi pagesën ${payment.id} — ${selectedInv.customer} €${amount}`, 'Pagesat')
       setInvoices(prev => prev.map(i => {
         if (i.id !== selectedInv.id) return i
-        const newPaidAmount = round2((i.paidAmount || 0) + amount)
+        const newPaidAmount = round2(Math.max(i.paidAmount || 0, fresh.paidAmount || 0) + amount)
         const invoiceTotal = i.amount
         let status = 'pending'
         if (newPaidAmount >= invoiceTotal) status = 'paid'
