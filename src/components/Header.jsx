@@ -37,6 +37,7 @@ export default function Header() {
     setSidebarOpen, invoices, payments, expenses, customers, navigate, currentUser,
     setModal, closeModal,
     invoicesHidden, setInvoicesHidden,
+    moneyHidden, toggleMoneyHidden, moneyPages,
     invoicesExportOpen, setInvoicesExportOpen,
     invoicesImportOpen, setInvoicesImportOpen,
     dashboardMonth, setDashboardMonth,
@@ -320,6 +321,19 @@ export default function Header() {
             className="icon-btn p-1.5 sm:p-2"
           >
             <FileSpreadsheet size={16} />
+          </button>
+        </div>
+      )}
+
+      {/* Fshih/Shfaq shumat — për faqet e tjera me vlera monetare */}
+      {moneyPages.includes(page) && (
+        <div className="flex items-center flex-shrink-0 pr-1 sm:pr-2 mr-0.5 border-r border-blue-200/70 dark:border-gray-700">
+          <button
+            onClick={toggleMoneyHidden}
+            title={moneyHidden ? 'Shfaq shumat' : 'Fshih shumat'}
+            className="icon-btn p-1.5 sm:p-2"
+          >
+            {moneyHidden ? <EyeOff size={16} /> : <Eye size={16} />}
           </button>
         </div>
       )}

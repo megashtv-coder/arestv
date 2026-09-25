@@ -90,7 +90,7 @@ export default function PaymentModal({ invoice, payment: editPayment, onClose, i
     invoices, setInvoices,
     setPayments, setExpenses,
     paymentModes,
-    showToast, fmt, logActivity,
+    showToast, fmtRaw: fmt, logActivity,
   } = useApp()
 
   const { canUseDepositAccounts } = useFeatures()

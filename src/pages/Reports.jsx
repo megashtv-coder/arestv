@@ -117,7 +117,7 @@ function FinanciareTab({ invoices, expenses, fmt }) {
               <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" vertical={false}/>
               <XAxis dataKey="month" tick={{ fontSize:11, fill:'#9ca3af' }} axisLine={false} tickLine={false}/>
               <YAxis tick={{ fontSize:11, fill:'#9ca3af' }} axisLine={false} tickLine={false} tickFormatter={v => v/1000+'k'}/>
-              <Tooltip formatter={v => [`€${v.toLocaleString('en-US')}`, activeTab.label]} contentStyle={{ border:'1px solid #f3f4f6', borderRadius:10, fontSize:12 }}/>
+              <Tooltip formatter={v => [fmt(v), activeTab.label]} contentStyle={{ border:'1px solid #f3f4f6', borderRadius:10, fontSize:12 }}/>
               <Bar dataKey={activeTab.key} fill={activeTab.color} radius={[6,6,0,0]}/>
             </BarChart>
           </ResponsiveContainer>
@@ -1100,7 +1100,7 @@ function ReferuesitTab() {
    të referuar — customer.referredBy); ky është për kush ka pranuar pagesën.
 ══════════════════════════════════════════════════════════ */
 function ReferencatPagesaveTab({ payments }) {
-  const { paymentModes } = useApp()
+  const { paymentModes, fmt } = useApp()
   const now = new Date()
   const currentYear = now.getFullYear()
   const YEARS = [...new Set([2025, 2026, 2027, currentYear])].sort()
@@ -1216,7 +1216,7 @@ function ReferencatPagesaveTab({ payments }) {
                       {rowTotal(n)}
                     </td>
                     <td className="border-l border-b border-gray-100 dark:border-gray-700 bg-emerald-50 dark:bg-emerald-900/20 px-3.5 py-2.5 text-center font-mono font-black text-emerald-600 dark:text-emerald-400 whitespace-nowrap">
-                      €{amounts[n].toFixed(2)}
+                      {fmt(amounts[n])}
                     </td>
                   </tr>
                 ))}
@@ -1235,7 +1235,7 @@ function ReferencatPagesaveTab({ payments }) {
                     {grandTotal}
                   </td>
                   <td className="border-l border-gray-200 dark:border-gray-700 bg-emerald-50 dark:bg-emerald-900/20 px-3.5 py-2.5 text-center font-mono font-black text-emerald-600 dark:text-emerald-400 whitespace-nowrap">
-                    €{grandAmount.toFixed(2)}
+                    {fmt(grandAmount)}
                   </td>
                 </tr>
               </tfoot>

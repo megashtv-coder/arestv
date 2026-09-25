@@ -327,7 +327,7 @@ export default function AIChat() {
             </div>
             <div className="flex justify-between items-center text-xs text-gray-300">
               <span>Vlera në Pritje:</span>
-              <span className="font-bold font-mono text-emerald-400">{appContext?.fmt ? appContext.fmt(pendingValue) : `€${pendingValue}`}</span>
+              <span className="font-bold font-mono text-emerald-400">{(appContext?.fmtRaw || appContext?.fmt) ? (appContext.fmtRaw || appContext.fmt)(pendingValue) : `€${pendingValue}`}</span>
             </div>
           </div>
         </div>
