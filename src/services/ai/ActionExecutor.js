@@ -7,6 +7,7 @@
 
 import { supabase } from '../../lib/supabase'
 import { round2 } from '../../utils/money'
+import { checkInvoiceFresh } from '../../utils/freshInvoiceCheck'
 
 function generateNextInvoiceId(invoices = []) {
   let maxNum = 0
@@ -275,7 +276,7 @@ function executeVoidInvoice(params, appContext) {
   }
 }
 
-function executeRegisterPayment(params, appContext) {
+async function executeRegisterPayment(params, appContext) {
   const { invoices = [], setInvoices, setPayments, setExpenses, logActivity, currentOrgId } = appContext
 
   if (!params?.amount) {
@@ -298,6 +299,21 @@ function executeRegisterPayment(params, appContext) {
   const fee = round2(params.fee || 0)
   const amount = round2(params.amount)
   const net = round2(amount - fee)
+
+  // Kontroll me gjendjen e fundit në Supabase — mos regjistro për së dyti nëse një
+  // përdorues tjetër e ka paguar tashmë faturën (pajisje tjetër).
+  const fresh = await checkInvoiceFresh(targetInvoice.id, amount)
+  if (!fresh.ok) {
+    const { setInvoices: setInv, setPayments: setPay } = appContext
+    setInv(prev => prev.map(i => i.id === fresh.invoice.id ? { ...i, ...fresh.invoice } : i))
+    setPay(prev => {
+      const have = new Set(prev.map(p => p.id))
+      const missing = fresh.payments.filter(p => !have.has(p.id))
+      return missing.length ? [...missing, ...prev] : prev
+    })
+    return { success: false, error: fresh.message }
+  }
+
   const newId = `PAY-${Date.now()}`
 
   const payment = {
@@ -321,7 +337,7 @@ function executeRegisterPayment(params, appContext) {
 
   setInvoices(prev => prev.map(i => {
     if (i.id !== targetInvoice.id) return i
-    const newPaidAmount = round2((i.paidAmount || 0) + amount)
+    const newPaidAmount = round2(Math.max(i.paidAmount || 0, fresh.paidAmount || 0) + amount)
     let status = 'pending'
     if (newPaidAmount >= i.amount) status = 'paid'
     else if (newPaidAmount > 0) status = 'partial'
