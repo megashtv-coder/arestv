@@ -302,6 +302,16 @@ function MethodFilterDropdown({ methods, selected, onChange }) {
 }
 
 /* ══════════════════════════════════════════════════════════ */
+// Pas fshirjes së pagesës: paidAmount + statusi rillogariten nga pagesat që mbeten
+// (më parë vetëm statusi kthehej 'pending' dhe paidAmount mbetej i vjetër).
+function recomputeAfterDelete(inv, remainingPayments) {
+  const paid = Math.round(remainingPayments
+    .filter(x => x.invoiceId === inv.id)
+    .reduce((s, x) => s + Number(x.amount || 0), 0) * 100) / 100
+  const status = paid >= inv.amount && paid > 0 ? 'paid' : paid > 0 ? 'partial' : 'pending'
+  return { ...inv, paidAmount: paid, status }
+}
+
 export default function Payments() {
   const {
     payments, setPayments,
@@ -426,7 +436,7 @@ export default function Payments() {
   const deletePayment = (p) => {
     setPayments(prev => prev.filter(x => x.id !== p.id))
     setInvoices(prev => prev.map(i =>
-      i.id === p.invoiceId ? { ...i, status: 'pending' } : i
+      i.id === p.invoiceId ? recomputeAfterDelete(i, payments.filter(x => x.id !== p.id)) : i
     ))
     logActivity(`Fshiu pagesën ${p.id} — ${p.customer} €${Number(p.amount)}`, 'Pagesat')
     showToast('Pagesa u fshi. Fatura kaloi në pritje.')
@@ -456,7 +466,9 @@ export default function Payments() {
     const toDelete = payments.filter(p => selected.has(p.id))
     const invoiceIds = new Set(toDelete.map(p => p.invoiceId))
     setPayments(prev => prev.filter(p => !selected.has(p.id)))
-    setInvoices(prev => prev.map(i => invoiceIds.has(i.id) ? { ...i, status: 'pending' } : i))
+    setInvoices(prev => prev.map(i => invoiceIds.has(i.id)
+      ? recomputeAfterDelete(i, payments.filter(x => !selected.has(x.id)))
+      : i))
     toDelete.forEach(p => {
       logActivity(`Fshiu pagesën ${p.id} — ${p.customer} €${Number(p.amount)}`, 'Pagesat')
     })

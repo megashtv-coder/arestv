@@ -337,7 +337,7 @@ async function executeRegisterPayment(params, appContext) {
 
   setInvoices(prev => prev.map(i => {
     if (i.id !== targetInvoice.id) return i
-    const newPaidAmount = round2(Math.max(i.paidAmount || 0, fresh.paidAmount || 0) + amount)
+    const newPaidAmount = round2((fresh.paidAmount ?? (i.paidAmount || 0)) + amount)
     let status = 'pending'
     if (newPaidAmount >= i.amount) status = 'paid'
     else if (newPaidAmount > 0) status = 'partial'

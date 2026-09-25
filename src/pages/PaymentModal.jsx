@@ -221,7 +221,7 @@ export default function PaymentModal({ invoice, payment: editPayment, onClose, i
       logActivity(`Regjistroi pagesën ${payment.id} — ${selectedInv.customer} €${amount}`, 'Pagesat')
       setInvoices(prev => prev.map(i => {
         if (i.id !== selectedInv.id) return i
-        const newPaidAmount = round2(Math.max(i.paidAmount || 0, fresh.paidAmount || 0) + amount)
+        const newPaidAmount = round2((fresh.paidAmount ?? (i.paidAmount || 0)) + amount)
         const invoiceTotal = i.amount
         let status = 'pending'
         if (newPaidAmount >= invoiceTotal) status = 'paid'

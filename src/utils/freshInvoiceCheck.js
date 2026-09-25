@@ -18,9 +18,14 @@ export async function checkInvoiceFresh(invoiceId, amount) {
     if (invRes.error || !invRes.data) return { ok: true }
     const invoice  = invRes.data.data
     const payments = (payRes.data || []).map(r => r.data)
-    const paid  = invoice.paidAmount || 0
     const total = invoice.amount || 0
-    if (invoice.status === 'paid' || paid + amount > total + 0.005) {
+    // Të paguarat = shuma e pagesave REALE në server (jo invoice.paidAmount, që mund të
+    // mbetet i vjetër pasi një pagesë fshihet). Pa asnjë pagesë: e paguar vetëm nëse
+    // fatura është e shënuar 'paid' (rreshta të vjetër).
+    const paid = payments.length
+      ? Math.round(payments.reduce((s, p) => s + Number(p.amount || 0), 0) * 100) / 100
+      : (invoice.status === 'paid' ? total : 0)
+    if (paid + amount > total + 0.005) {
       const left = Math.max(0, Math.round((total - paid) * 100) / 100)
       return {
         ok: false,
