@@ -87,7 +87,10 @@ export function AppProvider({ children }) {
      Vetë Invoices.jsx mban logjikën/handler-at; këto janë thjesht flamujt e ndarë që header-i
      dhe faqja të bien dakord mbi gjendjen (fsheh shumat, eksporto, importo). Nëse edhe faqe të
      tjera marrin të njëjtin trajtim më vonë, kjo mund të bëhet e përgjithshme (keyed by page). */
-  const [invoicesHidden,     setInvoicesHidden]     = useState(true)
+  // Fshehja e të dhënave mbahet e ruajtur në këtë pajisje (mbetet edhe pas refresh) —
+  // ndryshon vetëm kur përdoruesi e shtyp butonin. Default: e fshehur.
+  const readHidden = (key) => { try { const v = localStorage.getItem(key); return v === null ? true : v === 'true' } catch { return true } }
+  const [invoicesHidden,     setInvoicesHidden]     = useState(() => readHidden('arestv_invoices_hidden'))
   const [invoicesExportOpen, setInvoicesExportOpen] = useState(false)
   const [invoicesImportOpen, setInvoicesImportOpen] = useState(false)
 
@@ -95,7 +98,9 @@ export function AppProvider({ children }) {
      Vetë Dashboard.jsx mban llogaritjet e vartura nga filtri; këto janë flamujt e ndarë. ── */
   const [dashboardMonth,  setDashboardMonth]  = useState(null) // null = krejt vitin
   const [dashboardYear,   setDashboardYear]   = useState(() => new Date().getFullYear().toString())
-  const [dashboardHidden, setDashboardHidden] = useState(true)
+  const [dashboardHidden, setDashboardHidden] = useState(() => readHidden('arestv_dashboard_hidden'))
+  useEffect(() => { try { localStorage.setItem('arestv_invoices_hidden', String(invoicesHidden)) } catch { /* ignore */ } }, [invoicesHidden])
+  useEffect(() => { try { localStorage.setItem('arestv_dashboard_hidden', String(dashboardHidden)) } catch { /* ignore */ } }, [dashboardHidden])
 
   /* ── I njëjti trajtim (shih më lart) për Klientët/Pagesat/Shpenzimet ── */
   const [customersImportOpen, setCustomersImportOpen] = useState(false)
