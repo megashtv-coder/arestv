@@ -138,7 +138,10 @@ export default function PaymentNames() {
 
   const copyName = async (n) => {
     try {
-      await navigator.clipboard.writeText(fullName(n))
+      await navigator.clipboard.writeText(`Emri: ${n.first}
+Mbiemri: ${n.last}
+Qyteti: ${n.city}
+Shteti: ${n.country}`)
       setCopiedId(n.id); showToast(`U kopjua: ${fullName(n)} ✓`)
       setTimeout(() => setCopiedId(null), 1800)
     } catch { showToast("S'mund ta kopjoj — kopjoje dorazi.", 'error') }
@@ -228,7 +231,6 @@ export default function PaymentNames() {
                 </div>
                 <span className={`text-[10px] font-extrabold uppercase tracking-wide px-2 py-1 rounded-full whitespace-nowrap ${PILL[s.st][1]}`}>{PILL[s.st][0]}</span>
               </div>
-              {(n.aliases || []).length > 0 && <p className="text-[11px] text-gray-400 dark:text-gray-500 truncate">Referent: {n.aliases.join(', ')}</p>}
               <div className="flex gap-1">
                 {Array.from({ length: s.limit }, (_, i) => (
                   <span key={i} className={`h-2 flex-1 rounded ${i < s.total ? (s.st === 'bad' ? 'bg-red-500' : s.st === 'warn' && i === s.total - 1 ? 'bg-amber-400' : 'bg-emerald-500') : 'bg-gray-100 dark:bg-gray-700'}`} />
