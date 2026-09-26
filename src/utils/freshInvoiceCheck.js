@@ -17,7 +17,10 @@ export async function checkInvoiceFresh(invoiceId, amount) {
     ])
     if (invRes.error || !invRes.data) return { ok: true }
     const invoice  = invRes.data.data
+    // Numrat e faturave rifreskohen kur fshihet fatura e fundit (max+1), prandaj një pagesë
+    // e vjetër 'jetime' mund të ketë të njëjtin invoiceId — numëro vetëm pagesat e të njëjtit klient.
     const payments = (payRes.data || []).map(r => r.data)
+      .filter(p => !p.customer || !invoice.customer || p.customer === invoice.customer)
     const total = invoice.amount || 0
     // Të paguarat = shuma e pagesave REALE në server (jo invoice.paidAmount, që mund të
     // mbetet i vjetër pasi një pagesë fshihet). Pa asnjë pagesë: e paguar vetëm nëse
