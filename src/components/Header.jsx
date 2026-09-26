@@ -25,6 +25,7 @@ const PAGE_TITLES = {
   stripe:        'Stripe',
   settlement:    'Barazimi',
   hosts:         'Hostet',
+  paymentnames:  'Emrat për Pagesa',
   suppliers:     'Furnitorët',
   reports:       'Raportet',
   users:         'Përdoruesit',

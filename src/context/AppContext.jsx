@@ -256,6 +256,8 @@ export function AppProvider({ children }) {
   const [expenseTypes, setExpenseTypes] = useState(defaultExpenseTypes)
   // Kategoritë e Hosteve (emër + flamur) — hostet ruhen veç te `hosts` me fushën category = id.
   const [hostCategories, setHostCategories] = useState(defaultHostCategories)
+  // Emrat për pagesa (Western Union/Ria/Money Gram): { id, first, last, city, country, aliases[] }
+  const [paymentNames, setPaymentNames] = useState([])
 
   /* ── Tester sandbox ── */
   const [tInvoices,  setTInvoices]  = useState([])
@@ -281,6 +283,7 @@ export function AppProvider({ children }) {
   const prevReferents = useRef(null)
   const prevET        = useRef(null)
   const prevHC        = useRef(null)
+  const prevPN        = useRef(null)
   const prevUsers     = useRef(null) // null = nuk është inicializuar ende nga Supabase
 
   /* ══════════════════════════════════════════════════════════
@@ -305,6 +308,7 @@ export function AppProvider({ children }) {
       prevReferents.current = []
       prevET.current = defaultExpenseTypes
       prevHC.current = defaultHostCategories
+      prevPN.current = []
       return
     }
 
@@ -496,6 +500,8 @@ export function AppProvider({ children }) {
         setPaymentReferents(rf); prevReferents.current = rf
         setExpenseTypes(et);    prevET.current = et
         setHostCategories(hc);  prevHC.current = hc
+        const pn = sett.data.find(r => r.key === 'paymentNames')?.value ?? []
+        setPaymentNames(pn);    prevPN.current = pn
       } else {
         prevPM.current = defaultPaymentModes
         prevDA.current = defaultDepositAccounts
@@ -504,6 +510,7 @@ export function AppProvider({ children }) {
         prevReferents.current = []
         prevET.current = defaultExpenseTypes
         prevHC.current = defaultHostCategories
+        prevPN.current = []
       }
 
       // Organizations — merge Supabase + mockOrganizations (kurrë mos humb ato default)
@@ -602,6 +609,7 @@ export function AppProvider({ children }) {
       prevReferents.current = []
       prevET.current = defaultExpenseTypes
       prevHC.current = defaultHostCategories
+      prevPN.current = []
       prevUsers.current = _loadedUsers  // fallback — mos sync-o deri sa të jetë online
       setDbLoading(false)
     })
@@ -680,6 +688,13 @@ export function AppProvider({ children }) {
     prevHC.current = hostCategories
     supabase.from('settings').upsert({ key: 'hostCategories', value: hostCategories }).then()
   }, [hostCategories, canSync])
+
+  useEffect(() => {
+    if (!canSync || !supabase) return
+    if (JSON.stringify(prevPN.current) === JSON.stringify(paymentNames)) return
+    prevPN.current = paymentNames
+    supabase.from('settings').upsert({ key: 'paymentNames', value: paymentNames }).then()
+  }, [paymentNames, canSync])
 
   // Sync users — kur ndryshojnë users (shto/edito/fshi), ruhen automatikisht në Supabase
   useEffect(() => {
@@ -963,6 +978,7 @@ export function AppProvider({ children }) {
       paymentReferents, setPaymentReferents,
       expenseTypes, setExpenseTypes,
       hostCategories, setHostCategories,
+      paymentNames, setPaymentNames,
       currency,        setCurrency,
       darkMode,        setDarkMode,
       toast,           setToast,
