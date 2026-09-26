@@ -1862,8 +1862,14 @@ export default function Invoices() {
                   {/* Col 1: Customer + Subscription Expiry */}
                   <div className="flex-1 min-w-0 cursor-pointer" onClick={() => setPreview(inv.id)}>
                     <p className="font-bold text-gray-800 text-sm truncate hover:text-blue-500 transition-colors">{inv.customer}</p>
-                    <p className="text-xs font-bold text-blue-500 mt-0.5">
-{formatDate(inv.subscriptionExpiry)}
+                    <p className="text-xs mt-0.5 flex flex-wrap items-baseline gap-x-2 tabular-nums">
+                      <span className="text-gray-400 font-semibold dark:text-gray-500">{formatDate(inv.date)}</span>
+                      {inv.subscriptionExpiry && (
+                        <>
+                          <span className="text-gray-300 dark:text-gray-600">|</span>
+                          <span className="font-bold text-blue-500">Skadenca: {formatDate(inv.subscriptionExpiry)}</span>
+                        </>
+                      )}
                     </p>
                   </div>
 
