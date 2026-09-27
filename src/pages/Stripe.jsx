@@ -153,7 +153,7 @@ function useCopy(link, fmt) {
   const [copied, setCopied] = useState(false)
   const copy = async () => {
     try {
-      const text = `Gjeni meposhte linkun per te proceduar pagesen:\n\n${link.url}\n\nJu lutem ne momentin qe perfundoni pagesen, na njoftoni.`
+      const text = `Për të proceduar me pagesën, ju lutemi klikoni në linkun e mëposhtëm:\n${link.url}\n\nSapo të përfundoni transaksionin, ju lutemi të na njoftoni.\n\nFaleminderit!`
       await navigator.clipboard.writeText(text)
       setCopied(true)
       showToast(`Linku ${PROVIDERS[providerOf(link)].label} ${fmt(link.amount)} u kopjua ✓`)
