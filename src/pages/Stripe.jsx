@@ -5,6 +5,7 @@ import {
 } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import { Modal, FormGroup } from '../components/UI'
+import PaymentsSubTabs from '../components/PaymentsSubTabs'
 
 // Handle-i default i PayPal.me që parapopullohet te linku i ri (bosh = pa parapopullim)
 const PAYPAL_HANDLE = ''
@@ -360,6 +361,8 @@ export default function Stripe() {
   return (
     <div className="space-y-3.5">
       {/* Titulli "Stripe" jeton te header-i global (Header.jsx, kur page === 'stripe'). */}
+
+      <PaymentsSubTabs />
 
       <div className="bg-white dark:bg-gray-800 p-2.5 sm:p-3 rounded-2xl border border-gray-200/90 dark:border-gray-700 shadow-sm space-y-2.5">
         {/* Rreshti 1: ofruesit + pamja + renditja + shto */}

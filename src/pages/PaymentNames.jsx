@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react'
 import { Search, Plus, Copy, Check, Pencil, Trash2, X, LayoutGrid, List as ListIcon } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import { Modal, FormGroup } from '../components/UI'
+import PaymentsSubTabs from '../components/PaymentsSubTabs'
 import { trackingMethods } from '../data/mockData'
 
 /* ══════════════════════════════════════════════════════════
@@ -171,6 +172,8 @@ Shteti: ${n.country}`)
 
   return (
     <div className="space-y-4">
+      <PaymentsSubTabs />
+
       {/* Rregulli */}
       <div className="flex flex-wrap gap-2 text-xs">
         <span className="px-3 py-1.5 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300">1 metodë: max <b>{SINGLE_LIMIT}</b> / muaj</span>

@@ -6,6 +6,7 @@ import {
 import { useApp } from '../context/AppContext'
 import { formatDate } from '../utils/dateFormat'
 import { EmptyState, Pagination } from '../components/UI'
+import PaymentsSubTabs from '../components/PaymentsSubTabs'
 import FormPageWrapper from '../components/FormPageWrapper'
 import PaymentModal from './PaymentModal'
 import { downloadTemplate } from '../components/ImportExcelModal'
@@ -499,6 +500,8 @@ export default function Payments() {
 
   return (
     <div>
+      <div className="mb-4"><PaymentsSubTabs /></div>
+
       {/* Titulli, eksporti, importi dhe +Regjistro Pagesë tani jetojnë te header-i global
          (Header.jsx, kur page === 'payments'); FAB-i mobil mbetet këtu. */}
 

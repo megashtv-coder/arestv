@@ -3,6 +3,7 @@ import { Search, Scale, ExternalLink } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import { formatDate } from '../utils/dateFormat'
 import { EmptyState } from '../components/UI'
+import PaymentsSubTabs from '../components/PaymentsSubTabs'
 import { trackingMethods as WITHDRAWAL_METHODS } from '../data/mockData'
 
 // Faqet zyrtare të gjurmimit — asnjëra s'ka API publik dhe as mbështet
@@ -149,6 +150,8 @@ export default function Settlement() {
   return (
     <div className="space-y-4">
       {/* Titulli "Barazimi" jeton te header-i global (Header.jsx, kur page === 'settlement'). */}
+
+      <PaymentsSubTabs />
 
       {/* Statistika */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">

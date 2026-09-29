@@ -3,7 +3,7 @@ import {
   LayoutDashboard, FileText, Users as UsersIcon, Receipt, BarChart2,
   Package, CreditCard, Settings, ChevronRight, X, Bell,
   Truck, TrendingUp, ChevronLeft, UserCog, LogOut, CheckSquare,
-  Zap, Link2, Server, Scale, UserCheck,
+  Zap, Server,
 } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import { useFeatures } from '../features/useFeatures'
@@ -60,12 +60,12 @@ export default function Sidebar() {
     { id: 'tasks',         icon: CheckSquare,     label: 'Detyrat',    badge: tasksDueBadge || null, badgeColor: 'bg-blue-500' },
     { id: 'customers',     icon: UsersIcon,       label: 'Klientët' },
     { id: 'items',         icon: Package,         label: 'Produktet' },
+    // Barazimi, Stripe dhe Emrat për Pagesa jetojnë tani si nën-tabe brenda
+    // menusë Pagesat (shih src/components/PaymentsSubTabs.jsx), jo si zëra
+    // të veçantë këtu.
     { id: 'payments',      icon: CreditCard,      label: 'Pagesat' },
-    { id: 'settlement',    icon: Scale,           label: 'Barazimi' },
     { id: 'expenses',      icon: Receipt,         label: 'Shpenzimet' },
     { id: 'hosts',         icon: Server,          label: 'Hostet' },
-    { id: 'stripe',        icon: Link2,           label: 'Stripe' },
-    { id: 'paymentnames',  icon: UserCheck,       label: 'Emrat për Pagesa' },
     // Suppliers only visible if feature enabled
     ...(canAccessSuppliers ? [{ id: 'suppliers', icon: Truck, label: 'Furnitorët' }] : []),
     { id: 'reports',       icon: BarChart2,       label: 'Raportet' },
