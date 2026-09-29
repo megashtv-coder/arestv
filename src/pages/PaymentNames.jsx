@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import { Search, Plus, Copy, Check, Pencil, Trash2, X, LayoutGrid, List as ListIcon } from 'lucide-react'
+import { Search, Plus, Copy, Check, Pencil, Trash2, X, LayoutGrid, List as ListIcon, Lock, Unlock } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import { Modal, FormGroup } from '../components/UI'
 import PaymentsSubTabs from '../components/PaymentsSubTabs'
@@ -21,11 +21,12 @@ const inputCls = 'w-full px-3 py-2 border border-gray-200 dark:border-gray-700 r
 const fullName = n => `${n.first} ${n.last}`.trim()
 const keyOf = raw => (raw || '').trim().toLowerCase()
 
-function statusOf(counts) {
+function statusOf(counts, manualBlock) {
   const used  = trackingMethods.filter(m => counts[m] > 0).length
   const total = trackingMethods.reduce((s, m) => s + counts[m], 0)
   const limit = used >= 2 ? COMBO_LIMIT : SINGLE_LIMIT
   const left  = limit - total
+  if (manualBlock) return { used, total, limit, left, st: 'bad', manual: true }
   return { used, total, limit, left, st: left <= 0 ? 'bad' : left === 1 ? 'warn' : 'ok' }
 }
 const PILL = {
@@ -33,7 +34,7 @@ const PILL = {
   warn: ['Afër limitit', 'bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400'],
   bad:  ['Bllokuar',    'bg-red-600 text-white'],
 }
-const msgOf = s => s.st === 'bad' ? 'Në limit — mos e përdor' : s.st === 'warn' ? 'Mbetet 1 përdorim' : `Mbeten ${s.left} përdorime`
+const msgOf = s => s.manual ? 'Bllokuar dorazi' : s.st === 'bad' ? 'Në limit — mos e përdor' : s.st === 'warn' ? 'Mbetet 1 përdorim' : `Mbeten ${s.left} përdorime`
 
 /* ── Modal — shto/edito emër ── */
 function NameModal({ item, onClose }) {
@@ -121,7 +122,7 @@ export default function PaymentNames() {
       const c = byKey.get(keyOf(p.reference))
       if (c) c[p.method]++
     })
-    return paymentNames.map(n => { const c = byId.get(n.id); return { n, c, s: statusOf(c) } })
+    return paymentNames.map(n => { const c = byId.get(n.id); return { n, c, s: statusOf(c, n.manualBlock) } })
   }, [paymentNames, payments, month, year])
 
   const counts = { all: rows.length, ok: 0, warn: 0, bad: 0 }
@@ -153,6 +154,12 @@ Shteti: ${n.country}`)
     if (!window.confirm(`Të fshihet "${fullName(n)}" nga lista?`)) return
     setPaymentNames(prev => prev.filter(x => x.id !== n.id))
   }
+  // Bllokim dorazi — pavarësisht numërimit, p.sh. emri u dogj/refuzua në degë.
+  // Zhbllokohet po me të njëjtin buton, kur nuk duhet më.
+  const toggleBlock = (n) => {
+    setPaymentNames(prev => prev.map(x => x.id === n.id ? { ...x, manualBlock: !x.manualBlock } : x))
+    showToast(n.manualBlock ? `${fullName(n)} u zhbllokua ✓` : `${fullName(n)} u bllokua ✓`)
+  }
 
   const CopyBtn = ({ n, s }) => (
     <button
@@ -165,6 +172,15 @@ Shteti: ${n.country}`)
   )
   const IconBtns = ({ n }) => (
     <>
+      <button
+        onClick={() => toggleBlock(n)}
+        className={`p-1.5 rounded-lg ${n.manualBlock
+          ? 'text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30'
+          : 'text-gray-400 hover:text-gray-700 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700'}`}
+        title={n.manualBlock ? 'Zhblloko emrin' : 'Blloko emrin dorazi'}
+      >
+        {n.manualBlock ? <Lock size={13} /> : <Unlock size={13} />}
+      </button>
       <button onClick={() => openEdit(n)} className="p-1.5 rounded-lg text-gray-400 hover:text-gray-700 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700" title="Edito"><Pencil size={13} /></button>
       <button onClick={() => remove(n)} className="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30" title="Fshi"><Trash2 size={13} /></button>
     </>

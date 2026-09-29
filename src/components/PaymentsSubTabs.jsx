@@ -8,10 +8,10 @@ import { useApp } from '../context/AppContext'
    Stripe/PaymentNames) e rendit këtë komponent lart.
 ══════════════════════════════════════════════════════════ */
 const TABS = [
-  { id: 'payments',     label: 'Pagesat',         icon: CreditCard },
-  { id: 'settlement',   label: 'Barazimi',        icon: Scale },
-  { id: 'stripe',       label: 'Stripe',          icon: Link2 },
-  { id: 'paymentnames', label: 'Emrat për Pagesa', icon: UserCheck },
+  { id: 'payments',     label: 'Pagesat',            icon: CreditCard },
+  { id: 'stripe',       label: 'Link Pagese',         icon: Link2 },
+  { id: 'paymentnames', label: 'Emrat për Pagesa',    icon: UserCheck },
+  { id: 'settlement',   label: 'Barazim me Referent', icon: Scale },
 ]
 
 export default function PaymentsSubTabs() {
