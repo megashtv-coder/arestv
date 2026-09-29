@@ -16,6 +16,10 @@ export default defineConfig({
         cleanupOutdatedCaches: true,
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
         maximumFileSizeToCacheInBytes: 8 * 1024 * 1024,
+        // Shton trajtuesin e njoftimeve push (public/push-sw.js) brenda service
+        // worker-it të gjeneruar — kështu vazhdon të funksionojë edhe kur app-i
+        // është i mbyllur, pa ndryshuar strategjinë generateSW ekzistuese.
+        importScripts: ['push-sw.js'],
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,

@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from 'react'
-import { Save, LogOut, Shield, Building2, Globe, MessageCircle, Download, Upload, Clock, Trash2 } from 'lucide-react'
+import { Save, LogOut, Shield, Building2, Globe, MessageCircle, Download, Upload, Clock, Trash2, Bell, BellOff } from 'lucide-react'
 import { Toggle } from '../components/UI'
 import { useApp } from '../context/AppContext'
 import BackupService from '../services/BackupService'
+import { isPushSupported, getPushSubscriptionState, enablePushNotifications, disablePushNotifications } from '../utils/pushNotifications'
 
 const TIMEZONE_OPTIONS = [
   'UTC-12', 'UTC-11', 'UTC-10', 'UTC-9', 'UTC-8', 'UTC-7', 'UTC-6', 'UTC-5',
@@ -37,6 +38,33 @@ export default function Settings() {
     twofa: false,
     autoWhatsApp: true,
   })
+  // Njoftime push në këtë pajisje — gjendja lexohet nga service worker-i
+  // (jo nga localStorage), sepse i përket vetë pajisjes, jo llogarisë.
+  const [pushState, setPushState] = useState('checking') // checking · unsupported · denied · unsubscribed · subscribed
+  const [pushBusy, setPushBusy] = useState(false)
+  useEffect(() => {
+    if (!isPushSupported()) { setPushState('unsupported'); return }
+    getPushSubscriptionState().then(setPushState)
+  }, [])
+  const togglePush = async () => {
+    setPushBusy(true)
+    try {
+      if (pushState === 'subscribed') {
+        await disablePushNotifications()
+        setPushState('unsubscribed')
+        showToast('Njoftimet push u çaktivizuan në këtë pajisje.')
+      } else {
+        await enablePushNotifications()
+        setPushState('subscribed')
+        showToast('Njoftimet push u aktivizuan ✓')
+      }
+    } catch (e) {
+      showToast(e.message || "S'u aktivizuan njoftimet.", 'error')
+      setPushState(await getPushSubscriptionState())
+    } finally {
+      setPushBusy(false)
+    }
+  }
   const [advanceDays, setAdvanceDays] = useState(() => {
     const saved = localStorage.getItem('arestv_notif_advance_days')
     return saved ? parseInt(saved) : 7
@@ -363,6 +391,37 @@ export default function Settings() {
             </div>
           </div>
         )}
+
+        {/* Njoftime Push — vetëm kjo pajisje */}
+        <div>
+          <div className="flex items-center gap-2 mb-2 px-1">
+            <Bell size={14} className="text-gray-400"/>
+            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Njoftime Push</p>
+          </div>
+          <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
+            <div className="flex items-center justify-between px-5 py-3.5 gap-3">
+              <div>
+                <p className="text-sm font-semibold text-gray-800">Njoftime për detyrat me afat sot</p>
+                <p className="text-xs text-gray-400 mt-0.5">
+                  {pushState === 'unsupported' && 'Ky shfletues/pajisje nuk i mbështet njoftimet push.'}
+                  {pushState === 'denied' && 'Leja për njoftime është refuzuar — aktivizoje te cilësimet e shfletuesit.'}
+                  {pushState === 'checking' && 'Duke kontrolluar...'}
+                  {pushState === 'unsubscribed' && 'Aktivizoje që kjo pajisje të marrë njoftim kur ka detyrë me afat sot.'}
+                  {pushState === 'subscribed' && 'Kjo pajisje merr njoftim çdo mëngjes kur ka detyra me afat sot ✓'}
+                </p>
+              </div>
+              {(pushState === 'subscribed' || pushState === 'unsubscribed') && (
+                <button
+                  onClick={togglePush}
+                  disabled={pushBusy}
+                  className={`btn btn-sm text-xs flex items-center gap-1.5 flex-shrink-0 disabled:opacity-50 ${pushState === 'subscribed' ? 'btn-outline' : 'btn-primary'}`}
+                >
+                  {pushState === 'subscribed' ? <><BellOff size={13}/>Çaktivizo</> : <><Bell size={13}/>Aktivizo</>}
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
 
         {/* Backup & Restore */}
         <div>
