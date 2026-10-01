@@ -10,7 +10,7 @@ import { Avatar, Modal, FormGroup, EmptyState } from '../components/UI'
 import FormPageWrapper from '../components/FormPageWrapper'
 import CustomerDetailsModal from './CustomerDetailsModal'
 import ReferredBySelect from '../components/ReferredBySelect'
-import { countries } from '../data/mockData'
+import CountrySelect from '../components/CountrySelect'
 import { downloadTemplate } from '../components/ImportExcelModal'
 const ImportExcelModal = lazy(() => import('../components/ImportExcelModal'))
 import { ContactImportButton } from '../features/contacts'
@@ -177,11 +177,7 @@ export function CustomerModal({ customer, onClose, isFormPage }) {
 
       {/* Shteti */}
       <FormGroup label="Shteti *">
-        <select className="form-control" value={form.country}
-          onChange={e => set('country', e.target.value)}>
-          <option value="">— Zgjidh shtetin —</option>
-          {countries.map(c => <option key={c} value={c}>{c}</option>)}
-        </select>
+        <CountrySelect value={form.country} onChange={v => set('country', v)} />
       </FormGroup>
 
       {/* Fushat sipas llojit */}

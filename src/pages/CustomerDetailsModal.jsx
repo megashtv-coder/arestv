@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { X, Pencil, Save, XCircle } from 'lucide-react'
 import { useApp } from '../context/AppContext'
-import { countries } from '../data/mockData'
+import CountrySelect from '../components/CountrySelect'
 
 export default function CustomerDetailsModal({ customer, onClose }) {
   const { customers, setCustomers, showToast, invoices, payments, logActivity } = useApp()
@@ -159,14 +159,7 @@ export default function CustomerDetailsModal({ customer, onClose }) {
               🌍 Vendi
             </label>
             {isEditing ? (
-              <select
-                value={formData.country}
-                onChange={e => handleChange('country', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg outline-none bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100"
-              >
-                <option value="">— Zgjidh vendin —</option>
-                {countries.map(c => <option key={c} value={c}>{c}</option>)}
-              </select>
+              <CountrySelect value={formData.country} onChange={v => handleChange('country', v)} />
             ) : (
               <p className="text-gray-600 dark:text-gray-400">{customer?.country || '—'}</p>
             )}

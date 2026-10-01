@@ -6,7 +6,7 @@ import {
 import { useApp } from '../context/AppContext'
 import { Modal, FormGroup } from '../components/UI'
 import ReferredBySelect from '../components/ReferredBySelect'
-import { countries } from '../data/mockData'
+import CountrySelect from '../components/CountrySelect'
 import { ContactImportButton } from '../features/contacts'
 import { round2 } from '../utils/money'
 
@@ -253,11 +253,7 @@ function QuickAddCustomer({ initialName, onSave, onCancel }) {
       {/* Shteti */}
       <div className="mb-2">
         <label className={FLD}>Shteti *</label>
-        <select className="form-control text-sm bg-white"
-          value={form.country} onChange={e => set('country', e.target.value)}>
-          <option value="">— Zgjidh shtetin —</option>
-          {countries.map(c => <option key={c} value={c}>{c}</option>)}
-        </select>
+        <CountrySelect value={form.country} onChange={v => set('country', v)} />
       </div>
 
       {/* Fushat sipas llojit */}
