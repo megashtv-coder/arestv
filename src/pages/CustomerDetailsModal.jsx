@@ -21,7 +21,7 @@ export default function CustomerDetailsModal({ customer, onClose }) {
     country: customer?.country || '',
     type: customer?.type || 'individual',
     app: customer?.app || '',
-    macId: customer?.macId || '',
+    macAddress: customer?.macAddress || '',
   })
   const [errors, setErrors] = useState({})
 
@@ -56,7 +56,7 @@ export default function CustomerDetailsModal({ customer, onClose }) {
             country: formData.country,
             type: formData.type,
             app: formData.app,
-            macId: formData.macId,
+            macAddress: formData.macAddress,
           }
         : c
     )
@@ -223,13 +223,13 @@ export default function CustomerDetailsModal({ customer, onClose }) {
             {isEditing ? (
               <input
                 type="text"
-                value={formData.macId}
-                onChange={e => handleChange('macId', e.target.value)}
+                value={formData.macAddress}
+                onChange={e => handleChange('macAddress', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg outline-none bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100"
                 placeholder="00:1A:2B:3C:4D:5E"
               />
             ) : (
-              <p className="text-gray-600 dark:text-gray-400">{customer?.macId || '—'}</p>
+              <p className="text-gray-600 dark:text-gray-400">{customer?.macAddress || '—'}</p>
             )}
           </div>
 
