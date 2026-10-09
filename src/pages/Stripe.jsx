@@ -36,8 +36,12 @@ const cleanUrlOf = url => (url || '').replace(/^https?:\/\//, '').replace(/^www\
 // IBAN i grupuar nga 4 karaktere për lexim më të lehtë: XK05 1234 ...
 const formatIban = iban => (iban || '').replace(/\s+/g, '').replace(/(.{4})/g, '$1 ').trim()
 
-// Shablloni i mesazhit që kopjohet për çdo llogari bankare (SWIFT/adresa anashkalohen nëse janë bosh)
-const bankCopyText = a => [
+// Shablloni i mesazhit që kopjohet për çdo llogari bankare (SWIFT/adresa anashkalohen nëse janë bosh).
+// Paralajmërimi në fund shfaqet i kuq + bold kur ngjitet në vend që pranon tekst të formatuar
+// (email, Word, Docs...); në aplikacione me tekst të thjeshtë (WhatsApp, SMS) ngjitet si tekst normal.
+const BANK_WARNING = 'Në përshkrimin e pagesës, në asnjë mënyrë mos shkruani ❌ pagesë për IPTV, kanale ose diçka të ngjashme ❌.'
+
+const bankMessageLines = a => [
   'Të dhënat e llogarisë:',
   '',
   `Emri Mbiemri: ${a.holder}`,
@@ -45,9 +49,30 @@ const bankCopyText = a => [
   a.swift ? `SWIFT: ${a.swift}` : null,
   a.address ? `Adresa: ${a.address}` : null,
   '',
-  'Në përshkrimin e pagesës, në asnjë mënyrë mos shkruani ❌ pagesë për IPTV, kanale ose diçka të ngjashme ❌.',
   'Në përshkrim shkruani: "Faleminderit për ndihmën në Excel".',
-].filter(line => line !== null).join('\n')
+  '',
+].filter(line => line !== null)
+
+const bankCopyText = a => [...bankMessageLines(a), BANK_WARNING].join('\n')
+
+const escapeHtml = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+
+const bankCopyHtml = a =>
+  `<div>${bankMessageLines(a).map(escapeHtml).join('<br>')}<br><b style="color:#dc2626">${escapeHtml(BANK_WARNING)}</b></div>`
+
+// Kopjon tekst të thjeshtë + HTML bashkë; nëse shfletuesi s'e lejon, bie te teksti i thjeshtë
+async function copyRich(plain, html) {
+  if (typeof ClipboardItem !== 'undefined' && navigator.clipboard?.write) {
+    try {
+      await navigator.clipboard.write([new ClipboardItem({
+        'text/plain': new Blob([plain], { type: 'text/plain' }),
+        'text/html': new Blob([html], { type: 'text/html' }),
+      })])
+      return
+    } catch { /* provo me tekst të thjeshtë */ }
+  }
+  await navigator.clipboard.writeText(plain)
+}
 
 const inputCls = 'w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
 
@@ -273,7 +298,7 @@ function useCopyBank(account) {
   const [copied, setCopied] = useState(false)
   const copy = async () => {
     try {
-      await navigator.clipboard.writeText(bankCopyText(account))
+      await copyRich(bankCopyText(account), bankCopyHtml(account))
       setCopied(true)
       showToast('Të dhënat e llogarisë u kopjuan ✓')
       setTimeout(() => setCopied(false), 1800)
