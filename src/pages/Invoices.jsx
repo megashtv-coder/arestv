@@ -150,7 +150,7 @@ function buildInvoiceMsg(inv) {
 }
 
 /* ── compact invoice card (left panel list) ─────────── */
-const InvoiceListCard = memo(function InvoiceListCard({ inv, selected, onClick, customerMap, hidden, checked, onToggleSelect }) {
+const InvoiceListCard = memo(function InvoiceListCard({ inv, selected, onClick, customerMap, hidden }) {
   const { fmt: rawFmt } = useApp()
   const fmt = hidden ? () => '••••••' : rawFmt
   const isReseller = customerMap.get(inv.customer)?.type === 'reseller'
@@ -182,23 +182,12 @@ const InvoiceListCard = memo(function InvoiceListCard({ inv, selected, onClick, 
       <div
         className={`p-3 rounded-xl border cursor-pointer transition-colors ${
           selected
-            ? 'bg-blue-100 border-blue-400'
+            ? 'bg-blue-200/60 border-blue-500'
             : 'bg-gray-50/50 border-gray-100 hover:bg-gray-100'
         }`}
         onClick={onClick}
       >
-        <div className="flex items-start gap-2.5">
-          {onToggleSelect && (
-            <input
-              type="checkbox"
-              checked={!!checked}
-              onChange={() => onToggleSelect(inv.id)}
-              onClick={e => e.stopPropagation()}
-              className="w-4 h-4 mt-0.5 flex-shrink-0 cursor-pointer"
-              title="Zgjidh faturën"
-            />
-          )}
-          <div className="flex items-start justify-between gap-2 flex-1 min-w-0">
+        <div className="flex items-start justify-between gap-2">
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-1.5 min-w-0">
               <p className="font-bold text-gray-900 text-sm truncate">{inv.customer}</p>
@@ -211,7 +200,6 @@ const InvoiceListCard = memo(function InvoiceListCard({ inv, selected, onClick, 
           <div className="text-right flex-shrink-0">
             <p className="font-extrabold text-gray-900 text-sm font-mono">{fmt(inv.amount)}</p>
             <span className={`inline-block text-[10px] font-bold px-1.5 py-0.5 rounded mt-1 uppercase ${duePillCls}`}>{dueLabel}</span>
-          </div>
           </div>
         </div>
       </div>
@@ -1489,26 +1477,6 @@ export default function Invoices() {
             </select>
           </div>
 
-          {selected.size > 0 && (
-            <div className="flex items-center justify-between gap-2 px-3 py-2 border-b border-gray-100 dark:border-gray-700 bg-blue-50/60 dark:bg-blue-900/10">
-              <span className="text-[11px] font-bold text-gray-600 dark:text-gray-300">{selected.size} të zgjedhura</span>
-              <div className="flex items-center gap-1.5">
-                <button
-                  className="text-[11px] font-semibold text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-                  onClick={() => setSelected(new Set())}
-                >
-                  Hiq zgjedhjen
-                </button>
-                <button
-                  className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors text-[11px] font-bold"
-                  onClick={() => setConfirmDelAll(true)}
-                >
-                  <Trash2 size={12}/> Fshi {selected.size}
-                </button>
-              </div>
-            </div>
-          )}
-
           <div className="flex-1 overflow-y-auto pb-1.5">
             {paged.length === 0 ? (
               <p className="text-xs text-gray-400 text-center py-8">Asnjë faturë nuk u gjet</p>
@@ -1521,8 +1489,6 @@ export default function Invoices() {
                   onClick={() => setPreview(inv.id)}
                   customerMap={customerMap}
                   hidden={hideAmounts}
-                  checked={selected.has(inv.id)}
-                  onToggleSelect={toggleSelectInvoice}
                 />
               ))
             )}
@@ -1550,8 +1516,6 @@ export default function Invoices() {
             onClose={() => setSelectedCustomer(null)}
           />
         )}
-
-        {bulkDeleteModal}
       </div>
     )
   }
