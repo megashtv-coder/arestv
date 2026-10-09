@@ -150,7 +150,7 @@ function buildInvoiceMsg(inv) {
 }
 
 /* ── compact invoice card (left panel list) ─────────── */
-const InvoiceListCard = memo(function InvoiceListCard({ inv, selected, onClick, customerMap, hidden }) {
+const InvoiceListCard = memo(function InvoiceListCard({ inv, selected, onClick, customerMap, hidden, checked, onToggleSelect }) {
   const { fmt: rawFmt } = useApp()
   const fmt = hidden ? () => '••••••' : rawFmt
   const isReseller = customerMap.get(inv.customer)?.type === 'reseller'
@@ -182,12 +182,23 @@ const InvoiceListCard = memo(function InvoiceListCard({ inv, selected, onClick, 
       <div
         className={`p-3 rounded-xl border cursor-pointer transition-colors ${
           selected
-            ? 'bg-blue-50 border-blue-300'
+            ? 'bg-blue-100 border-blue-400'
             : 'bg-gray-50/50 border-gray-100 hover:bg-gray-100'
         }`}
         onClick={onClick}
       >
-        <div className="flex items-start justify-between gap-2">
+        <div className="flex items-start gap-2.5">
+          {onToggleSelect && (
+            <input
+              type="checkbox"
+              checked={!!checked}
+              onChange={() => onToggleSelect(inv.id)}
+              onClick={e => e.stopPropagation()}
+              className="w-4 h-4 mt-0.5 flex-shrink-0 cursor-pointer"
+              title="Zgjidh faturën"
+            />
+          )}
+          <div className="flex items-start justify-between gap-2 flex-1 min-w-0">
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-1.5 min-w-0">
               <p className="font-bold text-gray-900 text-sm truncate">{inv.customer}</p>
@@ -200,6 +211,7 @@ const InvoiceListCard = memo(function InvoiceListCard({ inv, selected, onClick, 
           <div className="text-right flex-shrink-0">
             <p className="font-extrabold text-gray-900 text-sm font-mono">{fmt(inv.amount)}</p>
             <span className={`inline-block text-[10px] font-bold px-1.5 py-0.5 rounded mt-1 uppercase ${duePillCls}`}>{dueLabel}</span>
+          </div>
           </div>
         </div>
       </div>
@@ -1285,6 +1297,7 @@ export default function Invoices() {
     const count = selected.size
     const deletedInvoices = invoices.filter(i => selected.has(i.id))
     setInvoices(prev => prev.filter(i => !selected.has(i.id)))
+    if (preview && selected.has(preview)) setPreview(null)
     deletedInvoices.forEach(inv => {
       logActivity(`Fshiu faturën ${inv.id} — ${inv.customer} €${inv.amount}`, 'Faturat')
     })
@@ -1359,6 +1372,44 @@ export default function Invoices() {
   // (thousands on real data) instead of just the current page, which is what
   // made clicking an invoice take several seconds to open.
   const paged = sorted.slice((paginationPage - 1) * perPage, paginationPage * perPage)
+
+  // Modali i konfirmimit të fshirjes masive — përdoret nga pamja e tabelës dhe nga pamja me preview
+  const bulkDeleteModal = confirmDelAll ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl p-6 max-w-sm">
+            <div className="flex items-start gap-4 mb-4">
+              <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+                <Trash2 size={24} className="text-blue-600" />
+              </div>
+              <div className="flex-1">
+                <h3 className="font-bold text-gray-900 dark:text-white text-lg">Fshi {selected.size} {selected.size === 1 ? 'faturën' : 'faturat'}?</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Kjo veprim nuk mund të rikthehej.</p>
+              </div>
+            </div>
+  
+            <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3 mb-6 border border-blue-200 dark:border-blue-800">
+              <p className="text-sm text-gray-700 dark:text-gray-300">
+                <span className="font-semibold">{selected.size}</span> {selected.size === 1 ? 'fatura' : 'fatura'} do të fshihen përgjithmonë.
+              </p>
+            </div>
+  
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={() => setConfirmDelAll(false)}
+                className="px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+              >
+                Anulo
+              </button>
+              <button
+                onClick={handleDeleteSelected}
+                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+              >
+                Po, fshi
+              </button>
+            </div>
+          </div>
+        </div>
+  ) : null
 
   /* ── SPLIT LAYOUT (when a preview is selected) ── */
   if (preview) {
@@ -1438,6 +1489,26 @@ export default function Invoices() {
             </select>
           </div>
 
+          {selected.size > 0 && (
+            <div className="flex items-center justify-between gap-2 px-3 py-2 border-b border-gray-100 dark:border-gray-700 bg-blue-50/60 dark:bg-blue-900/10">
+              <span className="text-[11px] font-bold text-gray-600 dark:text-gray-300">{selected.size} të zgjedhura</span>
+              <div className="flex items-center gap-1.5">
+                <button
+                  className="text-[11px] font-semibold text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                  onClick={() => setSelected(new Set())}
+                >
+                  Hiq zgjedhjen
+                </button>
+                <button
+                  className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors text-[11px] font-bold"
+                  onClick={() => setConfirmDelAll(true)}
+                >
+                  <Trash2 size={12}/> Fshi {selected.size}
+                </button>
+              </div>
+            </div>
+          )}
+
           <div className="flex-1 overflow-y-auto pb-1.5">
             {paged.length === 0 ? (
               <p className="text-xs text-gray-400 text-center py-8">Asnjë faturë nuk u gjet</p>
@@ -1450,6 +1521,8 @@ export default function Invoices() {
                   onClick={() => setPreview(inv.id)}
                   customerMap={customerMap}
                   hidden={hideAmounts}
+                  checked={selected.has(inv.id)}
+                  onToggleSelect={toggleSelectInvoice}
                 />
               ))
             )}
@@ -1477,6 +1550,8 @@ export default function Invoices() {
             onClose={() => setSelectedCustomer(null)}
           />
         )}
+
+        {bulkDeleteModal}
       </div>
     )
   }
@@ -1697,43 +1772,7 @@ export default function Invoices() {
         </Suspense>
       )}
 
-      {/* Bulk delete confirmation modal */}
-      {confirmDelAll && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl p-6 max-w-sm">
-            <div className="flex items-start gap-4 mb-4">
-              <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
-                <Trash2 size={24} className="text-blue-600" />
-              </div>
-              <div className="flex-1">
-                <h3 className="font-bold text-gray-900 dark:text-white text-lg">Fshi {selected.size} {selected.size === 1 ? 'faturën' : 'faturat'}?</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Kjo veprim nuk mund të rikthehej.</p>
-              </div>
-            </div>
-
-            <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3 mb-6 border border-blue-200 dark:border-blue-800">
-              <p className="text-sm text-gray-700 dark:text-gray-300">
-                <span className="font-semibold">{selected.size}</span> {selected.size === 1 ? 'fatura' : 'fatura'} do të fshihen përgjithmonë.
-              </p>
-            </div>
-
-            <div className="flex gap-3 justify-end">
-              <button
-                onClick={() => setConfirmDelAll(false)}
-                className="px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
-              >
-                Anulo
-              </button>
-              <button
-                onClick={handleDeleteSelected}
-                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
-              >
-                Po, fshi
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {bulkDeleteModal}
 
       {/* Single invoice delete confirmation modal */}
       {deletingInvoiceId && (
