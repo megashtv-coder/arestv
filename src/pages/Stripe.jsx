@@ -36,13 +36,18 @@ const cleanUrlOf = url => (url || '').replace(/^https?:\/\//, '').replace(/^www\
 // IBAN i grupuar nga 4 karaktere për lexim më të lehtë: XK05 1234 ...
 const formatIban = iban => (iban || '').replace(/\s+/g, '').replace(/(.{4})/g, '$1 ').trim()
 
-// Teksti që kopjohet për një llogari bankare (rreshtat bosh anashkalohen)
+// Shablloni i mesazhit që kopjohet për çdo llogari bankare (SWIFT/adresa anashkalohen nëse janë bosh)
 const bankCopyText = a => [
+  'Të dhënat e llogarisë:',
+  '',
   `Emri Mbiemri: ${a.holder}`,
   `IBAN: ${formatIban(a.iban)}`,
   a.swift ? `SWIFT: ${a.swift}` : null,
   a.address ? `Adresa: ${a.address}` : null,
-].filter(Boolean).join('\n')
+  '',
+  'Në përshkrimin e pagesës, në asnjë mënyrë mos shkruani ❌ pagesë për IPTV, kanale ose diçka të ngjashme ❌.',
+  'Në përshkrim shkruani: "Faleminderit për ndihmën në Excel".',
+].filter(line => line !== null).join('\n')
 
 const inputCls = 'w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
 
