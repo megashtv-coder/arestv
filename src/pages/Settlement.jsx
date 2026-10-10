@@ -41,8 +41,23 @@ function initials(name) {
    vetëm kur del fokusi (jo në çdo shkronjë), që të mos bëjë sync
    në Supabase 10 herë ndërsa shkruhet numri ── */
 function TrackingInput({ payment, onCommit }) {
+  const { showToast } = useApp()
   const [val, setVal] = useState(payment.trackingNumber || '')
+  const [copied, setCopied] = useState(false)
   useEffect(() => { setVal(payment.trackingNumber || '') }, [payment.trackingNumber])
+
+  // Klikimi e selekton numrin dhe e kopjon menjëherë (mund të editohet po aq lehtë: shkruan mbi të selektuarin)
+  const selectAndCopy = async (e) => {
+    e.target.select()
+    const text = val.trim()
+    if (!text) return
+    try {
+      await navigator.clipboard.writeText(text)
+      setCopied(true)
+      showToast('Numri i tërheqjes u kopjua ✓')
+      setTimeout(() => setCopied(false), 1500)
+    } catch { /* mbetet i selektuar — Ctrl+C si më parë */ }
+  }
 
   return (
     <input
@@ -50,9 +65,14 @@ function TrackingInput({ payment, onCommit }) {
       value={val}
       onChange={e => setVal(e.target.value)}
       onBlur={() => { if (val !== (payment.trackingNumber || '')) onCommit(payment.id, val.trim()) }}
-      onClick={e => e.target.select()}
+      onClick={selectAndCopy}
       placeholder="MTCN..."
-      className="w-24 px-2 py-1 text-[11px] font-mono rounded-lg border border-gray-200 bg-white text-gray-700 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-50"
+      title={val ? 'Kliko për ta kopjuar numrin' : undefined}
+      className={`w-24 px-2 py-1 text-[11px] font-mono rounded-lg border bg-white text-gray-700 outline-none transition-colors focus:ring-2 ${
+        copied
+          ? 'border-emerald-400 ring-2 ring-emerald-100'
+          : 'border-gray-200 focus:border-blue-400 focus:ring-blue-50'
+      }`}
     />
   )
 }
