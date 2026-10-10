@@ -112,7 +112,6 @@ export default function PaymentModal({ invoice, payment: editPayment, onClose, i
   const [form, setForm] = useState(isEdit ? {
     amount:         String(editPayment.amount),
     date:           editPayment.date,
-    paidDate:       editPayment.paidDate || today,
     method:         editPayment.method,
     depositAccount: editPayment.depositAccount || '',
     fee:            editPayment.fee > 0 ? String(editPayment.fee) : '',
@@ -123,7 +122,6 @@ export default function PaymentModal({ invoice, payment: editPayment, onClose, i
   } : {
     amount:         invoice?.amount ?? '',
     date:           today,
-    paidDate:       today,
     method:         paymentModes[0],
     depositAccount: '',
     fee:            '',
@@ -206,7 +204,6 @@ export default function PaymentModal({ invoice, payment: editPayment, onClose, i
       fee,
       net,
       date:           form.date,
-      paidDate:       form.paidDate,
       method:         form.method,
       depositAccount: form.depositAccount,
       reference:      form.reference,
@@ -227,7 +224,7 @@ export default function PaymentModal({ invoice, payment: editPayment, onClose, i
         if (newPaidAmount >= invoiceTotal) status = 'paid'
         else if (newPaidAmount > 0) status = 'partial'
         const updates = { ...i, paidAmount: newPaidAmount, status }
-        if (status === 'paid' && !i.paidDate) updates.paidDate = form.paidDate
+        if (status === 'paid' && !i.paidDate) updates.paidDate = form.date
         return updates
       }))
       if (fee > 0) {
@@ -346,18 +343,6 @@ export default function PaymentModal({ invoice, payment: editPayment, onClose, i
           />
         </FormGroup>
       </div>
-
-      {/* Data e pagimit (kur u pagua) */}
-      <FormGroup label="Data e pagimit (kur u pagua faktikisht)">
-        <input
-          className="form-control"
-          type="date"
-          value={form.paidDate}
-          onChange={e => set('paidDate', e.target.value)}
-          title="Data kur u pagua faktikisht - zëvendësohet automatikisht me datën e sotme kur regjistrohet pagesa"
-        />
-        <p className="text-xs text-gray-400 mt-1">Auto-set sot, por mund ta ndryshosh manualisht</p>
-      </FormGroup>
 
       {/* Metoda e pagesës */}
       <FormGroup label="Metoda e pagesës">

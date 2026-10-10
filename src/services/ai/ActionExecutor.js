@@ -318,7 +318,6 @@ async function executeRegisterPayment(params, appContext) {
     fee,
     net,
     date: params.date,
-    paidDate: params.date,
     method: params.mode || 'Unknown',
     depositAccount: '',
     reference: params.reference || '',
