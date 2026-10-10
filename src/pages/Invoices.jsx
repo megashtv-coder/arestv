@@ -9,6 +9,7 @@ import {
 import { useApp } from '../context/AppContext'
 import { formatDate } from '../utils/dateFormat'
 import { round2 } from '../utils/money'
+import { paymentBelongsToInvoice } from '../utils/invoicePayments'
 import { StatusBadge, EmptyState, Pagination } from '../components/UI'
 import FormPageWrapper from '../components/FormPageWrapper'
 import { useColumnPrefs } from '../hooks/useColumnPrefs'
@@ -236,7 +237,7 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer, customerMap, hi
   const canPay     = inv.status === 'pending' || inv.status === 'partial' || inv.status === 'overdue' || inv.status === 'draft'
   const canVoid    = inv.status !== 'paid' && inv.status !== 'void'
   const msgEncoded = encodeURIComponent(buildReminderMsg(inv))
-  const linkedPayment = payments.find(p => p.invoiceId === inv.id)
+  const linkedPayment = payments.find(p => paymentBelongsToInvoice(p, inv))
 
   const doVoid = () => {
     setInvoices(prev => prev.map(i => i.id === inv.id ? { ...i, status: 'void' } : i))
@@ -252,7 +253,7 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer, customerMap, hi
   }
   const doDeletePayment = () => {
     // Kalkuloj pagesën e mbetur pas fshirjes
-    const allPaymentsForInvoice = payments.filter(p => p.invoiceId === inv.id)
+    const allPaymentsForInvoice = payments.filter(p => paymentBelongsToInvoice(p, inv))
     const remainingAmount = round2(allPaymentsForInvoice
       .filter(p => p.id !== linkedPayment.id)
       .reduce((sum, p) => sum + Number(p.amount), 0))

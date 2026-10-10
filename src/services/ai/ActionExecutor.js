@@ -8,17 +8,10 @@
 import { supabase } from '../../lib/supabase'
 import { round2 } from '../../utils/money'
 import { checkInvoiceFresh } from '../../utils/freshInvoiceCheck'
+import { maxInvoiceNumber } from '../../utils/invoicePayments'
 
-function generateNextInvoiceId(invoices = []) {
-  let maxNum = 0
-  invoices.forEach(inv => {
-    const match = inv.id?.match(/INV-(\d+)/)
-    if (match) {
-      const num = parseInt(match[1], 10)
-      if (num > maxNum) maxNum = num
-    }
-  })
-  return `INV-${String(maxNum + 1).padStart(6, '0')}`
+function generateNextInvoiceId(invoices = [], payments = []) {
+  return `INV-${String(maxInvoiceNumber(invoices, payments) + 1).padStart(6, '0')}`
 }
 
 function extractMonths(desc) {
@@ -67,7 +60,7 @@ function calculateSubscriptionExpiry(baseDateStr, months) {
 }
 
 function executeCreateInvoice(params, appContext) {
-  const { invoices = [], setInvoices, customers = [], logActivity } = appContext
+  const { invoices = [], payments = [], setInvoices, customers = [], logActivity } = appContext
 
   if (!params?.customer) {
     return { success: false, error: 'Mungon klienti për faturën.' }
@@ -80,7 +73,7 @@ function executeCreateInvoice(params, appContext) {
   }
 
   const custObj = customers.find(c => c.name === params.customer)
-  const newId = generateNextInvoiceId(invoices)
+  const newId = generateNextInvoiceId(invoices, payments)
   const amount = round2(params.amount)
 
   // An explicit expiry date always wins; otherwise derive it from the
