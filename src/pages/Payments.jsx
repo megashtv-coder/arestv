@@ -8,6 +8,7 @@ import { formatDate } from '../utils/dateFormat'
 import { EmptyState, Pagination } from '../components/UI'
 import PaymentsSubTabs from '../components/PaymentsSubTabs'
 import { paymentBelongsToInvoice, sameCustomer } from '../utils/invoicePayments'
+import { withoutFeeExpensesOf } from '../utils/feeExpenses'
 import FormPageWrapper from '../components/FormPageWrapper'
 import PaymentModal from './PaymentModal'
 import { downloadTemplate } from '../components/ImportExcelModal'
@@ -318,6 +319,7 @@ export default function Payments() {
   const {
     payments, setPayments,
     invoices, setInvoices,
+    setExpenses,
     closeModal,
     showToast, fmt,
     page, navigate, logActivity,
@@ -437,6 +439,8 @@ export default function Payments() {
 
   const deletePayment = (p) => {
     setPayments(prev => prev.filter(x => x.id !== p.id))
+    // Shpenzimi i fee-së i lidhur me këtë pagesë (paymentId) fshihet bashkë me të
+    setExpenses(prev => withoutFeeExpensesOf(prev, [p.id]))
     setInvoices(prev => prev.map(i =>
       i.id === p.invoiceId && sameCustomer(i.customer, p.customer)
         ? recomputeAfterDelete(i, payments.filter(x => x.id !== p.id))
@@ -470,6 +474,7 @@ export default function Payments() {
     const toDelete = payments.filter(p => selected.has(p.id))
     const touches = (i) => toDelete.some(p => p.invoiceId === i.id && sameCustomer(i.customer, p.customer))
     setPayments(prev => prev.filter(p => !selected.has(p.id)))
+    setExpenses(prev => withoutFeeExpensesOf(prev, toDelete.map(p => p.id)))
     setInvoices(prev => prev.map(i => touches(i)
       ? recomputeAfterDelete(i, payments.filter(x => !selected.has(x.id)))
       : i))

@@ -7,6 +7,7 @@ import ReferentSelect from '../components/ReferentSelect'
 import { depositedToOptions, trackingMethods } from '../data/mockData'
 import { round2 } from '../utils/money'
 import { checkInvoiceFresh } from '../utils/freshInvoiceCheck'
+import { applyFeeEdit } from '../utils/feeExpenses'
 
 /* ── horizontal chip-slider per deposit accounts ── */
 function SlideSelect({ value, onChange, options }) {
@@ -174,6 +175,9 @@ export default function PaymentModal({ invoice, payment: editPayment, onClose, i
               }
             : p
         ))
+        // Sinkronizon shpenzimin e fee-së të kësaj pagese (përditëson / fshin / krijon sipas fee-së së re).
+        // Prek VETËM shpenzimet — pagesa dhe fatura mbeten siç i ruan kodi ekzistues.
+        setExpenses(prev => applyFeeEdit(prev, editPayment, { fee, date: form.date, method: form.method, depositedTo: form.depositedTo }))
         logActivity(`Përditësoi pagesën ${editPayment.id} — ${editPayment.customer} €${amount}`, 'Pagesat')
         showToast(`Pagesa u përditësua! Neto: ${fmt(net)} ✓`)
       }, 0)

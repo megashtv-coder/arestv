@@ -10,6 +10,7 @@ import { useApp } from '../context/AppContext'
 import { formatDate } from '../utils/dateFormat'
 import { round2 } from '../utils/money'
 import { paymentBelongsToInvoice } from '../utils/invoicePayments'
+import { withoutFeeExpensesOf } from '../utils/feeExpenses'
 import { StatusBadge, EmptyState, Pagination } from '../components/UI'
 import FormPageWrapper from '../components/FormPageWrapper'
 import { useColumnPrefs } from '../hooks/useColumnPrefs'
@@ -214,6 +215,7 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer, customerMap, hi
     invoices, setInvoices,
     customers,
     payments, setPayments,
+    setExpenses,
     setModal, closeModal,
     showToast, fmt: rawFmt, logActivity, navigate,
   } = useApp()
@@ -259,6 +261,7 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer, customerMap, hi
       .reduce((sum, p) => sum + Number(p.amount), 0))
 
     setPayments(prev => prev.filter(p => p.id !== linkedPayment.id))
+    setExpenses(prev => withoutFeeExpensesOf(prev, [linkedPayment.id]))
     setInvoices(prev => prev.map(i => {
       if (i.id !== inv.id) return i
 
