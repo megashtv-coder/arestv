@@ -218,7 +218,7 @@ export function ExpenseModal({ expense, onClose, isFormPage }) {
 
   const empty = {
     date: today, type: expenseTypes[0], vendor: '',
-    reference: '', paidBy: 'Enndy',
+    reference: '', paidBy: '',
     recurring: false, recurringFreq: 'Mujore', amount: '',
   }
   const [form, setForm] = useState(isEdit ? { ...expense } : empty)
@@ -227,6 +227,10 @@ export function ExpenseModal({ expense, onClose, isFormPage }) {
 
   const save = () => {
     if (!form.type)   { setErr('Zgjidh llojin e shpenzimit.'); return }
+    // Partneri është i detyrueshëm — pa të shpenzimi anashkalohet nga barazimi mes partnerëve.
+    // (Shpenzimet e vjetra që s'e kishin partnerin mund të editohen pa e detyruar.)
+    if (canUsePartnerExpenseFields && !form.paidBy && !(isEdit && !expense.paidBy))
+      { setErr('Zgjidh partnerin që e pagoi shpenzimin.'); return }
     if (!form.amount || isNaN(Number(form.amount)) || Number(form.amount) <= 0)
       { setErr('Shuma duhet të jetë numër pozitiv.'); return }
 

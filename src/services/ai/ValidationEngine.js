@@ -4,6 +4,7 @@
  */
 
 import { getPriceFromPackage } from './EntityExtractor'
+import { depositedToOptions } from '../../data/mockData'
 
 export class ValidationError extends Error {
   constructor(code, message, field = null, suggestion = null) {
@@ -216,6 +217,15 @@ function getRequirements(intent) {
  * Validate entity values
  */
 function validateEntities(intent, entities, context = {}) {
+  // Partneri është i detyrueshëm për pagesa dhe shpenzime — pa të rreshti anashkalohet nga barazimi mes partnerëve
+  const partners = depositedToOptions.map(p => `@${p}`).join(' ose ')
+  if (intent === 'REGISTER_PAYMENT' && !entities.depositedTo) {
+    throw new ValidationError('MISSING_PARTNER', 'Zgjidh partnerin që e pranoi pagesën', 'depositedTo', `Shto ${partners} në komandë`)
+  }
+  if (intent === 'REGISTER_EXPENSE' && !entities.paidBy) {
+    throw new ValidationError('MISSING_PARTNER', 'Zgjidh partnerin që e pagoi shpenzimin', 'paidBy', `Shto ${partners} në komandë`)
+  }
+
   // Validate customer exists or can be created
   if (entities.customer && context.customers) {
     const exists = context.customers.some(

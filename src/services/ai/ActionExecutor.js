@@ -276,6 +276,9 @@ async function executeRegisterPayment(params, appContext) {
   if (!params?.amount) {
     return { success: false, error: 'Mungon shuma e pagesës.' }
   }
+  if (!params?.depositedTo) {
+    return { success: false, error: 'Mungon partneri që e pranoi pagesën (p.sh. @Enndy).' }
+  }
   if (typeof setInvoices !== 'function' || typeof setPayments !== 'function') {
     return { success: false, error: 'Nuk mund të regjistrohet pagesa (sistemi nuk është gati).' }
   }
@@ -375,6 +378,9 @@ function executeRegisterExpense(params, appContext) {
   if (!params?.type) {
     return { success: false, error: 'Mungon lloji i shpenzimit.' }
   }
+  if (!params?.paidBy) {
+    return { success: false, error: 'Mungon partneri që e pagoi shpenzimin (p.sh. @Enndy).' }
+  }
   if (typeof setExpenses !== 'function') {
     return { success: false, error: 'Nuk mund të regjistrohet shpenzimi (sistemi nuk është gati).' }
   }
@@ -387,7 +393,7 @@ function executeRegisterExpense(params, appContext) {
     vendor: params.vendor || '',
     paidFrom: params.paidFrom || '',
     reference: params.description || '',
-    paidBy: params.paidBy || 'Enndy',
+    paidBy: params.paidBy,
     recurring: false,
     recurringFreq: 'Mujore',
     amount: params.amount,
