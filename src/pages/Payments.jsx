@@ -704,6 +704,15 @@ export default function Payments() {
           <table className="w-full text-sm min-w-[560px]">
             <thead className="sticky top-0 z-10">
               <tr className="border-b border-gray-200 bg-gray-50">
+                <th className="table-th w-8 text-center hidden sm:table-cell">
+                  <input
+                    type="checkbox"
+                    checked={selected.size === filtered.length && filtered.length > 0}
+                    onChange={toggleSelectAll}
+                    className="w-4 h-4 cursor-pointer"
+                    title={selected.size === filtered.length ? "Deselekto të gjitha" : "Selekto të gjitha"}
+                  />
+                </th>
                 {[
                   { key: 'date',        label: 'Data',    cls: '' },
                   { key: 'invoiceId',   label: 'Fatura',  cls: '' },
@@ -748,20 +757,19 @@ export default function Payments() {
                   </span>
                 </th>
                 <th className="table-th text-right">Veprimet</th>
-                <th className="table-th w-8 text-center hidden sm:table-cell">
-                  <input
-                    type="checkbox"
-                    checked={selected.size === filtered.length && filtered.length > 0}
-                    onChange={toggleSelectAll}
-                    className="w-4 h-4 cursor-pointer"
-                    title={selected.size === filtered.length ? "Deselekto të gjitha" : "Selekto të gjitha"}
-                  />
-                </th>
               </tr>
             </thead>
             <tbody>
               {paged.map(p => (
                 <tr key={p.id} className={`hover:bg-gray-50 transition-colors group ${selected.has(p.id) ? 'bg-blue-50' : ''}`}>
+                  <td className="table-td w-8 text-center hidden sm:table-cell" onClick={e => e.stopPropagation()}>
+                    <input
+                      type="checkbox"
+                      checked={selected.has(p.id)}
+                      onChange={() => toggleSelectPayment(p.id)}
+                      className="w-4 h-4 cursor-pointer"
+                    />
+                  </td>
                   <td className="table-td font-mono text-xs">{formatDate(p.date)}</td>
                   <td className="table-td font-mono font-bold text-blue-600 text-xs">{p.invoiceId}</td>
                   <td className="table-td font-bold text-gray-900 text-xs max-w-[140px] truncate">{p.customer}</td>
@@ -824,14 +832,6 @@ export default function Payments() {
                         </button>
                       </div>
                     )}
-                  </td>
-                  <td className="table-td w-8 text-center hidden sm:table-cell" onClick={e => e.stopPropagation()}>
-                    <input
-                      type="checkbox"
-                      checked={selected.has(p.id)}
-                      onChange={() => toggleSelectPayment(p.id)}
-                      className="w-4 h-4 cursor-pointer"
-                    />
                   </td>
                 </tr>
               ))}
