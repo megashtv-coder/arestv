@@ -739,7 +739,6 @@ export default function Payments() {
                     <span className="text-[10px]">{sortField === 'method' ? (sortDir === 'asc' ? '↑' : '↓') : <span className="text-gray-300">↕</span>}</span>
                   </span>
                 </th>
-                <th className="table-th hidden lg:table-cell">Llogaria</th>
                 <th className="table-th hidden md:table-cell">Referenca</th>
                 <th className="table-th cursor-pointer select-none hover:text-gray-700"
                     onClick={() => toggleSort('depositedTo')}>
@@ -775,9 +774,6 @@ export default function Payments() {
                     <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[11px] font-bold ${METHOD_COLOR[p.method] || 'bg-gray-50 text-gray-600'}`}>
                       {METHOD_ICON[p.method] || '💳'} {p.method}
                     </span>
-                  </td>
-                  <td className="table-td text-xs hidden lg:table-cell max-w-[130px] truncate">
-                    {p.depositAccount || <span className="text-gray-300">—</span>}
                   </td>
                   <td className="table-td text-xs hidden md:table-cell">
                     {p.reference || <span className="text-gray-300">—</span>}
