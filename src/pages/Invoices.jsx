@@ -1377,6 +1377,18 @@ export default function Invoices() {
   // made clicking an invoice take several seconds to open.
   const paged = sorted.slice((paginationPage - 1) * perPage, paginationPage * perPage)
 
+  // "Zgjidh të gjitha" te lista majtas vlen për faqen aktuale (jo për mijëra faturat e filtruara),
+  // që fshirja masive të mos përfshijë pa dashje faturat që s'i shihet.
+  const pageAllSelected  = paged.length > 0 && paged.every(i => selected.has(i.id))
+  const pageSomeSelected = paged.some(i => selected.has(i.id))
+  const togglePageSelect = () => {
+    setSelected(prev => {
+      const next = new Set(prev)
+      paged.forEach(i => (pageAllSelected ? next.delete(i.id) : next.add(i.id)))
+      return next
+    })
+  }
+
   // Modali i konfirmimit të fshirjes masive — përdoret nga pamja e tabelës dhe nga pamja me preview
   const bulkDeleteModal = confirmDelAll ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
@@ -1492,6 +1504,19 @@ export default function Invoices() {
               <option value="reseller">🔄 Reseller</option>
             </select>
           </div>
+
+          {paged.length > 0 && (
+            <label className="flex items-center gap-2.5 pl-[21px] pr-3 py-1.5 border-b border-gray-100 dark:border-gray-700 cursor-pointer select-none text-[11px] font-semibold text-gray-500 dark:text-gray-400">
+              <input
+                type="checkbox"
+                checked={pageAllSelected}
+                ref={el => { if (el) el.indeterminate = pageSomeSelected && !pageAllSelected }}
+                onChange={togglePageSelect}
+                className="w-4 h-4 cursor-pointer"
+              />
+              Zgjidh të gjitha në këtë faqe
+            </label>
+          )}
 
           {selected.size > 0 && (
             <div className="flex items-center justify-between gap-2 px-3 py-2 border-b border-gray-100 dark:border-gray-700 bg-blue-50/60 dark:bg-blue-900/10">
