@@ -1,14 +1,13 @@
 import {
-  Search, Bell, Moon, Sun, Menu, ChevronDown, Check, Plus, FileText, DollarSign,
-  Eye, EyeOff, Download, FileSpreadsheet, UserPlus, Package, CreditCard, Truck, CalendarDays, UserCog, ListTodo,
+  Search, Bell, Moon, Sun, Menu, ChevronDown, Check,
+  Eye, EyeOff, Download, FileSpreadsheet, CalendarDays,
 } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import { currencies } from '../data/mockData'
 import { useState, useEffect, useRef, useMemo } from 'react'
 import ColumnManagerButton from './ColumnManagerButton'
 import { INVOICE_TABLE_COLUMNS } from '../constants/invoiceColumns'
-import { SupplierModal } from './SupplierModal'
-import { UserModal } from './UserModal'
+import QuickAddMenu from './QuickAddMenu'
 import { supabase } from '../lib/supabase'
 
 const MONTH_FULL = ['Janar','Shkurt','Mars','Prill','Maj','Qershor','Korrik','Gusht','Shtator','Tetor','Nëntor','Dhjetor']
@@ -36,7 +35,6 @@ export default function Header() {
   const {
     page, currency, setCurrency, darkMode, setDarkMode,
     setSidebarOpen, invoices, payments, expenses, customers, navigate, currentUser,
-    setModal, closeModal,
     invoicesHidden, setInvoicesHidden,
     moneyHidden, toggleMoneyHidden, moneyPages,
     invoicesExportOpen, setInvoicesExportOpen,
@@ -47,11 +45,9 @@ export default function Header() {
     setCustomersImportOpen,
     setPaymentsExportOpen, setPaymentsImportOpen,
     setExpensesExportOpen, setExpensesImportOpen,
-    setTasksAddOpen,
   } = useApp()
   const [curOpen, setCurOpen] = useState(false)
   const [notifOpen, setNotifOpen] = useState(false)
-  const [addOpen, setAddOpen] = useState(false)
   const [searchInput, setSearchInput] = useState('')
   const [readNotifications, setReadNotifications] = useState(() => {
     try {
@@ -339,103 +335,8 @@ export default function Header() {
         </div>
       )}
 
-      {/* Quick Add Button - Context Aware */}
-      <div className="relative flex-shrink-0">
-        <button
-          className="icon-btn bg-blue-500 text-white hover:bg-blue-600 rounded-lg p-2"
-          onClick={() => setAddOpen(v => !v)}
-          title="Shto element të ri"
-        >
-          <Plus size={18} />
-        </button>
-        {addOpen && (
-          <div className="absolute right-0 top-full mt-2 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-lg shadow-lg z-50 w-48 py-1">
-            <button
-              onClick={() => {
-                navigate('invoices:create')
-                setAddOpen(false)
-              }}
-              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
-            >
-              <FileText size={16} />
-              Faturë e Re
-            </button>
-            <button
-              onClick={() => {
-                navigate('expenses:create')
-                setAddOpen(false)
-              }}
-              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
-            >
-              <DollarSign size={16} />
-              Shpenzim i Ri
-            </button>
-            <button
-              onClick={() => {
-                navigate('tasks')
-                setTasksAddOpen(true)
-                setAddOpen(false)
-              }}
-              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
-            >
-              <ListTodo size={16} />
-              Detyrë e Re
-            </button>
-            <button
-              onClick={() => {
-                navigate('customers:create')
-                setAddOpen(false)
-              }}
-              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
-            >
-              <UserPlus size={16} />
-              Klient i Ri
-            </button>
-            <button
-              onClick={() => {
-                navigate('items:create')
-                setAddOpen(false)
-              }}
-              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
-            >
-              <Package size={16} />
-              Produkt i Ri
-            </button>
-            <button
-              onClick={() => {
-                navigate('payments:create')
-                setAddOpen(false)
-              }}
-              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
-            >
-              <CreditCard size={16} />
-              Pagesë e Re
-            </button>
-            <button
-              onClick={() => {
-                setModal(<SupplierModal onClose={closeModal} />)
-                setAddOpen(false)
-              }}
-              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
-            >
-              <Truck size={16} />
-              Furnitor i Ri
-            </button>
-            {currentUser?.role === 'admin' && (
-              <button
-                onClick={() => {
-                  setModal(<UserModal onClose={closeModal} />)
-                  setAddOpen(false)
-                }}
-                className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
-              >
-                <UserCog size={16} />
-                Përdorues i Ri
-              </button>
-            )}
-          </div>
-        )}
-      </div>
+      {/* Butoni "+" me menunë "Shto të re" */}
+      <QuickAddMenu />
 
       {/* Currency selector */}
       <div className="relative hidden xs:block flex-shrink-0">
