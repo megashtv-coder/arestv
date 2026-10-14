@@ -9,7 +9,7 @@ import ReferredBySelect from '../components/ReferredBySelect'
 import CountrySelect from '../components/CountrySelect'
 import { ContactImportButton } from '../features/contacts'
 import { round2 } from '../utils/money'
-import { maxInvoiceNumber } from '../utils/invoicePayments'
+import { reserveInvoiceId } from '../utils/invoiceNumber'
 
 /* ─────────────────────────────────────────────────────────────
    Responsive hook for mobile detection
@@ -435,7 +435,7 @@ function calculateSubscriptionExpiry(baseDate, months) {
    InvoiceModal
 ══════════════════════════════════════════════════════════ */
 export default function InvoiceModal({ initialData, isFormPage, onClose }) {
-  const { invoices, payments, customers, setCustomers, items: products, setInvoices, showToast, closeModal, navigate, representatives, setRepresentatives, logActivity } = useApp()
+  const { invoices, payments, currentOrgId, customers, setCustomers, items: products, setInvoices, showToast, closeModal, navigate, representatives, setRepresentatives, logActivity } = useApp()
 
   const isEdit = !!(initialData?.id)
   const due3d  = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10)
@@ -526,16 +526,9 @@ export default function InvoiceModal({ initialData, isFormPage, onClose }) {
     setAddingCustomer(null)
   }
 
-  /* ── Generate next sequential invoice number ── */
-  const generateNextInvoiceId = () => {
-    // Numri më i lartë i përdorur ndonjëherë — përfshin edhe numrat që i referohen ende pagesat,
-    // që një faturë e re të mos marrë numrin e një fature të fshirë (pagesat e saj mbeten).
-    const nextNum = maxInvoiceNumber(invoices, payments) + 1
-    return `INV-${String(nextNum).padStart(6, '0')}`
-  }
-
   /* ── Save ── */
-  const save = () => {
+  const savingRef = useRef(false)
+  const save = async () => {
     const validItems = lineItems.filter(it => Number(it.unitPrice) > 0)
     if (!form.customer)     { setError('Zgjidh klientin.'); return }
     if (!validItems.length) { setError('Shto të paktën një artikull me çmim.'); return }
@@ -568,12 +561,14 @@ export default function InvoiceModal({ initialData, isFormPage, onClose }) {
       logActivity(`Përditësoi faturën ${initialData.id} — ${form.customer} €${total}`, 'Faturat')
       showToast('Fatura u përditësua! ✓')
     } else {
-      const newId = generateNextInvoiceId()
-      setInvoices(p => [{
-        ...payload,
-        id:       newId,
-        comments: [],
-      }, ...p])
+      if (savingRef.current) return        // mbron nga dy klikime njëkohësisht (rezervimi është asinkron)
+      savingRef.current = true
+      // Numri rezervohet ATOMIKISHT në databazë (shih utils/invoiceNumber.js)
+      const base = { ...payload, comments: [] }
+      const { id: newId } = await reserveInvoiceId({
+        invoices, payments, orgId: currentOrgId, buildInvoice: id => ({ ...base, id }),
+      })
+      setInvoices(p => [{ ...base, id: newId }, ...p])
       logActivity(`Krijoi faturën ${newId} — ${form.customer} €${total}`, 'Faturat')
       showToast('Fatura u krijua me sukses! ✓')
     }

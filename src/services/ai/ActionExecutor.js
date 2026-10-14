@@ -8,11 +8,7 @@
 import { supabase } from '../../lib/supabase'
 import { round2 } from '../../utils/money'
 import { checkInvoiceFresh } from '../../utils/freshInvoiceCheck'
-import { maxInvoiceNumber } from '../../utils/invoicePayments'
-
-function generateNextInvoiceId(invoices = [], payments = []) {
-  return `INV-${String(maxInvoiceNumber(invoices, payments) + 1).padStart(6, '0')}`
-}
+import { reserveInvoiceId } from '../../utils/invoiceNumber'
 
 function extractMonths(desc) {
   if (!desc) return null
@@ -59,8 +55,8 @@ function calculateSubscriptionExpiry(baseDateStr, months) {
   return expiryDate
 }
 
-function executeCreateInvoice(params, appContext) {
-  const { invoices = [], payments = [], setInvoices, customers = [], logActivity } = appContext
+async function executeCreateInvoice(params, appContext) {
+  const { invoices = [], payments = [], setInvoices, customers = [], logActivity, currentOrgId } = appContext
 
   if (!params?.customer) {
     return { success: false, error: 'Mungon klienti për faturën.' }
@@ -73,7 +69,6 @@ function executeCreateInvoice(params, appContext) {
   }
 
   const custObj = customers.find(c => c.name === params.customer)
-  const newId = generateNextInvoiceId(invoices, payments)
   const amount = round2(params.amount)
 
   // An explicit expiry date always wins; otherwise derive it from the
@@ -95,8 +90,8 @@ function executeCreateInvoice(params, appContext) {
     }
   }
 
-  const invoice = {
-    id: newId,
+  const makeInvoice = (id) => ({
+    id,
     date: params.date,
     customer: params.customer,
     referent: params.referent || '',
@@ -110,7 +105,11 @@ function executeCreateInvoice(params, appContext) {
     items: params.items?.length ? params.items : [{ desc: 'Shërbim', qty: 1, price: amount }],
     discount: null,
     comments: [],
-  }
+  })
+
+  // Numri rezervohet atomikisht në databazë — dy pajisje s'mund ta marrin të njëjtin numër
+  const { id: newId } = await reserveInvoiceId({ invoices, payments, orgId: currentOrgId, buildInvoice: makeInvoice })
+  const invoice = makeInvoice(newId)
 
   setInvoices(prev => [invoice, ...prev])
   logActivity?.(`Krijoi faturën ${newId} — ${params.customer} €${amount} (AI)`, 'Faturat')

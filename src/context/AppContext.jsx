@@ -9,6 +9,8 @@ import {
 } from '../data/mockData'
 import { supabase } from '../lib/supabase'
 import DataMigration from '../services/data/DataMigration'
+import { pendingBases } from '../utils/syncBase'
+import { useServerRefresh } from '../hooks/useServerRefresh'
 import { guardRoute, logAccessDenial } from '../middleware/featureRouteGuard'
 
 const AppContext = createContext(null)
@@ -23,6 +25,9 @@ const fromRows = (rows) => (rows || []).map(r => r.data)
 // Sinkronizon ndryshimet e një tabele: upsert të reja/ndryshuara, delete të fshira
 function diffSync(table, curr, prevRef, orgId) {
   if (!supabase) return
+  // Baza e re nga "rifreskimi nga serveri" hyn në fuqi pikërisht kur gjendja e bashkuar bëhet `curr`
+  const pend = pendingBases.get(prevRef)
+  if (pend && pend.curr === curr) { prevRef.current = pend.base; pendingBases.delete(prevRef) }
   const prev = prevRef.current
   if (prev === curr) return               // asnjë ndryshim
 
@@ -40,7 +45,7 @@ function diffSync(table, curr, prevRef, orgId) {
 
   if (toUpsert.length) {
     supabase.from(table).upsert(
-      toUpsert.map(d => ({ id: d.id, data: { ...d, orgId: orgId || d.orgId } }))
+      toUpsert.map(d => ({ id: d.id, data: { ...d, orgId: orgId || d.orgId, _synced: new Date().toISOString() } }))
     ).then(result => {
       if (result.error) {
         console.error(`[diffSync] Error upserting ${table}:`, result.error)
@@ -620,6 +625,18 @@ export function AppProvider({ children }) {
      SYNC — kur ndryshohen të dhënat, ruhen automatikisht
   ══════════════════════════════════════════════════════════ */
   const canSync = !dbLoading && !isTester && !!currentOrgId
+
+  // Merr nga serveri ndryshimet e pajisjeve të tjera (fatura/klientë/pagesa/shpenzime të reja ose të
+  // ndryshuara) pa pasur nevojë për reload — shih hooks/useServerRefresh.js
+  useServerRefresh({
+    enabled: canSync,
+    tables: [
+      { name: 'invoices',  value: invoices,  set: wrappedSetInvoices,  baseRef: prevInvoices },
+      { name: 'customers', value: customers, set: wrappedSetCustomers, baseRef: prevCustomers },
+      { name: 'payments',  value: payments,  set: wrappedSetPayments,  baseRef: prevPayments },
+      { name: 'expenses',  value: expenses,  set: wrappedSetExpenses,  baseRef: prevExpenses },
+    ],
+  })
 
   useEffect(() => { if (canSync) diffSync('invoices',  invoices,  prevInvoices,  currentOrgId) }, [invoices,  canSync])
   useEffect(() => { if (canSync) diffSync('customers', customers, prevCustomers, currentOrgId) }, [customers, canSync])
