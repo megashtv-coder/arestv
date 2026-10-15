@@ -123,11 +123,11 @@ function OrgAppLayout() {
   }, [invoices, customers, items, payments, expenses, users, vendors, transfers, activityLog, representatives, paymentModes, depositAccounts, organizations])
 
   return (
-    <div className={`app flex min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
+    <div className={`app flex min-h-screen ${darkMode ? 'bg-dk-bg' : 'bg-gray-50'}`}>
       <Sidebar />
       <div className="flex-1 flex flex-col min-h-screen overflow-hidden">
         <Header />
-        <main className={`flex-1 p-3 sm:p-5 md:p-6 overflow-y-auto ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
+        <main className={`flex-1 p-3 sm:p-5 md:p-6 overflow-y-auto ${darkMode ? 'bg-dk-bg' : 'bg-gray-50'}`}>
           {loading ? <LoadingSkeleton /> : (
             <Suspense fallback={<LoadingSkeleton />}>
               <PageComponent />

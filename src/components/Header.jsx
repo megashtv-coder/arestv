@@ -151,7 +151,7 @@ export default function Header() {
   }, [invoices, payments, expenses, actualCurrentYear])
 
   return (
-    <header className="h-12 sm:h-14 bg-blue-50 dark:bg-gray-800 border-b border-blue-100 dark:border-gray-700 flex items-center px-3 sm:px-5 gap-2 sm:gap-4 sticky top-0 z-30 transition-colors">
+    <header className="h-12 sm:h-14 bg-blue-50 dark:bg-dk-bg/90 dark:backdrop-blur-xl border-b border-blue-100 dark:border-transparent dark:shadow-[0_1px_8px_rgba(0,0,0,0.25)] flex items-center px-3 sm:px-5 dark:md:px-6 gap-2 sm:gap-4 sticky top-0 z-30 transition-colors">
       {/* Mobile menu */}
       <button className="icon-btn lg:hidden flex-shrink-0 p-1.5 sm:p-2" onClick={() => setSidebarOpen(true)}>
         <Menu size={18} />
@@ -177,7 +177,7 @@ export default function Header() {
       {/* Filtri i periudhës së Dashboard-it — shfaqet vetëm kur page === 'dashboard' */}
       {page === 'dashboard' && (
         <div className="flex items-center gap-1 sm:gap-1.5 flex-shrink-0 pr-1 sm:pr-2 mr-0.5 border-r border-blue-200/70 dark:border-gray-700">
-          <div className="flex items-center gap-1.5 bg-white dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 rounded-lg px-2 py-1">
+          <div className="flex items-center gap-1.5 bg-white dark:bg-dk-low border border-gray-200 dark:border-transparent rounded-lg px-2 py-1">
             <CalendarDays size={13} className="hidden sm:block text-gray-400 dark:text-gray-500 flex-shrink-0" />
             <select
               value={dashboardMonth ?? 'all'}
@@ -188,7 +188,7 @@ export default function Header() {
               {MONTH_FULL.map((m, i) => <option key={i} value={i}>{m}</option>)}
             </select>
           </div>
-          <div className="flex items-center gap-1.5 bg-white dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 rounded-lg px-2 py-1">
+          <div className="flex items-center gap-1.5 bg-white dark:bg-dk-low border border-gray-200 dark:border-transparent rounded-lg px-2 py-1">
             <select
               value={dashboardYear}
               onChange={e => setDashboardYear(e.target.value)}
@@ -216,7 +216,7 @@ export default function Header() {
       )}
 
       {/* Search - hidden on mobile */}
-      <div className="hidden lg:flex items-center gap-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2 w-48 focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-50 transition-all flex-shrink-0">
+      <div className="hidden lg:flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 w-48 focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-50 dark:focus-within:ring-accent/30 transition-all flex-shrink-0 dark:bg-dk-low dark:border-transparent">
         <Search size={14} className="text-gray-400 flex-shrink-0" />
         <input
           className="bg-transparent border-none outline-none text-sm text-gray-600 dark:text-gray-300 w-full placeholder-gray-400"
@@ -341,7 +341,7 @@ export default function Header() {
       {/* Currency selector */}
       <div className="relative hidden xs:block flex-shrink-0">
         <button
-          className="flex items-center gap-1 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-2 sm:px-3 py-1 sm:py-1.5 text-xs font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+          className="flex items-center gap-1 bg-gray-50 border border-gray-200 dark:border-transparent rounded-lg px-2 sm:px-3 py-1 sm:py-1.5 text-xs font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-dk-card transition-colors dark:bg-dk-low"
           onClick={() => setCurOpen(v => !v)}
         >
           <span>{currency.symbol}</span>
@@ -373,7 +373,7 @@ export default function Header() {
         >
           <Bell size={18} />
           {unreadCount > 0 ? (
-            <span className="absolute -top-1 -right-1 min-w-[17px] h-[17px] bg-orange-500 rounded-full border-2 border-white flex items-center justify-center text-[9px] text-white font-bold px-0.5">
+            <span className="absolute -top-1 -right-1 min-w-[17px] h-[17px] bg-orange-500 rounded-full border-2 border-white dark:border-dk-bg dark:bg-accent dark:text-accent-on flex items-center justify-center text-[9px] text-white font-bold px-0.5">
               {unreadCount}
             </span>
           ) : (
@@ -383,7 +383,7 @@ export default function Header() {
 
         {/* Notifications dropdown */}
         {notifOpen && (
-          <div className="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl shadow-lg z-50 max-h-96 flex flex-col">
+          <div className="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-dk-card border border-gray-100 dark:border-white/10 rounded-xl shadow-lg z-50 max-h-96 flex flex-col">
             {/* Header */}
             <div className="p-4 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
               <h3 className="font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">

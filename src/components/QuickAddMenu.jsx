@@ -58,19 +58,20 @@ export default function QuickAddMenu() {
     <div className="relative flex-shrink-0" ref={wrapRef}>
       <button
         type="button"
-        className="flex items-center justify-center w-9 h-9 rounded-xl bg-blue-500 text-white shadow-sm hover:bg-blue-600 active:scale-95 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-300 dark:focus-visible:ring-blue-800"
+        className="flex items-center justify-center gap-1 w-9 h-9 dark:w-auto dark:h-9 dark:px-3 rounded-xl dark:rounded-lg bg-blue-500 dark:bg-accent text-white dark:text-accent-on dark:font-semibold dark:text-xs shadow-sm dark:shadow-lg dark:shadow-accent/40 hover:bg-blue-600 dark:hover:bg-accent/90 active:scale-95 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-300 dark:focus-visible:ring-accent/40"
         onClick={() => setOpen(v => !v)}
         title="Shto element të ri"
         aria-haspopup="menu"
         aria-expanded={open}
       >
         <Plus size={18} className={`transition-transform duration-200 motion-reduce:transition-none ${open ? 'rotate-45' : ''}`} />
+        <span className="hidden dark:inline">Krijo</span>
       </button>
 
       {open && (
         <div
           role="menu"
-          className="absolute right-0 top-full mt-2 w-60 rounded-2xl border border-gray-200/90 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-xl shadow-gray-900/10 dark:shadow-black/30 p-1.5 z-50"
+          className="absolute right-0 top-full mt-2 w-60 rounded-2xl border border-gray-200/90 dark:border-white/10 bg-white dark:bg-dk-card shadow-xl shadow-gray-900/10 dark:shadow-black/30 p-1.5 z-50"
         >
           <p className="px-2.5 pt-1.5 pb-1 text-[10px] font-extrabold uppercase tracking-widest text-gray-400 dark:text-gray-500">
             Shto të re

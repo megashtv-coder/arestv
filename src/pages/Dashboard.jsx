@@ -3,7 +3,7 @@ import {
   Users, TrendingUp, TrendingDown, Clock, FilePlus,
   UserPlus, ReceiptText, AlertCircle, UserCheck, Layers,
   ArrowUp, ArrowDown, PieChart as PieIcon,
-  ListTodo, CheckCircle2, Trash2,
+  ListTodo, CheckCircle2, Trash2, ArrowRight,
 } from 'lucide-react'
 import {
   ComposedChart, Area, Line, PieChart, Pie, Cell,
@@ -69,15 +69,22 @@ function assignColors(names) {
 
 /* ── Stat card komponent ── */
 const DELTA_TONE = {
-  up:      'bg-emerald-50 text-emerald-600',
-  down:    'bg-red-50 text-red-600',
-  warn:    'bg-amber-50 text-amber-600',
-  neutral: 'bg-gray-100 text-gray-500',
+  up:      'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-300',
+  down:    'bg-red-50 text-red-600 dark:bg-red-900/30 dark:text-red-300',
+  warn:    'bg-amber-50 text-amber-600 dark:bg-amber-500/15 dark:text-amber-300',
+  neutral: 'bg-gray-100 text-gray-500 dark:bg-dk-high dark:text-gray-400',
 }
 
+// Dark mode: the pastel KPI chips become a faint tint of the icon colour, icon gets a lighter shade
+const DARK_ICON = { '#059669': '#4edea3', '#dc2626': '#ff8a96', '#d97706': '#fbbf24', '#7c3aed': '#a5a6ff', '#ea580c': '#fb923c' }
+const useDark = () => !!useApp().darkMode
+// Dark mode chart colours (light mode keeps the original palette)
+const DARK_CHART = { '#6366f1': '#c0c1ff', '#10b981': '#3b82f6', '#ef4444': '#f87171' }
+
 function KpiCard({ icon: Icon, iconBg, iconColor, label, value, delta, deltaTone = 'neutral', ctx, onClick, hidden }) {
-  const base = "bg-white rounded-2xl border border-gray-100 p-5 flex flex-col h-full transition-all duration-200"
-  const interactive = onClick ? "cursor-pointer hover:-translate-y-0.5 hover:shadow-lg hover:border-blue-100" : "hover:-translate-y-0.5 hover:shadow-md"
+  const dark = useDark()
+  const base = "bg-white dark:bg-dk-card dark:border-white/[0.07] dark:shadow-[0_2px_6px_rgba(0,0,0,0.35)] rounded-2xl border border-gray-100 p-5 flex flex-col h-full transition-all duration-200"
+  const interactive = onClick ? "cursor-pointer hover:-translate-y-0.5 hover:shadow-lg hover:border-blue-100 dark:hover:border-accent/40" : "hover:-translate-y-0.5 hover:shadow-md"
   const Arrow = deltaTone === 'up' ? ArrowUp : deltaTone === 'down' ? ArrowDown : null
   const displayValue = hidden ? '••••••' : value
   const displayDelta = hidden ? null : delta
@@ -85,26 +92,31 @@ function KpiCard({ icon: Icon, iconBg, iconColor, label, value, delta, deltaTone
   return (
     <div className={`${base} ${interactive}`} onClick={onClick}>
       <div className="flex items-start justify-between gap-3">
-        <p className="text-xs font-medium text-gray-500 truncate">{label}</p>
-        <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: iconBg }}>
-          <Icon size={17} style={{ color: iconColor }} />
+        <p className="text-xs font-medium text-gray-500 dark:text-gray-400 truncate">{label}</p>
+        <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0"
+             style={dark ? { background: `${iconColor}26` } : { background: iconBg }}>
+          <Icon size={17} style={{ color: dark ? (DARK_ICON[iconColor] || iconColor) : iconColor }} />
         </div>
       </div>
-      <p className="text-2xl font-bold text-gray-800 mt-2 truncate">{displayValue}</p>
+      <p className="text-2xl font-bold text-gray-800 dark:text-gray-100 mt-2 truncate">{displayValue}</p>
       <div className="flex items-center gap-2 mt-auto pt-3 flex-wrap">
         {displayDelta && (
           <span className={`inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full ${DELTA_TONE[deltaTone]}`}>
             {Arrow && <Arrow size={11} strokeWidth={3} />}{displayDelta}
           </span>
         )}
-        {displayCtx && <span className="text-[11px] text-gray-400 truncate">{displayCtx}</span>}
+        {displayCtx && <span className="text-[11px] text-gray-400 dark:text-gray-500 truncate">{displayCtx}</span>}
       </div>
     </div>
   )
 }
 
 /* ── Graf krahasues: viti aktual vs viti paraprak ── */
-function YoYChart({ title, sub, data, curKey, prevKey, color, softColor, gradId, curLabel, prevLabel, fmt, hidden }) {
+function YoYChart({ title, sub, data, curKey, prevKey, color: lightColor, softColor: lightSoft, gradId, curLabel, prevLabel, fmt, hidden }) {
+  const dark      = useDark()
+  const pick      = DARK_CHART[lightColor]
+  const color     = dark && pick ? pick : lightColor
+  const softColor = dark ? 'rgba(223,226,235,0.6)' : lightSoft
   /* Totalet krahasohen vetëm për muajt që kanë të dhëna këtë vit (periudhë e njëjtë) */
   const rows      = data.filter(d => d[curKey] !== null && d[curKey] !== undefined)
   const curTotal  = rows.reduce((s, d) => s + (d[curKey]  || 0), 0)
@@ -118,24 +130,24 @@ function YoYChart({ title, sub, data, curKey, prevKey, color, softColor, gradId,
     const p = payload.find(p => p.dataKey === prevKey)?.value ?? 0
     const d = (c !== null && c !== undefined && p > 0) ? ((c - p) / p) * 100 : null
     return (
-      <div className="bg-white border border-gray-100 rounded-xl shadow-lg px-4 py-3 text-xs min-w-[175px]">
-        <p className="font-bold text-gray-700 mb-2">{label}</p>
+      <div className="bg-white dark:bg-dk-high border border-gray-100 dark:border-white/10 rounded-xl shadow-lg px-4 py-3 text-xs min-w-[175px]">
+        <p className="font-bold text-gray-700 dark:text-gray-200 mb-2">{label}</p>
         <div className="flex items-center justify-between gap-4">
-          <span className="flex items-center gap-1.5 text-gray-500">
+          <span className="flex items-center gap-1.5 text-gray-500 dark:text-gray-400">
             <span className="w-2 h-2 rounded-full" style={{ background: color }}/>{curLabel}
           </span>
-          <span className="font-bold text-gray-800">
+          <span className="font-bold text-gray-800 dark:text-gray-100">
             {c === null || c === undefined ? '—' : fmt(c)}
           </span>
         </div>
         <div className="flex items-center justify-between gap-4 mt-1">
-          <span className="flex items-center gap-1.5 text-gray-400">
+          <span className="flex items-center gap-1.5 text-gray-400 dark:text-gray-500">
             <span className="w-2 h-2 rounded-full" style={{ background: softColor }}/>{prevLabel}
           </span>
-          <span className="font-semibold text-gray-500">{fmt(p)}</span>
+          <span className="font-semibold text-gray-500 dark:text-gray-400">{fmt(p)}</span>
         </div>
         {d !== null && (
-          <p className={`mt-2 pt-2 border-t border-gray-50 font-bold ${d >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
+          <p className={`mt-2 pt-2 border-t border-gray-50 dark:border-white/10 font-bold ${d >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-500 dark:text-red-400'}`}>
             {d >= 0 ? '▲' : '▼'} {Math.abs(d).toFixed(1)}%
           </p>
         )}
@@ -144,13 +156,13 @@ function YoYChart({ title, sub, data, curKey, prevKey, color, softColor, gradId,
   }
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 flex flex-col h-full">
-      <div className="flex items-start justify-between gap-3 px-5 py-4 border-b border-gray-50 flex-wrap">
+    <div className="bg-white dark:bg-dk-card dark:border-white/[0.07] dark:shadow-[0_2px_6px_rgba(0,0,0,0.35)] rounded-2xl border border-gray-100 flex flex-col h-full">
+      <div className="flex items-start justify-between gap-3 px-5 py-4 border-b border-gray-50 dark:border-transparent flex-wrap">
         <div>
-          <p className="text-sm font-bold text-gray-800">{title}</p>
-          <p className="text-xs text-gray-400 mt-0.5">{sub}</p>
+          <p className="text-sm font-bold text-gray-800 dark:text-gray-100">{title}</p>
+          <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{sub}</p>
         </div>
-        <div className="flex gap-3 text-[11px] text-gray-500 font-medium">
+        <div className="flex gap-3 text-[11px] text-gray-500 dark:text-gray-400 font-medium">
           <span className="flex items-center gap-1.5">
             <span className="w-2.5 h-2.5 rounded-sm" style={{ background: color }}/>{curLabel}
           </span>
@@ -169,7 +181,7 @@ function YoYChart({ title, sub, data, curKey, prevKey, color, softColor, gradId,
                 <stop offset="100%" stopColor={color} stopOpacity={0} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" vertical={false} />
+            <CartesianGrid strokeDasharray="3 3" stroke={dark ? '#31353c' : '#f3f4f6'} vertical={false} />
             <XAxis dataKey="month" tick={{ fontSize: 10, fill: '#9ca3af' }} axisLine={false} tickLine={false} />
             <YAxis tick={{ fontSize: 10, fill: '#9ca3af' }} axisLine={false} tickLine={false}
                    tickFormatter={v => v >= 1000 ? v/1000+'k' : v} />
@@ -178,23 +190,23 @@ function YoYChart({ title, sub, data, curKey, prevKey, color, softColor, gradId,
                   strokeDasharray="6 4" dot={false} />
             <Area dataKey={curKey} name={curLabel} stroke={color} strokeWidth={2.4}
                   fill={`url(#${gradId})`} connectNulls={false}
-                  dot={{ r: 2.5, fill: '#fff', stroke: color, strokeWidth: 2 }} />
+                  dot={{ r: 2.5, fill: dark ? '#10141a' : '#fff', stroke: color, strokeWidth: 2 }} />
           </ComposedChart>
         </ResponsiveContainer>
       </div>
 
-      <div className="flex items-center justify-around gap-2 px-4 py-3 border-t border-gray-50 mt-auto">
+      <div className="flex items-center justify-around gap-2 px-4 py-3 border-t border-gray-50 dark:border-transparent dark:bg-dk-low dark:rounded-lg dark:mx-4 dark:mb-4 mt-auto">
         <div className="text-center">
-          <p className="text-[10px] text-gray-400 font-medium">{curLabel}</p>
+          <p className="text-[10px] text-gray-400 dark:text-gray-500 font-medium">{curLabel}</p>
           <p className="text-sm font-bold mt-0.5" style={{ color }}>{hidden ? '••••••' : fmt(curTotal)}</p>
         </div>
         <div className="text-center">
-          <p className="text-[10px] text-gray-400 font-medium">{prevLabel}</p>
-          <p className="text-sm font-bold text-gray-400 mt-0.5">{hidden ? '••••••' : fmt(prevTotal)}</p>
+          <p className="text-[10px] text-gray-400 dark:text-gray-500 font-medium">{prevLabel}</p>
+          <p className="text-sm font-bold text-gray-400 dark:text-gray-500 mt-0.5">{hidden ? '••••••' : fmt(prevTotal)}</p>
         </div>
         <div className="text-center">
-          <p className="text-[10px] text-gray-400 font-medium">Ndryshimi</p>
-          <p className={`text-sm font-bold mt-0.5 ${up ? 'text-emerald-600' : 'text-red-500'}`}>
+          <p className="text-[10px] text-gray-400 dark:text-gray-500 font-medium">Ndryshimi</p>
+          <p className={`text-sm font-bold mt-0.5 ${up ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-500 dark:text-red-400'}`}>
             {hidden ? '•••' : delta === null ? '—' : `${up ? '▲' : '▼'} ${Math.abs(delta).toFixed(1)}%`}
           </p>
         </div>
@@ -207,9 +219,9 @@ function YoYChart({ title, sub, data, curKey, prevKey, color, softColor, gradId,
    Detyrat s'kalojnë nëpër AppContext (Tasks.jsx i merr drejt nga Supabase), prandaj
    ky panel bën fetch/toggle/delete të vetin, i pavarur nga faqja Detyrat. ── */
 const TASK_STATUS_STYLE = {
-  overdue: { label: 'Vonuar', cls: 'bg-red-50 text-red-600', rail: '#dc2626' },
-  today:   { label: 'Sot',    cls: 'bg-amber-50 text-amber-600', rail: '#d97706' },
-  soon:    { label: 'Afër',   cls: 'bg-sky-50 text-sky-600', rail: '#0284c7' },
+  overdue: { label: 'Vonuar', cls: 'bg-red-50 text-red-600 dark:bg-red-900/40 dark:text-red-300', rail: '#dc2626' },
+  today:   { label: 'Sot',    cls: 'bg-amber-50 text-amber-600 dark:bg-amber-500/15 dark:text-amber-300', rail: '#d97706' },
+  soon:    { label: 'Afër',   cls: 'bg-sky-50 text-sky-600 dark:bg-sky-500/15 dark:text-sky-300', rail: '#0284c7' },
 }
 
 function TasksUrgentPanel({ tasks, loading, hidden, onToggle, onDelete, onSeeAll }) {
@@ -227,51 +239,51 @@ function TasksUrgentPanel({ tasks, loading, hidden, onToggle, onDelete, onSeeAll
   const statusOf = t => t.reminderDate < today ? 'overdue' : t.reminderDate === today ? 'today' : 'soon'
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 flex flex-col h-full">
-      <div className="flex items-center justify-between gap-3 px-5 py-4 border-b border-gray-50">
+    <div className="bg-white dark:bg-dk-card dark:border-white/[0.07] dark:shadow-[0_2px_6px_rgba(0,0,0,0.35)] rounded-2xl border border-gray-100 flex flex-col h-full">
+      <div className="flex items-center justify-between gap-3 px-5 py-4 border-b border-gray-50 dark:border-transparent">
         <div>
-          <p className="text-sm font-bold text-gray-800">Detyra afër afatit</p>
-          <p className="text-xs text-gray-400 mt-0.5">Brenda 3 ditësh ose vonuar</p>
+          <p className="text-sm font-bold text-gray-800 dark:text-gray-100">Detyra afër afatit</p>
+          <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">Brenda 3 ditësh ose vonuar</p>
         </div>
-        <span className="font-mono text-sm font-bold px-2.5 py-1 rounded-full bg-amber-50 text-amber-600">
+        <span className="font-mono text-sm font-bold px-2.5 py-1 rounded-full bg-amber-50 dark:bg-accent text-amber-600 dark:text-accent-on">
           {hidden ? '••' : urgentTasks.length}
         </span>
       </div>
 
       <div className="flex-1 px-2.5 py-1.5 flex flex-col">
         {loading ? (
-          <p className="text-xs text-gray-400 text-center py-8 italic">Duke ngarkuar...</p>
+          <p className="text-xs text-gray-400 dark:text-gray-500 text-center py-8 italic">Duke ngarkuar...</p>
         ) : preview.length === 0 ? (
-          <p className="text-xs text-gray-400 text-center py-8">S'ka detyra urgjente ✓</p>
+          <p className="text-xs text-gray-400 dark:text-gray-500 text-center py-8">S'ka detyra urgjente ✓</p>
         ) : (
           preview.map(t => {
             const st = TASK_STATUS_STYLE[statusOf(t)]
             return (
-              <div key={t.id} className="flex gap-2.5 px-1.5 py-2 rounded-lg hover:bg-gray-50 transition-colors">
+              <div key={t.id} className="flex gap-2.5 px-1.5 py-2 rounded-lg hover:bg-gray-50 dark:bg-dk-low dark:hover:bg-dk-high dark:mb-2 transition-colors">
                 <span className="w-[3px] self-stretch rounded-full mt-0.5 flex-shrink-0" style={{ background: st.rail }} />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5">
-                    <span className="text-xs font-semibold text-gray-800 truncate flex-1">
+                    <span className="text-xs font-semibold text-gray-800 dark:text-gray-100 truncate flex-1">
                       {hidden ? '••••••' : t.customer}
                     </span>
                     <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0 ${st.cls}`}>{st.label}</span>
                     <button
                       onClick={() => onToggle(t.id)}
                       title="Shëno të kryer"
-                      className="w-[21px] h-[21px] flex items-center justify-center rounded-md bg-emerald-50 text-emerald-600 hover:bg-emerald-500 hover:text-white transition-colors flex-shrink-0"
+                      className="w-[21px] h-[21px] flex items-center justify-center rounded-md bg-emerald-50 dark:bg-emerald-500/15 text-emerald-600 dark:text-emerald-300 hover:bg-emerald-500 hover:text-white transition-colors flex-shrink-0"
                     >
                       <CheckCircle2 size={12} />
                     </button>
                     <button
                       onClick={() => onDelete(t.id)}
                       title="Fshi detyrën"
-                      className="w-[21px] h-[21px] flex items-center justify-center rounded-md bg-gray-100 text-gray-400 hover:bg-red-50 hover:text-red-500 transition-colors flex-shrink-0"
+                      className="w-[21px] h-[21px] flex items-center justify-center rounded-md bg-gray-100 dark:bg-dk-high text-gray-400 dark:text-gray-500 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-500 transition-colors flex-shrink-0"
                     >
                       <Trash2 size={12} />
                     </button>
                   </div>
                   {t.description && (
-                    <p className="text-[11px] text-gray-400 truncate mt-0.5">
+                    <p className="text-[11px] text-gray-400 dark:text-gray-500 truncate mt-0.5">
                       {hidden ? '••••••••' : t.description}
                     </p>
                   )}
@@ -282,10 +294,10 @@ function TasksUrgentPanel({ tasks, loading, hidden, onToggle, onDelete, onSeeAll
         )}
       </div>
 
-      <div className="px-5 py-3 border-t border-gray-50">
+      <div className="px-5 py-3 border-t border-gray-50 dark:border-transparent">
         <button
           onClick={onSeeAll}
-          className="w-full flex items-center justify-center gap-1.5 text-xs font-bold text-blue-600 hover:bg-blue-50 rounded-lg py-1.5 transition-colors"
+          className="w-full flex items-center justify-center gap-1.5 text-xs font-bold text-blue-600 dark:text-accent-soft hover:bg-blue-50 dark:hover:bg-dk-low rounded-lg py-1.5 transition-colors"
         >
           Shiko të gjitha {urgentTasks.length > 0 ? `(${urgentTasks.length})` : ''} →
         </button>
@@ -600,7 +612,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="space-y-6 max-w-6xl">
+    <div className="space-y-6 max-w-6xl dark:max-w-none">
 
       {/* Përshëndetja, data dhe filtri i periudhës tani jetojnë te header-i global
          (Header.jsx, kur page === 'dashboard'); logjika/të dhënat mbeten këtu. */}
@@ -609,21 +621,22 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         {[
           { icon: FilePlus,    title: 'Krijo Faturë',  sub: 'Faturë e re shpejt',     action: () => navigate('invoices:create'),
-            border: 'border-blue-400',    hover: 'hover:bg-blue-50',    icoBg: 'bg-blue-50',    icoFg: 'text-blue-500' },
+            border: 'border-blue-400 dark:border-white/[0.07]',    hover: 'hover:bg-blue-50 dark:hover:bg-dk-high',    icoBg: 'bg-blue-50 dark:bg-accent/15',    icoFg: 'text-blue-500 dark:text-accent' },
           { icon: UserPlus,    title: 'Shto Klient',   sub: 'Regjistro klient të ri', action: () => navigate('customers:create'),
-            border: 'border-emerald-400', hover: 'hover:bg-emerald-50', icoBg: 'bg-emerald-50', icoFg: 'text-emerald-500' },
+            border: 'border-emerald-400 dark:border-white/[0.07]', hover: 'hover:bg-emerald-50 dark:hover:bg-dk-high', icoBg: 'bg-emerald-50 dark:bg-emerald-500/15', icoFg: 'text-emerald-500 dark:text-emerald-300' },
           { icon: ReceiptText, title: 'Shpenzim i ri', sub: 'Regjistro shpenzim',     action: () => navigate('expenses:create'),
-            border: 'border-orange-400',  hover: 'hover:bg-orange-50',  icoBg: 'bg-orange-50',  icoFg: 'text-orange-500' },
+            border: 'border-orange-400 dark:border-white/[0.07]',  hover: 'hover:bg-orange-50 dark:hover:bg-dk-high',  icoBg: 'bg-orange-50 dark:bg-white/10',  icoFg: 'text-orange-500 dark:text-accent-soft' },
         ].map(({ icon: Icon, title, sub, action, border, hover, icoBg, icoFg }) => (
           <button key={title} onClick={action}
-            className={`group flex items-center gap-3 bg-white border-[1.5px] ${border} ${hover} rounded-2xl p-4 text-left transition-all duration-150 hover:-translate-y-0.5 hover:shadow-md active:scale-95`}>
-            <span className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${icoBg} ${icoFg} group-hover:scale-110 transition-transform`}>
+            className={`group flex items-center gap-3 bg-white dark:bg-dk-card dark:shadow-[0_2px_6px_rgba(0,0,0,0.35)] border-[1.5px] ${border} ${hover} rounded-2xl p-4 text-left transition-all duration-150 hover:-translate-y-0.5 hover:shadow-md active:scale-95`}>
+            <span className={`w-10 h-10 dark:w-12 dark:h-12 rounded-full dark:rounded-xl flex items-center justify-center flex-shrink-0 ${icoBg} ${icoFg} group-hover:scale-110 transition-transform`}>
               <Icon size={18} />
             </span>
             <span className="min-w-0">
-              <span className="block text-sm font-bold text-gray-800 truncate">{title}</span>
-              <span className="block text-xs text-gray-400 truncate">{sub}</span>
+              <span className="block text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{title}</span>
+              <span className="block text-xs text-gray-400 dark:text-gray-500 truncate">{sub}</span>
             </span>
+            <ArrowRight size={18} className="hidden dark:block ml-auto flex-shrink-0 text-gray-500 group-hover:text-gray-100 group-hover:translate-x-1 transition-all" />
           </button>
         ))}
       </div>
@@ -732,25 +745,25 @@ export default function Dashboard() {
       </div>
 
       {/* ── Shpenzime sipas kategorisë ── */}
-      <div className="bg-white rounded-2xl border border-gray-200 p-6">
+      <div className="bg-white dark:bg-dk-card dark:border-white/[0.07] dark:shadow-[0_2px_6px_rgba(0,0,0,0.35)] rounded-2xl border border-gray-200 p-6">
 
         {/* Header */}
-        <div className="flex flex-wrap items-center justify-between gap-4 pb-4 mb-6 border-b border-gray-100">
+        <div className="flex flex-wrap items-center justify-between gap-4 pb-4 mb-6 border-b border-gray-100 dark:border-transparent">
           <div className="flex items-center gap-2.5">
-            <span className="w-9 h-9 rounded-[9px] bg-blue-50 text-blue-600 flex items-center justify-center flex-shrink-0">
+            <span className="w-9 h-9 rounded-[9px] bg-blue-50 dark:bg-dk-high text-blue-600 dark:text-accent-soft flex items-center justify-center flex-shrink-0">
               <PieIcon size={17} />
             </span>
             <div>
-              <p className="text-[17px] font-bold text-gray-900 leading-tight">
+              <p className="text-[17px] font-bold text-gray-900 dark:text-gray-100 leading-tight">
                 Shpenzime sipas {groupByType ? 'llojit' : 'kategorisë'}
               </p>
-              <p className="text-xs text-gray-400 mt-0.5">{periodLabel}</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{periodLabel}</p>
             </div>
           </div>
         </div>
 
         {catData.length === 0 ? (
-          <p className="text-sm text-gray-400 text-center py-10 italic">Nuk ka shpenzime për këtë periudhë</p>
+          <p className="text-sm text-gray-400 dark:text-gray-500 text-center py-10 italic">Nuk ka shpenzime për këtë periudhë</p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-[220px_1fr] gap-8 items-center">
 
@@ -778,18 +791,18 @@ export default function Dashboard() {
               <div className="absolute text-center pointer-events-none">
                 {activeCat === null ? (
                   <>
-                    <p className="text-[11px] text-gray-500 uppercase tracking-wider font-medium">Total</p>
-                    <p className="text-xl font-bold text-gray-900 mt-0.5">{fmt(catTotal)}</p>
+                    <p className="text-[11px] text-gray-500 dark:text-gray-400 uppercase tracking-wider font-medium">Total</p>
+                    <p className="text-xl font-bold text-gray-900 dark:text-gray-100 mt-0.5">{fmt(catTotal)}</p>
                   </>
                 ) : (
                   <>
-                    <p className="text-[11px] text-gray-500 uppercase tracking-wider font-medium">
+                    <p className="text-[11px] text-gray-500 dark:text-gray-400 uppercase tracking-wider font-medium">
                       {catData[activeCat].name}
                     </p>
                     <p className="text-xl font-bold mt-0.5" style={{ color: catData[activeCat].color }}>
                       {fmt(catData[activeCat].value)}
                     </p>
-                    <p className="text-[11px] text-gray-400 mt-0.5">
+                    <p className="text-[11px] text-gray-400 dark:text-gray-500 mt-0.5">
                       {(catData[activeCat].value / catTotal * 100).toFixed(1)}% e totalit
                     </p>
                   </>
@@ -799,7 +812,7 @@ export default function Dashboard() {
 
             {/* ── Top shpenzimet ── */}
             <div className="flex flex-col gap-[15px] min-w-0">
-              <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">
+              <p className="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
                 Top {top5Types.length} shpenzime
               </p>
 
@@ -808,17 +821,17 @@ export default function Dashboard() {
                 return (
                   <div key={i} className="flex flex-col gap-1.5">
                     <div className="flex items-center justify-between gap-3 text-[13px]">
-                      <span className="flex items-center gap-2 min-w-0 font-medium text-gray-700">
+                      <span className="flex items-center gap-2 min-w-0 font-medium text-gray-700 dark:text-gray-200">
                         <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: t.color }}
                               title={t.category} />
                         <span className="truncate">{t.name}</span>
                       </span>
-                      <span className="font-bold text-gray-900 flex-shrink-0">
+                      <span className="font-bold text-gray-900 dark:text-gray-100 flex-shrink-0">
                         {hideData ? '••••••' : fmt(t.value)}
-                        <span className="text-[11px] text-gray-400 font-medium ml-1.5">{hideData ? '••%' : `${pct.toFixed(1)}%`}</span>
+                        <span className="text-[11px] text-gray-400 dark:text-gray-500 font-medium ml-1.5">{hideData ? '••%' : `${pct.toFixed(1)}%`}</span>
                       </span>
                     </div>
-                    <div className={`h-1.5 bg-gray-100 rounded-full overflow-hidden ${hideData ? 'blur-sm' : ''}`}>
+                    <div className={`h-1.5 bg-gray-100 dark:bg-dk-high rounded-full overflow-hidden ${hideData ? 'blur-sm' : ''}`}>
                       <div className="h-full rounded-full transition-all duration-500"
                            style={{ width: `${pct}%`, background: t.color }} />
                     </div>
@@ -826,9 +839,9 @@ export default function Dashboard() {
                 )
               })}
 
-              <div className="flex items-center justify-between pt-3 mt-2 border-t border-gray-200">
-                <span className="text-[13px] font-semibold text-gray-500">Gjithsej Shpenzime</span>
-                <span className="text-[17px] font-bold text-blue-600">{hideData ? '••••••' : fmt(catTotal)}</span>
+              <div className="flex items-center justify-between pt-3 mt-2 border-t border-gray-200 dark:border-transparent dark:bg-dk-low dark:rounded-lg dark:px-4 dark:py-3">
+                <span className="text-[13px] font-semibold text-gray-500 dark:text-gray-400">Gjithsej Shpenzime</span>
+                <span className="text-[17px] font-bold text-blue-600 dark:text-accent">{hideData ? '••••••' : fmt(catTotal)}</span>
               </div>
             </div>
           </div>

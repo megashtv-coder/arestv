@@ -9,6 +9,9 @@ export default {
         mono: ['JetBrains Mono', 'monospace'],
       },
       colors: {
+        // Dark-mode shell/dashboard palette (redesign 2026-10-15). `accent` is the brand colour.
+        dk: { bg: '#10141a', side: '#0a0e14', low: '#181c22', card: '#1b1f26', high: '#262a31', line: '#31353c', mute: '#8b8e99' },
+        accent: { DEFAULT: '#3b82f6', soft: '#adc6ff', on: '#00174b' },
         brand: {
           50: '#eff6ff',
           100: '#dbeafe',

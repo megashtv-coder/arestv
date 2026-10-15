@@ -103,7 +103,7 @@
 ::-webkit-scrollbar-thumb:hover { background: #d1d5db; }
 
 /* Dark mode — vetëm klasa custom, jo utility-t e Tailwind si selektorë */
-.dark body { @apply bg-gray-900 text-gray-100; }
+.dark body { @apply bg-dk-bg text-gray-100; }
 .dark .card { @apply bg-gray-800 border-gray-700; }
 .dark .btn-outline { @apply bg-gray-800 text-gray-300 border-gray-700 hover:bg-gray-700; }
 .dark .form-control { @apply bg-gray-800 border-gray-600 text-gray-200; }
