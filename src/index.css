@@ -127,6 +127,9 @@
 .dark .inv-tbl .badge-draft   { background-color: #262a31; color: #8b8e99; }
 .dark .inv-tbl input[type='checkbox'] { accent-color: theme('colors.accent.DEFAULT'); color-scheme: dark; }
 
+/* Abonimet — tabela në dark: vijat mes rreshtave vijnë nga <tr>, jo nga <td> */
+.dark .sub-tbl .table-td { border-color: transparent; }
+
 /* ItemRow grid - Desktop default */
 .item-row {
   grid-template-columns: 1fr 72px 100px 86px 28px;
