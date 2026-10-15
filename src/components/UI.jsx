@@ -113,7 +113,7 @@ export function Pagination({ page, total, perPage, onChange }) {
 
   const btn = active =>
     `min-w-[2rem] h-8 px-2 flex items-center justify-center rounded-lg text-sm font-medium transition-all ${
-      active ? 'bg-blue-500 text-white' : 'text-gray-500 hover:bg-gray-100'
+      active ? 'bg-blue-500 dark:bg-accent dark:text-accent-on text-white' : 'text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-dk-card'
     }`
 
   return (

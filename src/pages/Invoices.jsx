@@ -57,7 +57,7 @@ function renderInvoiceColHeader(col, { sortField, sortDir, toggleSort, draggedCo
   return (
     <th
       key={col.key}
-      className={`table-th select-none cursor-move relative ${sortable ? 'cursor-pointer hover:text-blue-500' : ''} ${respCls} ${isDragging ? 'opacity-30' : ''} ${showDropMark ? 'bg-blue-50' : ''}`}
+      className={`table-th select-none cursor-move relative ${sortable ? 'cursor-pointer hover:text-blue-500 dark:hover:text-gray-100' : ''} ${respCls} ${isDragging ? 'opacity-30' : ''} ${showDropMark ? 'bg-blue-50' : ''}`}
       onClick={sortable ? () => toggleSort(col.key) : undefined}
       draggable
       onDragStart={() => onColDragStart(col.key)}
@@ -74,16 +74,16 @@ function renderInvoiceColHeader(col, { sortField, sortDir, toggleSort, draggedCo
 function renderInvoiceColCell(col, inv, { isOverdue, fmt, hasLongOverdue, getCustomerType, setPreview }) {
   switch (col.key) {
     case 'date':
-      return <td key={col.key} className="table-td font-mono text-gray-400 hidden sm:table-cell">{formatDate(inv.date)}</td>
+      return <td key={col.key} className="table-td font-mono text-gray-400 hidden sm:table-cell dark:text-gray-300 dark:font-medium">{formatDate(inv.date)}</td>
     case 'id':
       return (
         <td key={col.key} className="table-td hidden sm:table-cell cursor-pointer" onClick={() => setPreview(inv.id)}>
-          <span className="font-mono font-bold text-xs text-gray-800 bg-gray-100 px-2 py-0.5 rounded border border-gray-200">{inv.id}</span>
+          <span className="font-mono font-bold text-xs text-gray-800 dark:text-gray-100 bg-gray-100 dark:bg-dk-high px-2 py-0.5 rounded border border-gray-200 dark:border-transparent">{inv.id}</span>
         </td>
       )
     case 'customer':
       return (
-        <td key={col.key} className="table-td font-medium text-gray-800 cursor-pointer" onClick={() => setPreview(inv.id)}>
+        <td key={col.key} className="table-td font-medium text-gray-800 dark:text-gray-100 cursor-pointer" onClick={() => setPreview(inv.id)}>
           <div className="flex items-center gap-1.5">
             {inv.customer}
             {hasLongOverdue(inv.customer) && (
@@ -99,7 +99,7 @@ function renderInvoiceColCell(col, inv, { isOverdue, fmt, hasLongOverdue, getCus
       return (
         <td key={col.key} className="table-td hidden sm:table-cell text-sm">
           {inv.referent ? (
-            <span className="px-2.5 py-1 bg-indigo-50 text-indigo-700 rounded-full text-xs font-medium">
+            <span className="px-2.5 py-1 bg-indigo-50 dark:bg-[#8083ff]/20 text-indigo-700 dark:text-[#c0c1ff] rounded-full dark:rounded-md text-xs font-medium">
               {inv.referent}
             </span>
           ) : (
@@ -111,7 +111,7 @@ function renderInvoiceColCell(col, inv, { isOverdue, fmt, hasLongOverdue, getCus
       return (
         <td key={col.key} className="table-td sm:table-cell lg:table-cell text-sm font-medium">
           {inv.subscriptionExpiry ? (
-            <span className="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-600 rounded font-mono text-xs">
+            <span className="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 dark:bg-transparent text-blue-600 dark:text-accent-soft dark:px-0 dark:font-medium rounded font-mono text-xs">
               {formatDate(inv.subscriptionExpiry)}
             </span>
           ) : (
@@ -120,10 +120,10 @@ function renderInvoiceColCell(col, inv, { isOverdue, fmt, hasLongOverdue, getCus
         </td>
       )
     case 'amount':
-      return <td key={col.key} className="table-td font-mono font-bold text-right text-gray-800">{fmt(inv.amount)}</td>
+      return <td key={col.key} className="table-td font-mono font-bold text-right text-gray-800 dark:text-gray-100">{fmt(inv.amount)}</td>
     case 'due':
       return (
-        <td key={col.key} className={`table-td font-mono hidden lg:table-cell ${isOverdue ? 'text-red-500 font-semibold' : 'text-gray-400'}`}>
+        <td key={col.key} className={`table-td font-mono hidden lg:table-cell ${isOverdue ? 'text-red-500 font-semibold' : 'text-gray-400 dark:text-gray-500'}`}>
           {formatDate(inv.due)}
         </td>
       )
@@ -184,8 +184,8 @@ const InvoiceListCard = memo(function InvoiceListCard({ inv, selected, onClick, 
       <div
         className={`p-3 rounded-xl border cursor-pointer transition-colors ${
           selected
-            ? 'bg-blue-200/60 border-blue-500'
-            : 'bg-gray-50/50 border-gray-100 hover:bg-gray-100'
+            ? 'bg-blue-200/60 dark:bg-accent/15 border-blue-500 dark:border-accent'
+            : 'bg-gray-50/50 dark:bg-dk-card border-gray-100 dark:border-white/[0.07] hover:bg-gray-100 dark:hover:bg-dk-high'
         }`}
         onClick={onClick}
       >
@@ -203,15 +203,15 @@ const InvoiceListCard = memo(function InvoiceListCard({ inv, selected, onClick, 
           <div className="flex items-start justify-between gap-2 flex-1 min-w-0">
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-1.5 min-w-0">
-              <p className="font-bold text-gray-900 text-sm truncate">{inv.customer}</p>
+              <p className="font-bold text-gray-900 dark:text-gray-100 text-sm truncate">{inv.customer}</p>
               {isReseller && (
                 <span className="text-[9px] font-bold px-1 py-0.5 bg-purple-100 text-purple-600 rounded flex-shrink-0">R</span>
               )}
             </div>
-            <p className="text-[11px] text-gray-400 mt-0.5 font-mono">{inv.id} · {formatDate(inv.date)}</p>
+            <p className="text-[11px] text-gray-400 dark:text-gray-500 mt-0.5 font-mono">{inv.id} · {formatDate(inv.date)}</p>
           </div>
           <div className="text-right flex-shrink-0">
-            <p className="font-extrabold text-gray-900 text-sm font-mono">{fmt(inv.amount)}</p>
+            <p className="font-extrabold text-gray-900 dark:text-gray-100 text-sm font-mono">{fmt(inv.amount)}</p>
             <span className={`inline-block text-[10px] font-bold px-1.5 py-0.5 rounded mt-1 uppercase ${duePillCls}`}>{dueLabel}</span>
           </div>
           </div>
@@ -971,11 +971,11 @@ const RowActions = memo(function RowActions({ inv, canContact, isOverdue, rawPho
       {open && menuPos && createPortal(
         <div
           ref={menuRef}
-          className="fixed w-52 bg-white border border-gray-200 rounded-xl shadow-xl z-[9999] overflow-hidden"
+          className="fixed w-52 bg-white dark:bg-dk-high border border-gray-200 dark:border-white/10 rounded-xl shadow-xl z-[9999] overflow-hidden"
           style={{ left: menuPos.left, ...(menuPos.top != null ? { top: menuPos.top } : { bottom: menuPos.bottom }) }}
         >
           <button
-            className="w-full text-left px-3.5 py-2 text-[13px] font-medium text-gray-700 hover:bg-gray-50 flex items-center gap-2 border-b border-gray-100"
+            className="w-full text-left px-3.5 py-2 text-[13px] font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-dk-card flex items-center gap-2 border-b border-gray-100 dark:border-transparent"
             onClick={() => { onNavigate(`invoices:${inv.id}:edit`); close() }}
           >
             <Pencil size={14}/> Ndrysho
@@ -985,7 +985,7 @@ const RowActions = memo(function RowActions({ inv, canContact, isOverdue, rawPho
             <a
               href={`https://wa.me/${rawPhone}?text=${msg}`}
               target="_blank" rel="noopener noreferrer"
-              className={`block w-full text-left px-3.5 py-2 text-[13px] font-medium hover:bg-green-50 flex items-center gap-2 border-b border-gray-100 ${isOverdue ? 'text-orange-600' : 'text-green-600'}`}
+              className={`block w-full text-left px-3.5 py-2 text-[13px] font-medium hover:bg-green-50 dark:hover:bg-dk-card flex items-center gap-2 border-b border-gray-100 dark:border-transparent ${isOverdue ? 'text-orange-600' : 'text-green-600 dark:text-[#4edea3]'}`}
               onClick={() => { MessageLogService.logWhatsAppMessage(inv.customer, rawPhone, buildReminderMsg(inv), inv.id, 'prepared'); close() }}
             >
               <MessageCircle size={14}/> Pagesa WA {isOverdue && '🔔'}
@@ -996,7 +996,7 @@ const RowActions = memo(function RowActions({ inv, canContact, isOverdue, rawPho
             <a
               href={`https://t.me/+${rawPhone}`}
               target="_blank" rel="noopener noreferrer"
-              className="block w-full text-left px-3.5 py-2 text-[13px] font-medium text-sky-600 hover:bg-sky-50 flex items-center gap-2 border-b border-gray-100"
+              className="block w-full text-left px-3.5 py-2 text-[13px] font-medium text-sky-600 dark:text-[#c0c1ff] hover:bg-sky-50 dark:hover:bg-dk-card flex items-center gap-2 border-b border-gray-100 dark:border-transparent"
               onClick={close}
             >
               <Send size={14}/> Pagesa TG
@@ -1007,7 +1007,7 @@ const RowActions = memo(function RowActions({ inv, canContact, isOverdue, rawPho
             <a
               href={`https://wa.me/${rawPhone}?text=${encodeURIComponent(buildInvoiceMsg(inv))}`}
               target="_blank" rel="noopener noreferrer"
-              className="block w-full text-left px-3.5 py-2 text-[13px] font-medium text-blue-500 hover:bg-blue-50 flex items-center gap-2 border-b border-gray-100"
+              className="block w-full text-left px-3.5 py-2 text-[13px] font-medium text-blue-500 dark:text-accent-soft hover:bg-blue-50 dark:hover:bg-dk-card flex items-center gap-2 border-b border-gray-100 dark:border-transparent"
               onClick={() => { MessageLogService.logWhatsAppMessage(inv.customer, rawPhone, buildInvoiceMsg(inv), inv.id, 'prepared'); close() }}
             >
               <FileText size={14}/> Dërgo faturën WA
@@ -1016,7 +1016,7 @@ const RowActions = memo(function RowActions({ inv, canContact, isOverdue, rawPho
 
           {(inv.status === 'pending' || inv.status === 'overdue') && (
             <button
-              className="w-full text-left px-3.5 py-2 text-[13px] font-medium text-emerald-600 hover:bg-emerald-50 flex items-center gap-2 border-b border-gray-100"
+              className="w-full text-left px-3.5 py-2 text-[13px] font-medium text-emerald-600 dark:text-[#4edea3] hover:bg-emerald-50 dark:hover:bg-dk-card flex items-center gap-2 border-b border-gray-100 dark:border-white/10"
               onClick={() => { onPayment(inv); close() }}
             >
               <CreditCard size={14}/> {isMobile ? 'Pagesa' : 'Regjistro Pagesën'}
@@ -1024,7 +1024,7 @@ const RowActions = memo(function RowActions({ inv, canContact, isOverdue, rawPho
           )}
 
           <button
-            className="w-full text-left px-3.5 py-2 text-[13px] font-medium text-blue-600 hover:bg-blue-50 flex items-center gap-2"
+            className="w-full text-left px-3.5 py-2 text-[13px] font-medium text-blue-600 dark:text-[#ffb4ab] hover:bg-blue-50 dark:hover:bg-[#93000a]/30 flex items-center gap-2"
             onClick={() => { onDelete(inv.id); close() }}
           >
             <Trash2 size={14}/> Fshi
@@ -1431,15 +1431,15 @@ export default function Invoices() {
   if (preview) {
     return (
       <div
-        className="-m-3 sm:-m-5 md:-m-6 flex overflow-hidden bg-gray-50"
+        className="-m-3 sm:-m-5 md:-m-6 flex overflow-hidden bg-gray-50 dark:bg-dk-bg"
         style={{ height: 'calc(100vh - 56px)' }}
       >
         {/* Left: invoice list — hidden on mobile (show only detail panel) */}
-        <div className="hidden md:flex w-[340px] flex-shrink-0 border-r border-gray-200 flex-col overflow-hidden bg-white">
-          <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+        <div className="hidden md:flex w-[340px] flex-shrink-0 border-r border-gray-200 dark:border-white/5 flex-col overflow-hidden bg-white dark:bg-dk-low">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-white/5">
             <div>
-              <p className="font-extrabold text-sm text-gray-900">Të gjitha faturat</p>
-              <p className="text-[11px] text-gray-400 font-medium">{filtered.length.toLocaleString('en-US')} rezultate</p>
+              <p className="font-extrabold text-sm text-gray-900 dark:text-gray-100">Të gjitha faturat</p>
+              <p className="text-[11px] text-gray-400 dark:text-gray-500 font-medium">{filtered.length.toLocaleString('en-US')} rezultate</p>
             </div>
             <div className="flex items-center gap-1.5">
               <button
@@ -1722,72 +1722,72 @@ export default function Invoices() {
             type="button"
             onClick={() => toggleStatusFilter('pending')}
             title="Filtro: fatura në pritje"
-            className={`text-left bg-white rounded-2xl p-4 border shadow-sm cursor-pointer transition-all hover:shadow-md hover:-translate-y-0.5 ${
-              statusFilter === 'pending' ? 'border-amber-400 ring-2 ring-amber-200' : 'border-amber-200/80'
+            className={`text-left bg-white dark:bg-dk-low dark:shadow-[0_2px_6px_rgba(0,0,0,0.35)] dark:hover:bg-dk-card rounded-2xl p-4 border shadow-sm cursor-pointer transition-all hover:shadow-md hover:-translate-y-0.5 ${
+              statusFilter === 'pending' ? 'border-amber-400 ring-2 ring-amber-200 dark:ring-amber-900/50' : 'border-amber-200/80 dark:border-white/[0.07]'
             }`}
           >
             <div className="flex items-center justify-between gap-2">
-              <span className="text-xs font-medium text-gray-500">Në pritje</span>
-              <span className="text-[11px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200 whitespace-nowrap">
+              <span className="text-xs font-medium text-gray-500 dark:text-gray-400">Në pritje</span>
+              <span className="text-[11px] font-bold text-amber-700 dark:text-[#c0c1ff] bg-amber-50 dark:bg-dk-high px-2 py-0.5 rounded-full border border-amber-200 dark:border-transparent whitespace-nowrap">
                 {pendingInvoicesCount} fatura
               </span>
             </div>
-            <p className="text-xl sm:text-2xl font-bold text-gray-900 mt-2">{fmt(pendingValue)}</p>
-            <p className="text-[11px] text-amber-700 mt-1">Presin arkëtim brenda afatit</p>
+            <p className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mt-2">{fmt(pendingValue)}</p>
+            <p className="text-[11px] text-amber-700 dark:text-gray-400 mt-1">Presin arkëtim brenda afatit</p>
           </button>
 
           <button
             type="button"
             onClick={() => toggleStatusFilter('overdue')}
             title="Filtro: fatura të vonuara"
-            className={`text-left bg-white rounded-2xl p-4 border shadow-sm cursor-pointer transition-all hover:shadow-md hover:-translate-y-0.5 ${
-              statusFilter === 'overdue' ? 'border-red-400 ring-2 ring-red-200' : 'border-red-200/80'
+            className={`text-left bg-white dark:bg-dk-low dark:shadow-[0_2px_6px_rgba(0,0,0,0.35)] dark:hover:bg-dk-card rounded-2xl p-4 border shadow-sm cursor-pointer transition-all hover:shadow-md hover:-translate-y-0.5 ${
+              statusFilter === 'overdue' ? 'border-red-400 ring-2 ring-red-200 dark:ring-red-900/50' : 'border-red-200/80 dark:border-white/[0.07]'
             }`}
           >
             <div className="flex items-center justify-between gap-2">
-              <span className="text-xs font-medium text-gray-500">Të vonuara</span>
-              <span className="text-[11px] font-bold text-red-700 bg-red-50 px-2 py-0.5 rounded-full border border-red-200 whitespace-nowrap">
+              <span className="text-xs font-medium text-gray-500 dark:text-gray-400">Të vonuara</span>
+              <span className="text-[11px] font-bold text-red-700 dark:text-[#ffdad6] bg-red-50 dark:bg-[#93000a] px-2 py-0.5 rounded-full border border-red-200 dark:border-transparent whitespace-nowrap">
                 {overdueInvoicesCount} fatura
               </span>
             </div>
-            <p className="text-xl sm:text-2xl font-bold text-red-600 mt-2">{fmt(overdueValue)}</p>
-            <p className="text-[11px] text-red-700 mt-1">Kërkojnë ndjekje urgjente</p>
+            <p className="text-xl sm:text-2xl font-bold text-red-600 dark:text-[#ffb4ab] mt-2">{fmt(overdueValue)}</p>
+            <p className="text-[11px] text-red-700 dark:text-[#ffb4ab] mt-1">Kërkojnë ndjekje urgjente</p>
           </button>
 
           <button
             type="button"
             onClick={toggleSellerFilter}
             title="Filtro: fatura të papaguara të rishitësve"
-            className={`text-left bg-white rounded-2xl p-4 border shadow-sm cursor-pointer transition-all hover:shadow-md hover:-translate-y-0.5 ${
-              isSellerFilterActive ? 'border-indigo-400 ring-2 ring-indigo-200' : 'border-indigo-200/80'
+            className={`text-left bg-white dark:bg-dk-low dark:shadow-[0_2px_6px_rgba(0,0,0,0.35)] dark:hover:bg-dk-card rounded-2xl p-4 border shadow-sm cursor-pointer transition-all hover:shadow-md hover:-translate-y-0.5 ${
+              isSellerFilterActive ? 'border-indigo-400 ring-2 ring-indigo-200 dark:ring-indigo-900/50' : 'border-indigo-200/80 dark:border-white/[0.07]'
             }`}
           >
             <div className="flex items-center justify-between gap-2">
-              <span className="text-xs font-medium text-gray-500">Papaguara Sellers</span>
-              <span className="text-[11px] font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-full border border-indigo-200 whitespace-nowrap">
+              <span className="text-xs font-medium text-gray-500 dark:text-gray-400">Papaguara Sellers</span>
+              <span className="text-[11px] font-bold text-indigo-700 dark:text-[#e1e0ff] bg-indigo-50 dark:bg-dk-high px-2 py-0.5 rounded-full border border-indigo-200 dark:border-transparent whitespace-nowrap">
                 {sellerInvoices.length} seller
               </span>
             </div>
-            <p className="text-xl sm:text-2xl font-bold text-gray-900 mt-2">{fmt(totalUnpaidSellers)}</p>
-            <p className="text-[11px] text-indigo-700 mt-1">Bilanci i rishitësve</p>
+            <p className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mt-2">{fmt(totalUnpaidSellers)}</p>
+            <p className="text-[11px] text-indigo-700 dark:text-gray-400 mt-1">Bilanci i rishitësve</p>
           </button>
 
           <button
             type="button"
             onClick={() => toggleStatusFilter('paid')}
             title="Filtro: fatura të paguara"
-            className={`text-left bg-white rounded-2xl p-4 border shadow-sm cursor-pointer transition-all hover:shadow-md hover:-translate-y-0.5 ${
-              statusFilter === 'paid' ? 'border-emerald-400 ring-2 ring-emerald-200' : 'border-emerald-200/80'
+            className={`text-left bg-white dark:bg-dk-low dark:shadow-[0_2px_6px_rgba(0,0,0,0.35)] dark:hover:bg-dk-card rounded-2xl p-4 border shadow-sm cursor-pointer transition-all hover:shadow-md hover:-translate-y-0.5 ${
+              statusFilter === 'paid' ? 'border-emerald-400 ring-2 ring-emerald-200 dark:ring-emerald-900/50' : 'border-emerald-200/80 dark:border-white/[0.07]'
             }`}
           >
             <div className="flex items-center justify-between gap-2">
-              <span className="text-xs font-medium text-gray-500">Të paguara</span>
-              <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 whitespace-nowrap">
+              <span className="text-xs font-medium text-gray-500 dark:text-gray-400">Të paguara</span>
+              <span className="text-[11px] font-bold text-emerald-700 dark:text-[#003824] bg-emerald-50 dark:bg-[#00a572] px-2 py-0.5 rounded-full border border-emerald-200 dark:border-transparent whitespace-nowrap">
                 {paidInvoicesList.length.toLocaleString('en-US')} fatura
               </span>
             </div>
-            <p className="text-xl sm:text-2xl font-bold text-emerald-600 mt-2">{fmt(paidValue)}</p>
-            <p className="text-[11px] text-emerald-700 mt-1">Likuiduar me sukses</p>
+            <p className="text-xl sm:text-2xl font-bold text-emerald-600 dark:text-[#4edea3] mt-2">{fmt(paidValue)}</p>
+            <p className="text-[11px] text-emerald-700 dark:text-[#4edea3] mt-1">Likuiduar me sukses</p>
           </button>
         </div>
       </div>
@@ -1850,16 +1850,16 @@ export default function Invoices() {
       )}
 
       {/* Filters — kërkimi majtas, statusi dhe tipi si dropdown, gjithçka në një rresht */}
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-3 sm:p-4 mb-4">
+      <div className="bg-white dark:bg-dk-low dark:border-white/[0.07] rounded-2xl border border-gray-200 shadow-sm p-3 sm:p-4 mb-4">
         <div className="flex flex-wrap items-center gap-2">
 
           {/* Search — e para, majtas */}
-          <div className="w-full sm:w-64 flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl px-3 py-1.5 focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-50 transition-all">
+          <div className="w-full sm:w-64 flex items-center gap-2 bg-gray-50 dark:bg-dk-card border border-gray-200 dark:border-transparent rounded-xl px-3 py-1.5 focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-50 dark:focus-within:ring-accent/30 transition-all">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2">
               <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
             </svg>
             <input
-              className="bg-transparent border-none outline-none text-xs text-gray-600 w-full placeholder-gray-400"
+              className="bg-transparent border-none outline-none text-xs text-gray-600 dark:text-gray-200 w-full placeholder-gray-400"
               placeholder="Kërko me Emër, ID apo Referent..."
               value={search}
               onChange={e => { setSearch(e.target.value); setPaginationPage(1) }}
@@ -1877,7 +1877,7 @@ export default function Invoices() {
 
           {/* Status — dropdown */}
           <select
-            className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-1.5 text-xs font-medium text-gray-600 outline-none focus:border-blue-400 cursor-pointer"
+            className="bg-gray-50 dark:bg-dk-card border border-gray-200 dark:border-transparent rounded-xl px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-300 outline-none focus:border-blue-400 cursor-pointer"
             value={statusFilter}
             onChange={e => { setStatus(e.target.value); setPaginationPage(1) }}
           >
@@ -1893,7 +1893,7 @@ export default function Invoices() {
           {/* Type + per-page — dropdown */}
           <div className="flex items-center gap-2">
             <select
-              className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-1.5 text-xs font-medium text-gray-600 outline-none focus:border-blue-400 cursor-pointer"
+              className="bg-gray-50 dark:bg-dk-card border border-gray-200 dark:border-transparent rounded-xl px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-300 outline-none focus:border-blue-400 cursor-pointer"
               value={typeFilter}
               onChange={e => { setTypeFilter(e.target.value); setPaginationPage(1) }}
             >
@@ -1902,7 +1902,7 @@ export default function Invoices() {
               <option value="reseller">🔄 Reseller</option>
             </select>
             <select
-              className="hidden sm:block bg-gray-50 border border-gray-200 rounded-xl px-2.5 py-1.5 text-xs font-medium text-gray-600 outline-none focus:border-blue-400 cursor-pointer"
+              className="hidden sm:block bg-gray-50 dark:bg-dk-card border border-gray-200 dark:border-transparent rounded-xl px-2.5 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-300 outline-none focus:border-blue-400 cursor-pointer"
               value={perPage}
               onChange={e => { setPerPage(Number(e.target.value)); setPaginationPage(1) }}
             >
@@ -1975,7 +1975,7 @@ export default function Invoices() {
       )}
 
       {/* Table - Hidden on Mobile */}
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden hidden sm:block">
+      <div className="bg-white dark:bg-dk-low dark:border-white/[0.07] rounded-2xl border border-gray-200 shadow-sm overflow-hidden hidden sm:block">
         {paged.length === 0 ? (
           <EmptyState
             icon={FileText}
@@ -1986,9 +1986,9 @@ export default function Invoices() {
         ) : (
           <>
             <div className="overflow-y-auto overflow-x-visible" style={{ maxHeight: 'calc(100vh - 270px)' }}>
-              <table className="w-full min-w-[500px]" style={{ position: 'relative' }}>
+              <table className="inv-tbl w-full min-w-[500px]" style={{ position: 'relative' }}>
                 <thead className="sticky top-0 z-10">
-                  <tr className="border-b border-gray-200 bg-gray-50">
+                  <tr className="border-b border-gray-200 dark:border-transparent bg-gray-50 dark:bg-dk-side/70">
                     <th className="table-th w-8 text-center hidden sm:table-cell">
                       <input
                         type="checkbox"
@@ -2018,7 +2018,8 @@ export default function Invoices() {
                     return (
                       <tr
                         key={inv.id}
-                        className={`hover:bg-gray-50 transition-colors group ${selected.has(inv.id) ? 'bg-blue-50' : ''}`}
+                        data-sel={selected.has(inv.id) ? '1' : undefined}
+                        className={`hover:bg-gray-50 dark:hover:bg-dk-card/60 transition-colors group ${selected.has(inv.id) ? 'bg-blue-50 dark:bg-accent/10' : ''}`}
                       >
                         <td className="table-td w-8 text-center hidden sm:table-cell" onClick={e => e.stopPropagation()}>
                           <input
