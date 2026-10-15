@@ -27,9 +27,9 @@ const MONTHS = [
 const FREQ_OPTIONS = ['Mujore', 'Vjetore', 'Ditore']
 
 const FREQ_COLOR = {
-  Mujore:  'bg-blue-50 text-blue-500',
-  Vjetore: 'bg-purple-50 text-purple-600',
-  Ditore:  'bg-amber-50 text-amber-600',
+  Mujore:  'bg-blue-50 dark:bg-accent/10 text-blue-500 dark:text-accent-soft',
+  Vjetore: 'bg-purple-50 dark:bg-[#8083ff]/15 text-purple-600 dark:text-[#c0c1ff]',
+  Ditore:  'bg-amber-50 dark:bg-amber-500/15 text-amber-600 dark:text-amber-400',
 }
 
 /* ── Slide-select për llogaritë ── */
@@ -609,34 +609,34 @@ export default function ExpensesPage() {
 
       {/* Stat cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-5">
-        <div className="bg-white rounded-2xl border border-gray-200/90 shadow-sm px-4 py-4">
-          <p className="text-xs text-gray-500 font-bold mb-1">Totali</p>
-          <p className="text-2xl font-black font-mono tracking-tight text-blue-600">- {fmt(allTotal)}</p>
-          <p className="text-[11px] text-gray-400 mt-1">{expenses.length} shpenzime</p>
+        <div className="bg-white dark:bg-dk-low dark:border-white/[0.07] dark:shadow-[0_2px_6px_rgba(0,0,0,0.35)] rounded-2xl border border-gray-200/90 shadow-sm px-4 py-4">
+          <p className="text-xs text-gray-500 dark:text-gray-300 font-bold mb-1">Totali</p>
+          <p className="text-2xl font-black font-mono tracking-tight text-blue-600 dark:text-accent">- {fmt(allTotal)}</p>
+          <p className="text-[11px] text-gray-400 dark:text-gray-500 mt-1">{expenses.length} shpenzime</p>
         </div>
-        <div className="bg-white rounded-2xl border border-gray-200/90 shadow-sm px-4 py-4">
+        <div className="bg-white dark:bg-dk-low dark:border-white/[0.07] dark:shadow-[0_2px_6px_rgba(0,0,0,0.35)] rounded-2xl border border-gray-200/90 shadow-sm px-4 py-4">
           <div className="flex items-center gap-1.5 mb-1">
             <Users size={12} className="text-blue-400" />
-            <p className="text-xs text-gray-500 font-bold">Enndy</p>
+            <p className="text-xs text-gray-500 dark:text-gray-300 font-bold">Enndy</p>
           </div>
-          <p className="text-2xl font-black font-mono tracking-tight text-blue-600">- {fmt(enndiTotal)}</p>
-          <p className="text-[11px] text-gray-400 mt-1">{Math.round(enndiTotal/allTotal*100)||0}% e totalit</p>
+          <p className="text-2xl font-black font-mono tracking-tight text-blue-600 dark:text-accent">- {fmt(enndiTotal)}</p>
+          <p className="text-[11px] text-gray-400 dark:text-gray-500 mt-1">{Math.round(enndiTotal/allTotal*100)||0}% e totalit</p>
         </div>
-        <div className="bg-white rounded-2xl border border-gray-200/90 shadow-sm px-4 py-4">
+        <div className="bg-white dark:bg-dk-low dark:border-white/[0.07] dark:shadow-[0_2px_6px_rgba(0,0,0,0.35)] rounded-2xl border border-gray-200/90 shadow-sm px-4 py-4">
           <div className="flex items-center gap-1.5 mb-1">
             <Users size={12} className="text-purple-400" />
-            <p className="text-xs text-gray-500 font-bold">Belti</p>
+            <p className="text-xs text-gray-500 dark:text-gray-300 font-bold">Belti</p>
           </div>
-          <p className="text-2xl font-black font-mono tracking-tight text-purple-600">- {fmt(beltiTotal)}</p>
-          <p className="text-[11px] text-gray-400 mt-1">{Math.round(beltiTotal/allTotal*100)||0}% e totalit</p>
+          <p className="text-2xl font-black font-mono tracking-tight text-purple-600 dark:text-[#a5a6ff]">- {fmt(beltiTotal)}</p>
+          <p className="text-[11px] text-gray-400 dark:text-gray-500 mt-1">{Math.round(beltiTotal/allTotal*100)||0}% e totalit</p>
         </div>
-        <div className="bg-white rounded-2xl border border-gray-200/90 shadow-sm px-4 py-4">
+        <div className="bg-white dark:bg-dk-low dark:border-white/[0.07] dark:shadow-[0_2px_6px_rgba(0,0,0,0.35)] rounded-2xl border border-gray-200/90 shadow-sm px-4 py-4">
           <div className="flex items-center gap-1.5 mb-1">
             <RefreshCw size={12} className="text-emerald-500" />
-            <p className="text-xs text-gray-500 font-bold">Të Rregullta</p>
+            <p className="text-xs text-gray-500 dark:text-gray-300 font-bold">Të Rregullta</p>
           </div>
-          <p className="text-2xl font-black font-mono tracking-tight text-gray-900">- {fmt(recurTotal)}</p>
-          <p className="text-[11px] text-gray-400 mt-1">{recurringItems.length} shpenzime aktive</p>
+          <p className="text-2xl font-black font-mono tracking-tight text-gray-900 dark:text-white">- {fmt(recurTotal)}</p>
+          <p className="text-[11px] text-gray-400 dark:text-gray-500 mt-1">{recurringItems.length} shpenzime aktive</p>
         </div>
       </div>
 
@@ -649,9 +649,9 @@ export default function ExpensesPage() {
             className="flex items-center gap-2 mb-3 group"
           >
             <RefreshCw size={16} className="text-blue-500" />
-            <h3 className="text-sm font-bold text-blue-600 tracking-tight">Shpenzime të Rregullta</h3>
-            <span className="bg-blue-100 text-blue-600 text-[11px] font-extrabold px-2 py-0.5 rounded-full">{recurringItems.length} aktive</span>
-            <ChevronDown size={15} className={`text-gray-400 group-hover:text-gray-600 transition-transform ${recurringOpen ? 'rotate-180' : ''}`} />
+            <h3 className="text-sm font-bold text-blue-600 dark:text-accent tracking-tight">Shpenzime të Rregullta</h3>
+            <span className="bg-blue-100 dark:bg-accent/15 dark:border dark:border-accent/30 text-blue-600 dark:text-accent-soft text-[11px] font-extrabold px-2 py-0.5 rounded-full">{recurringItems.length} aktive</span>
+            <ChevronDown size={15} className={`text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-transform ${recurringOpen ? 'rotate-180' : ''}`} />
           </button>
           {recurringOpen && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -662,27 +662,27 @@ export default function ExpensesPage() {
                 tabIndex={0}
                 onClick={() => navigate(`expenses:${e.id}:edit`)}
                 onKeyDown={ev => { if (ev.key === 'Enter' || ev.key === ' ') navigate(`expenses:${e.id}:edit`) }}
-                className="text-left bg-white rounded-2xl border border-gray-200/90 shadow-sm px-3.5 py-3 flex items-center justify-between gap-3 hover:shadow-md transition-all cursor-pointer"
+                className="text-left bg-white dark:bg-dk-low dark:border-white/[0.07] dark:shadow-[0_2px_6px_rgba(0,0,0,0.35)] dark:hover:bg-dk-card rounded-2xl border border-gray-200/90 shadow-sm px-3.5 py-3 flex items-center justify-between gap-3 hover:shadow-md transition-all cursor-pointer"
               >
                 <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-8 h-8 rounded-xl bg-blue-50 text-blue-500 flex items-center justify-center flex-shrink-0">
+                  <div className="w-8 h-8 rounded-xl bg-blue-50 dark:bg-accent/10 text-blue-500 dark:text-accent-soft flex items-center justify-center flex-shrink-0">
                     <RefreshCw size={15} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-bold text-gray-900 truncate">{e.type}</p>
-                    <p className="text-[11px] text-gray-400 truncate">{e.vendor || '—'}</p>
+                    <p className="text-xs font-bold text-gray-900 dark:text-white truncate">{e.type}</p>
+                    <p className="text-[11px] text-gray-400 dark:text-gray-500 truncate">{e.vendor || '—'}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 flex-shrink-0">
                   <div className="text-right">
-                    <span className="text-sm font-black font-mono text-blue-600 block">- {fmt(e.amount)}</span>
-                    <span className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md ${FREQ_COLOR[e.recurringFreq] || 'bg-gray-50 text-gray-400'}`}>
+                    <span className="text-sm font-black font-mono text-blue-600 dark:text-accent block">- {fmt(e.amount)}</span>
+                    <span className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md ${FREQ_COLOR[e.recurringFreq] || 'bg-gray-50 dark:bg-dk-card text-gray-400 dark:text-gray-500'}`}>
                       {e.recurringFreq}
                     </span>
                   </div>
                   <button
                     onClick={ev => { ev.stopPropagation(); openDelete(e) }}
-                    className="w-7 h-7 flex items-center justify-center rounded-lg text-gray-400 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                    className="w-7 h-7 flex items-center justify-center rounded-lg text-gray-400 dark:text-gray-500 hover:bg-blue-50 dark:hover:bg-[#93000a]/30 hover:text-blue-600 dark:hover:text-[#ffb4ab] transition-colors"
                     title="Fshi"
                   >
                     <Trash2 size={14} />
@@ -696,53 +696,53 @@ export default function ExpensesPage() {
       )}
 
       {/* Filtrat */}
-      <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 bg-white p-3 rounded-2xl border border-gray-200/90 shadow-sm mb-5">
+      <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 bg-white dark:bg-dk-low dark:border-white/[0.07] dark:shadow-[0_2px_6px_rgba(0,0,0,0.35)] p-3 rounded-2xl border border-gray-200/90 shadow-sm mb-5">
         <div className="relative flex-1 min-w-[160px]">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-          <input className="w-full pl-8 pr-8 py-1.5 text-xs rounded-xl border border-gray-200 bg-gray-50 text-gray-900 placeholder-gray-400 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-50"
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
+          <input className="w-full pl-8 pr-8 py-1.5 text-xs rounded-xl border border-gray-200 dark:border-transparent bg-gray-50 dark:bg-dk-card text-gray-900 dark:text-gray-100 placeholder-gray-400 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-50 dark:focus:ring-accent/30"
             placeholder="Kërko shpenzime..."
             value={search} onChange={e => { setSearch(e.target.value); setPg(1) }} />
           {search && (
-            <button onClick={() => { setSearch(''); setPg(1) }} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+            <button onClick={() => { setSearch(''); setPg(1) }} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
               <X size={13} />
             </button>
           )}
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          <select className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 font-semibold outline-none focus:border-blue-400 cursor-pointer"
+          <select className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 dark:border-transparent bg-gray-50 dark:bg-dk-card text-gray-700 dark:text-gray-300 font-semibold outline-none focus:border-blue-400 cursor-pointer"
             value={yearFilt} onChange={e => { setYearFilt(e.target.value); setPg(1) }}>
             <option value="all">Të gjitha vitet</option>
             {years.map(y => <option key={y} value={y}>{y}</option>)}
           </select>
 
-          <select className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 font-semibold outline-none focus:border-blue-400 cursor-pointer"
+          <select className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 dark:border-transparent bg-gray-50 dark:bg-dk-card text-gray-700 dark:text-gray-300 font-semibold outline-none focus:border-blue-400 cursor-pointer"
             value={monthFilt} onChange={e => { setMonthFilt(e.target.value); setPg(1) }}>
             <option value="all">Të gjitha muajt</option>
             {MONTHS.map(m => <option key={m.v} value={m.v}>{m.l}</option>)}
           </select>
 
-          <select className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 font-semibold outline-none focus:border-blue-400 cursor-pointer"
+          <select className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 dark:border-transparent bg-gray-50 dark:bg-dk-card text-gray-700 dark:text-gray-300 font-semibold outline-none focus:border-blue-400 cursor-pointer"
             value={partnerFilt} onChange={e => { setPartner(e.target.value); setPg(1) }}>
             <option value="all">Të dy partnerët</option>
             <option value="Enndy">Enndy</option>
             <option value="Belti">Belti</option>
           </select>
 
-          <select className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 font-semibold outline-none focus:border-blue-400 cursor-pointer max-w-[200px]"
+          <select className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 dark:border-transparent bg-gray-50 dark:bg-dk-card text-gray-700 dark:text-gray-300 font-semibold outline-none focus:border-blue-400 cursor-pointer max-w-[200px]"
             value={typeFilt} onChange={e => { setType(e.target.value); setPg(1) }}>
             <option value="all">Të gjitha llojet</option>
             {usedTypes.map(t => <option key={t} value={t}>{t}</option>)}
           </select>
 
-          <select className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 font-semibold outline-none focus:border-blue-400 cursor-pointer"
+          <select className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 dark:border-transparent bg-gray-50 dark:bg-dk-card text-gray-700 dark:text-gray-300 font-semibold outline-none focus:border-blue-400 cursor-pointer"
             value={recurFilt} onChange={e => { setRecurFilt(e.target.value); setPg(1) }}>
             <option value="all">Të gjitha</option>
             <option value="recurring">Vetëm të rregullta</option>
             <option value="once">Vetëm njëherësh</option>
           </select>
 
-          <select className="hidden sm:block text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 font-semibold outline-none focus:border-blue-400 cursor-pointer"
+          <select className="hidden sm:block text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 dark:border-transparent bg-gray-50 dark:bg-dk-card text-gray-700 dark:text-gray-300 font-semibold outline-none focus:border-blue-400 cursor-pointer"
             value={perPage} onChange={e => { setPerPage(Number(e.target.value)); setPg(1) }}>
             <option value={25}>25 / faqe</option>
             <option value={50}>50 / faqe</option>
@@ -750,9 +750,9 @@ export default function ExpensesPage() {
             <option value={200}>200 / faqe</option>
           </select>
 
-          <span className="text-xs font-bold text-gray-400 font-mono px-2 flex items-center gap-1">
+          <span className="text-xs font-bold text-gray-400 font-mono px-2 flex items-center gap-1 dark:text-gray-300">
             {filtered.length}
-            {partnerFilt !== 'all' && <span className="text-gray-600">· {fmt(total)}</span>}
+            {partnerFilt !== 'all' && <span className="text-gray-600 dark:text-gray-300">· {fmt(total)}</span>}
           </span>
         </div>
       </div>
@@ -761,27 +761,27 @@ export default function ExpensesPage() {
       {paged.length > 0 && (
         <div className="sm:hidden space-y-2 mb-4">
           {paged.map(e => (
-              <div key={e.id} className="bg-white rounded-2xl border border-gray-200 shadow-sm p-3">
+              <div key={e.id} className="bg-white dark:bg-dk-low rounded-2xl border border-gray-200 dark:border-white/[0.07] shadow-sm p-3">
                 <div className="flex justify-between items-start gap-2">
                   {/* Col 1: Type + Date + Vendor */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5">
-                      <p className="font-bold text-gray-900 text-sm">{e.type}</p>
+                      <p className="font-bold text-gray-900 dark:text-gray-100 text-sm">{e.type}</p>
                       {e.recurring && (
-                        <span className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md ${FREQ_COLOR[e.recurringFreq] || 'bg-gray-50 text-gray-400'}`}>
+                        <span className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md ${FREQ_COLOR[e.recurringFreq] || 'bg-gray-50 dark:bg-dk-card text-gray-400 dark:text-gray-500'}`}>
                           {e.recurringFreq}
                         </span>
                       )}
                     </div>
-                    <p className="text-xs text-gray-500 mt-0.5 font-mono">{formatDate(e.date)}</p>
-                    <p className="text-xs text-gray-600 mt-0.5">{e.vendor || '—'}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 font-mono">{formatDate(e.date)}</p>
+                    <p className="text-xs text-gray-600 dark:text-gray-300 mt-0.5">{e.vendor || '—'}</p>
                   </div>
 
                   {/* Col 2: Amount + Partner */}
                   <div className="text-right">
-                    <p className="font-mono font-bold text-blue-600 text-sm">- {fmt(e.amount)}</p>
+                    <p className="font-mono font-bold text-blue-600 dark:text-accent text-sm">- {fmt(e.amount)}</p>
                     <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold mt-0.5 ${
-                      e.paidBy === 'Enndy' ? 'bg-blue-50 text-blue-600' : 'bg-purple-100 text-purple-600'
+                      e.paidBy === 'Enndy' ? 'bg-blue-50 dark:bg-accent/10 text-blue-600 dark:text-accent-soft dark:border dark:border-accent/20' : 'bg-purple-100 dark:bg-[#8083ff]/15 text-purple-600 dark:text-[#c0c1ff] dark:border dark:border-[#8083ff]/25'
                     }`}>
                       {e.paidBy || '—'}
                     </span>
@@ -790,7 +790,7 @@ export default function ExpensesPage() {
                   {/* Col 3: Actions - Dropdown */}
                   <div className="relative flex-shrink-0">
                     <button
-                      className="w-9 h-9 flex items-center justify-center rounded-xl bg-gray-100 text-gray-600 hover:bg-blue-500 hover:text-white transition-colors"
+                      className="w-9 h-9 flex items-center justify-center rounded-xl bg-gray-100 dark:bg-dk-high text-gray-600 dark:text-gray-300 hover:bg-blue-500 hover:text-white transition-colors"
                       onClick={() => setOpenDropdown(openDropdown === e.id ? null : e.id)}
                     >
                       ⋮
@@ -798,9 +798,9 @@ export default function ExpensesPage() {
 
                     {/* Dropdown Menu */}
                     {openDropdown === e.id && (
-                      <div className="absolute right-0 top-full mt-1 w-40 bg-white border border-gray-200 rounded-xl shadow-xl z-50 overflow-hidden">
+                      <div className="absolute right-0 top-full mt-1 w-40 bg-white dark:bg-dk-high border border-gray-200 dark:border-white/10 rounded-xl shadow-xl z-50 overflow-hidden">
                         <button
-                          className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-blue-50 flex items-center gap-2 border-b border-gray-100"
+                          className="w-full text-left px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-dk-card flex items-center gap-2 border-b border-gray-100 dark:border-white/10"
                           onClick={() => {
                             openEdit(e)
                             setOpenDropdown(null)
@@ -809,7 +809,7 @@ export default function ExpensesPage() {
                           ✏ Edito
                         </button>
                         <button
-                          className="w-full text-left px-3 py-2 text-sm text-blue-600 hover:bg-blue-50 flex items-center gap-2"
+                          className="w-full text-left px-3 py-2 text-sm text-blue-600 dark:text-[#ffb4ab] hover:bg-blue-50 dark:hover:bg-[#93000a]/30 flex items-center gap-2"
                           onClick={() => {
                             openDelete(e)
                             setOpenDropdown(null)
@@ -839,16 +839,16 @@ export default function ExpensesPage() {
           sub="Regjistro shpenzimin e parë"
           action={<button className="btn btn-primary mt-2" onClick={openAdd}><Plus size={14}/>Shpenzim i ri</button>}/>
       ) : (
-        <div className="bg-white rounded-2xl border border-gray-200/90 shadow-sm overflow-hidden hidden sm:block">
+        <div className="bg-white dark:bg-dk-low dark:border-white/[0.07] dark:shadow-[0_2px_6px_rgba(0,0,0,0.35)] rounded-2xl border border-gray-200/90 shadow-sm overflow-hidden hidden sm:block">
           <div className="overflow-auto" style={{ maxHeight: 'calc(100vh - 420px)' }}>
-          <table className="w-full text-sm min-w-[480px]">
+          <table className="cust-tbl w-full text-sm min-w-[480px]">
             <thead className="sticky top-0 z-10">
-              <tr className="border-b border-gray-200 bg-gray-50">
+              <tr className="border-b border-gray-200 dark:border-transparent bg-gray-50 dark:bg-dk-side/70">
                 {[
                   { key: 'date',   label: 'Data',     cls: '' },
                   { key: 'type',   label: 'Për çfarë',cls: '' },
                 ].map(col => (
-                  <th key={col.key} className={`table-th cursor-pointer select-none hover:text-gray-700 ${col.cls}`}
+                  <th key={col.key} className={`table-th cursor-pointer select-none hover:text-gray-700 dark:hover:text-gray-200 ${col.cls}`}
                       onClick={() => toggleSort(col.key)}>
                     <span className="flex items-center gap-1">
                       {col.label}
@@ -856,7 +856,7 @@ export default function ExpensesPage() {
                     </span>
                   </th>
                 ))}
-                <th className="table-th hidden md:table-cell cursor-pointer select-none hover:text-gray-700"
+                <th className="table-th hidden md:table-cell cursor-pointer select-none hover:text-gray-700 dark:hover:text-gray-200"
                     onClick={() => toggleSort('vendor')}>
                   <span className="flex items-center gap-1">
                     Furnitori
@@ -864,14 +864,14 @@ export default function ExpensesPage() {
                   </span>
                 </th>
                 <th className="table-th hidden md:table-cell">Referenca</th>
-                <th className="table-th cursor-pointer select-none hover:text-gray-700"
+                <th className="table-th cursor-pointer select-none hover:text-gray-700 dark:hover:text-gray-200"
                     onClick={() => toggleSort('paidBy')}>
                   <span className="flex items-center gap-1">
                     Partneri
                     <span className="text-[10px]">{sortField === 'paidBy' ? (sortDir === 'asc' ? '↑' : '↓') : <span className="text-gray-300">↕</span>}</span>
                   </span>
                 </th>
-                <th className="table-th text-right cursor-pointer select-none hover:text-gray-700"
+                <th className="table-th text-right cursor-pointer select-none hover:text-gray-700 dark:hover:text-gray-200"
                     onClick={() => toggleSort('amount')}>
                   <span className="flex items-center justify-end gap-1">
                     Shuma
@@ -883,40 +883,40 @@ export default function ExpensesPage() {
             </thead>
             <tbody>
               {paged.map(e => (
-                <tr key={e.id} className="hover:bg-gray-50 transition-colors group">
+                <tr key={e.id} className="hover:bg-gray-50 dark:hover:bg-dk-card/60 transition-colors group">
                   <td className="table-td font-mono text-xs">{formatDate(e.date)}</td>
                   <td className="table-td">
                     <div className="flex items-center gap-2">
-                      <span className="font-bold text-gray-900 text-xs">{e.type}</span>
+                      <span className="font-bold text-gray-900 dark:text-white text-xs">{e.type}</span>
                       {e.recurring && (
-                        <span className={`inline-flex items-center gap-0.5 text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md ${FREQ_COLOR[e.recurringFreq] || 'bg-gray-50 text-gray-400'}`}>
+                        <span className={`inline-flex items-center gap-0.5 text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md ${FREQ_COLOR[e.recurringFreq] || 'bg-gray-50 dark:bg-dk-card text-gray-400 dark:text-gray-500'}`}>
                           <RefreshCw size={8}/> {e.recurringFreq}
                         </span>
                       )}
                     </div>
                   </td>
                   <td className="table-td text-xs hidden md:table-cell">
-                    {e.vendor || <span className="text-gray-300">—</span>}
+                    {e.vendor || <span className="text-gray-300 dark:text-gray-600">—</span>}
                   </td>
                   <td className="table-td text-xs hidden md:table-cell">
-                    {e.reference || <span className="text-gray-300">—</span>}
+                    {e.reference || <span className="text-gray-300 dark:text-gray-600">—</span>}
                   </td>
                   <td className="table-td">
                     <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                      e.paidBy === 'Enndy' ? 'bg-blue-50 text-blue-600' : 'bg-purple-100 text-purple-600'
+                      e.paidBy === 'Enndy' ? 'bg-blue-50 dark:bg-accent/10 text-blue-600 dark:text-accent-soft dark:border dark:border-accent/20' : 'bg-purple-100 dark:bg-[#8083ff]/15 text-purple-600 dark:text-[#c0c1ff] dark:border dark:border-[#8083ff]/25'
                     }`}>
                       {e.paidBy || '—'}
                     </span>
                   </td>
-                  <td className="table-td text-right font-mono font-bold text-blue-600">
+                  <td className="table-td text-right font-mono font-bold text-blue-600 dark:text-accent">
                     - {fmt(e.amount)}
                   </td>
                   <td className="table-td">
                     <div className="flex items-center justify-end gap-1.5">
-                      <button className="p-1.5 rounded-lg bg-gray-100 text-gray-500 hover:bg-blue-50 hover:text-blue-600 transition-colors" onClick={() => openEdit(e)} title="Edito">
+                      <button className="p-1.5 rounded-lg bg-gray-100 dark:bg-dk-high text-gray-500 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-dk-line hover:text-blue-600 dark:hover:text-white transition-colors" onClick={() => openEdit(e)} title="Edito">
                         ✏
                       </button>
-                      <button className="p-1.5 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors" onClick={() => openDelete(e)} title="Fshi">
+                      <button className="p-1.5 rounded-lg bg-blue-50 dark:bg-[#93000a]/30 text-blue-600 dark:text-[#ffb4ab] hover:bg-blue-100 dark:hover:bg-[#93000a]/60 transition-colors" onClick={() => openDelete(e)} title="Fshi">
                         <Trash2 size={14}/>
                       </button>
                     </div>
@@ -929,13 +929,13 @@ export default function ExpensesPage() {
 
           {/* Footer totals - hidden on mobile */}
           {filtered.length > 0 && (
-            <div className="hidden sm:flex items-center justify-between px-5 py-2.5 border-t border-gray-100 bg-gray-50/50 text-xs">
-              <div className="flex gap-4 text-gray-400 font-bold">
-                <span>Enndy: <span className="font-mono text-blue-600">- {fmt(filteredEnndiTotal)}</span></span>
-                <span>Belti: <span className="font-mono text-purple-600">- {fmt(filteredBeltiTotal)}</span></span>
+            <div className="hidden sm:flex items-center justify-between px-5 py-2.5 border-t border-gray-100 dark:border-transparent bg-gray-50/50 dark:bg-dk-side/70 text-xs">
+              <div className="flex gap-4 text-gray-400 dark:text-[#8b8e99] font-bold">
+                <span>Enndy: <span className="font-mono text-blue-600 dark:text-accent">- {fmt(filteredEnndiTotal)}</span></span>
+                <span>Belti: <span className="font-mono text-purple-600 dark:text-[#a5a6ff]">- {fmt(filteredBeltiTotal)}</span></span>
               </div>
-              <span className="font-bold text-gray-400">
-                Total: <span className="font-mono text-blue-600 text-sm">{fmt(total)}</span>
+              <span className="font-bold text-gray-400 dark:text-[#8b8e99]">
+                Total: <span className="font-mono text-blue-600 dark:text-gray-100 text-sm">{fmt(total)}</span>
               </span>
             </div>
           )}
