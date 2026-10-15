@@ -145,12 +145,12 @@ function HostRow({ host, onEdit, onDelete }) {
     <div className={`group flex items-center gap-1 rounded-xl border px-3 py-2 transition-colors ${
       copied
         ? 'border-emerald-300 dark:border-emerald-700 bg-emerald-50/50 dark:bg-emerald-900/10'
-        : 'border-gray-100 dark:border-gray-700 hover:border-blue-200 dark:hover:border-blue-900/50 hover:bg-gray-50 dark:hover:bg-gray-900/40'
+        : 'border-gray-100 dark:border-white/[0.07] dark:bg-dk-card hover:border-blue-200 dark:hover:border-white/20 hover:bg-gray-50 dark:hover:bg-dk-high'
     }`}>
       <button onClick={copyLink} className="min-w-0 flex-1 text-left" title="Kliko për të kopjuar">
         <div className="flex items-center gap-1.5 min-w-0">
-          <span className="font-mono text-xs text-gray-700 dark:text-gray-300 truncate">{domain}</span>
-          {port && <span className="text-[9px] font-bold font-mono px-1.5 py-0.5 rounded-md bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-300 flex-shrink-0">:{port}</span>}
+          <span className="font-mono text-xs text-gray-700 dark:text-gray-200 truncate">{domain}</span>
+          {port && <span className="text-[9px] font-bold font-mono px-1.5 py-0.5 rounded-md bg-gray-100 dark:bg-dk-high dark:border dark:border-white/[0.07] text-gray-500 dark:text-gray-300 flex-shrink-0">:{port}</span>}
           {host.isPopular && <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex-shrink-0">Popullore</span>}
         </div>
         {host.description && <p className="text-[10px] text-gray-400 dark:text-gray-500 truncate">{host.description}</p>}
@@ -162,7 +162,7 @@ function HostRow({ host, onEdit, onDelete }) {
           className="p-1 rounded-lg text-gray-400 dark:text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30" title="Hap linkun">
           <ExternalLink size={13} />
         </a>
-        <button onClick={() => onEdit(host)} className="p-1 rounded-lg text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700" title="Edito">
+        <button onClick={() => onEdit(host)} className="p-1 rounded-lg text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-dk-line" title="Edito">
           <Pencil size={13} />
         </button>
         <button onClick={() => onDelete(host)} className="p-1 rounded-lg text-gray-400 dark:text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30" title="Fshi">
@@ -233,7 +233,7 @@ export default function Hosts() {
         <div className="relative flex-1 min-w-[220px] max-w-xl">
           <Search size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
           <input
-            className="w-full pl-9 pr-9 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 text-xs font-medium outline-none focus:ring-2 focus:ring-blue-50 dark:focus:ring-blue-900/20 focus:border-blue-400 transition-all"
+            className="w-full pl-9 pr-9 py-2 rounded-xl border border-gray-200 dark:border-white/[0.07] bg-white dark:bg-dk-low text-gray-900 dark:text-white placeholder-gray-400 text-xs font-medium outline-none focus:ring-2 focus:ring-blue-50 dark:focus:ring-accent/30 focus:border-blue-400 transition-all"
             placeholder="Kërko sipas linkut..."
             value={search}
             onChange={e => setSearch(e.target.value)}
@@ -244,7 +244,7 @@ export default function Hosts() {
             </button>
           )}
         </div>
-        <span className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-gray-100 dark:bg-gray-800 text-xs font-bold text-gray-600 dark:text-gray-300">
+        <span className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-gray-100 dark:bg-dk-low dark:border dark:border-white/[0.07] text-xs font-bold text-gray-600 dark:text-gray-300">
           <Server size={13} /> {totalCount} hoste · {hostCategories.length} kategori
         </span>
         <button onClick={openCat} className="btn btn-outline flex items-center gap-1.5 text-xs">
@@ -265,10 +265,10 @@ export default function Hosts() {
               key={c.id}
               onClick={() => setTab(c.id)}
               className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${
-                active ? 'bg-blue-600 text-white' : 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                active ? 'bg-blue-600 dark:bg-accent text-white dark:text-accent-on dark:shadow-lg dark:shadow-accent/30' : 'bg-white dark:bg-dk-low border border-gray-200 dark:border-white/[0.07] text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-dk-high'
               }`}
             >
-              {c.flag && <span className="mr-1">{c.flag}</span>}{c.name} <span className={active ? 'text-blue-100' : 'text-gray-400'}>({count})</span>
+              {c.flag && <span className="mr-1">{c.flag}</span>}{c.name} <span className={active ? 'text-blue-100 dark:text-accent-on/80' : 'text-gray-400'}>({count})</span>
             </button>
           )
         })}
@@ -277,15 +277,15 @@ export default function Hosts() {
       {/* Kolonat */}
       <div className={`grid grid-cols-1 gap-4 ${visibleCats.length === 1 ? 'md:grid-cols-1 max-w-xl' : visibleCats.length === 2 ? 'md:grid-cols-2' : 'md:grid-cols-2 xl:grid-cols-3'}`}>
         {visibleCats.map(cat => (
-          <div key={cat.id} className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden flex flex-col">
-            <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/40">
+          <div key={cat.id} className="bg-white dark:bg-dk-low dark:shadow-[0_2px_6px_rgba(0,0,0,0.35)] rounded-2xl border border-gray-200 dark:border-white/[0.07] overflow-hidden flex flex-col">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-transparent bg-gray-50 dark:bg-transparent">
               <h3 className="text-xs font-black uppercase tracking-wide text-gray-700 dark:text-gray-200 flex items-center gap-1.5">
                 <span className="text-base leading-none">{cat.flag}</span>
                 {cat.name} <span className="text-gray-400 dark:text-gray-500 font-bold">({grouped[cat.id].length})</span>
               </h3>
               <div className="flex items-center gap-1">
                 <button onClick={() => copyAll(cat)} disabled={!grouped[cat.id].length}
-                  className="p-1.5 rounded-lg text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-30" title="Kopjo të gjitha">
+                  className="p-1.5 rounded-lg text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-dk-high disabled:opacity-30" title="Kopjo të gjitha">
                   <Copy size={13} />
                 </button>
                 {!DEFAULT_IDS.has(cat.id) && (
@@ -307,7 +307,7 @@ export default function Hosts() {
               )}
               <button
                 onClick={() => openAdd(cat.id)}
-                className="flex items-center justify-center gap-1 rounded-xl border-2 border-dashed border-gray-200 dark:border-gray-700 py-2 text-xs font-semibold text-gray-400 dark:text-gray-500 hover:border-blue-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                className="flex items-center justify-center gap-1 rounded-xl border-2 border-dashed border-gray-200 dark:border-white/10 py-2 text-xs font-semibold text-gray-400 dark:text-gray-500 hover:border-blue-300 dark:hover:border-accent/60 hover:text-blue-600 dark:hover:text-accent-soft transition-colors"
               >
                 <Plus size={13} /> Shto host
               </button>
