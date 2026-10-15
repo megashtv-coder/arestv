@@ -355,29 +355,29 @@ export default function Items() {
 
       {/* Stat mini-cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-5">
-        <div className="bg-white rounded-2xl border border-gray-200/90 shadow-sm px-4 py-4">
-          <span className="text-3xl font-black font-mono tracking-tight text-gray-900 block">{totalItems}</span>
-          <p className="text-xs text-gray-500 mt-1 font-bold">Artikuj gjithsej</p>
+        <div className="bg-white dark:bg-dk-low dark:border-white/[0.07] dark:shadow-[0_2px_6px_rgba(0,0,0,0.35)] rounded-2xl border border-gray-200/90 shadow-sm px-4 py-4">
+          <span className="text-3xl font-black font-mono dark:font-sans dark:font-extrabold tracking-tight text-gray-900 dark:text-white block">{totalItems}</span>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-bold">Artikuj gjithsej</p>
         </div>
-        <div className="bg-white rounded-2xl border border-gray-200/90 shadow-sm px-4 py-4">
-          <span className="text-3xl font-black font-mono tracking-tight text-blue-600 block">{fmt(avgSale.toFixed(2))}</span>
-          <p className="text-xs text-gray-500 mt-1 font-bold">Çmimi mesatar shitje</p>
+        <div className="bg-white dark:bg-dk-low dark:border-white/[0.07] dark:shadow-[0_2px_6px_rgba(0,0,0,0.35)] rounded-2xl border border-gray-200/90 shadow-sm px-4 py-4">
+          <span className="text-3xl font-black font-mono dark:font-sans dark:font-extrabold tracking-tight text-blue-600 dark:text-accent-soft block">{fmt(avgSale.toFixed(2))}</span>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-bold">Çmimi mesatar shitje</p>
         </div>
         <div
-          className="bg-white rounded-2xl border border-gray-200/90 shadow-sm px-4 py-4 cursor-pointer hover:border-gray-300 transition-colors flex flex-col justify-between"
+          className="bg-white dark:bg-dk-low dark:border-white/[0.07] dark:shadow-[0_2px_6px_rgba(0,0,0,0.35)] rounded-2xl border border-gray-200/90 shadow-sm px-4 py-4 cursor-pointer hover:border-gray-300 dark:hover:bg-dk-card transition-colors flex flex-col justify-between"
           onClick={() => !pinUnlocked && setShowPin(true)}
         >
           <div className="flex items-center justify-between">
             {pinUnlocked
-              ? <span className="text-2xl font-black font-mono tracking-tight text-emerald-600">{avgMargin.toFixed(1)}%</span>
-              : <span className="text-2xl font-black font-mono tracking-widest text-gray-300 select-none">••••</span>
+              ? <span className="text-2xl font-black font-mono dark:font-sans dark:font-extrabold tracking-tight text-emerald-600 dark:text-[#4edea3]">{avgMargin.toFixed(1)}%</span>
+              : <span className="text-2xl font-black font-mono tracking-widest text-gray-300 dark:text-gray-600 select-none">••••</span>
             }
             {pinUnlocked
               ? <Unlock size={16} className="text-emerald-400"/>
               : <Lock size={16} className="text-gray-400"/>
             }
           </div>
-          <p className="text-xs text-gray-500 mt-1 font-bold flex items-center gap-1">
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-bold flex items-center gap-1">
             Marzha mesatare
             {pinUnlocked
               ? <Unlock size={10} className="text-emerald-400"/>
@@ -385,29 +385,29 @@ export default function Items() {
             }
           </p>
         </div>
-        <div className="bg-white rounded-2xl border border-gray-200/90 shadow-sm px-4 py-4">
-          <span className="text-3xl font-black font-mono tracking-tight text-gray-900 block">{withVendor}</span>
-          <p className="text-xs text-gray-500 mt-1 font-bold">Me furnitor</p>
+        <div className="bg-white dark:bg-dk-low dark:border-white/[0.07] dark:shadow-[0_2px_6px_rgba(0,0,0,0.35)] rounded-2xl border border-gray-200/90 shadow-sm px-4 py-4">
+          <span className="text-3xl font-black font-mono dark:font-sans dark:font-extrabold tracking-tight text-gray-900 dark:text-white block">{withVendor}</span>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-bold">Me furnitor</p>
         </div>
       </div>
 
       {/* Kërkim */}
-      <div className="flex items-center justify-between gap-3 bg-white p-3 rounded-2xl border border-gray-200/90 shadow-sm mb-5">
+      <div className="flex items-center justify-between gap-3 bg-white dark:bg-dk-low dark:border-white/[0.07] dark:shadow-[0_2px_6px_rgba(0,0,0,0.35)] p-3 rounded-2xl border border-gray-200/90 shadow-sm mb-5">
         <div className="relative w-full sm:w-80">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
           <input
-            className="w-full pl-8 pr-8 py-1.5 text-xs rounded-xl border border-gray-200 bg-gray-50 text-gray-900 placeholder-gray-400 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-50"
+            className="w-full pl-8 pr-8 py-1.5 text-xs rounded-xl border border-gray-200 dark:border-transparent bg-gray-50 dark:bg-dk-card text-gray-900 dark:text-gray-100 placeholder-gray-400 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-50 dark:focus:ring-accent/30"
             placeholder="Kërko produkt ose furnitor..."
             value={search}
             onChange={e => { setSearch(e.target.value); setPg(1) }}
           />
           {search && (
-            <button onClick={() => { setSearch(''); setPg(1) }} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+            <button onClick={() => { setSearch(''); setPg(1) }} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
               <X size={13} />
             </button>
           )}
         </div>
-        <span className="text-xs font-semibold text-gray-400 hidden sm:inline flex-shrink-0">{filtered.length} rezultate</span>
+        <span className="text-xs font-semibold text-gray-400 dark:text-gray-400 hidden sm:inline flex-shrink-0 dark:bg-dk-card dark:rounded-lg dark:px-3 dark:py-1.5">{filtered.length} rezultate</span>
       </div>
 
       {/* Tabela */}
@@ -431,42 +431,42 @@ export default function Items() {
               ? ((item.salePrice - item.purchasePrice) / item.salePrice * 100).toFixed(1)
               : null
             return (
-              <div key={item.id} className="bg-white rounded-2xl border border-gray-200 shadow-sm p-3">
+              <div key={item.id} className="bg-white dark:bg-dk-low rounded-2xl border border-gray-200 dark:border-white/[0.07] shadow-sm p-3">
                 <div className="flex justify-between items-start gap-2">
                   {/* Col 1: Emri + llogaria + furnitori */}
                   <div className="flex-1 min-w-0 cursor-pointer" onClick={() => openEdit(item)}>
-                    <p className="font-bold text-gray-900 text-sm truncate hover:text-blue-500 transition-colors">{item.name}</p>
-                    <p className="text-xs text-gray-500 mt-0.5">{accountLabel(item.account)}</p>
-                    {item.vendor && <p className="text-xs text-gray-400 font-semibold">{item.vendor}</p>}
+                    <p className="font-bold text-gray-900 dark:text-gray-100 text-sm truncate hover:text-blue-500 transition-colors">{item.name}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{accountLabel(item.account)}</p>
+                    {item.vendor && <p className="text-xs text-gray-400 dark:text-gray-500 font-semibold">{item.vendor}</p>}
                   </div>
 
                   {/* Col 2: Çmimi + marzha */}
                   <div className="text-right">
-                    <p className="font-mono font-bold text-gray-900 text-sm">{fmt(item.salePrice)}</p>
+                    <p className="font-mono font-bold text-gray-900 dark:text-gray-100 text-sm">{fmt(item.salePrice)}</p>
                     {pinUnlocked ? (
                       margin !== null && (
                         <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold mt-0.5 ${
-                          Number(margin) >= 30 ? 'bg-emerald-50 text-emerald-600'
-                          : Number(margin) >= 10 ? 'bg-amber-50 text-amber-600'
-                          : 'bg-blue-50 text-blue-500'
+                          Number(margin) >= 30 ? 'bg-emerald-50 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400'
+                          : Number(margin) >= 10 ? 'bg-amber-50 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400'
+                          : 'bg-blue-50 dark:bg-[#93000a]/40 text-blue-500 dark:text-[#ffb4ab]'
                         }`}>{margin}%</span>
                       )
                     ) : (
-                      <span className="text-xs text-gray-300 cursor-pointer" onClick={() => setShowPin(true)}>{masked}</span>
+                      <span className="text-xs text-gray-300 dark:text-gray-600 cursor-pointer" onClick={() => setShowPin(true)}>{masked}</span>
                     )}
                   </div>
 
                   {/* Col 3: Veprimet */}
                   <div className="relative flex-shrink-0 flex gap-1">
                     <button
-                      className="w-9 h-9 flex items-center justify-center rounded-xl bg-gray-100 text-gray-500 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                      className="w-9 h-9 flex items-center justify-center rounded-xl bg-gray-100 dark:bg-dk-high text-gray-500 dark:text-gray-400 hover:bg-blue-50 dark:hover:bg-dk-line hover:text-blue-600 dark:hover:text-gray-100 transition-colors"
                       title="Edito"
                       onClick={() => openEdit(item)}
                     >
                       <Pencil size={16}/>
                     </button>
                     <button
-                      className="w-9 h-9 flex items-center justify-center rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors"
+                      className="w-9 h-9 flex items-center justify-center rounded-xl bg-blue-50 dark:bg-dk-high text-blue-600 dark:text-gray-400 hover:bg-blue-100 dark:hover:bg-[#93000a] dark:hover:text-[#ffdad6] transition-colors"
                       title="Fshi"
                       onClick={() => openDelete(item)}
                     >
@@ -484,14 +484,14 @@ export default function Items() {
           <Pagination page={pg} total={filtered.length} perPage={PER_PAGE} onChange={setPg} />
         </div>
 
-        <div className="bg-white rounded-2xl border border-gray-200/90 shadow-sm overflow-hidden hidden sm:block">
+        <div className="bg-white dark:bg-dk-low dark:border-white/[0.07] dark:shadow-[0_2px_6px_rgba(0,0,0,0.35)] rounded-2xl border border-gray-200/90 shadow-sm overflow-hidden hidden sm:block">
           <div className="overflow-auto" style={{ maxHeight: 'calc(100vh - 300px)' }}>
-          <table className="w-full text-sm">
+          <table className="cust-tbl w-full text-sm">
             <thead className="sticky top-0 z-10">
-              <tr className="border-b border-gray-200 bg-gray-50">
+              <tr className="border-b border-gray-200 dark:border-transparent bg-gray-50 dark:bg-dk-side/70">
                 <th className="table-th">
                   <button
-                    className="flex items-center gap-1 hover:text-gray-700 transition-colors"
+                    className="flex items-center gap-1 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
                     onClick={() => toggleSort('name')}
                   >
                     Emri <SortIcon k="name" />
@@ -499,7 +499,7 @@ export default function Items() {
                 </th>
                 <th className="table-th text-right">
                   <button
-                    className="flex items-center gap-1 hover:text-gray-700 transition-colors ml-auto"
+                    className="flex items-center gap-1 hover:text-gray-700 dark:hover:text-gray-200 transition-colors ml-auto"
                     onClick={() => toggleSort('salePrice')}
                   >
                     Çm. Shitjes <SortIcon k="salePrice" />
@@ -509,7 +509,7 @@ export default function Items() {
                   <div className="flex items-center justify-end gap-1.5">
                     {pinUnlocked && (
                       <button
-                        className="flex items-center gap-1 hover:text-gray-700 transition-colors"
+                        className="flex items-center gap-1 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
                         onClick={() => toggleSort('purchasePrice')}
                       >
                         Çm. Blerjes <SortIcon k="purchasePrice" />
@@ -517,7 +517,7 @@ export default function Items() {
                     )}
                     {!pinUnlocked && <span>Çm. Blerjes</span>}
                     <button
-                      className={`ml-1 p-0.5 rounded transition-colors ${pinUnlocked ? 'text-emerald-500 hover:text-emerald-600' : 'text-gray-400 hover:text-gray-600'}`}
+                      className={`ml-1 p-0.5 rounded transition-colors ${pinUnlocked ? 'text-emerald-500 hover:text-emerald-600' : 'text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-400'}`}
                       onClick={handleLockToggle}
                       title={pinUnlocked ? 'Mbyll' : 'Hap me PIN'}
                     >
@@ -530,7 +530,7 @@ export default function Items() {
                     Marzha
                     {pinUnlocked
                       ? <Unlock size={10} className="text-emerald-400 ml-0.5"/>
-                      : <Lock size={10} className="text-gray-400 ml-0.5"/>
+                      : <Lock size={10} className="text-gray-400 dark:text-gray-500 ml-0.5"/>
                     }
                   </div>
                 </th>
@@ -551,32 +551,32 @@ export default function Items() {
                 return (
                   <tr
                     key={item.id}
-                    className="hover:bg-gray-50 transition-colors group"
+                    className="hover:bg-gray-50 dark:hover:bg-dk-card/60 transition-colors group"
                   >
                     {/* Emri */}
                     <td className="table-td">
                       <div className="flex items-center gap-3">
-                        <div className="w-7 h-7 rounded-xl bg-blue-50 text-blue-500 flex items-center justify-center flex-shrink-0">
+                        <div className="w-7 h-7 dark:w-8 dark:h-8 rounded-xl dark:rounded-lg bg-blue-50 dark:bg-dk-high text-blue-500 dark:text-accent-soft flex items-center justify-center flex-shrink-0">
                           <Package size={14} />
                         </div>
                         <div>
-                          <p className="font-bold text-gray-900 text-sm">{item.name}</p>
-                          <p className="text-xs text-gray-400 lg:hidden">{accountLabel(item.account)}</p>
+                          <p className="font-bold text-gray-900 dark:text-gray-100 text-sm">{item.name}</p>
+                          <p className="text-xs text-gray-400 dark:text-gray-500 lg:hidden">{accountLabel(item.account)}</p>
                         </div>
                       </div>
                     </td>
 
                     {/* Çmimi shitjes */}
                     <td className="table-td text-right">
-                      <span className="font-mono font-bold text-gray-900">{fmt(item.salePrice)}</span>
+                      <span className="font-mono font-bold text-gray-900 dark:text-gray-100">{fmt(item.salePrice)}</span>
                     </td>
 
                     {/* Çmimi blerjes */}
                     <td className="table-td text-right">
                       {pinUnlocked
                         ? item.purchasePrice > 0
-                          ? <span className="font-mono text-gray-600">{fmt(item.purchasePrice)}</span>
-                          : <span className="text-gray-300">—</span>
+                          ? <span className="font-mono text-gray-600 dark:text-gray-300">{fmt(item.purchasePrice)}</span>
+                          : <span className="text-gray-300 dark:text-gray-600">—</span>
                         : <span onClick={() => setShowPin(true)}>{masked}</span>
                       }
                     </td>
@@ -586,25 +586,25 @@ export default function Items() {
                       {pinUnlocked
                         ? margin !== null
                           ? <span className={`text-xs font-bold px-2 py-1 rounded-full ${
-                              Number(margin) >= 30 ? 'bg-emerald-50 text-emerald-600'
-                              : Number(margin) >= 10 ? 'bg-amber-50 text-amber-600'
-                              : 'bg-blue-50 text-blue-500'
+                              Number(margin) >= 30 ? 'bg-emerald-50 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400'
+                              : Number(margin) >= 10 ? 'bg-amber-50 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400'
+                              : 'bg-blue-50 dark:bg-[#93000a]/40 text-blue-500 dark:text-[#ffb4ab]'
                             }`}>{margin}%</span>
-                          : <span className="text-gray-300 text-xs">—</span>
+                          : <span className="text-gray-300 dark:text-gray-600 text-xs">—</span>
                         : <span onClick={() => setShowPin(true)}>{masked}</span>
                       }
                     </td>
 
                     {/* Llogaria */}
                     <td className="table-td hidden lg:table-cell">
-                      <span className="text-xs text-gray-500">{accountLabel(item.account)}</span>
+                      <span className="text-xs text-gray-500 dark:text-gray-400">{accountLabel(item.account)}</span>
                     </td>
 
                     {/* Furnitori */}
                     <td className="table-td hidden md:table-cell">
                       {item.vendor
-                        ? <span className="text-xs text-gray-700 font-semibold">{item.vendor}</span>
-                        : <span className="text-gray-300 text-xs">—</span>
+                        ? <span className="text-xs text-gray-700 dark:text-gray-300 font-semibold">{item.vendor}</span>
+                        : <span className="text-gray-300 dark:text-gray-600 text-xs">—</span>
                       }
                     </td>
 
@@ -612,14 +612,14 @@ export default function Items() {
                     <td className="table-td">
                       <div className="flex items-center justify-end gap-1.5">
                         <button
-                          className="p-1.5 rounded-lg bg-gray-100 text-gray-500 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                          className="p-1.5 rounded-lg bg-gray-100 dark:bg-dk-high text-gray-500 dark:text-gray-400 hover:bg-blue-50 dark:hover:bg-dk-line hover:text-blue-600 dark:hover:text-gray-100 transition-colors"
                           title="Edito"
                           onClick={() => openEdit(item)}
                         >
                           <Pencil size={14} />
                         </button>
                         <button
-                          className="p-1.5 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors"
+                          className="p-1.5 rounded-lg bg-blue-50 dark:bg-dk-high text-blue-600 dark:text-gray-400 hover:bg-blue-100 dark:hover:bg-[#93000a] dark:hover:text-[#ffdad6] transition-colors"
                           title="Fshi"
                           onClick={() => openDelete(item)}
                         >
