@@ -327,7 +327,7 @@ const CustomerCard = memo(function CustomerCard({ c, onEdit, fmt, isLatePayer, o
           </div>
           {/* Type badge */}
           <span className={`flex-shrink-0 text-[10px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap ${
-            isReseller ? 'bg-purple-100 text-purple-600' : 'bg-blue-50 text-blue-600'
+            isReseller ? 'bg-purple-100 dark:bg-[#8083ff]/15 text-purple-600 dark:text-[#c0c1ff] dark:border dark:border-[#8083ff]/25' : 'bg-blue-50 dark:bg-accent/10 text-blue-600 dark:text-accent-soft dark:border dark:border-accent/20'
           }`}>
             {isReseller ? 'Reseller' : 'Individual'}
           </span>
@@ -456,7 +456,7 @@ const CustomerRow = memo(function CustomerRow({ c, onEdit, fmt, isLatePayer, onD
 
   return (
     <tr
-      className="hover:bg-gray-50 transition-colors cursor-pointer group"
+      className="hover:bg-gray-50 dark:hover:bg-dk-card/60 transition-colors cursor-pointer group"
       onClick={() => onEdit(c)}
     >
       <td className="table-td w-10" onClick={e => e.stopPropagation()}>
@@ -472,63 +472,63 @@ const CustomerRow = memo(function CustomerRow({ c, onEdit, fmt, isLatePayer, onD
           <Avatar name={c.name || c.firstName || '?'} color={c.color} size={34} />
           <div className="min-w-0">
             <div className="flex items-center gap-1.5 flex-wrap">
-              <span className="font-bold text-gray-900 text-sm truncate">{c.name || `${c.firstName} ${c.lastName}`}</span>
+              <span className="font-bold text-gray-900 dark:text-gray-100 text-sm truncate">{c.name || `${c.firstName} ${c.lastName}`}</span>
               {isLatePayer && (
-                <span className="flex items-center gap-0.5 bg-orange-50 text-orange-500 border border-orange-100 text-[10px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0" title="Ky klient ka shfaqur vonesa pagese">
+                <span className="flex items-center gap-0.5 bg-orange-50 dark:bg-orange-900/30 text-orange-500 dark:text-orange-400 border border-orange-100 dark:border-orange-900/50 text-[10px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0" title="Ky klient ka shfaqur vonesa pagese">
                   <AlertTriangle size={9}/> Vonues
                 </span>
               )}
             </div>
-            <span className="text-[11px] text-gray-400 flex items-center gap-1">
+            <span className="text-[11px] text-gray-400 dark:text-gray-500 flex items-center gap-1">
               <Globe size={10}/> {c.country}
             </span>
           </div>
         </div>
       </td>
       <td className="table-td">
-        {c.email && <div className="flex items-center gap-1.5 text-gray-700"><Mail size={11} className="text-gray-400"/>{c.email}</div>}
-        {c.phone && <div className="flex items-center gap-1.5 font-mono text-gray-400 mt-0.5">{c.phone}</div>}
+        {c.email && <div className="flex items-center gap-1.5 text-gray-700 dark:text-gray-300"><Mail size={11} className="text-gray-400 dark:text-gray-500"/>{c.email}</div>}
+        {c.phone && <div className="flex items-center gap-1.5 font-mono text-gray-400 dark:text-gray-500 mt-0.5">{c.phone}</div>}
       </td>
       <td className="table-td">
         {isReseller ? (
           <>
-            {c.username && <span className="font-mono font-semibold text-gray-800 block">{c.username}</span>}
-            {c.panel && <span className="font-mono text-[11px] text-gray-400">{c.panel}</span>}
+            {c.username && <span className="font-mono font-semibold text-gray-800 dark:text-gray-200 block">{c.username}</span>}
+            {c.panel && <span className="font-mono text-[11px] text-gray-400 dark:text-gray-500">{c.panel}</span>}
           </>
         ) : (
           <>
-            {c.app && <span className="font-semibold text-gray-800 block">{c.app}</span>}
-            {c.macAddress && <span className="font-mono text-[11px] text-gray-400">{c.macAddress}</span>}
+            {c.app && <span className="font-semibold text-gray-800 dark:text-gray-200 block">{c.app}</span>}
+            {c.macAddress && <span className="font-mono text-[11px] text-gray-400 dark:text-gray-500">{c.macAddress}</span>}
           </>
         )}
       </td>
       <td className="table-td">
         <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap ${
-          isReseller ? 'bg-purple-100 text-purple-600' : 'bg-blue-50 text-blue-600'
+          isReseller ? 'bg-purple-100 dark:bg-[#8083ff]/15 text-purple-600 dark:text-[#c0c1ff] dark:border dark:border-[#8083ff]/25' : 'bg-blue-50 dark:bg-accent/10 text-blue-600 dark:text-accent-soft dark:border dark:border-accent/20'
         }`}>
           {isReseller ? 'Reseller' : 'Individual'}
         </span>
       </td>
-      <td className="table-td text-right font-mono font-bold text-blue-600">{fmt(c.total)}</td>
-      <td className="table-td text-right font-mono font-bold text-gray-800">{c.invoices}</td>
+      <td className="table-td text-right font-mono font-bold text-blue-600 dark:text-gray-300">{fmt(c.total)}</td>
+      <td className="table-td text-right font-mono font-bold text-gray-800 dark:text-gray-200">{c.invoices}</td>
       <td className="table-td text-right" onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-end gap-1.5">
           <button
             onClick={() => onEdit(c)}
-            className="px-2.5 py-1.5 rounded-lg bg-gray-100 text-gray-600 font-bold text-[11px] hover:bg-gray-200 transition-colors"
+            className="px-2.5 py-1.5 rounded-lg bg-gray-100 dark:bg-dk-high text-gray-600 dark:text-gray-200 font-bold text-[11px] hover:bg-gray-200 dark:hover:bg-dk-line transition-colors"
           >
             Detajet
           </button>
           <button
             onClick={() => onEdit(c)}
-            className="p-1.5 rounded-lg bg-gray-100 text-gray-500 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+            className="p-1.5 rounded-lg bg-gray-100 dark:bg-dk-card text-gray-500 dark:text-gray-400 hover:bg-blue-50 dark:hover:bg-dk-high hover:text-blue-600 dark:hover:text-gray-100 transition-colors"
             title="Edito"
           >
             <Pencil size={13}/>
           </button>
           <button
             onClick={() => onDelete(c.id)}
-            className="p-1.5 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors"
+            className="p-1.5 rounded-lg bg-blue-50 dark:bg-[#93000a]/30 text-blue-600 dark:text-[#ffb4ab] hover:bg-blue-100 dark:hover:bg-[#93000a]/50 transition-colors"
             title="Fshi klientin"
           >
             <Trash2 size={13}/>
@@ -742,21 +742,21 @@ export default function Customers() {
 
       {/* Mini stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-5">
-        <div className="bg-white rounded-2xl border border-gray-200/90 shadow-sm px-4 py-4">
-          <span className="text-3xl font-black font-mono tracking-tight text-gray-900 block">{customers.length}</span>
-          <p className="text-xs text-gray-500 mt-1 font-bold">Klientë gjithsej</p>
+        <div className="bg-white dark:bg-dk-low dark:border-white/[0.07] dark:shadow-[0_2px_6px_rgba(0,0,0,0.35)] rounded-2xl border border-gray-200/90 shadow-sm px-4 py-4">
+          <span className="text-3xl font-black font-mono dark:font-sans dark:font-extrabold tracking-tight text-gray-900 dark:text-white block">{customers.length}</span>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-bold">Klientë gjithsej</p>
         </div>
-        <div className="bg-white rounded-2xl border border-gray-200/90 shadow-sm px-4 py-4">
-          <span className="text-3xl font-black font-mono tracking-tight text-blue-600 block">{totalIndividuals}</span>
-          <p className="text-xs text-gray-500 mt-1 font-bold">Individualë</p>
+        <div className="bg-white dark:bg-dk-low dark:border-white/[0.07] dark:shadow-[0_2px_6px_rgba(0,0,0,0.35)] rounded-2xl border border-gray-200/90 shadow-sm px-4 py-4">
+          <span className="text-3xl font-black font-mono dark:font-sans dark:font-extrabold tracking-tight text-blue-600 dark:text-accent-soft block">{totalIndividuals}</span>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-bold">Individualë</p>
         </div>
-        <div className="bg-white rounded-2xl border border-gray-200/90 shadow-sm px-4 py-4">
-          <span className="text-3xl font-black font-mono tracking-tight text-purple-600 block">{totalResellers}</span>
-          <p className="text-xs text-gray-500 mt-1 font-bold">Resellers</p>
+        <div className="bg-white dark:bg-dk-low dark:border-white/[0.07] dark:shadow-[0_2px_6px_rgba(0,0,0,0.35)] rounded-2xl border border-gray-200/90 shadow-sm px-4 py-4">
+          <span className="text-3xl font-black font-mono dark:font-sans dark:font-extrabold tracking-tight text-purple-600 dark:text-[#a5a6ff] block">{totalResellers}</span>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-bold">Resellers</p>
         </div>
-        <div className="bg-white rounded-2xl border border-gray-200/90 shadow-sm px-4 py-4">
-          <span className="text-3xl font-black font-mono tracking-tight text-emerald-600 block">{usedCountries.length}</span>
-          <p className="text-xs text-gray-500 mt-1 font-bold flex flex-wrap items-center gap-1">
+        <div className="bg-white dark:bg-dk-low dark:border-white/[0.07] dark:shadow-[0_2px_6px_rgba(0,0,0,0.35)] rounded-2xl border border-gray-200/90 shadow-sm px-4 py-4">
+          <span className="text-3xl font-black font-mono dark:font-sans dark:font-extrabold tracking-tight text-emerald-600 dark:text-[#4edea3] block">{usedCountries.length}</span>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-bold flex flex-wrap items-center gap-1">
             Shtete
             {topCountry && (
               <span className="font-normal">· {topCountry.co} ({topCountry.count})</span>
@@ -766,16 +766,16 @@ export default function Customers() {
       </div>
 
       {/* Filtrat */}
-      <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 bg-white p-3 rounded-2xl border border-gray-200/90 shadow-sm mb-5">
+      <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 bg-white dark:bg-dk-low dark:border-white/[0.07] dark:shadow-[0_2px_6px_rgba(0,0,0,0.35)] p-3 rounded-2xl border border-gray-200/90 shadow-sm mb-5">
         {/* Left: Select all + delete-selected + search */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 flex-1">
           {paginatedCustomers.length > 0 && (
-            <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-gray-700 flex-shrink-0 whitespace-nowrap">
+            <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-gray-700 dark:text-gray-300 flex-shrink-0 whitespace-nowrap">
               <input
                 type="checkbox"
                 checked={paginatedCustomers.length > 0 && paginatedCustomers.every(c => selected.has(c.id))}
                 onChange={toggleSelectAll}
-                className="w-4 h-4 rounded border-gray-300 text-blue-500 cursor-pointer"
+                className="cust-cb w-4 h-4 rounded border-gray-300 text-blue-500 cursor-pointer"
               />
               <span>{selected.size > 0 ? `${selected.size} zgjedhur` : 'Zgjidh faqen'}</span>
             </label>
@@ -784,7 +784,7 @@ export default function Customers() {
           {selected.size > 0 && (
             <button
               onClick={() => setShowDeleteConfirm({ type: 'multiple' })}
-              className="flex items-center justify-center gap-1.5 bg-blue-50 border border-blue-200 text-blue-600 hover:bg-blue-100 rounded-xl px-3 py-1.5 text-xs font-bold transition-colors flex-shrink-0"
+              className="flex items-center justify-center gap-1.5 bg-blue-50 dark:bg-[#93000a]/30 border border-blue-200 dark:border-transparent text-blue-600 dark:text-[#ffb4ab] hover:bg-blue-100 dark:hover:bg-[#93000a]/50 rounded-xl px-3 py-1.5 text-xs font-bold transition-colors flex-shrink-0"
             >
               <Trash2 size={14}/>
               Fshi {selected.size}
@@ -792,15 +792,15 @@ export default function Customers() {
           )}
 
           <div className="relative flex-1">
-            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
             <input
-              className="w-full pl-8 pr-8 py-1.5 text-xs rounded-xl border border-gray-200 bg-gray-50 text-gray-900 placeholder-gray-400 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-50"
+              className="w-full pl-8 pr-8 py-1.5 text-xs rounded-xl border border-gray-200 dark:border-transparent bg-gray-50 dark:bg-dk-card text-gray-900 dark:text-gray-100 placeholder-gray-400 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-50 dark:focus:ring-accent/30"
               placeholder="Kërko emër, telefon..."
               value={search}
               onChange={e => setSearch(e.target.value)}
             />
             {search && (
-              <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+              <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
                 <X size={13} />
               </button>
             )}
@@ -810,7 +810,7 @@ export default function Customers() {
         {/* Right: filters + sort + count */}
         <div className="flex flex-wrap items-center gap-2">
           <select
-            className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 font-semibold outline-none focus:border-blue-400 cursor-pointer"
+            className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 dark:border-transparent bg-gray-50 dark:bg-dk-card text-gray-700 dark:text-gray-300 font-semibold outline-none focus:border-blue-400 cursor-pointer"
             value={typeFilt} onChange={e => setTypeFilt(e.target.value)}
           >
             <option value="all">Të gjitha llojet</option>
@@ -819,7 +819,7 @@ export default function Customers() {
           </select>
 
           <select
-            className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 font-semibold outline-none focus:border-blue-400 cursor-pointer"
+            className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 dark:border-transparent bg-gray-50 dark:bg-dk-card text-gray-700 dark:text-gray-300 font-semibold outline-none focus:border-blue-400 cursor-pointer"
             value={countryFilt} onChange={e => setCountryFilt(e.target.value)}
           >
             <option value="all">Të gjitha shtetet</option>
@@ -827,14 +827,15 @@ export default function Customers() {
           </select>
 
           <select
-            className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 font-semibold outline-none focus:border-blue-400 cursor-pointer"
+            className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 dark:border-transparent bg-gray-50 dark:bg-dk-card text-gray-700 dark:text-gray-300 font-semibold outline-none focus:border-blue-400 cursor-pointer"
             value={sortBy} onChange={e => setSortBy(e.target.value)}
           >
             <option value="default">Renditja — Parazgjedhur</option>
             <option value="alphabetic">A — Z (Alfabetik)</option>
           </select>
 
-          <span className="text-xs font-bold text-gray-400 font-mono px-2">
+          <span className="text-xs font-bold text-gray-400 dark:text-gray-200 font-mono px-2 dark:bg-dk-card dark:rounded-lg dark:py-1.5 dark:px-3">
+            <span className="hidden dark:inline text-[11px] font-normal font-sans text-[#8b8e99] mr-1.5">Gjithsej:</span>
             {filtered.length}
           </span>
         </div>
@@ -855,11 +856,11 @@ export default function Customers() {
       ) : (
         <>
           {/* Desktop: table */}
-          <div className="hidden sm:block bg-white rounded-2xl border border-gray-200/90 shadow-sm overflow-hidden mb-6">
+          <div className="hidden sm:block bg-white dark:bg-dk-low dark:border-white/[0.07] dark:shadow-[0_2px_6px_rgba(0,0,0,0.35)] rounded-2xl border border-gray-200/90 shadow-sm overflow-hidden mb-6">
             <div className="overflow-x-auto">
-              <table className="w-full text-left" style={{ minWidth: 760 }}>
+              <table className="cust-tbl w-full text-left" style={{ minWidth: 760 }}>
                 <thead className="sticky top-0 z-10">
-                  <tr className="border-b border-gray-200 bg-gray-50">
+                  <tr className="border-b border-gray-200 dark:border-transparent bg-gray-50 dark:bg-dk-side/70">
                     <th className="table-th w-10"></th>
                     <th className="table-th">Klienti</th>
                     <th className="table-th">Kontaktet</th>
@@ -910,7 +911,7 @@ export default function Customers() {
               <button
                 onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                 disabled={currentPage === 1}
-                className="px-3 py-2 rounded-lg border border-gray-200 text-sm font-medium text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+                className="px-3 py-2 rounded-lg border border-gray-200 text-sm font-medium text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:border-white/10 dark:text-gray-300 dark:hover:bg-dk-card"
               >
                 ← Mbrapa
               </button>
@@ -932,8 +933,8 @@ export default function Customers() {
                       onClick={() => setCurrentPage(pageNum)}
                       className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                         currentPage === pageNum
-                          ? 'bg-blue-500 text-white'
-                          : 'border border-gray-200 text-gray-600 hover:bg-gray-50'
+                          ? 'bg-blue-500 dark:bg-accent dark:text-accent-on text-white dark:shadow-lg dark:shadow-accent/30'
+                          : 'border border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-white/10 dark:text-gray-300 dark:hover:bg-dk-card'
                       }`}
                     >
                       {pageNum}
@@ -944,11 +945,11 @@ export default function Customers() {
               <button
                 onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                 disabled={currentPage === totalPages}
-                className="px-3 py-2 rounded-lg border border-gray-200 text-sm font-medium text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+                className="px-3 py-2 rounded-lg border border-gray-200 text-sm font-medium text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:border-white/10 dark:text-gray-300 dark:hover:bg-dk-card"
               >
                 Përpara →
               </button>
-              <span className="text-xs text-gray-400 ml-2">
+              <span className="text-xs text-gray-400 dark:text-gray-500 ml-2">
                 Faqja {currentPage} nga {totalPages}
               </span>
             </div>
