@@ -18,14 +18,14 @@ const ImportExcelModal = lazy(() => import('../components/ImportExcelModal'))
 
 /* ── method badge colour ── */
 const METHOD_COLOR = {
-  'PayPal':          'bg-blue-50 text-blue-500',
-  'Transfer Bankar': 'bg-slate-50 text-slate-600',
-  'Kesh':            'bg-green-50 text-green-700',
-  'Western Union':   'bg-yellow-50 text-yellow-700',
-  'Ria':             'bg-purple-50 text-purple-600',
-  'Money Gram':      'bg-pink-50 text-pink-600',
-  'Crypto':          'bg-orange-50 text-orange-600',
-  'Stripe':          'bg-indigo-50 text-indigo-600',
+  'PayPal':          'bg-blue-50 dark:bg-sky-900/40 text-blue-500 dark:text-sky-400',
+  'Transfer Bankar': 'bg-slate-50 dark:bg-dk-high text-slate-600 dark:text-gray-300 dark:border dark:border-white/[0.07]',
+  'Kesh':            'bg-green-50 dark:bg-green-900/40 text-green-700 dark:text-green-400',
+  'Western Union':   'bg-yellow-50 dark:bg-amber-950/40 text-yellow-700 dark:text-amber-400 dark:border dark:border-amber-800/40',
+  'Ria':             'bg-purple-50 dark:bg-purple-950/50 text-purple-600 dark:text-purple-300 dark:border dark:border-purple-800/40',
+  'Money Gram':      'bg-pink-50 dark:bg-pink-900/40 text-pink-600 dark:text-pink-400',
+  'Crypto':          'bg-orange-50 dark:bg-orange-900/40 text-orange-600 dark:text-orange-400',
+  'Stripe':          'bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400',
 }
 const METHOD_ICON = {
   'PayPal': '🅿️', 'Transfer Bankar': '🏦', 'Kesh': '💵',
@@ -260,8 +260,8 @@ function MethodFilterDropdown({ methods, selected, onChange }) {
         onClick={() => setOpen(o => !o)}
         className={`text-xs px-2.5 py-1.5 rounded-xl border font-semibold outline-none cursor-pointer flex items-center gap-1.5 transition-colors ${
           selected.length > 0
-            ? 'border-blue-300 bg-blue-50 text-blue-700'
-            : 'border-gray-200 bg-gray-50 text-gray-700 hover:border-blue-400'
+            ? 'border-blue-300 dark:border-accent/40 bg-blue-50 dark:bg-accent/10 text-blue-700 dark:text-accent-soft'
+            : 'border-gray-200 dark:border-transparent bg-gray-50 dark:bg-dk-card text-gray-700 dark:text-gray-300 hover:border-blue-400'
         }`}
       >
         {label}
@@ -269,12 +269,12 @@ function MethodFilterDropdown({ methods, selected, onChange }) {
       </button>
 
       {open && (
-        <div className="absolute z-50 mt-1 min-w-[180px] bg-white border border-gray-200 rounded-xl shadow-lg max-h-64 overflow-y-auto">
+        <div className="absolute z-50 mt-1 min-w-[180px] bg-white dark:bg-dk-high border border-gray-200 dark:border-white/10 rounded-xl shadow-lg max-h-64 overflow-y-auto">
           {selected.length > 0 && (
             <button
               type="button"
               onClick={() => onChange([])}
-              className="w-full text-left px-3 py-2 text-xs font-semibold text-blue-500 hover:bg-blue-50 border-b border-gray-100"
+              className="w-full text-left px-3 py-2 text-xs font-semibold text-blue-500 hover:bg-blue-50 dark:hover:bg-dk-card border-b border-gray-100 dark:border-white/10"
             >
               Pastro filtrin
             </button>
@@ -282,10 +282,10 @@ function MethodFilterDropdown({ methods, selected, onChange }) {
           {methods.map(m => (
             <label
               key={m}
-              className="flex items-center gap-2 px-3 py-2 text-xs text-gray-700 hover:bg-gray-50 cursor-pointer select-none"
+              className="flex items-center gap-2 px-3 py-2 text-xs text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-dk-card cursor-pointer select-none"
             >
               <span className={`w-4 h-4 rounded border flex items-center justify-center flex-shrink-0 ${
-                selected.includes(m) ? 'bg-blue-500 border-blue-500' : 'border-gray-300'
+                selected.includes(m) ? 'bg-blue-500 border-blue-500' : 'border-gray-300 dark:border-gray-600'
               }`}>
                 {selected.includes(m) && <Check size={11} className="text-white" />}
               </span>
@@ -526,7 +526,7 @@ export default function Payments() {
       {selected.size > 0 && (
         <div className="flex justify-end mb-3">
           <button
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors text-xs font-bold"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-50 dark:bg-[#93000a]/30 text-blue-600 dark:text-[#ffb4ab] hover:bg-blue-100 dark:hover:bg-[#93000a]/50 transition-colors text-xs font-bold"
             onClick={() => setConfirmDelAll(true)}
           >
             <Trash2 size={14}/> Fshi {selected.size}
@@ -537,30 +537,30 @@ export default function Payments() {
       {/* Stats strip */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
         {[
-          { label: 'Bruto',  value: fmt(totalGross), color: 'text-gray-800',    border: 'border-l-blue-400' },
-          { label: 'Fee',    value: fmt(totalFee),   color: 'text-amber-600',   border: 'border-l-amber-400' },
-          { label: 'Neto',   value: fmt(totalNet),   color: 'text-emerald-600', border: 'border-l-emerald-400' },
-          { label: 'Enndy / Belti', value: `${fmt(enndiNet)} / ${fmt(beltiNet)}`, color: 'text-purple-600', border: 'border-l-purple-400' },
+          { label: 'Bruto',  value: fmt(totalGross), color: 'text-gray-800 dark:text-gray-100',    border: 'border-l-blue-400' },
+          { label: 'Fee',    value: fmt(totalFee),   color: 'text-amber-600 dark:text-amber-400',   border: 'border-l-amber-400' },
+          { label: 'Neto',   value: fmt(totalNet),   color: 'text-emerald-600 dark:text-[#4edea3]', border: 'border-l-emerald-400' },
+          { label: 'Enndy / Belti', value: `${fmt(enndiNet)} / ${fmt(beltiNet)}`, color: 'text-purple-600 dark:text-[#a5a6ff]', border: 'border-l-purple-400' },
         ].map(s => (
-          <div key={s.label} className={`bg-white rounded-2xl border border-gray-200/90 shadow-sm border-l-4 ${s.border} px-4 py-3`}>
-            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{s.label}</p>
+          <div key={s.label} className={`bg-white dark:bg-dk-low dark:border-white/[0.07] dark:shadow-[0_2px_6px_rgba(0,0,0,0.35)] rounded-2xl border border-gray-200/90 shadow-sm border-l-4 ${s.border} px-4 py-3`}>
+            <p className="text-[10px] font-bold text-gray-400 dark:text-[#8b8e99] uppercase tracking-widest">{s.label}</p>
             <p className={`text-sm font-bold mt-0.5 ${s.color}`}>{s.value}</p>
           </div>
         ))}
       </div>
 
       {/* Filtrat */}
-      <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 bg-white p-3 rounded-2xl border border-gray-200/90 shadow-sm mb-5">
+      <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 bg-white dark:bg-dk-low dark:border-white/[0.07] dark:shadow-[0_2px_6px_rgba(0,0,0,0.35)] p-3 rounded-2xl border border-gray-200/90 shadow-sm mb-5">
         <div className="relative flex-1 min-w-[160px]">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
           <input
-            className="w-full pl-8 pr-8 py-1.5 text-xs rounded-xl border border-gray-200 bg-gray-50 text-gray-900 placeholder-gray-400 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-50"
+            className="w-full pl-8 pr-8 py-1.5 text-xs rounded-xl border border-gray-200 dark:border-transparent bg-gray-50 dark:bg-dk-card text-gray-900 dark:text-gray-100 placeholder-gray-400 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-50 dark:focus:ring-accent/30"
             placeholder="Kërko klient, faturë..."
             value={search}
             onChange={e => { setSearch(e.target.value); setPg(1) }}
           />
           {search && (
-            <button onClick={() => { setSearch(''); setPg(1) }} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+            <button onClick={() => { setSearch(''); setPg(1) }} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
               <X size={13} />
             </button>
           )}
@@ -568,7 +568,7 @@ export default function Payments() {
 
         <div className="flex flex-wrap items-center gap-2">
           <select
-            className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 font-semibold outline-none focus:border-blue-400 cursor-pointer"
+            className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 dark:border-transparent bg-gray-50 dark:bg-dk-card text-gray-700 dark:text-gray-300 font-semibold outline-none focus:border-blue-400 cursor-pointer"
             value={monthFilt}
             onChange={e => { setMonthFilt(e.target.value); setPg(1) }}
           >
@@ -577,7 +577,7 @@ export default function Payments() {
           </select>
 
           <select
-            className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 font-semibold outline-none focus:border-blue-400 cursor-pointer"
+            className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 dark:border-transparent bg-gray-50 dark:bg-dk-card text-gray-700 dark:text-gray-300 font-semibold outline-none focus:border-blue-400 cursor-pointer"
             value={partnerFilt}
             onChange={e => { setPartner(e.target.value); setPg(1) }}
           >
@@ -593,7 +593,7 @@ export default function Payments() {
           />
 
           <select
-            className="hidden sm:block text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 font-semibold outline-none focus:border-blue-400 cursor-pointer"
+            className="hidden sm:block text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 dark:border-transparent bg-gray-50 dark:bg-dk-card text-gray-700 dark:text-gray-300 font-semibold outline-none focus:border-blue-400 cursor-pointer"
             value={perPage}
             onChange={e => { setPerPage(Number(e.target.value)); setPg(1) }}
           >
@@ -604,7 +604,7 @@ export default function Payments() {
             <option value={300}>300 / faqe</option>
           </select>
 
-          <span className="text-xs font-bold text-gray-400 font-mono px-2">
+          <span className="text-xs font-bold text-gray-400 font-mono px-2 dark:bg-dk-card dark:rounded-lg dark:py-1.5 dark:px-2.5">
             {filtered.length}
           </span>
         </div>
@@ -614,23 +614,23 @@ export default function Payments() {
       {paged.length > 0 && (
         <div className="sm:hidden space-y-2 mb-4">
           {paged.map(p => (
-            <div key={p.id} className="bg-white rounded-2xl border border-gray-200 shadow-sm p-3">
+            <div key={p.id} className="bg-white dark:bg-dk-low rounded-2xl border border-gray-200 dark:border-white/[0.07] shadow-sm p-3">
               <div className="flex justify-between items-start gap-2">
                 {/* Col 1: Customer + Payment Date + Invoice */}
                 <div className="flex-1 min-w-0 cursor-pointer" onClick={() => openEditPayment(p)}>
-                  <p className="font-bold text-gray-900 text-sm truncate hover:text-blue-500 transition-colors">{p.customer}</p>
-                  <p className="text-xs text-gray-500 mt-0.5 font-mono">{formatDate(p.date)}</p>
-                  <p className="text-xs font-mono font-semibold text-blue-600">{p.invoiceId}</p>
+                  <p className="font-bold text-gray-900 dark:text-gray-100 text-sm truncate hover:text-blue-500 transition-colors">{p.customer}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 font-mono">{formatDate(p.date)}</p>
+                  <p className="text-xs font-mono font-semibold text-blue-600 dark:text-accent-soft">{p.invoiceId}</p>
                 </div>
 
                 {/* Col 2: Amount + Fee + Partner */}
                 <div className="text-right">
-                  <p className="font-mono font-bold text-gray-900 text-sm">{fmt(p.amount)}</p>
+                  <p className="font-mono font-bold text-gray-900 dark:text-gray-100 text-sm">{fmt(p.amount)}</p>
                   <p className="text-xs font-mono text-amber-600 mt-0.5">{p.fee > 0 ? `- ${fmt(p.fee)}` : '—'}</p>
                   <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold mt-0.5 ${
                     p.depositedTo === 'Enndy'
-                      ? 'bg-blue-50 text-blue-600'
-                      : 'bg-purple-100 text-purple-600'
+                      ? 'bg-blue-50 dark:bg-accent/10 text-blue-600 dark:text-accent-soft'
+                      : 'bg-purple-100 dark:bg-[#8083ff]/15 text-purple-600 dark:text-[#c0c1ff]'
                   }`}>
                     {p.depositedTo}
                   </span>
@@ -639,14 +639,14 @@ export default function Payments() {
                 {/* Col 3: Actions - Larger Button */}
                 <div className="relative flex-shrink-0 flex gap-1">
                   <button
-                    className="w-9 h-9 flex items-center justify-center rounded-xl bg-gray-100 text-gray-500 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                    className="w-9 h-9 flex items-center justify-center rounded-xl bg-gray-100 dark:bg-dk-high text-gray-500 dark:text-gray-400 hover:bg-blue-50 dark:hover:bg-dk-line hover:text-blue-600 dark:hover:text-gray-100 transition-colors"
                     title="Ndrysho"
                     onClick={() => openEditPayment(p)}
                   >
                     <Pencil size={16}/>
                   </button>
                   <button
-                    className="w-9 h-9 flex items-center justify-center rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors"
+                    className="w-9 h-9 flex items-center justify-center rounded-xl bg-blue-50 dark:bg-dk-high text-blue-600 dark:text-gray-400 hover:bg-blue-100 dark:hover:bg-[#93000a] dark:hover:text-[#ffdad6] transition-colors"
                     title="Fshij"
                     onClick={() => setDeletingId(p.id)}
                   >
@@ -699,11 +699,11 @@ export default function Payments() {
           }
         />
       ) : (
-        <div className="bg-white rounded-2xl border border-gray-200/90 shadow-sm overflow-hidden hidden sm:block">
+        <div className="bg-white dark:bg-dk-low dark:border-white/[0.07] dark:shadow-[0_2px_6px_rgba(0,0,0,0.35)] rounded-2xl border border-gray-200/90 shadow-sm overflow-hidden hidden sm:block">
           <div className="overflow-auto" style={{ maxHeight: 'calc(100vh - 320px)' }}>
-          <table className="w-full text-sm min-w-[560px]">
+          <table className="cust-tbl w-full text-sm min-w-[560px]">
             <thead className="sticky top-0 z-10">
-              <tr className="border-b border-gray-200 bg-gray-50">
+              <tr className="border-b border-gray-200 dark:border-transparent bg-gray-50 dark:bg-dk-side/70">
                 <th className="table-th w-8 text-center hidden sm:table-cell">
                   <input
                     type="checkbox"
@@ -718,7 +718,7 @@ export default function Payments() {
                   { key: 'invoiceId',   label: 'Fatura',  cls: '' },
                   { key: 'customer',    label: 'Klienti', cls: '' },
                 ].map(col => (
-                  <th key={col.key} className={`table-th cursor-pointer select-none hover:text-gray-700 ${col.cls}`}
+                  <th key={col.key} className={`table-th cursor-pointer select-none hover:text-gray-700 dark:hover:text-gray-200 ${col.cls}`}
                       onClick={() => toggleSort(col.key)}>
                     <span className="flex items-center gap-1">
                       {col.label}
@@ -726,7 +726,7 @@ export default function Payments() {
                     </span>
                   </th>
                 ))}
-                <th className="table-th text-right cursor-pointer select-none hover:text-gray-700"
+                <th className="table-th text-right cursor-pointer select-none hover:text-gray-700 dark:hover:text-gray-200"
                     onClick={() => toggleSort('amount')}>
                   <span className="flex items-center justify-end gap-1">
                     Shuma
@@ -734,14 +734,14 @@ export default function Payments() {
                   </span>
                 </th>
                 <th className="table-th text-right hidden md:table-cell">Fee</th>
-                <th className="table-th text-right cursor-pointer select-none hover:text-gray-700"
+                <th className="table-th text-right cursor-pointer select-none hover:text-gray-700 dark:hover:text-gray-200"
                     onClick={() => toggleSort('net')}>
                   <span className="flex items-center justify-end gap-1">
                     Neto
                     <span className="text-[10px]">{sortField === 'net' ? (sortDir === 'asc' ? '↑' : '↓') : <span className="text-gray-300">↕</span>}</span>
                   </span>
                 </th>
-                <th className="table-th hidden lg:table-cell cursor-pointer select-none hover:text-gray-700"
+                <th className="table-th hidden lg:table-cell cursor-pointer select-none hover:text-gray-700 dark:hover:text-gray-200"
                     onClick={() => toggleSort('method')}>
                   <span className="flex items-center gap-1">
                     Metoda
@@ -749,7 +749,7 @@ export default function Payments() {
                   </span>
                 </th>
                 <th className="table-th hidden md:table-cell">Referenca</th>
-                <th className="table-th cursor-pointer select-none hover:text-gray-700"
+                <th className="table-th cursor-pointer select-none hover:text-gray-700 dark:hover:text-gray-200"
                     onClick={() => toggleSort('depositedTo')}>
                   <span className="flex items-center gap-1">
                     Partneri
@@ -761,7 +761,7 @@ export default function Payments() {
             </thead>
             <tbody>
               {paged.map(p => (
-                <tr key={p.id} className={`hover:bg-gray-50 transition-colors group ${selected.has(p.id) ? 'bg-blue-50' : ''}`}>
+                <tr key={p.id} className={`hover:bg-gray-50 dark:hover:bg-dk-card/60 transition-colors group ${selected.has(p.id) ? 'bg-blue-50 dark:bg-accent/10' : ''}`}>
                   <td className="table-td w-8 text-center hidden sm:table-cell" onClick={e => e.stopPropagation()}>
                     <input
                       type="checkbox"
@@ -771,26 +771,26 @@ export default function Payments() {
                     />
                   </td>
                   <td className="table-td font-mono text-xs">{formatDate(p.date)}</td>
-                  <td className="table-td font-mono font-bold text-blue-600 text-xs">{p.invoiceId}</td>
-                  <td className="table-td font-bold text-gray-900 text-xs max-w-[140px] truncate">{p.customer}</td>
-                  <td className="table-td text-right font-mono font-bold text-gray-900">{fmt(p.amount)}</td>
-                  <td className="table-td text-right font-mono text-amber-600 text-xs hidden md:table-cell">
-                    {p.fee > 0 ? `- ${fmt(p.fee)}` : <span className="text-gray-300">—</span>}
+                  <td className="table-td font-mono font-bold text-blue-600 dark:text-accent-soft text-xs">{p.invoiceId}</td>
+                  <td className="table-td font-bold text-gray-900 dark:text-white text-xs max-w-[140px] truncate">{p.customer}</td>
+                  <td className="table-td text-right font-mono font-bold text-gray-900 dark:text-white">{fmt(p.amount)}</td>
+                  <td className="table-td text-right font-mono text-amber-600 dark:text-amber-400 text-xs hidden md:table-cell">
+                    {p.fee > 0 ? `- ${fmt(p.fee)}` : <span className="text-gray-300 dark:text-gray-600">—</span>}
                   </td>
-                  <td className="table-td text-right font-mono font-bold text-emerald-600">{fmt(p.net)}</td>
+                  <td className="table-td text-right font-mono font-bold text-emerald-600 dark:text-[#4edea3]">{fmt(p.net)}</td>
                   <td className="table-td hidden lg:table-cell">
-                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[11px] font-bold ${METHOD_COLOR[p.method] || 'bg-gray-50 text-gray-600'}`}>
+                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[11px] font-bold ${METHOD_COLOR[p.method] || 'bg-gray-50 dark:bg-dk-high text-gray-600 dark:text-gray-300'}`}>
                       {METHOD_ICON[p.method] || '💳'} {p.method}
                     </span>
                   </td>
                   <td className="table-td text-xs hidden md:table-cell">
-                    {p.reference || <span className="text-gray-300">—</span>}
+                    {p.reference || <span className="text-gray-300 dark:text-gray-600">—</span>}
                   </td>
                   <td className="table-td">
                     <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
                       p.depositedTo === 'Enndy'
-                        ? 'bg-blue-50 text-blue-600'
-                        : 'bg-purple-100 text-purple-600'
+                        ? 'bg-blue-50 dark:bg-accent/10 text-blue-600 dark:text-accent-soft dark:border dark:border-accent/20'
+                        : 'bg-purple-100 dark:bg-[#8083ff]/15 text-purple-600 dark:text-[#c0c1ff] dark:border dark:border-[#8083ff]/25'
                     }`}>
                       {p.depositedTo}
                     </span>
@@ -800,7 +800,7 @@ export default function Payments() {
                   <td className="table-td text-right">
                     {deletingId === p.id ? (
                       <div className="flex items-center justify-end gap-1.5">
-                        <span className="text-xs text-blue-600 font-semibold whitespace-nowrap">Fshij?</span>
+                        <span className="text-xs text-blue-600 dark:text-[#ffb4ab] font-semibold whitespace-nowrap">Fshij?</span>
                         <button
                           className="px-2 py-0.5 bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold rounded-lg transition-colors"
                           onClick={() => deletePayment(p)}
@@ -808,7 +808,7 @@ export default function Payments() {
                           Po
                         </button>
                         <button
-                          className="px-2 py-0.5 border border-gray-200 text-gray-600 text-xs font-bold rounded-lg hover:bg-gray-50 transition-colors"
+                          className="px-2 py-0.5 border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 text-xs font-bold rounded-lg hover:bg-gray-50 dark:hover:bg-dk-card transition-colors"
                           onClick={() => setDeletingId(null)}
                         >
                           Jo
@@ -817,14 +817,14 @@ export default function Payments() {
                     ) : (
                       <div className="flex items-center justify-end gap-1.5">
                         <button
-                          className="p-1.5 rounded-lg bg-gray-100 text-gray-500 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                          className="p-1.5 rounded-lg bg-gray-100 dark:bg-dk-high text-gray-500 dark:text-gray-400 hover:bg-blue-50 dark:hover:bg-dk-line hover:text-blue-600 dark:hover:text-gray-100 transition-colors"
                           title="Ndrysho pagesën"
                           onClick={() => openEditPayment(p)}
                         >
                           <Pencil size={14} />
                         </button>
                         <button
-                          className="p-1.5 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors"
+                          className="p-1.5 rounded-lg bg-blue-50 dark:bg-dk-high text-blue-600 dark:text-gray-400 hover:bg-blue-100 dark:hover:bg-[#93000a] dark:hover:text-[#ffdad6] transition-colors"
                           title="Fshij pagesën"
                           onClick={() => setDeletingId(p.id)}
                         >
@@ -841,10 +841,10 @@ export default function Payments() {
 
           {/* Totals row - hidden on mobile */}
           {filtered.length > 0 && (
-            <div className="hidden sm:flex items-center justify-end gap-6 px-5 py-2.5 border-t border-gray-100 bg-gray-50/50 text-xs font-bold text-gray-400">
-              <span>Bruto: <span className="font-mono text-gray-900">{fmt(totalGross)}</span></span>
-              <span>Fee: <span className="font-mono text-amber-600">- {fmt(totalFee)}</span></span>
-              <span>Neto: <span className="font-mono text-emerald-600 text-sm">{fmt(totalNet)}</span></span>
+            <div className="hidden sm:flex items-center justify-end gap-6 px-5 py-2.5 border-t border-gray-100 dark:border-transparent bg-gray-50/50 dark:bg-dk-side/70 text-xs font-bold text-gray-400 dark:text-[#8b8e99]">
+              <span>Bruto: <span className="font-mono text-gray-900 dark:text-white">{fmt(totalGross)}</span></span>
+              <span>Fee: <span className="font-mono text-amber-600 dark:text-amber-400">- {fmt(totalFee)}</span></span>
+              <span>Neto: <span className="font-mono text-emerald-600 dark:text-[#4edea3] text-sm">{fmt(totalNet)}</span></span>
             </div>
           )}
 
@@ -856,25 +856,25 @@ export default function Payments() {
 
       {/* Profit split box (kur filtrohet muaj) */}
       {monthFilt !== 'all' && filtered.length > 0 && (
-        <div className="mt-4 bg-white rounded-2xl border border-gray-200/90 shadow-sm p-5">
-          <h3 className="text-sm font-bold text-gray-800 mb-4 flex items-center gap-2">
+        <div className="mt-4 bg-white dark:bg-dk-low dark:border-white/[0.07] dark:shadow-[0_2px_6px_rgba(0,0,0,0.35)] rounded-2xl border border-gray-200/90 shadow-sm p-5">
+          <h3 className="text-sm font-bold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
             <Users size={15} className="text-blue-500" />
             Ndarja e Fitimit — {monthFilt}
           </h3>
           <div className="grid grid-cols-3 gap-4 text-center">
-            <div className="bg-emerald-50 rounded-2xl py-4">
-              <p className="text-xs text-gray-400 mb-1">Neto Totale</p>
-              <p className="text-lg font-black font-mono text-emerald-600">{fmt(totalNet)}</p>
+            <div className="bg-emerald-50 dark:bg-emerald-900/20 rounded-2xl py-4">
+              <p className="text-xs text-gray-400 dark:text-gray-500 mb-1">Neto Totale</p>
+              <p className="text-lg font-black font-mono text-emerald-600 dark:text-[#4edea3]">{fmt(totalNet)}</p>
             </div>
-            <div className="bg-blue-50 rounded-2xl py-4">
-              <p className="text-xs text-gray-400 mb-1">👤 Enndy</p>
-              <p className="text-lg font-black font-mono text-blue-600">{fmt(enndiNet)}</p>
-              <p className="text-xs text-gray-400 mt-1">Pritshme 50%: {fmt(totalNet / 2)}</p>
+            <div className="bg-blue-50 dark:bg-accent/10 rounded-2xl py-4">
+              <p className="text-xs text-gray-400 dark:text-gray-500 mb-1">👤 Enndy</p>
+              <p className="text-lg font-black font-mono text-blue-600 dark:text-accent-soft">{fmt(enndiNet)}</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Pritshme 50%: {fmt(totalNet / 2)}</p>
             </div>
-            <div className="bg-purple-50 rounded-2xl py-4">
-              <p className="text-xs text-gray-400 mb-1">👤 Belti</p>
-              <p className="text-lg font-black font-mono text-purple-600">{fmt(beltiNet)}</p>
-              <p className="text-xs text-gray-400 mt-1">Pritshme 50%: {fmt(totalNet / 2)}</p>
+            <div className="bg-purple-50 dark:bg-purple-900/20 rounded-2xl py-4">
+              <p className="text-xs text-gray-400 dark:text-gray-500 mb-1">👤 Belti</p>
+              <p className="text-lg font-black font-mono text-purple-600 dark:text-[#c0c1ff]">{fmt(beltiNet)}</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Pritshme 50%: {fmt(totalNet / 2)}</p>
             </div>
           </div>
           {Math.abs(enndiNet - beltiNet) > 0.01 && (

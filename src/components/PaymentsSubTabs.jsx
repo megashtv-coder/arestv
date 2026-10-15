@@ -18,18 +18,18 @@ export default function PaymentsSubTabs() {
   const { page, navigate } = useApp()
 
   return (
-    <div className="flex gap-1 bg-gray-200/60 dark:bg-gray-800/80 rounded-2xl p-1 overflow-x-auto">
+    <div className="flex gap-1 bg-gray-200/60 dark:bg-dk-low dark:border dark:border-white/[0.07] rounded-2xl dark:rounded-xl p-1 overflow-x-auto w-fit max-w-full">
       {TABS.map(({ id, label, icon: Icon }) => (
         <button
           key={id}
           onClick={() => navigate(id)}
           className={`flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
             page === id
-              ? 'bg-white dark:bg-gray-900 text-gray-900 dark:text-white shadow-sm'
-              : 'text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
+              ? 'bg-white dark:bg-dk-high text-gray-900 dark:text-white shadow-sm dark:border dark:border-white/[0.07]'
+              : 'text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 dark:hover:bg-dk-card'
           }`}
         >
-          <Icon size={14} className={page === id ? 'text-blue-500' : 'text-gray-400'} />
+          <Icon size={14} className={page === id ? 'text-blue-500 dark:text-accent' : 'text-gray-400 dark:text-gray-500'} />
           <span className="hidden sm:inline">{label}</span>
         </button>
       ))}
