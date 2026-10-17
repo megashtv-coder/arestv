@@ -336,7 +336,7 @@ export default function AIChat() {
         <div className="lg:col-span-3 flex flex-col h-[620px] bg-white dark:bg-gray-800 rounded-2xl border border-gray-200/90 dark:border-gray-700 shadow-sm overflow-hidden">
           <div className="px-5 py-3.5 border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-dk-side flex items-center justify-between">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-blue-500 text-white flex items-center justify-center">
+              <div className="w-8 h-8 rounded-xl bg-blue-500 dark:bg-accent text-white dark:text-accent-on flex items-center justify-center">
                 <Bot size={16} />
               </div>
               <div>
@@ -367,7 +367,7 @@ export default function AIChat() {
 
             {loading && (
               <div className="flex items-center gap-2.5">
-                <div className="w-7 h-7 rounded-xl bg-blue-500 text-white flex items-center justify-center shrink-0 text-[10px] font-bold">AI</div>
+                <div className="w-7 h-7 rounded-xl bg-blue-500 dark:bg-accent text-white dark:text-accent-on flex items-center justify-center shrink-0 text-[10px] font-bold">AI</div>
                 <div className="flex items-center gap-2 bg-gray-100 dark:bg-gray-700 px-3 py-2 rounded-xl text-gray-500 dark:text-gray-400 text-xs">
                   <Loader size={14} className="animate-spin" />
                   Po përpunon komandën...
@@ -421,7 +421,7 @@ function ChatMessage({ message, onFollowUp, onAccept }) {
     case 'user':
       return (
         <div className="flex gap-2.5 justify-end">
-          <div className="max-w-[74%] px-3.5 py-2.5 rounded-2xl rounded-tr-sm text-xs bg-blue-500 text-white font-medium">
+          <div className="max-w-[74%] px-3.5 py-2.5 rounded-2xl rounded-tr-sm text-xs bg-blue-500 dark:bg-accent text-white dark:text-accent-on font-medium">
             {message.content}
           </div>
           <div className="w-7 h-7 rounded-xl bg-gray-800 text-white flex items-center justify-center shrink-0 mt-0.5">
@@ -433,7 +433,7 @@ function ChatMessage({ message, onFollowUp, onAccept }) {
     case 'system':
       return (
         <div className="flex gap-2.5">
-          <div className="w-7 h-7 rounded-xl bg-blue-500 text-white flex items-center justify-center shrink-0 mt-0.5 text-[10px] font-bold">AI</div>
+          <div className="w-7 h-7 rounded-xl bg-blue-500 dark:bg-accent text-white dark:text-accent-on flex items-center justify-center shrink-0 mt-0.5 text-[10px] font-bold">AI</div>
           <div className="max-w-[74%] px-3.5 py-2.5 rounded-2xl rounded-tl-sm text-xs bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200">
             {message.content}
             {message.examples && (
@@ -451,7 +451,7 @@ function ChatMessage({ message, onFollowUp, onAccept }) {
     case 'question':
       return (
         <div className="flex gap-2.5">
-          <div className="w-7 h-7 rounded-xl bg-blue-500 text-white flex items-center justify-center shrink-0 mt-0.5 text-[10px] font-bold">AI</div>
+          <div className="w-7 h-7 rounded-xl bg-blue-500 dark:bg-accent text-white dark:text-accent-on flex items-center justify-center shrink-0 mt-0.5 text-[10px] font-bold">AI</div>
           <div className="max-w-[74%] px-3.5 py-2.5 rounded-2xl rounded-tl-sm bg-sky-50 dark:bg-sky-900/20 border border-sky-200 dark:border-sky-900/50">
             <div className="flex items-start gap-2">
               <HelpCircle size={16} className="text-sky-600 dark:text-sky-400 flex-shrink-0 mt-0.5" />
@@ -477,7 +477,7 @@ function ChatMessage({ message, onFollowUp, onAccept }) {
     case 'error':
       return (
         <div className="flex gap-2.5">
-          <div className="w-7 h-7 rounded-xl bg-blue-500 text-white flex items-center justify-center shrink-0 mt-0.5 text-[10px] font-bold">AI</div>
+          <div className="w-7 h-7 rounded-xl bg-blue-500 dark:bg-accent text-white dark:text-accent-on flex items-center justify-center shrink-0 mt-0.5 text-[10px] font-bold">AI</div>
           <div className="max-w-[74%] px-3.5 py-2.5 rounded-2xl rounded-tl-sm bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900/50">
             <div className="flex items-start gap-2">
               <AlertCircle size={16} className="text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
@@ -499,7 +499,7 @@ function ChatMessage({ message, onFollowUp, onAccept }) {
     case 'success':
       return (
         <div className="flex gap-2.5">
-          <div className="w-7 h-7 rounded-xl bg-blue-500 text-white flex items-center justify-center shrink-0 mt-0.5 text-[10px] font-bold">AI</div>
+          <div className="w-7 h-7 rounded-xl bg-blue-500 dark:bg-accent text-white dark:text-accent-on flex items-center justify-center shrink-0 mt-0.5 text-[10px] font-bold">AI</div>
           <div className="max-w-[74%] px-3.5 py-2.5 rounded-2xl rounded-tl-sm bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200/80 dark:border-emerald-900/50">
             <div className="flex items-start gap-2">
               <CheckCircle size={16} className="text-emerald-600 dark:text-emerald-400 flex-shrink-0 mt-0.5" />
@@ -528,7 +528,7 @@ function ChatMessage({ message, onFollowUp, onAccept }) {
     case 'executed':
       return (
         <div className="flex gap-2.5">
-          <div className="w-7 h-7 rounded-xl bg-blue-500 text-white flex items-center justify-center shrink-0 mt-0.5 text-[10px] font-bold">AI</div>
+          <div className="w-7 h-7 rounded-xl bg-blue-500 dark:bg-accent text-white dark:text-accent-on flex items-center justify-center shrink-0 mt-0.5 text-[10px] font-bold">AI</div>
           <div className="max-w-[74%] px-3.5 py-2.5 rounded-2xl rounded-tl-sm bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 text-xs font-bold">
             {message.content}
           </div>

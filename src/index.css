@@ -105,7 +105,18 @@
 /* Dark mode — vetëm klasa custom, jo utility-t e Tailwind si selektorë */
 .dark body { @apply bg-dk-bg text-gray-100; }
 .dark .card { @apply bg-gray-800 border-gray-700; }
-.dark .btn-outline { @apply bg-gray-800 text-gray-300 border-gray-700 hover:bg-gray-700; }
+.dark .btn-outline { background-color: theme('colors.dk.high'); color: #dfe2eb; border-color: rgb(255 255 255 / 0.08); }
+.dark .btn-outline:hover { background-color: theme('colors.dk.line'); }
+.dark .btn-primary { background-color: theme('colors.accent.DEFAULT'); color: theme('colors.accent.on'); box-shadow: 0 0 18px -4px theme('colors.accent.DEFAULT / 45%'); }
+.dark .btn-primary:hover { background-color: theme('colors.accent.DEFAULT / 90%'); }
+.dark .btn-danger { background-color: rgb(147 0 10 / 0.3); border-color: transparent; color: #ffb4ab; }
+.dark .btn-danger:hover { background-color: rgb(147 0 10 / 0.5); }
+/* Butonat e shpërndarë me bg-brand-500 hover:bg-brand-600 marrin ngjyrën e re kryesore në dark */
+.dark .bg-blue-500.hover:bg-blue-600 { background-color: theme('colors.accent.DEFAULT'); color: theme('colors.accent.on'); }
+.dark .bg-blue-500.hover:bg-blue-600:hover { background-color: theme('colors.accent.DEFAULT / 90%'); }
+.dark .bg-blue-500.hover:bg-blue-600:disabled { background-color: theme('colors.dk.high'); color: #8b8e99; }
+/* Detajet e klientit: fusha të errëta (klasat e vjetra kishin dark:bg-gray-700 dhe dark:bg-gray-800 njëkohësisht) */
+.dark .cdm input, .dark .cdm select, .dark .cdm textarea { background-color: theme('colors.dk.card') !important; border-color: rgb(255 255 255 / 0.1) !important; color: #e5e7eb; color-scheme: dark; }
 .dark .form-control { @apply bg-gray-800 border-gray-600 text-gray-200; }
 .dark .stat-card { @apply bg-gray-800 border-gray-700; }
 .dark .sidebar-item { @apply text-gray-400; }
