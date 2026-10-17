@@ -58,14 +58,14 @@ export default function QuickAddMenu() {
     <div className="relative flex-shrink-0" ref={wrapRef}>
       <button
         type="button"
-        className="flex items-center justify-center gap-1 w-9 h-9 dark:w-auto dark:h-9 dark:px-3 rounded-xl dark:rounded-lg bg-blue-500 dark:bg-accent text-white dark:text-accent-on dark:font-semibold dark:text-xs shadow-sm dark:shadow-lg dark:shadow-accent/40 hover:bg-blue-600 dark:hover:bg-accent/90 active:scale-95 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-300 dark:focus-visible:ring-accent/40"
+        className="flex items-center justify-center gap-1 w-9 h-9 dark:w-9 dark:md:w-auto dark:h-9 dark:px-0 dark:md:px-3 rounded-xl dark:rounded-lg bg-blue-500 dark:bg-accent text-white dark:text-accent-on dark:font-semibold dark:text-xs shadow-sm dark:shadow-lg dark:shadow-accent/40 hover:bg-blue-600 dark:hover:bg-accent/90 active:scale-95 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-300 dark:focus-visible:ring-accent/40"
         onClick={() => setOpen(v => !v)}
         title="Shto element të ri"
         aria-haspopup="menu"
         aria-expanded={open}
       >
         <Plus size={18} className={`transition-transform duration-200 motion-reduce:transition-none ${open ? 'rotate-45' : ''}`} />
-        <span className="hidden dark:inline">Krijo</span>
+        <span className="hidden dark:md:inline">Krijo</span>
       </button>
 
       {open && (
