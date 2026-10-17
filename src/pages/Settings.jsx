@@ -370,6 +370,8 @@ export default function Settings() {
                       disabled={isLockedSection && !isAdmin}
                       onChange={e => {
                         setCompanyData(p => ({ ...p, [fieldKey]: e.target.value }))
+                        // Ndërrimi i gjuhës së ndërfaqes (shih src/i18n)
+                        if (fieldKey === 'gjuha') window.dispatchEvent(new CustomEvent('app-language-change', { detail: e.target.value }))
                         showToast(`${row.label} u përditësua ✓`)
                       }}
                     >

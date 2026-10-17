@@ -77,10 +77,6 @@ export default function Sidebar() {
     { id: 'settings', icon: Settings, label: 'Cilësimet' },
   ]
 
-  const initials = currentUser
-    ? currentUser.name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase()
-    : 'AK'
-
   const w = sidebarCollapsed ? 'w-[64px]' : 'w-60'
 
   /* ── Artikulli i menusë me "kthesën" e harkuar rreth vetes kur është aktiv —
@@ -188,30 +184,6 @@ export default function Sidebar() {
 
           {SYSTEM_NAV.map(renderNavItem)}
         </nav>
-
-        {/* User card */}
-        {!sidebarCollapsed && (
-          <div className="px-2 py-2 border-t border-blue-100 dark:border-white/5">
-            <div
-              className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg hover:bg-blue-100/70 dark:hover:bg-dk-card cursor-pointer transition-colors"
-              onClick={() => navigate('settings')}
-            >
-              <div
-                className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
-                style={{ background: currentUser?.color || '#2563eb' }}
-              >
-                {initials}
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-xs font-semibold text-gray-800 dark:text-gray-200 truncate">{currentUser?.name || 'User'}</p>
-                <p className="text-[10px] text-gray-400 dark:text-gray-500 capitalize">
-                  {currentUser?.isSuperAdmin ? 'Super Admin' : currentUser?.role}
-                </p>
-              </div>
-              <ChevronRight size={14} className="text-gray-300 dark:text-gray-600 flex-shrink-0" />
-            </div>
-          </div>
-        )}
 
         {/* Logout button */}
         <div className={`px-2 py-3 border-t border-blue-100 mt-auto dark:border-white/5`}>

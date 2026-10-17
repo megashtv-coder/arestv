@@ -1,0 +1,692 @@
+# Fjalori i përkthimeve: shqip | anglisht | italisht | gjermanisht | frëngjisht
+# Çdo rresht = një tekst i plotë siç shfaqet në ndërfaqe. Tekstet që s'janë këtu mbeten shqip.
+# Shto rreshta të rinj me të njëjtin format (ndarësi është " | ").
+Anulo | Cancel | Annulla | Abbrechen | Annuler
+Fshi | Delete | Elimina | Löschen | Supprimer
+Ndrysho | Edit | Modifica | Ändern | Modifier
+Totali | Total | Totale | Gesamt | Total
+Edito | Edit | Modifica | Bearbeiten | Modifier
+Fatura | Invoice | Fattura | Rechnung | Facture
+Faturat | Invoices | Fatture | Rechnungen | Factures
+Eksporto | Export | Esporta | Exportieren | Exporter
+Shuma | Amount | Importo | Betrag | Montant
+Po, fshi | Yes, delete | Sì, elimina | Ja, löschen | Oui, supprimer
+Paguar | Paid | Pagato | Bezahlt | Payé
+Klienti | Customer | Cliente | Kunde | Client
+Klienti * | Customer * | Cliente * | Kunde * | Client *
+Vonuar | Overdue | Scaduto | Überfällig | En retard
+Të gjitha | All | Tutti | Alle | Tous
+Furnitori | Supplier | Fornitore | Lieferant | Fournisseur
+Furnitori * | Supplier * | Fornitore * | Lieferant * | Fournisseur *
+Data | Date | Data | Datum | Date
+Në pritje | Pending | In attesa | Ausstehend | En attente
+Partneri | Partner | Partner | Partner | Partenaire
+Statusi | Status | Stato | Status | Statut
+Jo | No | No | Nein | Non
+Po | Yes | Sì | Ja | Oui
+U kopjua! | Copied! | Copiato! | Kopiert! | Copié !
+Emri * | Name * | Nome * | Name * | Nom *
+Emri | Name | Nome | Name | Nom
+Ruaj | Save | Salva | Speichern | Enregistrer
+Ngjyra e avatit | Avatar color | Colore avatar | Avatarfarbe | Couleur de l'avatar
+Shpenzim i ri | New expense | Nuova spesa | Neue Ausgabe | Nouvelle dépense
+Muaji (opsional) | Month (optional) | Mese (opzionale) | Monat (optional) | Mois (facultatif)
+Të gjitha muajt | All months | Tutti i mesi | Alle Monate | Tous les mois
+Të gjithë muajt | All months | Tutti i mesi | Alle Monate | Tous les mois
+Metoda | Method | Metodo | Methode | Méthode
+Metoda e pagesës | Payment method | Metodo di pagamento | Zahlungsart | Mode de paiement
+Veprimet | Actions | Azioni | Aktionen | Actions
+Veprime | Actions | Azioni | Aktionen | Actions
+Përdoruesit | Users | Utenti | Benutzer | Utilisateurs
+Aktive | Active | Attivi | Aktiv | Actifs
+Aktiv | Active | Attivo | Aktiv | Actif
+Joaktiv | Inactive | Inattivo | Inaktiv | Inactif
+Emri i plotë * | Full name * | Nome completo * | Vollständiger Name * | Nom complet *
+Neto | Net | Netto | Netto | Net
+Shteti | Country | Paese | Land | Pays
+Shteti * | Country * | Paese * | Land * | Pays *
+Kopjo | Copy | Copia | Kopieren | Copier
+Importo Excel | Import Excel | Importa Excel | Excel importieren | Importer Excel
+Nuk ka fatura të papaguara | No unpaid invoices | Nessuna fattura non pagata | Keine unbezahlten Rechnungen | Aucune facture impayée
+Nuk ka shpenzime për këtë periudhë | No expenses for this period | Nessuna spesa per questo periodo | Keine Ausgaben in diesem Zeitraum | Aucune dépense pour cette période
+Individual | Individual | Individuale | Einzelperson | Particulier
+Individualë | Individuals | Individuali | Einzelpersonen | Particuliers
+Resellers | Resellers | Rivenditori | Wiederverkäufer | Revendeurs
+Reseller | Reseller | Rivenditore | Wiederverkäufer | Revendeur
+Të gjitha llojet | All types | Tutti i tipi | Alle Typen | Tous les types
+Shto klient | Add customer | Aggiungi cliente | Kunde hinzufügen | Ajouter un client
+Lloji i klientit * | Customer type * | Tipo di cliente * | Kundentyp * | Type de client *
+Mbiemri * | Last name * | Cognome * | Nachname * | Nom de famille *
+Mbiemri | Last name | Cognome | Nachname | Nom de famille
+Numri i telefonit * | Phone number * | Numero di telefono * | Telefonnummer * | Numéro de téléphone *
+Numri i telefonit | Phone number | Numero di telefono | Telefonnummer | Numéro de téléphone
+Aplikacioni që përdor | App used | App utilizzata | Verwendete App | Application utilisée
+MAC Adresa | MAC address | Indirizzo MAC | MAC-Adresse | Adresse MAC
+Username | Username | Nome utente | Benutzername | Nom d'utilisateur
+Paneli | Panel | Pannello | Panel | Panneau
+Referuar nga | Referred by | Presentato da | Empfohlen von | Recommandé par
+Ky klient ka shfaqur vonesa pagese | This customer has shown payment delays | Questo cliente ha mostrato ritardi nei pagamenti | Dieser Kunde hat Zahlungsverzögerungen gezeigt | Ce client a présenté des retards de paiement
+Fshi klientin | Delete customer | Elimina cliente | Kunde löschen | Supprimer le client
+Ndryshimi | Change | Variazione | Änderung | Variation
+Në pritje — Klient | Pending — Customer | In attesa — Cliente | Ausstehend — Kunde | En attente — Client
+Në pritje — Reseller | Pending — Reseller | In attesa — Rivenditore | Ausstehend — Wiederverkäufer | En attente — Revendeur
+Në pritje — Total | Pending — Total | In attesa — Totale | Ausstehend — Gesamt | En attente — Total
+Të gjitha vitet | All years | Tutti gli anni | Alle Jahre | Toutes les années
+Të dy partnerët | Both partners | Entrambi i partner | Beide Partner | Les deux partenaires
+Referenca | Reference | Riferimento | Referenz | Référence
+Çdo shënim shtesë... | Any additional note... | Qualsiasi nota aggiuntiva... | Weitere Notizen... | Toute note supplémentaire...
+Kategori e Re | New category | Nuova categoria | Neue Kategorie | Nouvelle catégorie
+Përshkrim (opsional) | Description (optional) | Descrizione (opzionale) | Beschreibung (optional) | Description (facultatif)
+Sasia | Quantity | Quantità | Menge | Quantité
+Kërko... | Search... | Cerca... | Suchen... | Rechercher...
+Të paguara | Paid | Pagate | Bezahlt | Payées
+Të vonuara | Overdue | Scadute | Überfällig | En retard
+Regjistro Pagesën | Record payment | Registra pagamento | Zahlung erfassen | Enregistrer le paiement
+Faturë | Invoice | Fattura | Rechnung | Facture
+Tek | To | A | An | Vers
+Dërgo | Send | Invia | Senden | Envoyer
+Pritje | Pending | In attesa | Ausstehend | En attente
+Papaguar (Pritje+Vonuar) | Unpaid (Pending+Overdue) | Non pagato (In attesa+Scaduto) | Unbezahlt (Ausstehend+Überfällig) | Impayé (En attente+En retard)
+Zgjidh të gjitha në këtë faqe | Select all on this page | Seleziona tutto in questa pagina | Alle auf dieser Seite auswählen | Tout sélectionner sur cette page
+Hiq zgjedhjen | Clear selection | Deseleziona | Auswahl aufheben | Désélectionner
+Kthehu | Back | Indietro | Zurück | Retour
+Ndrysho pagesën | Edit payment | Modifica pagamento | Zahlung bearbeiten | Modifier le paiement
+Fshij pagesën | Delete payment | Elimina pagamento | Zahlung löschen | Supprimer le paiement
+Fshi kërkimin | Clear search | Cancella ricerca | Suche löschen | Effacer la recherche
+Faturë e re | New invoice | Nuova fattura | Neue Rechnung | Nouvelle facture
+Fatura u fshi | Invoice deleted | Fattura eliminata | Rechnung gelöscht | Facture supprimée
+Shto produkt | Add product | Aggiungi prodotto | Produkt hinzufügen | Ajouter un produit
+Emri i përdoruesit | Username | Nome utente | Benutzername | Nom d'utilisateur
+Fjalëkalimi | Password | Password | Passwort | Mot de passe
+Fjalëkalimi * | Password * | Password * | Passwort * | Mot de passe *
+Ndrysho temën | Change theme | Cambia tema | Design ändern | Changer le thème
+Shto | Add | Aggiungi | Hinzufügen | Ajouter
+Krijo | Create | Crea | Erstellen | Créer
+Username * | Username * | Nome utente * | Benutzername * | Nom d'utilisateur *
+Ruaj ndryshimet | Save changes | Salva modifiche | Änderungen speichern | Enregistrer les modifications
+Fee | Fee | Commissione | Gebühr | Frais
+/ muaj | / month | / mese | / Monat | / mois
+Regjistro Pagesë | Record payment | Registra pagamento | Zahlung erfassen | Enregistrer un paiement
+Nuk ka pagesa | No payments | Nessun pagamento | Keine Zahlungen | Aucun paiement
+Shpenzime | Expenses | Spese | Ausgaben | Dépenses
++ Regjistro dorëzim | + Record transfer | + Registra consegna | + Übergabe erfassen | + Enregistrer un versement
+Shuma (€) | Amount (€) | Importo (€) | Betrag (€) | Montant (€)
+Shuma (€) * | Amount (€) * | Importo (€) * | Betrag (€) * | Montant (€) *
+Klientë | Customers | Clienti | Kunden | Clients
+Rreshtat = emrat e pranuesve · Kolonat = format e pagesës | Rows = recipient names · Columns = payment methods | Righe = nomi dei destinatari · Colonne = metodi di pagamento | Zeilen = Empfängernamen · Spalten = Zahlungsarten | Lignes = noms des bénéficiaires · Colonnes = modes de paiement
+Referuesi \ Forma | Referrer \ Method | Referente \ Metodo | Empfehler \ Methode | Référent \ Mode
+Shuma Totale | Total amount | Importo totale | Gesamtbetrag | Montant total
+Fitimi neto | Net profit | Utile netto | Nettogewinn | Bénéfice net
+Shpenzimet | Expenses | Spese | Ausgaben | Dépenses
+Çaktivizo | Deactivate | Disattiva | Deaktivieren | Désactiver
+Aktivizo | Activate | Attiva | Aktivieren | Activer
+Backup & Rivendosje | Backup & Restore | Backup e ripristino | Backup & Wiederherstellung | Sauvegarde et restauration
+Importo | Import | Importa | Importieren | Importer
+Kjo nuk mund të rikthehej! | This cannot be undone! | Questa operazione non può essere annullata! | Dies kann nicht rückgängig gemacht werden! | Cette action est irréversible !
+Rivendos | Restore | Ripristina | Wiederherstellen | Restaurer
+Dilni nga sistemi | Log out | Esci dal sistema | Abmelden | Se déconnecter
+Dilni | Log out | Esci | Abmelden | Déconnexion
+Po, rivendos | Yes, restore | Sì, ripristina | Ja, wiederherstellen | Oui, restaurer
+Siguria | Security | Sicurezza | Sicherheit | Sécurité
+Adresa | Address | Indirizzo | Adresse | Adresse
+Ende pa u tërhequr | Not yet withdrawn | Non ancora prelevato | Noch nicht abgehoben | Pas encore retiré
+Barazuar | Settled | Saldato | Beglichen | Réglé
+Transfer Bankar | Bank transfer | Bonifico bancario | Banküberweisung | Virement bancaire
+Të Gjitha | All | Tutti | Alle | Tous
+Hap faqen | Open page | Apri pagina | Seite öffnen | Ouvrir la page
+Njoftuar | Notified | Notificato | Benachrichtigt | Notifié
+Sot & Të kaluara — Kërkon vëmendje! | Today & Past — Needs attention! | Oggi e passati — Richiede attenzione! | Heute & Vergangene — Erfordert Aufmerksamkeit! | Aujourd'hui et passé — Nécessite votre attention !
+Kjo javë (7 ditët e ardhshme) | This week (next 7 days) | Questa settimana (prossimi 7 giorni) | Diese Woche (nächste 7 Tage) | Cette semaine (7 prochains jours)
+Hap panelin | Open panel | Apri pannello | Panel öffnen | Ouvrir le panneau
+Kryera | Completed | Completati | Erledigt | Terminées
+Vonuara | Overdue | Scaduti | Überfällig | En retard
+Pastro | Clear | Pulisci | Leeren | Effacer
+✓ Pranohe | ✓ Accept | ✓ Accetta | ✓ Akzeptieren | ✓ Accepter
+Gabim | Error | Errore | Fehler | Erreur
+🤖 AI Asistenti | 🤖 AI Assistant | 🤖 Assistente AI | 🤖 KI-Assistent | 🤖 Assistant IA
+AI Asistenti | AI Assistant | Assistente AI | KI-Assistent | Assistant IA
+Mbyll | Close | Chiudi | Schließen | Fermer
+Kolonat e tabelës | Table columns | Colonne della tabella | Tabellenspalten | Colonnes du tableau
+Pagesat | Payments | Pagamenti | Zahlungen | Paiements
+Importo Kontakte | Import contacts | Importa contatti | Kontakte importieren | Importer des contacts
+Lista e shpenzimeve për vitin aktual | List of expenses for the current year | Elenco delle spese per l'anno corrente | Liste der Ausgaben für das aktuelle Jahr | Liste des dépenses pour l'année en cours
+Lista e pagesave të pranuara për vitin aktual | List of payments received for the current year | Elenco dei pagamenti ricevuti per l'anno corrente | Liste der erhaltenen Zahlungen für das aktuelle Jahr | Liste des paiements reçus pour l'année en cours
+Nuk ka pagesa për këtë periudhë | No payments for this period | Nessun pagamento per questo periodo | Keine Zahlungen in diesem Zeitraum | Aucun paiement pour cette période
+Individ | Individual | Individuo | Einzelperson | Individu
+Statistika | Statistics | Statistiche | Statistiken | Statistiques
+Abonime | Subscriptions | Abbonamenti | Abonnements | Abonnements
+Referuar | Referred | Presentati | Empfohlen | Parrainés
+📞 Telefon | 📞 Phone | 📞 Telefono | 📞 Telefon | 📞 Téléphone
+Telefon | Phone | Telefono | Telefon | Téléphone
+🌍 Vendi | 🌍 Country | 🌍 Paese | 🌍 Land | 🌍 Pays
+Lloji | Type | Tipo | Typ | Type
+Aplikacioni | Application | Applicazione | Anwendung | Application
+Emri është i detyrueshëm | Name is required | Il nome è obbligatorio | Name ist erforderlich | Le nom est obligatoire
+Emri i klientit | Customer name | Nome del cliente | Kundenname | Nom du client
+Klientë gjithsej | Total customers | Clienti totali | Kunden gesamt | Total des clients
+Të gjitha shtetet | All countries | Tutti i paesi | Alle Länder | Tous les pays
+Renditja — Parazgjedhur | Sort — Default | Ordinamento — Predefinito | Sortierung — Standard | Tri — Par défaut
+A — Z (Alfabetik) | A — Z (Alphabetical) | A — Z (Alfabetico) | A — Z (Alphabetisch) | A — Z (Alphabétique)
+Gjithsej: | Total: | Totale: | Gesamt: | Total :
+Kontaktet | Contacts | Contatti | Kontakte | Contacts
+Aplikacioni / Panel | Application / Panel | Applicazione / Pannello | Anwendung / Panel | Application / Panneau
+Tipi | Type | Tipo | Typ | Type
+Detajet | Details | Dettagli | Details | Détails
+Shtete | Countries | Paesi | Länder | Pays
+← Mbrapa | ← Back | ← Indietro | ← Zurück | ← Retour
+Përpara → | Next → | Avanti → | Weiter → | Suivant →
+Kontakto në WhatsApp | Contact on WhatsApp | Contatta su WhatsApp | Über WhatsApp kontaktieren | Contacter sur WhatsApp
+Kontakto në Telegram | Contact on Telegram | Contatta su Telegram | Über Telegram kontaktieren | Contacter sur Telegram
+Krijo një klient të ri | Create a new customer | Crea un nuovo cliente | Neuen Kunden anlegen | Créer un nouveau client
+Kërko emër, telefon... | Search name, phone... | Cerca nome, telefono... | Name, Telefon suchen... | Rechercher nom, téléphone...
+Nuk u gjetën klientë | No customers found | Nessun cliente trovato | Keine Kunden gefunden | Aucun client trouvé
+Klienti u përditësua! ✓ | Customer updated! ✓ | Cliente aggiornato! ✓ | Kunde aktualisiert! ✓ | Client mis à jour ! ✓
+Klienti u shtua me sukses! ✓ | Customer added successfully! ✓ | Cliente aggiunto con successo! ✓ | Kunde erfolgreich hinzugefügt! ✓ | Client ajouté avec succès ! ✓
+Detyra afër afatit | Tasks near deadline | Attività in scadenza | Aufgaben mit naher Frist | Tâches proches de l'échéance
+Brenda 3 ditësh ose vonuar | Within 3 days or overdue | Entro 3 giorni o scadute | Innerhalb von 3 Tagen oder überfällig | Sous 3 jours ou en retard
+Duke ngarkuar... | Loading... | Caricamento... | Wird geladen... | Chargement...
+Duke ngarku... | Loading... | Caricamento... | Wird geladen... | Chargement...
+S'ka detyra urgjente ✓ | No urgent tasks ✓ | Nessuna attività urgente ✓ | Keine dringenden Aufgaben ✓ | Aucune tâche urgente ✓
+Gjithsej Shpenzime | Total expenses | Spese totali | Gesamtausgaben | Total des dépenses
+Sot | Today | Oggi | Heute | Aujourd'hui
+Afër | Soon | Presto | Bald | Bientôt
+Shëno të kryer | Mark as done | Segna come completata | Als erledigt markieren | Marquer comme terminé
+Fshi detyrën | Delete task | Elimina attività | Aufgabe löschen | Supprimer la tâche
+Të tjera | Other | Altro | Sonstiges | Autres
+Krijo Faturë | Create invoice | Crea fattura | Rechnung erstellen | Créer une facture
+Faturë e re shpejt | Quick new invoice | Nuova fattura rapida | Neue Schnellrechnung | Nouvelle facture rapide
+Shto Klient | Add customer | Aggiungi cliente | Kunde hinzufügen | Ajouter un client
+Regjistro klient të ri | Register new customer | Registra nuovo cliente | Neuen Kunden erfassen | Enregistrer un nouveau client
+Regjistro shpenzim | Record expense | Registra spesa | Ausgabe erfassen | Enregistrer une dépense
+Klientë aktivë | Active customers | Clienti attivi | Aktive Kunden | Clients actifs
+Shitje sipas muajit | Sales by month | Vendite per mese | Verkäufe nach Monat | Ventes par mois
+Të ardhura sipas muajit | Revenue by month | Entrate per mese | Einnahmen nach Monat | Revenus par mois
+Shpenzime sipas muajit | Expenses by month | Spese per mese | Ausgaben nach Monat | Dépenses par mois
+Shpenzim i përsëritur | Recurring expense | Spesa ricorrente | Wiederkehrende Ausgabe | Dépense récurrente
+Frekuenca e përsëritjes: | Repeat frequency: | Frequenza di ripetizione: | Wiederholungshäufigkeit: | Fréquence de répétition :
+Fshi shpenzimin | Delete expense | Elimina spesa | Ausgabe löschen | Supprimer la dépense
+Fshi vetëm këtë | Delete only this one | Elimina solo questa | Nur diese löschen | Supprimer uniquement celle-ci
+Fshi krejt serinë | Delete entire series | Elimina l'intera serie | Ganze Serie löschen | Supprimer toute la série
+Eksporto Shpenzimet | Export expenses | Esporta spese | Ausgaben exportieren | Exporter les dépenses
+Të Rregullta | Recurring | Ricorrenti | Wiederkehrend | Récurrentes
+Shpenzime të Rregullta | Recurring expenses | Spese ricorrenti | Wiederkehrende Ausgaben | Dépenses récurrentes
+Vetëm të rregullta | Recurring only | Solo ricorrenti | Nur wiederkehrende | Récurrentes uniquement
+Vetëm njëherësh | One-time only | Solo una tantum | Nur einmalige | Ponctuelles uniquement
+A jeni i sigurt? Ky veprim nuk mund të kthehet mbrapsht. | Are you sure? This action cannot be undone. | Sei sicuro? Questa azione non può essere annullata. | Sind Sie sicher? Diese Aktion kann nicht rückgängig gemacht werden. | Êtes-vous sûr ? Cette action est irréversible.
+Zgjidh llogarinë... | Select account... | Seleziona conto... | Konto auswählen... | Sélectionner un compte...
+Data e shpenzimit | Expense date | Data della spesa | Ausgabedatum | Date de la dépense
+Për çfarë është bërë shpenzimi * | What was the expense for * | Per cosa è stata la spesa * | Wofür war die Ausgabe * | Pour quoi était la dépense *
+Referenca / Shënime | Reference / Notes | Riferimento / Note | Referenz / Notizen | Référence / Notes
+Nga cili partner u bë shpenzimi * | Which partner made the expense * | Quale partner ha sostenuto la spesa * | Welcher Partner hat die Ausgabe getätigt * | Quel partenaire a effectué la dépense *
+Kërko shpenzime... | Search expenses... | Cerca spese... | Ausgaben suchen... | Rechercher des dépenses...
+Nuk ka shpenzime | No expenses | Nessuna spesa | Keine Ausgaben | Aucune dépense
+Regjistro shpenzimin e parë | Record your first expense | Registra la prima spesa | Erste Ausgabe erfassen | Enregistrer la première dépense
+Për çfarë | For what | Per cosa | Wofür | Pour quoi
+Shpenzimi u përditësua! ✓ | Expense updated! ✓ | Spesa aggiornata! ✓ | Ausgabe aktualisiert! ✓ | Dépense mise à jour ! ✓
+Shpenzimi u regjistrua! ✓ | Expense recorded! ✓ | Spesa registrata! ✓ | Ausgabe erfasst! ✓ | Dépense enregistrée ! ✓
+Shpenzimi u fshi! ✓ | Expense deleted! ✓ | Spesa eliminata! ✓ | Ausgabe gelöscht! ✓ | Dépense supprimée ! ✓
+Shto Kategorinë | Add category | Aggiungi categoria | Kategorie hinzufügen | Ajouter la catégorie
+Popullore | Popular | Popolare | Beliebt | Populaire
+Shto Host | Add host | Aggiungi host | Host hinzufügen | Ajouter un hôte
+Shto host | Add host | Aggiungi host | Host hinzufügen | Ajouter un hôte
+Host i Ri | New host | Nuovo host | Neuer Host | Nouvel hôte
+Ndrysho Host-in | Edit host | Modifica host | Host bearbeiten | Modifier l'hôte
+Shto Host-in | Add host | Aggiungi host | Host hinzufügen | Ajouter l'hôte
+Shëno si "Popullore" | Mark as "Popular" | Segna come "Popolare" | Als „Beliebt“ markieren | Marquer comme « Populaire »
+Flamuri | Flag | Bandiera | Flagge | Drapeau
+Link | Link | Link | Link | Lien
+Kategoria | Category | Categoria | Kategorie | Catégorie
+Kliko për të kopjuar | Click to copy | Clicca per copiare | Zum Kopieren klicken | Cliquer pour copier
+Hap linkun | Open link | Apri link | Link öffnen | Ouvrir le lien
+Kërko sipas linkut... | Search by link... | Cerca per link... | Nach Link suchen... | Rechercher par lien...
+TË GJITHA | ALL | TUTTI | ALLE | TOUS
+Kopjo të gjitha | Copy all | Copia tutti | Alle kopieren | Tout copier
+Fshi kategorinë | Delete category | Elimina categoria | Kategorie löschen | Supprimer la catégorie
+Kategoria u shtua ✓ | Category added ✓ | Categoria aggiunta ✓ | Kategorie hinzugefügt ✓ | Catégorie ajoutée ✓
+Host-i u përditësua ✓ | Host updated ✓ | Host aggiornato ✓ | Host aktualisiert ✓ | Hôte mis à jour ✓
+Host-i u shtua ✓ | Host added ✓ | Host aggiunto ✓ | Host hinzugefügt ✓ | Hôte ajouté ✓
+Linku u kopjua ✓ | Link copied ✓ | Link copiato ✓ | Link kopiert ✓ | Lien copié ✓
+Nuk u gjet asgjë | Nothing found | Nessun risultato | Nichts gefunden | Rien trouvé
+Klient i ri — plotëso të dhënat | New customer — fill in the details | Nuovo cliente — compila i dati | Neuer Kunde — Daten ausfüllen | Nouveau client — remplissez les données
+Artikujt | Items | Articoli | Artikel | Articles
+Çmimi (€) | Price (€) | Prezzo (€) | Preis (€) | Prix (€)
+Shto artikull tjetër | Add another item | Aggiungi un altro articolo | Weiteren Artikel hinzufügen | Ajouter un autre article
+Sub Total | Subtotal | Subtotale | Zwischensumme | Sous-total
+Zbritja | Discount | Sconto | Rabatt | Remise
+Total (€) | Total (€) | Totale (€) | Gesamt (€) | Total (€)
+Shfaqet në menunë "Abonimet" si rikujtim për klientin. | Shown in the "Subscriptions" menu as a reminder for the customer. | Mostrato nel menu "Abbonamenti" come promemoria per il cliente. | Wird im Menü „Abonnements“ als Erinnerung für den Kunden angezeigt. | Affiché dans le menu « Abonnements » comme rappel pour le client.
+Draft — Ruaj si skicë | Draft — Save as draft | Bozza — Salva come bozza | Entwurf — Als Entwurf speichern | Brouillon — Enregistrer comme brouillon
+Dërgo — Në pritje | Send — Pending | Invia — In attesa | Senden — Ausstehend | Envoyer — En attente
+Shto dhe Zgjidh | Add and select | Aggiungi e seleziona | Hinzufügen und auswählen | Ajouter et sélectionner
+Zgjedh ose shëno... | Select or type... | Seleziona o digita... | Auswählen oder eingeben... | Sélectionner ou saisir...
+Përshkrim (opsional)... | Description (optional)... | Descrizione (opzionale)... | Beschreibung (optional)... | Description (facultatif)...
+Zgjedh klientin... | Select customer... | Seleziona cliente... | Kunde auswählen... | Sélectionner le client...
+👤 Referenti (Përfaqësuesi) | 👤 Referrer (Representative) | 👤 Referente (Rappresentante) | 👤 Empfehler (Vertreter) | 👤 Référent (Représentant)
+Zgjedh referentin... | Select referrer... | Seleziona referente... | Empfehler auswählen... | Sélectionner le référent...
+Data e faturës * | Invoice date * | Data fattura * | Rechnungsdatum * | Date de facture *
+Afati i pagesës (auto: 3 ditë) | Payment due (auto: 3 days) | Scadenza pagamento (auto: 3 giorni) | Zahlungsfrist (auto: 3 Tage) | Échéance de paiement (auto : 3 jours)
+Data e skadimit të abonimit | Subscription expiry date | Data di scadenza abbonamento | Ablaufdatum des Abonnements | Date d'expiration de l'abonnement
+🔔 Rikujtim për riabonimin | 🔔 Renewal reminder | 🔔 Promemoria di rinnovo | 🔔 Verlängerungserinnerung | 🔔 Rappel de renouvellement
+Kontakti u importua. Shtoje si klient nëse duhet. | Contact imported. Add it as a customer if needed. | Contatto importato. Aggiungilo come cliente se necessario. | Kontakt importiert. Bei Bedarf als Kunde hinzufügen. | Contact importé. Ajoutez-le comme client si nécessaire.
+Eksporto Faturat | Export invoices | Esporta fatture | Rechnungen exportieren | Exporter les factures
+Pagesa TG | Payment TG | Pagamento TG | Zahlung TG | Paiement TG
+Dërgo faturën WA | Send invoice via WA | Invia fattura via WA | Rechnung per WA senden | Envoyer la facture via WA
+Dërgo → Pritje | Send → Pending | Invia → In attesa | Senden → Ausstehend | Envoyer → En attente
+Dëshiron ta anulosh (Void) këtë faturë? | Do you want to void this invoice? | Vuoi annullare (Void) questa fattura? | Möchten Sie diese Rechnung stornieren (Void)? | Voulez-vous annuler (Void) cette facture ?
+Po, fshij | Yes, delete | Sì, elimina | Ja, löschen | Oui, supprimer
+Dërgo rikujtim | Send reminder | Invia promemoria | Erinnerung senden | Envoyer un rappel
+Fatura për | Invoice for | Fattura per | Rechnung für | Facture pour
+Totali për pagesë | Total due | Totale da pagare | Zu zahlender Gesamtbetrag | Total à payer
+Paguar: | Paid: | Pagato: | Bezahlt: | Payé :
+Mbetur: | Remaining: | Rimanente: | Verbleibend: | Restant :
+Data e faturës: | Invoice date: | Data fattura: | Rechnungsdatum: | Date de facture :
+Afati i pagesës: | Payment due: | Scadenza pagamento: | Zahlungsfrist: | Échéance de paiement :
+⏰ Skadimi: | ⏰ Expires: | ⏰ Scadenza: | ⏰ Ablauf: | ⏰ Expiration :
+🔔 Njoftim: | 🔔 Notice: | 🔔 Avviso: | 🔔 Hinweis: | 🔔 Avis :
+Artikulli & Përshkrimi | Item & Description | Articolo e descrizione | Artikel & Beschreibung | Article et description
+Çmimi | Price | Prezzo | Preis | Prix
+Faleminderit për besimin tuaj! | Thank you for your trust! | Grazie per la vostra fiducia! | Vielen Dank für Ihr Vertrauen! | Merci pour votre confiance !
+Pagesa e regjistruar | Recorded payment | Pagamento registrato | Erfasste Zahlung | Paiement enregistré
+Komentet e stafit | Staff comments | Commenti dello staff | Mitarbeiterkommentare | Commentaires du personnel
+Nuk ka komente ende. | No comments yet. | Ancora nessun commento. | Noch keine Kommentare. | Aucun commentaire pour l'instant.
+Të gjitha faturat | All invoices | Tutte le fatture | Alle Rechnungen | Toutes les factures
+Asnjë faturë nuk u gjet | No invoices found | Nessuna fattura trovata | Keine Rechnungen gefunden | Aucune facture trouvée
+Presin arkëtim brenda afatit | Awaiting payment within deadline | In attesa di incasso entro la scadenza | Zahlung innerhalb der Frist erwartet | En attente d'encaissement dans les délais
+Kërkojnë ndjekje urgjente | Need urgent follow-up | Richiedono un follow-up urgente | Erfordern dringende Nachverfolgung | Nécessitent un suivi urgent
+Papaguara Sellers | Unpaid sellers | Rivenditori non pagati | Unbezahlte Verkäufer | Vendeurs impayés
+Bilanci i rishitësve | Resellers balance | Saldo dei rivenditori | Wiederverkäufer-Saldo | Solde des revendeurs
+Likuiduar me sukses | Successfully settled | Liquidato con successo | Erfolgreich beglichen | Réglé avec succès
+Fshi faturën? | Delete invoice? | Eliminare la fattura? | Rechnung löschen? | Supprimer la facture ?
+do të fshihet përgjithmonë. | will be permanently deleted. | verrà eliminata definitivamente. | wird dauerhaft gelöscht. | sera supprimée définitivement.
++ Faturë e re | + New invoice | + Nuova fattura | + Neue Rechnung | + Nouvelle facture
+Fatura më shumë se 3 javë të vonuara | Invoices more than 3 weeks overdue | Fatture scadute da più di 3 settimane | Rechnungen mehr als 3 Wochen überfällig | Factures en retard de plus de 3 semaines
+Zgjidh faturën | Select invoice | Seleziona fattura | Rechnung auswählen | Sélectionner la facture
+Shto koment rreth kësaj fature… (Enter = dërgo) | Add a comment about this invoice… (Enter = send) | Aggiungi un commento su questa fattura… (Invio = invia) | Kommentar zu dieser Rechnung hinzufügen… (Enter = senden) | Ajouter un commentaire sur cette facture… (Entrée = envoyer)
+Regjistro pagesën | Record payment | Registra pagamento | Zahlung erfassen | Enregistrer le paiement
+Jashtë afatit | Past due | Scaduto | Überfällig | Hors délai
+Void / Anuluar | Void / Cancelled | Void / Annullato | Void / Storniert | Void / Annulé
+Tabela | Table | Tabella | Tabelle | Tableau
+Filtro: fatura në pritje | Filter: pending invoices | Filtro: fatture in attesa | Filter: ausstehende Rechnungen | Filtre : factures en attente
+Filtro: fatura të vonuara | Filter: overdue invoices | Filtro: fatture scadute | Filter: überfällige Rechnungen | Filtre : factures en retard
+Filtro: fatura të papaguara të rishitësve | Filter: unpaid reseller invoices | Filtro: fatture non pagate dei rivenditori | Filter: unbezahlte Wiederverkäufer-Rechnungen | Filtre : factures impayées des revendeurs
+Filtro: fatura të paguara | Filter: paid invoices | Filtro: fatture pagate | Filter: bezahlte Rechnungen | Filtre : factures payées
+Kërko me Emër, ID apo Referent... | Search by name, ID or referrer... | Cerca per nome, ID o referente... | Nach Name, ID oder Empfehler suchen... | Rechercher par nom, ID ou référent...
+Nuk u gjetën fatura | No invoices found | Nessuna fattura trovata | Keine Rechnungen gefunden | Aucune facture trouvée
+Ndryshoni filtrat ose krijoni një faturë të re | Change the filters or create a new invoice | Modifica i filtri o crea una nuova fattura | Filter ändern oder neue Rechnung erstellen | Modifiez les filtres ou créez une nouvelle facture
+Fatura u shënua si Void | Invoice marked as void | Fattura segnata come void | Rechnung als Void markiert | Facture marquée comme void
+Pagesa u fshi. Fatura u përditësua. | Payment deleted. Invoice updated. | Pagamento eliminato. Fattura aggiornata. | Zahlung gelöscht. Rechnung aktualisiert. | Paiement supprimé. Facture mise à jour.
+Fatura kaloi në pritje ✓ | Invoice moved to pending ✓ | Fattura spostata in attesa ✓ | Rechnung auf ausstehend gesetzt ✓ | Facture passée en attente ✓
+Fut kodin 4-shifror për të zbuluar çmimin e blerjes dhe marzhën. | Enter the 4-digit code to reveal the purchase price and margin. | Inserisci il codice a 4 cifre per vedere il prezzo di acquisto e il margine. | Geben Sie den 4-stelligen Code ein, um Einkaufspreis und Marge anzuzeigen. | Saisissez le code à 4 chiffres pour afficher le prix d'achat et la marge.
+PIN i gabuar. Provo përsëri. | Wrong PIN. Try again. | PIN errato. Riprova. | Falsche PIN. Erneut versuchen. | PIN incorrect. Réessayez.
+— Pa furnitor — | — No supplier — | — Nessun fornitore — | — Kein Lieferant — | — Aucun fournisseur —
+Marzha: | Margin: | Margine: | Marge: | Marge :
+Marzha | Margin | Margine | Marge | Marge
+Fshi produktin | Delete product | Elimina prodotto | Produkt löschen | Supprimer le produit
+Ky veprim nuk mund të kthehet mbrapsht. | This action cannot be undone. | Questa azione non può essere annullata. | Diese Aktion kann nicht rückgängig gemacht werden. | Cette action est irréversible.
+Artikuj gjithsej | Total items | Articoli totali | Artikel gesamt | Total des articles
+Çmimi mesatar shitje | Average sale price | Prezzo medio di vendita | Durchschnittlicher Verkaufspreis | Prix de vente moyen
+Me furnitor | With supplier | Con fornitore | Mit Lieferant | Avec fournisseur
+Çm. Blerjes | Purchase price | Prezzo acquisto | Einkaufspreis | Prix d'achat
+Fut PIN-in për të parë çmimet | Enter PIN to see prices | Inserisci il PIN per vedere i prezzi | PIN eingeben, um Preise zu sehen | Saisissez le PIN pour voir les prix
+Konfirmo | Confirm | Conferma | Bestätigen | Confirmer
+Marzha mesatare | Average margin | Margine medio | Durchschnittsmarge | Marge moyenne
+Llogaria Kontabel | Accounting account | Conto contabile | Buchhaltungskonto | Compte comptable
+Emri i produktit / shërbimit * | Product / service name * | Nome prodotto / servizio * | Produkt-/Dienstleistungsname * | Nom du produit / service *
+Çmimi i shitjes * | Sale price * | Prezzo di vendita * | Verkaufspreis * | Prix de vente *
+Çmimi i blerjes | Purchase price | Prezzo di acquisto | Einkaufspreis | Prix d'achat
+Llogaria kontabel (shitje) | Accounting account (sales) | Conto contabile (vendite) | Buchhaltungskonto (Verkauf) | Compte comptable (ventes)
+Kërko produkt ose furnitor... | Search product or supplier... | Cerca prodotto o fornitore... | Produkt oder Lieferant suchen... | Rechercher un produit ou fournisseur...
+Nuk u gjetën produkte | No products found | Nessun prodotto trovato | Keine Produkte gefunden | Aucun produit trouvé
+Produkti u përditësua me sukses! ✓ | Product updated successfully! ✓ | Prodotto aggiornato con successo! ✓ | Produkt erfolgreich aktualisiert! ✓ | Produit mis à jour avec succès ! ✓
+Produkti u shtua me sukses! ✓ | Product added successfully! ✓ | Prodotto aggiunto con successo! ✓ | Produkt erfolgreich hinzugefügt! ✓ | Produit ajouté avec succès ! ✓
+Produkti u fshi! ✓ | Product deleted! ✓ | Prodotto eliminato! ✓ | Produkt gelöscht! ✓ | Produit supprimé ! ✓
+Menaxhimi Financiar | Financial Management | Gestione finanziaria | Finanzverwaltung | Gestion financière
+Kyçu | Sign in | Accedi | Anmelden | Connexion
+Kyçu në sistem | Sign in to the system | Accedi al sistema | Im System anmelden | Se connecter au système
+Hyr në llogarinë tuaj | Sign in to your account | Accedi al tuo account | Melden Sie sich bei Ihrem Konto an | Connectez-vous à votre compte
+Duke u kyçur... | Signing in... | Accesso in corso... | Anmeldung läuft... | Connexion en cours...
+Plotëso të gjitha fushat. | Fill in all fields. | Compila tutti i campi. | Alle Felder ausfüllen. | Remplissez tous les champs.
+Emri i përdoruesit ose fjalëkalimi i pasaktë | Incorrect username or password | Nome utente o password errati | Benutzername oder Passwort falsch | Nom d'utilisateur ou mot de passe incorrect
+Kredencialet janë të pasakta | The credentials are incorrect | Le credenziali non sono corrette | Die Anmeldedaten sind falsch | Les identifiants sont incorrects
+Fshi organizatën | Delete organization | Elimina organizzazione | Organisation löschen | Supprimer l'organisation
+Nuk ka përdorues | No users | Nessun utente | Keine Benutzer | Aucun utilisateur
+Menaxhimi i Organizatave | Organization Management | Gestione delle organizzazioni | Organisationsverwaltung | Gestion des organisations
+Organizatë e re | New organization | Nuova organizzazione | Neue Organisation | Nouvelle organisation
+Organizata | Organizations | Organizzazioni | Organisationen | Organisations
+Përdorues | Users | Utenti | Benutzer | Utilisateurs
+Shiko përdoruesit | View users | Visualizza utenti | Benutzer anzeigen | Voir les utilisateurs
+Emri i shkurtër * | Short name * | Nome breve * | Kurzname * | Nom court *
+Përshkrimi | Description | Descrizione | Beschreibung | Description
+Shënime rreth organizatës... | Notes about the organization... | Note sull'organizzazione... | Notizen zur Organisation... | Notes sur l'organisation...
+Plani | Plan | Piano | Plan | Forfait
+Ngjyra | Color | Colore | Farbe | Couleur
+Roli | Role | Ruolo | Rolle | Rôle
+Roli * | Role * | Ruolo * | Rolle * | Rôle *
+Super Admin | Super Admin | Super Admin | Super-Admin | Super Admin
+Admin | Admin | Admin | Admin | Admin
+Editor | Editor | Editor | Editor | Éditeur
+Hiq nga org | Remove from org | Rimuovi dall'org | Aus Org. entfernen | Retirer de l'org
+Nuk ka organizata | No organizations | Nessuna organizzazione | Keine Organisationen | Aucune organisation
+Krijo organizatën e parë | Create the first organization | Crea la prima organizzazione | Erste Organisation erstellen | Créer la première organisation
+Organizata u përditësua! ✓ | Organization updated! ✓ | Organizzazione aggiornata! ✓ | Organisation aktualisiert! ✓ | Organisation mise à jour ! ✓
+Organizata u krijua! ✓ | Organization created! ✓ | Organizzazione creata! ✓ | Organisation erstellt! ✓ | Organisation créée ! ✓
+Konfirmo Pagesën | Confirm payment | Conferma pagamento | Zahlung bestätigen | Confirmer le paiement
+— Zgjidh faturën — | — Select invoice — | — Seleziona fattura — | — Rechnung auswählen — | — Sélectionner la facture —
+Zgjidh faturën * | Select invoice * | Seleziona fattura * | Rechnung auswählen * | Sélectionner la facture *
+Shuma e paguar * | Amount paid * | Importo pagato * | Gezahlter Betrag * | Montant payé *
+Data e pagesës | Payment date | Data del pagamento | Zahlungsdatum | Date du paiement
+Depozituar tek * | Deposited to * | Depositato presso * | Eingezahlt bei * | Déposé chez *
+Të gjitha metodat | All methods | Tutti i metodi | Alle Methoden | Toutes les méthodes
+Emër i ri | New name | Nuovo nome | Neuer Name | Nouveau nom
+Emër i Ri | New name | Nuovo nome | Neuer Name | Nouveau nom
+Qyteti | City | Città | Stadt | Ville
+Kërko emrin, qytetin ose shtetin... | Search name, city or country... | Cerca nome, città o paese... | Name, Stadt oder Land suchen... | Rechercher nom, ville ou pays...
+Kartela | Cards | Schede | Karten | Cartes
+Tabelë | Table | Tabella | Tabelle | Tableau
+Eksporto Pagesat | Export payments | Esporta pagamenti | Zahlungen exportieren | Exporter les paiements
+Tek Enndy | To Enndy | A Enndy | An Enndy | Vers Enndy
+Tek Samki | To Samki | A Samki | An Samki | Vers Samki
+Fshij? | Delete? | Eliminare? | Löschen? | Supprimer ?
+Bruto: | Gross: | Lordo: | Brutto: | Brut :
+Fee: | Fee: | Commissione: | Gebühr: | Frais :
+Neto: | Net: | Netto: | Netto: | Net :
+Neto Totale | Total net | Netto totale | Gesamt netto | Net total
+Pastro filtrin | Clear filter | Pulisci filtro | Filter zurücksetzen | Effacer le filtre
+Kërko klient, faturë... | Search customer, invoice... | Cerca cliente, fattura... | Kunde, Rechnung suchen... | Rechercher client, facture...
+Fshij | Delete | Elimina | Löschen | Supprimer
+Nuk ka pagesa të reja për të importuar. | No new payments to import. | Nessun nuovo pagamento da importare. | Keine neuen Zahlungen zum Importieren. | Aucun nouveau paiement à importer.
+Pagesa u fshi. Fatura kaloi në pritje. | Payment deleted. Invoice moved to pending. | Pagamento eliminato. Fattura spostata in attesa. | Zahlung gelöscht. Rechnung auf ausstehend gesetzt. | Paiement supprimé. Facture passée en attente.
+Të gjitha faturat e papaguara | All unpaid invoices | Tutte le fatture non pagate | Alle unbezahlten Rechnungen | Toutes les factures impayées
+Fatura të papaguara — Klientë individualë | Unpaid invoices — Individual customers | Fatture non pagate — Clienti individuali | Unbezahlte Rechnungen — Einzelkunden | Factures impayées — Clients particuliers
+Fatura të papaguara — Reseller | Unpaid invoices — Resellers | Fatture non pagate — Rivenditori | Unbezahlte Rechnungen — Wiederverkäufer | Factures impayées — Revendeurs
+Analiza mujore — 2026 | Monthly analysis — 2026 | Analisi mensile — 2026 | Monatsanalyse — 2026 | Analyse mensuelle — 2026
+Faturat sipas statusit | Invoices by status | Fatture per stato | Rechnungen nach Status | Factures par statut
+Top 5 klientët sipas vlerës | Top 5 customers by value | Top 5 clienti per valore | Top 5 Kunden nach Wert | Top 5 clients par valeur
+Asnjë pagesë në këtë periudhë. | No payments in this period. | Nessun pagamento in questo periodo. | Keine Zahlungen in diesem Zeitraum. | Aucun paiement sur cette période.
+Asnjë shpenzim në këtë periudhë. | No expenses in this period. | Nessuna spesa in questo periodo. | Keine Ausgaben in diesem Zeitraum. | Aucune dépense sur cette période.
+Dorëzime | Transfers | Consegne | Übergaben | Versements
+Barazimi financiar | Financial settlement | Saldo finanziario | Finanzieller Ausgleich | Règlement financier
+Totali neto | Net total | Totale netto | Netto gesamt | Total net
+Diferenca | Difference | Differenza | Differenz | Différence
+Asnjë të ardhur në këtë periudhë. | No income in this period. | Nessuna entrata in questo periodo. | Keine Einnahmen in diesem Zeitraum. | Aucun revenu sur cette période.
+duhet të dorëzojë | must hand over | deve consegnare | muss übergeben | doit remettre
+Asnjë dorëzim i regjistruar për këtë periudhë. | No transfer recorded for this period. | Nessuna consegna registrata per questo periodo. | Keine Übergabe für diesen Zeitraum erfasst. | Aucun versement enregistré pour cette période.
+Regjistro dorëzim të mjeteve | Record transfer of funds | Registra consegna dei fondi | Mittelübergabe erfassen | Enregistrer un versement de fonds
+Nga | From | Da | Von | De
+Regjistro | Record | Registra | Erfassen | Enregistrer
+Klientët aktivë — numri mujor | Active customers — monthly count | Clienti attivi — conteggio mensile | Aktive Kunden — monatliche Anzahl | Clients actifs — nombre mensuel
+Bazuar në datën e skadimit të abonimit | Based on subscription expiry date | In base alla data di scadenza dell'abbonamento | Basierend auf dem Ablaufdatum des Abonnements | Basé sur la date d'expiration de l'abonnement
+Detajet mujore | Monthly details | Dettagli mensili | Monatliche Details | Détails mensuels
+Muaji | Month | Mese | Monat | Mois
+TOTAL | TOTAL | TOTALE | GESAMT | TOTAL
+Klientët sipas shtetit | Customers by country | Clienti per paese | Kunden nach Land | Clients par pays
+Renditja sipas shtetit | Ranking by country | Classifica per paese | Rangliste nach Land | Classement par pays
+% e totalit | % of total | % del totale | % vom Gesamt | % du total
+Abonentët më të vjetër | Oldest subscribers | Abbonati più anziani | Älteste Abonnenten | Abonnés les plus anciens
+Fatura e parë | First invoice | Prima fattura | Erste Rechnung | Première facture
+Kohëzgjatja | Duration | Durata | Dauer | Durée
+Referues aktivë | Active referrers | Referenti attivi | Aktive Empfehler | Parrains actifs
+Klientë të referuar | Referred customers | Clienti presentati | Empfohlene Kunden | Clients parrainés
+Pa referues | No referrer | Senza referente | Ohne Empfehler | Sans parrain
+Asnjë klient nuk ka referuar ende. | No customer has referred anyone yet. | Nessun cliente ha ancora presentato nessuno. | Noch kein Kunde hat jemanden empfohlen. | Aucun client n'a encore parrainé.
+Renditja e referuesve | Referrer ranking | Classifica dei referenti | Empfehler-Rangliste | Classement des parrains
+referime | referrals | segnalazioni | Empfehlungen | parrainages
+Asnjë pagesë nuk përputhet me filtrat. | No payment matches the filters. | Nessun pagamento corrisponde ai filtri. | Keine Zahlung entspricht den Filtern. | Aucun paiement ne correspond aux filtres.
+Dorëzime të regjistruara | Recorded transfers | Consegne registrate | Erfasste Übergaben | Versements enregistrés
+Të ardhura totale | Total income | Entrate totali | Gesamteinnahmen | Revenus totaux
+Shpenzime totale | Total expenses | Spese totali | Gesamtausgaben | Dépenses totales
+Të ardhurat | Income | Entrate | Einnahmen | Revenus
+Financiare | Financial | Finanziari | Finanziell | Financier
+Barazimi Partnerësh | Partner Settlement | Saldo partner | Partnerausgleich | Règlement des partenaires
+Klientët Mujore | Monthly Customers | Clienti mensili | Monatliche Kunden | Clients mensuels
+Shtetet | Countries | Paesi | Länder | Pays
+Abonentët | Subscribers | Abbonati | Abonnenten | Abonnés
+Referuesit | Referrers | Referenti | Empfehler | Parrains
+Referencat Pagesave | Payment References | Riferimenti di pagamento | Zahlungsreferenzen | Références de paiement
+Nuk mund të ndryshohet | Cannot be changed | Non modificabile | Kann nicht geändert werden | Ne peut pas être modifié
+Konfigurimi i njoftimeve WhatsApp | WhatsApp notification settings | Configurazione notifiche WhatsApp | WhatsApp-Benachrichtigungseinstellungen | Configuration des notifications WhatsApp
+Dita më parë të dërgimit | Days before sending | Giorni prima dell'invio | Tage vor dem Versand | Jours avant l'envoi
+Dërgimi i njoftimit kur mbesin X ditë deri sa skadon abonimit | Send the notice when X days remain until the subscription expires | Invia la notifica quando mancano X giorni alla scadenza dell'abbonamento | Benachrichtigung senden, wenn noch X Tage bis zum Ablauf des Abonnements bleiben | Envoyer la notification lorsqu'il reste X jours avant l'expiration de l'abonnement
+ditë më parë | days before | giorni prima | Tage vorher | jours avant
+Njoftime Push | Push notifications | Notifiche push | Push-Benachrichtigungen | Notifications push
+Njoftime për detyrat me afat sot | Notifications for tasks due today | Notifiche per le attività in scadenza oggi | Benachrichtigungen für heute fällige Aufgaben | Notifications pour les tâches dues aujourd'hui
+Shkarko Backup | Download backup | Scarica backup | Backup herunterladen | Télécharger la sauvegarde
+Krijo Backup Tani | Create backup now | Crea backup ora | Jetzt Backup erstellen | Créer une sauvegarde maintenant
+Rivendos Backup | Restore backup | Ripristina backup | Backup wiederherstellen | Restaurer la sauvegarde
+Importo nga file .json ose .json.gz | Import from a .json or .json.gz file | Importa da file .json o .json.gz | Aus .json- oder .json.gz-Datei importieren | Importer depuis un fichier .json ou .json.gz
+⚠️ Konfirmo Rivendosjen | ⚠️ Confirm restore | ⚠️ Conferma ripristino | ⚠️ Wiederherstellung bestätigen | ⚠️ Confirmer la restauration
+Nuk ka auto-backup-e ende | No auto-backups yet | Ancora nessun backup automatico | Noch keine automatischen Backups | Aucune sauvegarde automatique pour l'instant
+Zona e rrezikshme | Danger zone | Zona pericolosa | Gefahrenbereich | Zone dangereuse
+Zona e Rrezikshme | Danger Zone | Zona pericolosa | Gefahrenbereich | Zone dangereuse
+Do të dilni nga paneli | You will be logged out of the panel | Uscirai dal pannello | Sie werden aus dem Panel abgemeldet | Vous serez déconnecté du panneau
+Profili & Rajoni | Profile & Region | Profilo e regione | Profil & Region | Profil et région
+Njoftimet | Notifications | Notifiche | Benachrichtigungen | Notifications
+Profili i kompanisë | Company profile | Profilo aziendale | Firmenprofil | Profil de l'entreprise
+Emri i kompanisë | Company name | Nome dell'azienda | Firmenname | Nom de l'entreprise
+Gjuha & Rajoni | Language & Region | Lingua e regione | Sprache & Region | Langue et région
+Gjuha | Language | Lingua | Sprache | Langue
+Formati i datës | Date format | Formato data | Datumsformat | Format de date
+Zona kohore | Time zone | Fuso orario | Zeitzone | Fuseau horaire
+Njoftimet automatike WhatsApp | Automatic WhatsApp notifications | Notifiche automatiche WhatsApp | Automatische WhatsApp-Benachrichtigungen | Notifications WhatsApp automatiques
+Njoftime skadimi abonimesh | Subscription expiry notices | Avvisi di scadenza abbonamenti | Ablaufbenachrichtigungen für Abonnements | Avis d'expiration des abonnements
+Dërgo automatikisht WhatsApp kur abonimet skadojnë | Automatically send WhatsApp when subscriptions expire | Invia automaticamente WhatsApp alla scadenza degli abbonamenti | WhatsApp automatisch senden, wenn Abonnements ablaufen | Envoyer automatiquement un WhatsApp à l'expiration des abonnements
+Autentifikim 2FA | 2FA authentication | Autenticazione 2FA | 2FA-Authentifizierung | Authentification 2FA
+Mbroje llogarinë me dy faktorë | Protect your account with two factors | Proteggi il tuo account con due fattori | Schützen Sie Ihr Konto mit zwei Faktoren | Protégez votre compte avec deux facteurs
+Njoftimet push u çaktivizuan në këtë pajisje. | Push notifications were disabled on this device. | Le notifiche push sono state disattivate su questo dispositivo. | Push-Benachrichtigungen wurden auf diesem Gerät deaktiviert. | Les notifications push ont été désactivées sur cet appareil.
+Njoftimet push u aktivizuan ✓ | Push notifications enabled ✓ | Notifiche push attivate ✓ | Push-Benachrichtigungen aktiviert ✓ | Notifications push activées ✓
+Cilësimet e njoftimeve u ruajtën ✓ | Notification settings saved ✓ | Impostazioni delle notifiche salvate ✓ | Benachrichtigungseinstellungen gespeichert ✓ | Paramètres de notification enregistrés ✓
+Të dhënat u rivendosën me sukses ✓ | Data restored successfully ✓ | Dati ripristinati con successo ✓ | Daten erfolgreich wiederhergestellt ✓ | Données restaurées avec succès ✓
+Ndryshimet u ruajtën ✓ | Changes saved ✓ | Modifiche salvate ✓ | Änderungen gespeichert ✓ | Modifications enregistrées ✓
+Për t'u marrë prej personave | To collect from people | Da ritirare dalle persone | Von Personen abzuholen | À récupérer auprès des personnes
+U tërhoq, ende pa u barazuar | Withdrawn, not yet settled | Prelevato, non ancora saldato | Abgehoben, noch nicht beglichen | Retiré, pas encore réglé
+S'ka konfirmim akoma | No confirmation yet | Ancora nessuna conferma | Noch keine Bestätigung | Pas encore de confirmation
+Barazimi me personat | Settlement with people | Saldo con le persone | Ausgleich mit Personen | Règlement avec les personnes
+Kliko "Barazo Gjithçka" kur dikush ta sjellë paranë | Click "Settle All" when someone brings you the money | Clicca "Salda tutto" quando qualcuno ti porta i soldi | Klicken Sie auf „Alles begleichen“, wenn jemand das Geld bringt | Cliquez sur « Tout régler » quand quelqu'un vous apporte l'argent
+Për t'u marrë | To collect | Da ritirare | Abzuholen | À récupérer
+Nr. Tërheqjes | Withdrawal no. | N. prelievo | Abhebungs-Nr. | N° de retrait
+Personi | Person | Persona | Person | Personne
+Statusi i tërheqjes | Withdrawal status | Stato del prelievo | Abhebungsstatus | Statut du retrait
+Barazo Gjithçka | Settle All | Salda tutto | Alles begleichen | Tout régler
+✓ Barazuar | ✓ Settled | ✓ Saldato | ✓ Beglichen | ✓ Réglé
+Barazo | Settle | Salda | Begleichen | Régler
+U tërhoq | Withdrawn | Prelevato | Abgehoben | Retiré
+S'u tërhoq | Not withdrawn | Non prelevato | Nicht abgehoben | Non retiré
+Kërko klient, person ose numër tërheqjeje... | Search customer, person or withdrawal number... | Cerca cliente, persona o numero di prelievo... | Kunde, Person oder Abhebungsnummer suchen... | Rechercher client, personne ou numéro de retrait...
+Numri i tërheqjes u kopjua ✓ | Withdrawal number copied ✓ | Numero di prelievo copiato ✓ | Abhebungsnummer kopiert ✓ | Numéro de retrait copié ✓
+Kopjo të dhënat | Copy details | Copia dati | Daten kopieren | Copier les données
+Bankë | Bank | Banca | Bank | Banque
+Ofruesi i pagesës | Payment provider | Fornitore di pagamento | Zahlungsanbieter | Prestataire de paiement
+Emri Mbiemri i mbajtësit të llogarisë | Account holder's full name | Nome e cognome dell'intestatario del conto | Vor- und Nachname des Kontoinhabers | Nom et prénom du titulaire du compte
+Pamje rrjetë | Grid view | Vista a griglia | Rasteransicht | Vue en grille
+Pamje listë | List view | Vista a elenco | Listenansicht | Vue en liste
+Link i Ri Pagese | New payment link | Nuovo link di pagamento | Neuer Zahlungslink | Nouveau lien de paiement
+Ndrysho Linkun e Pagesës | Edit payment link | Modifica link di pagamento | Zahlungslink bearbeiten | Modifier le lien de paiement
+Llogari e Re Bankare | New bank account | Nuovo conto bancario | Neues Bankkonto | Nouveau compte bancaire
+Ndrysho Llogarinë Bankare | Edit bank account | Modifica conto bancario | Bankkonto bearbeiten | Modifier le compte bancaire
+Shto Linkun | Add link | Aggiungi link | Link hinzufügen | Ajouter le lien
+Shto Llogarinë | Add account | Aggiungi conto | Konto hinzufügen | Ajouter le compte
+Ruaj Ndryshimet | Save changes | Salva modifiche | Änderungen speichern | Enregistrer les modifications
+Pa numër | No number | Senza numero | Keine Nummer | Sans numéro
+Skadon | Expires | Scade | Läuft ab | Expire
+Njoftim | Notice | Avviso | Hinweis | Avis
+Vlera | Value | Valore | Wert | Valeur
+Duke shfaqur | Showing | Visualizzazione di | Anzeige von | Affichage de
+nga | of | di | von | sur
+abonime | subscriptions | abbonamenti | Abonnements | abonnements
+Duhen kontaktuar sot | To contact today | Da contattare oggi | Heute zu kontaktieren | À contacter aujourd'hui
+Abonime me njoftim aktiv për sot | Subscriptions with active notice for today | Abbonamenti con avviso attivo per oggi | Abonnements mit aktiver Benachrichtigung für heute | Abonnements avec avis actif pour aujourd'hui
+Kërkon vëmendje të menjëhershme | Needs immediate attention | Richiede attenzione immediata | Erfordert sofortige Aufmerksamkeit | Nécessite une attention immédiate
+Njoftime në radhë për përpunim | Notifications queued for processing | Notifiche in coda per l'elaborazione | Benachrichtigungen in der Warteschlange | Notifications en file d'attente
+Abonime aktive pa skadencë të afërt | Active subscriptions with no near expiry | Abbonamenti attivi senza scadenza vicina | Aktive Abonnements ohne baldiges Ablaufdatum | Abonnements actifs sans expiration proche
+Gjithçka është e rregullt | Everything is in order | Tutto in ordine | Alles in Ordnung | Tout est en ordre
+Rifresko | Refresh | Aggiorna | Aktualisieren | Actualiser
+Nuk u gjet asnjë abonim | No subscription found | Nessun abbonamento trovato | Kein Abonnement gefunden | Aucun abonnement trouvé
+Provo një kërkim tjetër | Try another search | Prova un'altra ricerca | Versuchen Sie eine andere Suche | Essayez une autre recherche
+Asnjë abonim në këtë kategori | No subscriptions in this category | Nessun abbonamento in questa categoria | Keine Abonnements in dieser Kategorie | Aucun abonnement dans cette catégorie
+Hiqe nga lista — e keni njoftuar tashmë këtë klient | Remove from list — you have already notified this customer | Rimuovi dall'elenco — hai già avvisato questo cliente | Aus der Liste entfernen — Sie haben diesen Kunden bereits benachrichtigt | Retirer de la liste — vous avez déjà notifié ce client
+Faqja e mëparshme | Previous page | Pagina precedente | Vorherige Seite | Page précédente
+Faqja tjetër | Next page | Pagina successiva | Nächste Seite | Page suivante
+Kërko klientin ose ID e faturës... | Search customer or invoice ID... | Cerca cliente o ID fattura... | Kunde oder Rechnungs-ID suchen... | Rechercher client ou ID de facture...
+Furnitor | Supplier | Fornitore | Lieferant | Fournisseur
+Pa numër telefoni | No phone number | Nessun numero di telefono | Keine Telefonnummer | Pas de numéro de téléphone
+Pa link paneli | No panel link | Nessun link al pannello | Kein Panel-Link | Pas de lien de panneau
+Shto furnitor | Add supplier | Aggiungi fornitore | Lieferant hinzufügen | Ajouter un fournisseur
+Kërko furnitor... | Search supplier... | Cerca fornitore... | Lieferant suchen... | Rechercher un fournisseur...
+Nuk u gjet asnjë furnitor | No supplier found | Nessun fornitore trovato | Kein Lieferant gefunden | Aucun fournisseur trouvé
+Emri i Klientit | Customer name | Nome del cliente | Kundenname | Nom du client
+Nuk ka klientë | No customers | Nessun cliente | Keine Kunden | Aucun client
+Data e Kujtesës | Reminder date | Data del promemoria | Erinnerungsdatum | Date de rappel
+Përshkrimi i Punës | Job description | Descrizione del lavoro | Arbeitsbeschreibung | Description du travail
+Kryer ✓ | Done ✓ | Fatto ✓ | Erledigt ✓ | Terminé ✓
+Urgjente | Urgent | Urgente | Dringend | Urgent
+Krijo Detyrë | Create task | Crea attività | Aufgabe erstellen | Créer une tâche
+Po ngarkon detyrat... | Loading tasks... | Caricamento attività... | Aufgaben werden geladen... | Chargement des tâches...
+Nuk ka detyra | No tasks | Nessuna attività | Keine Aufgaben | Aucune tâche
++ Detyrë e Re | + New task | + Nuova attività | + Neue Aufgabe | + Nouvelle tâche
+Kërko klient... | Search customer... | Cerca cliente... | Kunde suchen... | Rechercher un client...
+Përshkruaj detyrën... | Describe the task... | Descrivi l'attività... | Aufgabe beschreiben... | Décrivez la tâche...
+Shëno si i plotësuar | Mark as completed | Segna come completata | Als erledigt markieren | Marquer comme terminé
+Kërko detyrë... | Search task... | Cerca attività... | Aufgabe suchen... | Rechercher une tâche...
+Detyra u ndryshua ✓ | Task updated ✓ | Attività aggiornata ✓ | Aufgabe aktualisiert ✓ | Tâche mise à jour ✓
+Detyra u krijua ✓ | Task created ✓ | Attività creata ✓ | Aufgabe erstellt ✓ | Tâche créée ✓
+Detyra u fshi | Task deleted | Attività eliminata | Aufgabe gelöscht | Tâche supprimée
+Unë | Me | Io | Ich | Moi
+Historia e aktivitetit | Activity history | Cronologia attività | Aktivitätsverlauf | Historique d'activité
+Edito përdoruesin | Edit user | Modifica utente | Benutzer bearbeiten | Modifier l'utilisateur
+Fshi përdoruesin | Delete user | Elimina utente | Benutzer löschen | Supprimer l'utilisateur
+Kërko veprim... | Search action... | Cerca azione... | Aktion suchen... | Rechercher une action...
+Nuk mund të fshish llogarinë tënde aktuale. | You cannot delete your current account. | Non puoi eliminare il tuo account attuale. | Sie können Ihr aktuelles Konto nicht löschen. | Vous ne pouvez pas supprimer votre compte actuel.
+Nuk mund të çaktivizosh llogarinë tënde aktuale. | You cannot deactivate your current account. | Non puoi disattivare il tuo account attuale. | Sie können Ihr aktuelles Konto nicht deaktivieren. | Vous ne pouvez pas désactiver votre compte actuel.
+AI Asistenti X-Flow | X-Flow AI Assistant | Assistente AI X-Flow | X-Flow KI-Assistent | Assistant IA X-Flow
+AI Asistenti A Flow | A Flow AI Assistant | Assistente AI A Flow | A Flow KI-Assistent | Assistant IA A Flow
+Sistemi Aktiv | System active | Sistema attivo | System aktiv | Système actif
+Gjithsej Fatura: | Total invoices: | Fatture totali: | Rechnungen gesamt: | Total des factures :
+Fatura në Pritje: | Pending invoices: | Fatture in attesa: | Ausstehende Rechnungen: | Factures en attente :
+Vlera në Pritje: | Pending value: | Valore in attesa: | Ausstehender Wert: | Valeur en attente :
+Kanal Bisede — Komanda Shqip | Chat channel — Albanian commands | Canale chat — Comandi in albanese | Chat-Kanal — Albanische Befehle | Canal de discussion — Commandes en albanais
+Kërkon konfirmim para se t'i ekzekutojë veprimet | Requires confirmation before executing actions | Richiede conferma prima di eseguire le azioni | Erfordert Bestätigung vor der Ausführung von Aktionen | Nécessite une confirmation avant d'exécuter les actions
+📝 Provo: | 📝 Try: | 📝 Prova: | 📝 Versuchen Sie: | 📝 Essayez :
+Shembuj: | Examples: | Esempi: | Beispiele: | Exemples :
+Motor Komandash Lokal | Local command engine | Motore di comandi locale | Lokale Befehls-Engine | Moteur de commandes local
+Komanda me @mention për krijim faturash, pagesash dhe shpenzimesh. | @mention commands to create invoices, payments and expenses. | Comandi con @mention per creare fatture, pagamenti e spese. | @Mention-Befehle zum Erstellen von Rechnungen, Zahlungen und Ausgaben. | Commandes avec @mention pour créer des factures, paiements et dépenses.
+Komanda të Shpejta | Quick commands | Comandi rapidi | Schnellbefehle | Commandes rapides
+Konteksti i të Dhënave | Data context | Contesto dei dati | Datenkontext | Contexte des données
+Po përpunon komandën... | Processing command... | Elaborazione comando... | Befehl wird verarbeitet... | Traitement de la commande...
+Krijon faturë të re për klientin | Creates a new invoice for the customer | Crea una nuova fattura per il cliente | Erstellt eine neue Rechnung für den Kunden | Crée une nouvelle facture pour le client
+Regjistron pagesë të marrë | Records a received payment | Registra un pagamento ricevuto | Erfasst eine erhaltene Zahlung | Enregistre un paiement reçu
+Regjistron shpenzim të ri | Records a new expense | Registra una nuova spesa | Erfasst eine neue Ausgabe | Enregistre une nouvelle dépense
+Komandë e panjohur | Unknown command | Comando sconosciuto | Unbekannter Befehl | Commande inconnue
+Komanda pranuar | Command accepted | Comando accettato | Befehl akzeptiert | Commande acceptée
+Veprim i gatshëm | Action ready | Azione pronta | Aktion bereit | Action prête
+Pastro bisedën | Clear chat | Pulisci chat | Chat leeren | Effacer la discussion
+Përgjigja... | Reply... | Risposta... | Antwort... | Réponse...
+📇 Gjeta këto të dhëna nga screenshot-i: | 📇 I found this data from the screenshot: | 📇 Ho trovato questi dati dallo screenshot: | 📇 Diese Daten habe ich im Screenshot gefunden: | 📇 J'ai trouvé ces données dans la capture d'écran :
+✓ Regjistro Klientin | ✓ Save customer | ✓ Registra cliente | ✓ Kunden erfassen | ✓ Enregistrer le client
+Hap AI Chat | Open AI chat | Apri chat AI | KI-Chat öffnen | Ouvrir le chat IA
+Rivendos parazgjedhjet | Reset to defaults | Ripristina predefiniti | Auf Standard zurücksetzen | Rétablir les valeurs par défaut
+Nuk u gjet asnjë shtet | No country found | Nessun paese trovato | Kein Land gefunden | Aucun pays trouvé
+Kërko shtetin... | Search country... | Cerca paese... | Land suchen... | Rechercher un pays...
+Ende s'ka lloje — fillo duke shkruar | No types yet — start typing | Ancora nessun tipo — inizia a scrivere | Noch keine Typen — beginnen Sie zu tippen | Aucun type pour l'instant — commencez à saisir
+Kërko ose shto lloj të ri... | Search or add a new type... | Cerca o aggiungi un nuovo tipo... | Neuen Typ suchen oder hinzufügen... | Rechercher ou ajouter un nouveau type...
+Krejt vitin | Whole year | Tutto l'anno | Ganzes Jahr | Toute l'année
+Të gjitha lexuar | All read | Tutte lette | Alle gelesen | Tout lu
+Nuk ka njoftime | No notifications | Nessuna notifica | Keine Benachrichtigungen | Aucune notification
+Njoftimet e Detyrave | Task notifications | Notifiche attività | Aufgabenbenachrichtigungen | Notifications de tâches
+Lexoje të gjitha | Mark all as read | Segna tutte come lette | Alle als gelesen markieren | Tout marquer comme lu
+Shiko të gjitha | View all | Vedi tutte | Alle anzeigen | Tout voir
+Emri i klientit... | Customer name... | Nome del cliente... | Kundenname... | Nom du client...
+Import nga Excel | Import from Excel | Importa da Excel | Import aus Excel | Importer depuis Excel
+Shkarko modelin Excel | Download Excel template | Scarica modello Excel | Excel-Vorlage herunterladen | Télécharger le modèle Excel
+Plotëso modelin me të dhënat tuaja, pastaj ngarko | Fill in the template with your data, then upload | Compila il modello con i tuoi dati, poi carica | Füllen Sie die Vorlage mit Ihren Daten aus und laden Sie sie hoch | Remplissez le modèle avec vos données, puis téléversez-le
+Kliko për të zgjedhur file Excel | Click to choose an Excel file | Clicca per scegliere un file Excel | Klicken, um eine Excel-Datei auszuwählen | Cliquez pour choisir un fichier Excel
+regjistrime | records | registrazioni | Einträge | enregistrements
+Shkarko | Download | Scarica | Herunterladen | Télécharger
+Pagesa | Payment | Pagamento | Zahlung | Paiement
+Link Pagese | Payment Link | Link di pagamento | Zahlungslink | Lien de paiement
+Emrat për Pagesa | Payment Names | Nomi per i pagamenti | Zahlungsnamen | Noms pour paiements
+Barazim me Referent | Settlement with Referrer | Saldo con referente | Ausgleich mit Empfehler | Règlement avec le référent
+Shto të re | Add new | Aggiungi nuovo | Neu hinzufügen | Ajouter
+Faturë e Re | New invoice | Nuova fattura | Neue Rechnung | Nouvelle facture
+Shpenzim i Ri | New expense | Nuova spesa | Neue Ausgabe | Nouvelle dépense
+Detyrë e Re | New task | Nuova attività | Neue Aufgabe | Nouvelle tâche
+Klient i Ri | New customer | Nuovo cliente | Neuer Kunde | Nouveau client
+Produkt i Ri | New product | Nuovo prodotto | Neues Produkt | Nouveau produit
+Pagesë e Re | New payment | Nuovo pagamento | Neue Zahlung | Nouveau paiement
+Furnitor i Ri | New supplier | Nuovo fornitore | Neuer Lieferant | Nouveau fournisseur
+Furnitor i ri | New supplier | Nuovo fornitore | Neuer Lieferant | Nouveau fournisseur
+Përdorues i Ri | New user | Nuovo utente | Neuer Benutzer | Nouvel utilisateur
+Përdorues i ri | New user | Nuovo utente | Neuer Benutzer | Nouvel utilisateur
+Produkt / Shërbim i ri | New product / service | Nuovo prodotto / servizio | Neues Produkt / neue Dienstleistung | Nouveau produit / service
+Edito produktin | Edit product | Modifica prodotto | Produkt bearbeiten | Modifier le produit
+Shto produktin | Add product | Aggiungi prodotto | Produkt hinzufügen | Ajouter le produit
+Shto furnitorin | Add supplier | Aggiungi fornitore | Lieferant hinzufügen | Ajouter le fournisseur
+Shto përdoruesin | Add user | Aggiungi utente | Benutzer hinzufügen | Ajouter l'utilisateur
+Shto element të ri | Add new item | Aggiungi nuovo elemento | Neues Element hinzufügen | Ajouter un nouvel élément
+Ende s'ka referentë — fillo duke shkruar | No referrers yet — start typing | Ancora nessun referente — inizia a scrivere | Noch keine Empfehler — beginnen Sie zu tippen | Aucun référent pour l'instant — commencez à saisir
+Kërko ose shto referent... | Search or add referrer... | Cerca o aggiungi referente... | Empfehler suchen oder hinzufügen... | Rechercher ou ajouter un référent...
+Nuk u gjet asnjë klient | No customer found | Nessun cliente trovato | Kein Kunde gefunden | Aucun client trouvé
+— Asnjë — | — None — | — Nessuno — | — Keiner — | — Aucun —
+Kërko person referues... | Search referrer... | Cerca persona referente... | Empfehler suchen... | Rechercher un parrain...
+Kryesore | Main | Principale | Hauptmenü | Principal
+Sistemi | System | Sistema | System | Système
+Dashboard | Dashboard | Dashboard | Dashboard | Tableau de bord
+Abonimet | Subscriptions | Abbonamenti | Abonnements | Abonnements
+Detyrat | Tasks | Attività | Aufgaben | Tâches
+Klientët | Customers | Clienti | Kunden | Clients
+Produktet | Products | Prodotti | Produkte | Produits
+Hostet | Hosts | Host | Hosts | Hôtes
+Furnitorët | Suppliers | Fornitori | Lieferanten | Fournisseurs
+Raportet | Reports | Report | Berichte | Rapports
+Cilësimet | Settings | Impostazioni | Einstellungen | Paramètres
+Kërko klient, faturë, shpenzim... | Search customer, invoice, expense... | Cerca cliente, fattura, spesa... | Kunde, Rechnung, Ausgabe suchen... | Rechercher client, facture, dépense...
+Emri i klientit... | Customer name... | Nome cliente... | Kundenname... | Nom du client...
+Furnitori * | Supplier * | Fornitore * | Lieferant * | Fournisseur *
+Linku i panelit | Panel link | Link del pannello | Panel-Link | Lien du panneau
+Furnitori u përditësua! ✓ | Supplier updated! ✓ | Fornitore aggiornato! ✓ | Lieferant aktualisiert! ✓ | Fournisseur mis à jour ! ✓
+Furnitori u shtua me sukses! ✓ | Supplier added successfully! ✓ | Fornitore aggiunto con successo! ✓ | Lieferant erfolgreich hinzugefügt! ✓ | Fournisseur ajouté avec succès ! ✓
+Pjesërisht e paguar | Partially paid | Parzialmente pagato | Teilweise bezahlt | Partiellement payé
+E para | First | Prima | Erste | Première
+E fundit | Last | Ultima | Letzte | Dernière
+Përdoruesi u përditësua! ✓ | User updated! ✓ | Utente aggiornato! ✓ | Benutzer aktualisiert! ✓ | Utilisateur mis à jour ! ✓
+Përdoruesi u shtua! ✓ | User added! ✓ | Utente aggiunto! ✓ | Benutzer hinzugefügt! ✓ | Utilisateur ajouté ! ✓
+Ende s'ka furnitorë — fillo duke shkruar | No suppliers yet — start typing | Ancora nessun fornitore — inizia a scrivere | Noch keine Lieferanten — beginnen Sie zu tippen | Aucun fournisseur pour l'instant — commencez à saisir
+Kërko ose shto furnitor... | Search or add supplier... | Cerca o aggiungi fornitore... | Lieferant suchen oder hinzufügen... | Rechercher ou ajouter un fournisseur...
+Pajisja juaj nuk suporton kontaktet direkte | Your device does not support direct contacts | Il tuo dispositivo non supporta i contatti diretti | Ihr Gerät unterstützt keine direkten Kontakte | Votre appareil ne prend pas en charge les contacts directs
+Të ardhura sipas muajit — 2026 | Revenue by month — 2026 | Entrate per mese — 2026 | Einnahmen nach Monat — 2026 | Revenus par mois — 2026
+Barazim me Referent | Settlement with Referrer | Saldo con referente | Ausgleich mit Empfehler | Règlement avec le référent
+Janar | January | Gennaio | Januar | Janvier
+Shkurt | February | Febbraio | Februar | Février
+Mars | March | Marzo | März | Mars
+Prill | April | Aprile | April | Avril
+Maj | May | Maggio | Mai | Mai
+Qershor | June | Giugno | Juni | Juin
+Korrik | July | Luglio | Juli | Juillet
+Gusht | August | Agosto | August | Août
+Shtator | September | Settembre | September | Septembre
+Tetor | October | Ottobre | Oktober | Octobre
+Nëntor | November | Novembre | November | Novembre
+Dhjetor | December | Dicembre | Dezember | Décembre
+Shk | Feb | Feb | Feb | Févr
+Pri | Apr | Apr | Apr | Avr
+Qer | Jun | Giu | Jun | Juin
+Kor | Jul | Lug | Jul | Juil
+Gus | Aug | Ago | Aug | Août
+Sht | Sep | Set | Sep | Sep
+Tet | Oct | Ott | Okt | Oct
+Nën | Nov | Nov | Nov | Nov
+Dhj | Dec | Dic | Dez | Déc
+E hënë | Monday | Lunedì | Montag | Lundi
+E martë | Tuesday | Martedì | Dienstag | Mardi
+E mërkurë | Wednesday | Mercoledì | Mittwoch | Mercredi
+E enjte | Thursday | Giovedì | Donnerstag | Jeudi
+E premte | Friday | Venerdì | Freitag | Vendredi
+E shtunë | Saturday | Sabato | Samstag | Samedi
+E diel | Sunday | Domenica | Sonntag | Dimanche
+Përshëndetje | Hello | Ciao | Hallo | Bonjour
+Kërko | Search | Cerca | Suchen | Rechercher
+Nuk ka të dhëna | No data | Nessun dato | Keine Daten | Aucune donnée
+Gjithsej | Total | Totale | Gesamt | Total
+Shiko | View | Vedi | Ansehen | Voir
+Shiko faturat | View invoices | Vedi fatture | Rechnungen ansehen | Voir les factures
+Të gjithë | Everyone | Tutti | Alle | Tous
+Notifications | Notifications | Notifiche | Benachrichtigungen | Notifications
