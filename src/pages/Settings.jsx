@@ -273,7 +273,7 @@ export default function Settings() {
   ]
 
   return (
-    <div>
+    <div className="rep">
       {/* Titulli "Cilësimet" tani jeton te header-i global (Header.jsx, kur page === 'settings'). */}
       <div className="flex items-center justify-end mb-6">
         <button className="btn btn-primary" onClick={() => showToast('Ndryshimet u ruajtën ✓')}>
@@ -281,24 +281,24 @@ export default function Settings() {
         </button>
       </div>
 
-      <div className="max-w-2xl space-y-5">
+      <div className="max-w-2xl dark:max-w-none space-y-5">
         {sections.map(({ title, icon: Icon, rows }) => {
           const isLockedSection = title === 'Profili i kompanisë' || title === 'Gjuha & Rajoni'
           const isAdmin = currentUser?.role === 'admin' || currentUser?.isSuperAdmin
           return (
           <div key={title}>
             <div className="flex items-center gap-2 mb-2 px-1">
-              <Icon size={14} className="text-gray-400"/>
-              <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">{title}</p>
+              <Icon size={14} className="text-gray-400 dark:text-gray-500"/>
+              <p className="text-xs font-bold text-gray-400 uppercase tracking-widest dark:text-gray-500">{title}</p>
             </div>
-            <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
+            <div className="bg-white rounded-xl border border-gray-100 overflow-hidden dark:bg-gray-800 dark:border-gray-700">
               {rows.map((row, i) => {
                 const fieldKey = row.label.toLowerCase().replace(/\s+/g, '')
                 const isEditing = editingField === `${title}-${i}`
                 return (
-                <div key={i} className="flex items-center justify-between px-5 py-3.5 border-b border-gray-50 last:border-0 hover:bg-gray-50/50 transition-colors">
+                <div key={i} className="flex items-center justify-between px-5 py-3.5 border-b border-gray-50 last:border-0 hover:bg-gray-50/50 transition-colors dark:border-gray-700 dark:hover:bg-dk-card">
                   <div className="flex-1">
-                    <p className="text-sm font-semibold text-gray-800">{row.label}</p>
+                    <p className="text-sm font-semibold text-gray-800 dark:text-gray-100">{row.label}</p>
                     {isEditing && isAdmin && row.type === 'field' ? (
                       <input
                         autoFocus
@@ -319,7 +319,7 @@ export default function Settings() {
                         }}
                       />
                     ) : row.type !== 'select' ? (
-                      <p className="text-xs text-gray-400 mt-0.5">{companyData[fieldKey] || row.sub}</p>
+                      <p className="text-xs text-gray-400 mt-0.5 dark:text-gray-500">{companyData[fieldKey] || row.sub}</p>
                     ) : null}
                   </div>
                   {row.key ? (
@@ -361,14 +361,14 @@ export default function Settings() {
         {toggles.autoWhatsApp && (
           <div>
             <div className="flex items-center gap-2 mb-2 px-1">
-              <MessageCircle size={14} className="text-gray-400"/>
-              <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Konfigurimi i njoftimeve WhatsApp</p>
+              <MessageCircle size={14} className="text-gray-400 dark:text-gray-500"/>
+              <p className="text-xs font-bold text-gray-400 uppercase tracking-widest dark:text-gray-500">Konfigurimi i njoftimeve WhatsApp</p>
             </div>
-            <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
-              <div className="px-5 py-3.5 border-b border-gray-50">
+            <div className="bg-white rounded-xl border border-gray-100 overflow-hidden dark:bg-gray-800 dark:border-gray-700">
+              <div className="px-5 py-3.5 border-b border-gray-50 dark:border-gray-700">
                 <div className="mb-3">
-                  <p className="text-sm font-semibold text-gray-800 mb-1">Dita më parë të dërgimit</p>
-                  <p className="text-xs text-gray-400 mb-3">Dërgimi i njoftimit kur mbesin X ditë deri sa skadon abonimit</p>
+                  <p className="text-sm font-semibold text-gray-800 mb-1 dark:text-gray-100">Dita më parë të dërgimit</p>
+                  <p className="text-xs text-gray-400 mb-3 dark:text-gray-500">Dërgimi i njoftimit kur mbesin X ditë deri sa skadon abonimit</p>
                   <div className="flex items-center gap-2">
                     <input
                       type="number"
@@ -376,9 +376,9 @@ export default function Settings() {
                       max="90"
                       value={advanceDays}
                       onChange={(e) => setAdvanceDays(Math.max(0, Math.min(90, parseInt(e.target.value) || 0)))}
-                      className="w-20 px-3 py-2 border border-gray-300 rounded-lg text-sm font-semibold text-gray-800"
+                      className="w-20 px-3 py-2 border border-gray-300 dark:border-white/10 dark:bg-dk-card rounded-lg text-sm font-semibold text-gray-800 dark:text-gray-100"
                     />
-                    <span className="text-sm text-gray-600">ditë më parë</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-300">ditë më parë</span>
                     <button
                       onClick={handleSaveAdvanceDays}
                       className="ml-auto btn btn-primary btn-sm text-xs flex items-center gap-1"
@@ -395,14 +395,14 @@ export default function Settings() {
         {/* Njoftime Push — vetëm kjo pajisje */}
         <div>
           <div className="flex items-center gap-2 mb-2 px-1">
-            <Bell size={14} className="text-gray-400"/>
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Njoftime Push</p>
+            <Bell size={14} className="text-gray-400 dark:text-gray-500"/>
+            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest dark:text-gray-500">Njoftime Push</p>
           </div>
-          <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
+          <div className="bg-white rounded-xl border border-gray-100 overflow-hidden dark:bg-gray-800 dark:border-gray-700">
             <div className="flex items-center justify-between px-5 py-3.5 gap-3">
               <div>
-                <p className="text-sm font-semibold text-gray-800">Njoftime për detyrat me afat sot</p>
-                <p className="text-xs text-gray-400 mt-0.5">
+                <p className="text-sm font-semibold text-gray-800 dark:text-gray-100">Njoftime për detyrat me afat sot</p>
+                <p className="text-xs text-gray-400 mt-0.5 dark:text-gray-500">
                   {pushState === 'unsupported' && 'Ky shfletues/pajisje nuk i mbështet njoftimet push.'}
                   {pushState === 'denied' && 'Leja për njoftime është refuzuar — aktivizoje te cilësimet e shfletuesit.'}
                   {pushState === 'checking' && 'Duke kontrolluar...'}
@@ -426,14 +426,14 @@ export default function Settings() {
         {/* Backup & Restore */}
         <div>
           <div className="flex items-center gap-2 mb-2 px-1">
-            <Download size={14} className="text-gray-400"/>
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Backup & Rivendosje</p>
+            <Download size={14} className="text-gray-400 dark:text-gray-500"/>
+            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest dark:text-gray-500">Backup & Rivendosje</p>
           </div>
-          <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
-            <div className="flex items-center justify-between px-5 py-3.5 border-b border-gray-50">
+          <div className="bg-white rounded-xl border border-gray-100 overflow-hidden dark:bg-gray-800 dark:border-gray-700">
+            <div className="flex items-center justify-between px-5 py-3.5 border-b border-gray-50 dark:border-gray-700">
               <div>
-                <p className="text-sm font-semibold text-gray-800">Shkarko Backup</p>
-                <p className="text-xs text-gray-400 mt-0.5">Çdo të dhënë (fatura, klientë, furnitorë, detyra, cilësime...) si file i kompresuar</p>
+                <p className="text-sm font-semibold text-gray-800 dark:text-gray-100">Shkarko Backup</p>
+                <p className="text-xs text-gray-400 mt-0.5 dark:text-gray-500">Çdo të dhënë (fatura, klientë, furnitorë, detyra, cilësime...) si file i kompresuar</p>
               </div>
               <button
                 onClick={handleDownloadBackup}
@@ -443,10 +443,10 @@ export default function Settings() {
                 <Download size={13}/>{isBackingUp ? 'Duke shkarkuar...' : 'Shkarko'}
               </button>
             </div>
-            <div className="flex items-center justify-between px-5 py-3.5 border-b border-gray-50">
+            <div className="flex items-center justify-between px-5 py-3.5 border-b border-gray-50 dark:border-gray-700">
               <div>
-                <p className="text-sm font-semibold text-gray-800">Krijo Backup Tani</p>
-                <p className="text-xs text-gray-400 mt-0.5">Shkarko + shto në listën e auto-backup-eve, pa pritur ciklin periodik</p>
+                <p className="text-sm font-semibold text-gray-800 dark:text-gray-100">Krijo Backup Tani</p>
+                <p className="text-xs text-gray-400 mt-0.5 dark:text-gray-500">Shkarko + shto në listën e auto-backup-eve, pa pritur ciklin periodik</p>
               </div>
               <button
                 onClick={handleCreateBackupNow}
@@ -458,8 +458,8 @@ export default function Settings() {
             </div>
             <div className="flex items-center justify-between px-5 py-3.5">
               <div>
-                <p className="text-sm font-semibold text-gray-800">Rivendos Backup</p>
-                <p className="text-xs text-gray-400 mt-0.5">Importo nga file .json ose .json.gz</p>
+                <p className="text-sm font-semibold text-gray-800 dark:text-gray-100">Rivendos Backup</p>
+                <p className="text-xs text-gray-400 mt-0.5 dark:text-gray-500">Importo nga file .json ose .json.gz</p>
               </div>
               <button
                 onClick={() => fileInputRef.current?.click()}
@@ -480,13 +480,13 @@ export default function Settings() {
 
         {/* Restore confirmation */}
         {showRestoreConfirm && restoreData && (
-          <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
+          <div className="bg-amber-50 border border-amber-200 dark:bg-[#b45309]/10 dark:border-[#b45309]/30 rounded-xl p-4">
             <div className="mb-4">
-              <p className="text-sm font-semibold text-amber-900 mb-2">⚠️ Konfirmo Rivendosjen</p>
-              <p className="text-xs text-amber-800 mb-3">
+              <p className="text-sm font-semibold text-amber-900 dark:text-amber-200 mb-2">⚠️ Konfirmo Rivendosjen</p>
+              <p className="text-xs text-amber-800 dark:text-amber-300/90 mb-3">
                 Kjo do të zëvendësojë të gjitha të dhënat e tanishme me të dhënat nga backup-i:
               </p>
-              <ul className="text-xs text-amber-800 space-y-1 mb-4">
+              <ul className="text-xs text-amber-800 dark:text-amber-300/90 space-y-1 mb-4">
                 <li>• Faturat: {restoreData.invoices?.length || 0}</li>
                 <li>• Klientët: {restoreData.customers?.length || 0}</li>
                 <li>• Produktet: {restoreData.items?.length || 0}</li>
@@ -496,11 +496,11 @@ export default function Settings() {
                 <li>• Përdoruesit: {restoreData.users?.length || 0}</li>
               </ul>
               {restoreData.tasks?.length > 0 && (
-                <p className="text-xs text-amber-700 mb-3">
+                <p className="text-xs text-amber-700 dark:text-amber-300 mb-3">
                   ℹ️ Backup-i ka {restoreData.tasks.length} detyra — ato NUK rivendosen automatikisht (kërkojnë rivendosje të veçantë, kontakto zhvilluesin).
                 </p>
               )}
-              <p className="text-xs text-blue-600 font-semibold">Kjo nuk mund të rikthehej!</p>
+              <p className="text-xs text-blue-600 dark:text-[#ffb4ab] font-semibold">Kjo nuk mund të rikthehej!</p>
             </div>
             <div className="flex gap-2">
               <button
@@ -525,27 +525,27 @@ export default function Settings() {
         {/* Auto-backups */}
         <div>
           <div className="flex items-center gap-2 mb-2 px-1">
-            <Clock size={14} className="text-gray-400"/>
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Auto-backup-et (çdo 3 ore, {autoBackups.length}/3 të fundit)</p>
+            <Clock size={14} className="text-gray-400 dark:text-gray-500"/>
+            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest dark:text-gray-500">Auto-backup-et (çdo 3 ore, {autoBackups.length}/3 të fundit)</p>
           </div>
-          <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
+          <div className="bg-white rounded-xl border border-gray-100 overflow-hidden dark:bg-gray-800 dark:border-gray-700">
             {autoBackups.length === 0 ? (
               <div className="px-5 py-8 text-center">
-                <p className="text-sm text-gray-500">Nuk ka auto-backup-e ende</p>
-                <p className="text-xs text-gray-400 mt-1">Auto-backup-et do të krijohen automatikisht çdo 3 ore (edhe u shkarkojnë vetë si file .gz)</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Nuk ka auto-backup-e ende</p>
+                <p className="text-xs text-gray-400 mt-1 dark:text-gray-500">Auto-backup-et do të krijohen automatikisht çdo 3 ore (edhe u shkarkojnë vetë si file .gz)</p>
               </div>
             ) : (
-              <div className="divide-y divide-gray-100">
+              <div className="divide-y divide-gray-100 dark:divide-gray-700">
                 {autoBackups.map((backup, idx) => (
-                  <div key={idx} className="px-5 py-3.5 flex items-center justify-between hover:bg-gray-50 transition-colors">
+                  <div key={idx} className="px-5 py-3.5 flex items-center justify-between hover:bg-gray-50 transition-colors dark:hover:bg-gray-900/50">
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-gray-800">
+                      <p className="text-sm font-semibold text-gray-800 dark:text-gray-100">
                         Backup #{autoBackups.length - idx}
                       </p>
-                      <p className="text-xs text-gray-400 mt-0.5">
+                      <p className="text-xs text-gray-400 mt-0.5 dark:text-gray-500">
                         {formatBackupTime(backup.exportDate)}
                       </p>
-                      <p className="text-xs text-gray-500 mt-1">
+                      <p className="text-xs text-gray-500 mt-1 dark:text-gray-400">
                         {backup.data?.invoices?.length || 0} fatura • {backup.data?.customers?.length || 0} klientë
                       </p>
                     </div>
@@ -558,7 +558,7 @@ export default function Settings() {
                       </button>
                       <button
                         onClick={() => handleDeleteAutoBackup(idx)}
-                        className="btn btn-outline btn-sm text-xs text-blue-600 hover:bg-blue-50 flex items-center gap-1"
+                        className="btn btn-outline btn-sm text-xs text-blue-600 hover:bg-blue-50 dark:text-[#ffb4ab] dark:hover:bg-[#93000a]/25 flex items-center gap-1"
                       >
                         <Trash2 size={12}/>
                       </button>
@@ -572,13 +572,13 @@ export default function Settings() {
 
         {/* Auto-backup restore confirmation */}
         {showAutoBackupConfirm && restoreData && (
-          <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
+          <div className="bg-amber-50 border border-amber-200 dark:bg-[#b45309]/10 dark:border-[#b45309]/30 rounded-xl p-4">
             <div className="mb-4">
-              <p className="text-sm font-semibold text-amber-900 mb-2">⚠️ Konfirmo Rivendosjen e Auto-Backup-it</p>
-              <p className="text-xs text-amber-800 mb-3">
+              <p className="text-sm font-semibold text-amber-900 dark:text-amber-200 mb-2">⚠️ Konfirmo Rivendosjen e Auto-Backup-it</p>
+              <p className="text-xs text-amber-800 dark:text-amber-300/90 mb-3">
                 Kjo do të zëvendësojë të gjitha të dhënat e tanishme:
               </p>
-              <ul className="text-xs text-amber-800 space-y-1 mb-4">
+              <ul className="text-xs text-amber-800 dark:text-amber-300/90 space-y-1 mb-4">
                 <li>• Faturat: {restoreData.invoices?.length || 0}</li>
                 <li>• Klientët: {restoreData.customers?.length || 0}</li>
                 <li>• Produktet: {restoreData.items?.length || 0}</li>
@@ -588,11 +588,11 @@ export default function Settings() {
                 <li>• Përdoruesit: {restoreData.users?.length || 0}</li>
               </ul>
               {restoreData.tasks?.length > 0 && (
-                <p className="text-xs text-amber-700 mb-3">
+                <p className="text-xs text-amber-700 dark:text-amber-300 mb-3">
                   ℹ️ Backup-i ka {restoreData.tasks.length} detyra — ato NUK rivendosen automatikisht.
                 </p>
               )}
-              <p className="text-xs text-blue-600 font-semibold">Kjo nuk mund të rikthehej!</p>
+              <p className="text-xs text-blue-600 dark:text-[#ffb4ab] font-semibold">Kjo nuk mund të rikthehej!</p>
             </div>
             <div className="flex gap-2">
               <button
@@ -620,11 +620,11 @@ export default function Settings() {
           <div className="flex items-center gap-2 mb-2 px-1">
             <p className="text-xs font-bold text-blue-400 uppercase tracking-widest">Zona e rrezikshme</p>
           </div>
-          <div className="bg-white rounded-xl border border-blue-100 overflow-hidden">
+          <div className="bg-white rounded-xl border border-blue-100 overflow-hidden dark:bg-gray-800 dark:border-[#93000a]/40">
             <div className="flex items-center justify-between px-5 py-3.5">
               <div>
-                <p className="text-sm font-semibold text-gray-800">Dilni nga sistemi</p>
-                <p className="text-xs text-gray-400 mt-0.5">Do të dilni nga paneli</p>
+                <p className="text-sm font-semibold text-gray-800 dark:text-gray-100">Dilni nga sistemi</p>
+                <p className="text-xs text-gray-400 mt-0.5 dark:text-gray-500">Do të dilni nga paneli</p>
               </div>
               <button className="btn btn-danger btn-sm flex items-center gap-1.5" onClick={logout}>
                 <LogOut size={13}/>Dilni

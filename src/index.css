@@ -205,6 +205,13 @@
 .dark .rep .dark\:hover\:bg-gray-600:hover { background-color: theme('colors.dk.high'); }
 .dark .rep .dark\:hover\:border-blue-900\/40:hover { border-color: theme('colors.accent.DEFAULT / 40%'); }
 .dark .rep .dark\:border-gray-600 { border-color: rgb(255 255 255 / 0.07); }
+/* Butonat e përgjithshme brenda .rep (Cilësimet, Pagesat...) */
+.dark .rep .btn-outline { background-color: theme('colors.dk.high'); border-color: rgb(255 255 255 / 0.08); color: #dfe2eb; }
+.dark .rep .btn-outline:hover { background-color: theme('colors.dk.line'); }
+.dark .rep .btn-primary { background-color: theme('colors.accent.DEFAULT'); color: theme('colors.accent.on'); box-shadow: 0 0 18px -4px theme('colors.accent.DEFAULT / 45%'); }
+.dark .rep .btn-primary:hover { background-color: theme('colors.accent.DEFAULT / 90%'); }
+.dark .rep .btn-danger { background-color: rgb(147 0 10 / 0.3); border-color: transparent; color: #ffb4ab; }
+.dark .rep .btn-danger:hover { background-color: rgb(147 0 10 / 0.5); }
 .dark .cust-tbl input[type='checkbox'], .dark .cust-cb { accent-color: theme('colors.accent.DEFAULT'); color-scheme: dark; }
 
 /* ItemRow grid - Desktop default */

@@ -150,7 +150,7 @@ export function Pagination({ page, total, perPage, onChange }) {
 
 export function Toggle({ on, onToggle }) {
   return (
-    <div className={`toggle ${on ? 'bg-blue-500' : 'bg-gray-200'}`} onClick={onToggle}>
+    <div className={`toggle ${on ? 'bg-blue-500 dark:bg-accent' : 'bg-gray-200 dark:bg-dk-line'}`} onClick={onToggle}>
       <div className={`toggle-knob ${on ? 'translate-x-[18px]' : ''}`} />
     </div>
   )
