@@ -1,10 +1,12 @@
 import { useState, useEffect, useRef } from 'react'
 import { Settings, LogOut } from 'lucide-react'
 import { useApp } from '../context/AppContext'
+import { useConfirmLogout } from './LogoutConfirm'
 
 /* Avatari i profilit (këndi i djathtë i header-it) me menu: emri/roli, Cilësimet, Dil nga llogaria. */
 export default function ProfileMenu() {
-  const { currentUser, navigate, logout } = useApp()
+  const { currentUser, navigate } = useApp()
+  const askLogout = useConfirmLogout()
   const [open, setOpen] = useState(false)
   const ref = useRef(null)
 
@@ -86,7 +88,7 @@ export default function ProfileMenu() {
             <button
               type="button"
               role="menuitem"
-              onClick={() => { setOpen(false); logout() }}
+              onClick={() => { setOpen(false); askLogout() }}
               className="w-full flex items-center gap-3 px-4 py-2 text-xs font-medium text-red-600 hover:text-red-700 hover:bg-red-50 dark:text-[#ffb4ab] dark:hover:text-[#ffdad6] dark:hover:bg-[#93000a]/25 transition-colors"
             >
               <LogOut size={16} />

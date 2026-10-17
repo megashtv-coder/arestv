@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { Save, LogOut, Shield, Building2, Globe, MessageCircle, Download, Upload, Clock, Trash2, Bell, BellOff, AlertTriangle } from 'lucide-react'
 import { Toggle } from '../components/UI'
 import { useApp } from '../context/AppContext'
+import { useConfirmLogout } from '../components/LogoutConfirm'
 import BackupService from '../services/BackupService'
 import { isPushSupported, getPushSubscriptionState, enablePushNotifications, disablePushNotifications } from '../utils/pushNotifications'
 
@@ -33,6 +34,7 @@ export default function Settings() {
     paymentModes, setPaymentModes, depositAccounts, setDepositAccounts,
     setInvoices, setCustomers, setItems, setPayments, setExpenses, setUsers, setVendors, setTransfers, setActivityLog, setRepresentatives,
   } = useApp()
+  const askLogout = useConfirmLogout()
   const fileInputRef = useRef(null)
   // Tab-et e brendshme: shfaqet vetëm seksioni i tab-it aktiv
   const [tab, setTab] = useState('profile')
@@ -667,7 +669,7 @@ export default function Settings() {
                 <p className="text-sm font-semibold text-gray-800 dark:text-gray-100">Dilni nga sistemi</p>
                 <p className="text-xs text-gray-400 mt-0.5 dark:text-gray-500">Do të dilni nga paneli</p>
               </div>
-              <button className="btn btn-danger btn-sm flex items-center gap-1.5" onClick={logout}>
+              <button className="btn btn-danger btn-sm flex items-center gap-1.5" onClick={askLogout}>
                 <LogOut size={13}/>Dilni
               </button>
             </div>

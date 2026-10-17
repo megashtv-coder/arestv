@@ -9,6 +9,15 @@ export default function Login({ users = [], onLogin }) {
   const [showPw,   setShowPw]   = useState(false)
   const [loading,  setLoading]  = useState(false)
   const [error,    setError]    = useState('')
+  const [expiredNotice] = useState(() => {
+    try {
+      if (localStorage.getItem('arestv_session_expired')) {
+        localStorage.removeItem('arestv_session_expired')
+        return 'Sesioni juaj skadoi pas 7 ditësh. Kyçuni përsëri.'
+      }
+    } catch { /* ignore */ }
+    return ''
+  })
 
   const submit = async (e) => {
     e?.preventDefault()
@@ -61,6 +70,12 @@ export default function Login({ users = [], onLogin }) {
             <h2 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Kyçu</h2>
             <p className="text-sm text-gray-500 dark:text-[#8b8e99] mt-1">Hyr në llogarinë tuaj</p>
           </div>
+
+          {expiredNotice && (
+            <p className="mb-4 text-xs font-medium text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 dark:bg-amber-500/10 dark:text-amber-300 dark:border-transparent">
+              {expiredNotice}
+            </p>
+          )}
 
           <form onSubmit={submit} autoComplete="on" className="space-y-4">
             {/* Përdoruesi */}

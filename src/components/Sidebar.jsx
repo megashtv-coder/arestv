@@ -6,6 +6,7 @@ import {
   Zap, Server,
 } from 'lucide-react'
 import { useApp } from '../context/AppContext'
+import { useConfirmLogout } from './LogoutConfirm'
 import { useFeatures } from '../features/useFeatures'
 import { supabase } from '../lib/supabase'
 
@@ -14,6 +15,7 @@ export default function Sidebar() {
     page, navigate, sidebarOpen, setSidebarOpen,
     invoices, sidebarCollapsed, setSidebarCollapsed, currentUser, logout,
   } = useApp()
+  const askLogout = useConfirmLogout()
 
   const { canAccessSuppliers } = useFeatures()
   const [tasks, setTasks] = useState([])
@@ -190,10 +192,7 @@ export default function Sidebar() {
           <button
             type="button"
             className={`sidebar-item w-full text-blue-500 hover:bg-blue-200/70 dark:hover:bg-blue-900/20 hover:text-blue-600 cursor-pointer transition-all ${sidebarCollapsed ? 'justify-center px-2' : ''}`}
-            onClick={() => {
-              console.log('Logging out...')
-              logout()
-            }}
+            onClick={askLogout}
             title="Dilni nga sistemi"
           >
             <LogOut size={18} className="flex-shrink-0" />
