@@ -104,9 +104,9 @@ export function CustomerModal({ customer, onClose, isFormPage }) {
   }
 
   const formContent = (
-    <>
+    <div className="inv-form">
       {err && (
-        <div className="text-xs text-blue-500 bg-blue-50 border border-blue-100 rounded-lg px-3 py-2 mb-4">
+        <div className="text-xs text-blue-500 bg-blue-50 border border-blue-100 dark:bg-[#93000a]/30 dark:border-transparent dark:text-[#ffb4ab] rounded-lg px-3 py-2 mb-4">
           {err}
         </div>
       )}
@@ -117,16 +117,16 @@ export function CustomerModal({ customer, onClose, isFormPage }) {
           <button type="button" onClick={() => set('type', 'individual')}
             className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold border-2 transition-all ${
               !isReseller
-                ? 'border-blue-500 bg-blue-500 text-white shadow-sm'
-                : 'border-gray-200 bg-white text-gray-500 hover:border-blue-300'
+                ? 'border-blue-500 bg-blue-500 text-white shadow-sm dark:border-accent dark:bg-accent dark:text-accent-on dark:rounded-xl'
+                : 'border-gray-200 bg-white text-gray-500 hover:border-blue-300 dark:border-transparent dark:bg-dk-card dark:text-gray-300 dark:hover:bg-dk-high dark:rounded-xl'
             }`}>
             <User size={15}/> Individual
           </button>
           <button type="button" onClick={() => set('type', 'reseller')}
             className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold border-2 transition-all ${
               isReseller
-                ? 'border-purple-600 bg-purple-600 text-white shadow-sm'
-                : 'border-gray-200 bg-white text-gray-500 hover:border-purple-300'
+                ? 'border-purple-600 bg-purple-600 text-white shadow-sm dark:border-[#8083ff] dark:bg-[#8083ff] dark:text-[#0d0096] dark:rounded-xl'
+                : 'border-gray-200 bg-white text-gray-500 hover:border-purple-300 dark:border-transparent dark:bg-dk-card dark:text-gray-300 dark:hover:bg-dk-high dark:rounded-xl'
             }`}>
             <Users size={15}/> Reseller
           </button>
@@ -222,15 +222,15 @@ export function CustomerModal({ customer, onClose, isFormPage }) {
 
       {/* Ngjyra */}
       <FormGroup label="Ngjyra e avatit">
-        <div className="flex gap-2 mt-1">
+        <div className="flex flex-wrap gap-2.5 mt-1 p-1">
           {COLORS.map(c => (
             <button key={c} type="button" onClick={() => set('color', c)}
-              className="w-7 h-7 rounded-lg transition-all"
+              className="swatch w-7 h-7 dark:w-8 dark:h-8 rounded-lg dark:rounded-xl transition-all"
               style={{ background: c, outline: form.color === c ? `3px solid ${c}` : 'none', outlineOffset: 2 }}/>
           ))}
         </div>
       </FormGroup>
-    </>
+    </div>
   )
 
   // If rendering as form page (side panel), don't use Modal wrapper
@@ -238,7 +238,7 @@ export function CustomerModal({ customer, onClose, isFormPage }) {
     return (
       <div className="space-y-4">
         {formContent}
-        <div className="flex gap-2 pt-4 border-t border-gray-200">
+        <div className="inv-actions flex gap-2 pt-4 border-t border-gray-200 dark:border-transparent">
           <button className="btn btn-outline flex-1" onClick={onClose}>Anulo</button>
           <button className="btn btn-primary flex-1" onClick={save}>
             {isEdit ? 'Ruaj ndryshimet' : 'Shto klientin'}

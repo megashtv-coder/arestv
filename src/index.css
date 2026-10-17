@@ -150,6 +150,7 @@
 .dark .modal.inv-form > div:last-child:not(:first-child) { border-color: rgb(255 255 255 / 0.06); }
 .dark .inv-form .btn-outline { background-color: theme('colors.dk.card'); border-color: rgb(255 255 255 / 0.08); color: #dfe2eb; }
 .dark .inv-form .btn-outline:hover { background-color: theme('colors.dk.high'); }
+.dark .inv-form .swatch { outline-color: #ffffff !important; outline-offset: 3px !important; }
 .dark .cust-tbl input[type='checkbox'], .dark .cust-cb { accent-color: theme('colors.accent.DEFAULT'); color-scheme: dark; }
 
 /* ItemRow grid - Desktop default */
