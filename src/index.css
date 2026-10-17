@@ -143,6 +143,13 @@
 .dark .inv-actions .btn-outline:hover { background-color: theme('colors.dk.high'); }
 .dark .inv-actions .btn-primary { background-color: theme('colors.accent.DEFAULT'); color: theme('colors.accent.on'); box-shadow: 0 0 20px -3px theme('colors.accent.DEFAULT / 50%'); }
 .dark .inv-actions .btn-primary:hover { background-color: theme('colors.accent.DEFAULT / 90%'); }
+
+/* Dritarja "Regjistro Pagesën" (Modal me className="inv-form"): sipërfaqe e errët, pa vija në header/footer, "Anulo" gri */
+.dark .modal.inv-form { background-color: theme('colors.dk.low'); border: 1px solid rgb(255 255 255 / 0.1); }
+.dark .modal.inv-form > div:first-child { border-color: transparent; }
+.dark .modal.inv-form > div:last-child:not(:first-child) { border-color: rgb(255 255 255 / 0.06); }
+.dark .inv-form .btn-outline { background-color: theme('colors.dk.card'); border-color: rgb(255 255 255 / 0.08); color: #dfe2eb; }
+.dark .inv-form .btn-outline:hover { background-color: theme('colors.dk.high'); }
 .dark .cust-tbl input[type='checkbox'], .dark .cust-cb { accent-color: theme('colors.accent.DEFAULT'); color-scheme: dark; }
 
 /* ItemRow grid - Desktop default */

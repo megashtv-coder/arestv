@@ -73,7 +73,7 @@ export default function ReferentSelect({ value, onChange }) {
   return (
     <div ref={wrapRef} className="relative">
       <div className="relative flex items-center">
-        <Search size={14} className="absolute left-3 text-gray-400 pointer-events-none" />
+        <Search size={14} className="absolute left-3 text-gray-400 dark:text-gray-500 pointer-events-none" />
         <input
           ref={inputRef}
           className="form-control pl-8 pr-8"
@@ -91,7 +91,7 @@ export default function ReferentSelect({ value, onChange }) {
       </div>
 
       {open && (
-        <div className="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-lg max-h-52 overflow-y-auto">
+        <div className="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-lg max-h-52 overflow-y-auto dark:bg-dk-high dark:border-white/10">
           {filtered.length > 0 ? (
             filtered.map((name, i) => (
               <div
@@ -122,7 +122,7 @@ export default function ReferentSelect({ value, onChange }) {
           ) : null}
 
           {filtered.length === 0 && !query.trim() ? (
-            <div className="px-3 py-3 text-xs text-gray-400 text-center">Ende s'ka referentë — fillo duke shkruar</div>
+            <div className="px-3 py-3 text-xs text-gray-400 dark:text-gray-500 text-center">Ende s'ka referentë — fillo duke shkruar</div>
           ) : null}
         </div>
       )}

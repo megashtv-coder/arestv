@@ -19,7 +19,7 @@ function SlideSelect({ value, onChange, options }) {
       <button
         type="button"
         onClick={() => scroll(-1)}
-        className="flex-shrink-0 w-7 h-7 rounded-full border border-gray-200 flex items-center justify-center text-gray-400 hover:bg-gray-50 hover:text-gray-600 transition-colors"
+        className="flex-shrink-0 w-7 h-7 rounded-full border border-gray-200 flex items-center justify-center text-gray-400 hover:bg-gray-50 hover:text-gray-600 transition-colors dark:hidden"
       >
         <ChevronLeft size={14} />
       </button>
@@ -34,10 +34,10 @@ function SlideSelect({ value, onChange, options }) {
             key={opt}
             type="button"
             onClick={() => onChange(value === opt ? '' : opt)}
-            className={`flex-shrink-0 px-6 py-2 rounded-full text-sm font-semibold border transition-all whitespace-nowrap min-w-[calc(50%-8px)] ${
+            className={`flex-shrink-0 px-6 py-2 rounded-full dark:rounded-xl text-sm font-semibold border transition-all whitespace-nowrap min-w-[calc(50%-8px)] ${
               value === opt
-                ? 'bg-blue-500 text-white border-blue-500 shadow-sm'
-                : 'bg-white text-gray-600 border-gray-200 hover:border-blue-300 hover:text-blue-500'
+                ? 'bg-blue-500 text-white border-blue-500 shadow-sm dark:bg-dk-high dark:border-white/30'
+                : 'bg-white text-gray-600 border-gray-200 hover:border-blue-300 hover:text-blue-500 dark:bg-dk-low dark:text-gray-400 dark:border-white/10 dark:hover:bg-dk-card dark:hover:text-gray-200'
             }`}
           >
             {opt}
@@ -48,7 +48,7 @@ function SlideSelect({ value, onChange, options }) {
       <button
         type="button"
         onClick={() => scroll(1)}
-        className="flex-shrink-0 w-7 h-7 rounded-full border border-gray-200 flex items-center justify-center text-gray-400 hover:bg-gray-50 hover:text-gray-600 transition-colors"
+        className="flex-shrink-0 w-7 h-7 rounded-full border border-gray-200 flex items-center justify-center text-gray-400 hover:bg-gray-50 hover:text-gray-600 transition-colors dark:hidden"
       >
         <ChevronRight size={14} />
       </button>
@@ -72,8 +72,8 @@ function MethodPills({ value, onChange, modes }) {
           onClick={() => onChange(m)}
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${
             value === m
-              ? 'bg-blue-500 text-white border-blue-500 shadow-sm'
-              : 'bg-white text-gray-600 border-gray-200 hover:border-blue-300 hover:text-blue-500'
+              ? 'bg-blue-500 text-white border-blue-500 shadow-sm dark:bg-accent dark:border-accent'
+              : 'bg-white text-gray-600 border-gray-200 hover:border-blue-300 hover:text-blue-500 dark:bg-dk-card dark:text-gray-200 dark:border-white/10 dark:hover:bg-dk-high'
           }`}
         >
           <span>{icons[m] || '💳'}</span> {m}
@@ -252,6 +252,7 @@ export default function PaymentModal({ invoice, payment: editPayment, onClose, i
 
   return (
     <Modal
+      className="inv-form"
       title={
         <span className="flex items-center gap-2">
           {isEdit
@@ -267,8 +268,8 @@ export default function PaymentModal({ invoice, payment: editPayment, onClose, i
           <button
             className={`btn gap-2 text-white ${
               isEdit
-                ? 'bg-blue-500 hover:bg-blue-600'
-                : 'bg-emerald-600 hover:bg-emerald-700'
+                ? 'bg-blue-500 hover:bg-blue-600 dark:bg-accent dark:hover:bg-accent/90 dark:text-accent-on'
+                : 'bg-emerald-600 hover:bg-emerald-700 dark:bg-[#10b981] dark:hover:bg-[#059669] dark:shadow-lg dark:shadow-emerald-950/40'
             }`}
             onClick={save}
           >
@@ -280,14 +281,14 @@ export default function PaymentModal({ invoice, payment: editPayment, onClose, i
       }
     >
       {err && (
-        <div className="flex items-center gap-2 text-xs text-blue-500 bg-blue-50 border border-blue-100 rounded-lg px-3 py-2 mb-4">
+        <div className="flex items-center gap-2 text-xs text-blue-500 bg-blue-50 border border-blue-100 dark:bg-[#93000a]/30 dark:border-transparent dark:text-[#ffb4ab] rounded-lg px-3 py-2 mb-4">
           <AlertCircle size={14} /> {err}
         </div>
       )}
 
       {/* Edit-mode info banner */}
       {isEdit && (
-        <div className="flex items-center gap-2 text-xs text-blue-500 bg-blue-50 border border-blue-100 rounded-lg px-3 py-2 mb-4">
+        <div className="flex items-center gap-2 text-xs text-blue-500 bg-blue-50 border border-blue-100 dark:bg-[#93000a]/30 dark:border-transparent dark:text-[#ffb4ab] rounded-lg px-3 py-2 mb-4">
           ✏️ Duke ndryshuar pagesën ekzistuese. Shënim: ndryshimi i fee nuk përditëson automatikisht shpenzimet e krijuara.
         </div>
       )}
@@ -328,7 +329,7 @@ export default function PaymentModal({ invoice, payment: editPayment, onClose, i
       <div className="grid grid-cols-2 gap-4">
         <FormGroup label="Shuma e paguar *">
           <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm select-none">€</span>
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 text-sm select-none">€</span>
             <input
               className="form-control pl-7"
               type="number" min="0" step="0.01"
@@ -366,7 +367,7 @@ export default function PaymentModal({ invoice, payment: editPayment, onClose, i
             onChange={e => set('trackingNumber', e.target.value)}
             placeholder="p.sh. 1234567890"
           />
-          <p className="text-xs text-gray-400 mt-1">
+          <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
             Opsionale — kështu e ke gati te "Barazimi" pa e kërkuar prapë
           </p>
         </FormGroup>
@@ -376,7 +377,7 @@ export default function PaymentModal({ invoice, payment: editPayment, onClose, i
       <div className="grid grid-cols-2 gap-4">
         <FormGroup label="Fee transaksioni (€)">
           <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm select-none">€</span>
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 text-sm select-none">€</span>
             <input
               className="form-control pl-7"
               type="number" min="0" step="0.01"
@@ -401,16 +402,16 @@ export default function PaymentModal({ invoice, payment: editPayment, onClose, i
       {/* Live net amount */}
       {form.amount > 0 && (
         <div className="grid grid-cols-3 gap-3 my-1 text-center">
-          <div className="bg-gray-50 rounded-xl py-3">
-            <p className="text-xs text-gray-400 mb-1">Shuma</p>
-            <p className="font-bold text-gray-700">{fmt(Number(form.amount) || 0)}</p>
+          <div className="bg-gray-50 rounded-xl dark:rounded-2xl py-3 dark:bg-dk-card dark:border dark:border-white/10">
+            <p className="text-xs text-gray-400 dark:text-gray-500 mb-1">Shuma</p>
+            <p className="font-bold text-gray-700 dark:text-gray-200">{fmt(Number(form.amount) || 0)}</p>
           </div>
-          <div className="bg-amber-50 rounded-xl py-3">
-            <p className="text-xs text-gray-400 mb-1">Fee</p>
+          <div className="bg-amber-50 rounded-xl dark:rounded-2xl py-3">
+            <p className="text-xs text-gray-400 dark:text-amber-600 mb-1">Fee</p>
             <p className="font-bold text-amber-500">- {fmt(Number(form.fee) || 0)}</p>
           </div>
-          <div className="bg-emerald-50 rounded-xl py-3">
-            <p className="text-xs text-gray-400 mb-1">Neto</p>
+          <div className="bg-emerald-50 rounded-xl dark:rounded-2xl py-3">
+            <p className="text-xs text-gray-400 dark:text-emerald-600 mb-1">Neto</p>
             <p className="font-bold text-emerald-600">
               {fmt((Number(form.amount) || 0) - (Number(form.fee) || 0))}
             </p>
