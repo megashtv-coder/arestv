@@ -5,7 +5,7 @@ import { MoreVertical } from 'lucide-react'
 /* Menuja e veprimeve të rreshtit (⋮). Rendohet me portal jashtë tabelës/kartës
    që të mos priten nga overflow.
    items: [{ label, icon: Icon, onClick, danger }] */
-export default function RowMenu({ items, title = 'Veprimet' }) {
+export default function RowMenu({ items, title = 'Veprimet', width = 'w-40' }) {
   const [pos, setPos] = useState(null)
   const btnRef  = useRef(null)
   const menuRef = useRef(null)
@@ -53,7 +53,7 @@ export default function RowMenu({ items, title = 'Veprimet' }) {
       {pos && createPortal(
         <div
           ref={menuRef}
-          className="fixed w-40 bg-white border border-gray-200 rounded-xl shadow-xl z-[9999] overflow-hidden dark:bg-dk-high dark:border-white/10"
+          className={`fixed ${width} bg-white border border-gray-200 rounded-xl shadow-xl z-[9999] overflow-hidden dark:bg-dk-high dark:border-white/10`}
           style={{ left: pos.left, ...(pos.top != null ? { top: pos.top } : { bottom: pos.bottom }) }}
         >
           {items.map(({ label, icon: Icon, onClick, danger }, i) => (

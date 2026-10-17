@@ -7,6 +7,7 @@ import {
   MoreVertical, Edit3, Filter, CheckCircle2, Eye, EyeOff,
 } from 'lucide-react'
 import { useApp } from '../context/AppContext'
+import RowMenu from '../components/RowMenu'
 import { formatDate } from '../utils/dateFormat'
 import { round2 } from '../utils/money'
 import { paymentBelongsToInvoice } from '../utils/invoicePayments'
@@ -309,11 +310,6 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer, customerMap, hi
         <button className="md:hidden icon-btn mr-1 text-blue-500" onClick={onClose} title="Kthehu">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
         </button>
-        <div className="flex items-center gap-2.5 mr-1">
-          <span className="font-black text-gray-900 text-base font-mono dark:text-gray-100">{inv.id}</span>
-          <StatusBadge status={isOverdue && inv.status !== 'paid' && inv.status !== 'void' ? 'overdue' : inv.status}/>
-        </div>
-
         <button
           className={`${TB} border-gray-200 hover:bg-gray-50 text-gray-600 dark:border-transparent dark:bg-dk-card dark:hover:bg-dk-high dark:text-gray-200`}
           onClick={() => navigate(`invoices:${inv.id}:edit`)}
@@ -337,21 +333,13 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer, customerMap, hi
           <a
             href={`https://wa.me/${rawPhone}?text=${msgEncoded}`}
             target="_blank" rel="noopener noreferrer"
-            className={`${TB} ${isOverdue ? 'border-orange-200 text-orange-600 hover:bg-orange-50 dark:border-orange-900/40 dark:hover:bg-orange-900/20' : 'border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:border-emerald-900/40 dark:bg-emerald-900/20 dark:hover:bg-emerald-900/40'}`}
+            title="Dërgo rikujtim në WhatsApp"
+            className={`${TB} ${isOverdue ? 'border-orange-200 text-orange-600 hover:bg-orange-50 dark:border-transparent dark:bg-orange-500/15 dark:text-orange-300 dark:hover:bg-orange-500/25' : 'border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:border-transparent dark:bg-[#00a572]/20 dark:text-[#4edea3] dark:hover:bg-[#00a572]/30'}`}
           >
-            <MessageCircle size={13}/> WhatsApp{isOverdue ? ' 🔔' : ''}
+            <MessageCircle size={13}/> Rikujto pagesën WA{isOverdue ? ' 🔔' : ''}
           </a>
         )}
 
-        {canContact && (
-          <a
-            href={`https://t.me/+${rawPhone}`}
-            target="_blank" rel="noopener noreferrer"
-            className={`${TB} border-sky-200 bg-sky-50 text-sky-700 hover:bg-sky-100 dark:border-sky-900/40 dark:bg-sky-900/20 dark:text-sky-400 dark:hover:bg-sky-900/40`}
-          >
-            <Send size={13}/> Telegram
-          </a>
-        )}
 
         {canPay && (
           <button
@@ -364,21 +352,24 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer, customerMap, hi
 
         {canVoid && (
           <button
-            className={`${TB} border-gray-200 text-gray-500 hover:text-amber-600 hover:bg-amber-50 dark:border-transparent dark:bg-dk-card dark:text-gray-400 dark:hover:bg-dk-high dark:hover:text-amber-400`}
+            className={`${TB} border-gray-200 text-gray-500 hover:text-amber-600 hover:bg-amber-50 dark:border-white/10 dark:bg-dk-card dark:text-gray-400 dark:hover:bg-dk-high dark:hover:text-amber-400`}
             onClick={() => setConfirmVoid(true)}
           >
             <XCircle size={13}/> Void
           </button>
         )}
 
-        <button
-          className={`${TB} border-blue-200 text-blue-600 hover:bg-blue-50 dark:border-transparent dark:bg-[#93000a]/20 dark:text-[#ffb4ab] dark:hover:bg-[#93000a]/40`}
-          onClick={() => setConfirmDel(true)}
-        >
-          <Trash2 size={13}/> Fshi
-        </button>
 
-        <button className="ml-auto icon-btn" onClick={onClose}><X size={16}/></button>
+        <div className="ml-auto flex items-center gap-1">
+          <RowMenu
+            width="w-52"
+            items={[
+              ...(canContact ? [{ label: 'Rikujto pagesën TG', icon: Send, onClick: () => window.open(`https://t.me/+${rawPhone}`, '_blank', 'noopener,noreferrer') }] : []),
+              { label: 'Fshi', icon: Trash2, danger: true, onClick: () => setConfirmDel(true) },
+            ]}
+          />
+          <button className="icon-btn" onClick={onClose} title="Mbyll"><X size={16}/></button>
+        </div>
       </div>
 
       {confirmVoid && (
