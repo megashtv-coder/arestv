@@ -5,6 +5,7 @@ import {
   MessageCircle, Send, XCircle, X, MessageSquare,
   Search, Plus, LayoutList, Columns, AlertTriangle, FileSpreadsheet,
   MoreVertical, Edit3, Filter, CheckCircle2, Eye, EyeOff,
+  ChevronDown, Check,
 } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import RowMenu from '../components/RowMenu'
@@ -152,6 +153,48 @@ function buildInvoiceMsg(inv) {
   return `Fatura per: ${inv.customer}\nData e abonimit: ${inv.date || '—'}\nData e skadimit te abonimit: ${inv.subscriptionExpiry || '—'}\nAfati i pageses: ${inv.due || '—'}\nPer pagese: €${inv.amount}`
 }
 
+/* ── Filtri me menu të personalizuar (vetëm dark mode; në light mbetet <select> i zakonshëm) ── */
+function FilterSelect({ value, onChange, options, alignRight = false }) {
+  const [open, setOpen] = useState(false)
+  const ref = useRef(null)
+  useEffect(() => {
+    if (!open) return
+    const h = e => { if (ref.current && !ref.current.contains(e.target)) setOpen(false) }
+    document.addEventListener('mousedown', h)
+    return () => document.removeEventListener('mousedown', h)
+  }, [open])
+  const cur = options.find(o => o.value === value) || options[0]
+  return (
+    <div ref={ref} className="hidden dark:block relative w-full">
+      <button
+        type="button"
+        onClick={() => setOpen(o => !o)}
+        className="w-full h-8 px-2.5 rounded-lg bg-dk-card hover:bg-dk-high border border-white/[0.08] text-gray-100 text-[11px] font-semibold flex items-center justify-between transition-colors"
+      >
+        <span className="truncate">{cur.label}</span>
+        <ChevronDown size={14} className="text-[#8b8e99] flex-shrink-0" />
+      </button>
+      {open && (
+        <div className={`absolute ${alignRight ? 'right-0' : 'left-0'} top-full mt-1.5 w-48 rounded-xl bg-dk-high border border-white/10 shadow-xl py-1.5 z-50`}>
+          <div className="px-1.5 space-y-0.5">
+            {options.map(o => (
+              <button
+                key={o.value}
+                type="button"
+                onClick={() => { onChange(o.value); setOpen(false) }}
+                className={`w-full px-2.5 py-1.5 text-left rounded-lg text-[11px] font-semibold flex items-center justify-between transition-colors ${o.value === value ? 'bg-accent/15 text-accent-soft' : 'text-gray-300 hover:text-white hover:bg-dk-card'}`}
+              >
+                <span>{o.label}</span>
+                {o.value === value && <Check size={14} />}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 /* ── compact invoice card (left panel list) ─────────── */
 const InvoiceListCard = memo(function InvoiceListCard({ inv, selected, onClick, customerMap, hidden, checked, onToggleSelect }) {
   const { fmt: rawFmt } = useApp()
@@ -162,7 +205,7 @@ const InvoiceListCard = memo(function InvoiceListCard({ inv, selected, onClick, 
     : null
 
   let dueLabel, duePillCls
-  if      (inv.status === 'paid')  { dueLabel = 'PAGUAR';         duePillCls = 'bg-emerald-100 text-emerald-700' }
+  if      (inv.status === 'paid')  { dueLabel = 'PAGUAR';         duePillCls = 'bg-emerald-100 text-emerald-700 dark:bg-[#00a572]/20 dark:text-[#4edea3]' }
   else if (inv.status === 'partial') {
     // Shfaq shumin e paguar dhe të mbetur për faturat e paguara pjesërisht
     const paid = inv.paidAmount || 0
@@ -170,26 +213,27 @@ const InvoiceListCard = memo(function InvoiceListCard({ inv, selected, onClick, 
     const paidFormatted = Math.round(paid * 100) / 100
     const remainingFormatted = Math.round(remaining * 100) / 100
     dueLabel = `€${paidFormatted} / €${remainingFormatted}`
-    duePillCls = 'bg-blue-100 text-blue-700'
+    duePillCls = 'bg-blue-100 text-blue-700 dark:bg-accent/20 dark:text-accent-soft'
   }
-  else if (inv.status === 'void')  { dueLabel = 'VOID';           duePillCls = 'bg-gray-100 text-gray-500 line-through' }
-  else if (inv.status === 'draft') { dueLabel = 'DRAFT';          duePillCls = 'bg-gray-100 text-gray-500' }
-  else if (diff === null)          { dueLabel = '—';              duePillCls = 'bg-gray-100 text-gray-400' }
-  else if (diff < 0)               { dueLabel = 'VONUAR';         duePillCls = 'bg-red-100 text-red-700' }
-  else if (diff === 0)             { dueLabel = 'SOT SKADON';     duePillCls = 'bg-amber-100 text-amber-800' }
-  else if (diff === 1)             { dueLabel = 'NGA 1 DITË';     duePillCls = 'bg-amber-100 text-amber-800' }
-  else                             { dueLabel = `NGA ${diff} DITË`; duePillCls = 'bg-amber-100 text-amber-800' }
+  else if (inv.status === 'void')  { dueLabel = 'VOID';           duePillCls = 'bg-gray-100 text-gray-500 line-through dark:bg-dk-high dark:text-gray-400' }
+  else if (inv.status === 'draft') { dueLabel = 'DRAFT';          duePillCls = 'bg-gray-100 text-gray-500 dark:bg-dk-high dark:text-gray-400' }
+  else if (diff === null)          { dueLabel = '—';              duePillCls = 'bg-gray-100 text-gray-400 dark:bg-dk-high dark:text-gray-400' }
+  else if (diff < 0)               { dueLabel = 'VONUAR';         duePillCls = 'bg-red-100 text-red-700 dark:bg-[#93000a]/40 dark:text-[#ffb4ab]' }
+  else if (diff === 0)             { dueLabel = 'SOT SKADON';     duePillCls = 'bg-amber-100 text-amber-800 dark:bg-accent/20 dark:text-accent-soft' }
+  else if (diff === 1)             { dueLabel = 'NGA 1 DITË';     duePillCls = 'bg-amber-100 text-amber-800 dark:bg-accent/20 dark:text-accent-soft' }
+  else                             { dueLabel = `NGA ${diff} DITË`; duePillCls = 'bg-amber-100 text-amber-800 dark:bg-accent/20 dark:text-accent-soft' }
 
   return (
     <div className="px-2 pt-1.5">
       <div
-        className={`p-3 rounded-xl border cursor-pointer transition-colors ${
+        className={`relative overflow-hidden p-3 rounded-xl border cursor-pointer transition-colors ${
           selected
-            ? 'bg-blue-200/60 dark:bg-accent/15 border-blue-500 dark:border-accent'
-            : 'bg-gray-50/50 dark:bg-dk-card border-gray-100 dark:border-white/[0.07] hover:bg-gray-100 dark:hover:bg-dk-high'
+            ? 'bg-blue-200/60 border-blue-500 dark:bg-dk-card dark:border-transparent dark:ring-1 dark:ring-accent/70 dark:shadow-md'
+            : 'bg-gray-50/50 border-gray-100 hover:bg-gray-100 dark:bg-dk-low dark:border-white/[0.04] dark:hover:bg-dk-card'
         }`}
         onClick={onClick}
       >
+        {selected && <div aria-hidden="true" className="hidden dark:block absolute left-0 top-0 bottom-0 w-1.5 bg-accent shadow-[0_0_12px_theme(colors.accent.DEFAULT)]" />}
         <div className="flex items-start gap-2.5">
           {onToggleSelect && (
             <input
@@ -1438,8 +1482,8 @@ export default function Invoices() {
         style={{ height: 'calc(100vh - 56px)' }}
       >
         {/* Left: invoice list — hidden on mobile (show only detail panel) */}
-        <div className="hidden md:flex w-[340px] flex-shrink-0 border-r border-gray-200 dark:border-white/5 flex-col overflow-hidden bg-white dark:bg-dk-low">
-          <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-white/5">
+        <div className="hidden md:flex w-[340px] flex-shrink-0 border-r border-gray-200 flex-col overflow-hidden bg-white dark:border-white/5 dark:bg-dk-bg inv-list">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:bg-dk-low dark:border-transparent">
             <div>
               <p className="font-extrabold text-sm text-gray-900 dark:text-gray-100">Të gjitha faturat</p>
               <p className="text-[11px] text-gray-400 dark:text-gray-500 font-medium">{filtered.length.toLocaleString('en-US')} rezultate</p>
@@ -1448,7 +1492,7 @@ export default function Invoices() {
               <button
                 onClick={() => setHideAmounts(h => !h)}
                 title={hideAmounts ? 'Shfaq shumat' : 'Fshih shumat'}
-                className="w-7 h-7 flex items-center justify-center rounded-lg bg-gray-100 text-gray-500 hover:text-blue-600 transition-colors flex-shrink-0"
+                className="w-7 h-7 flex items-center justify-center rounded-lg bg-gray-100 text-gray-500 hover:text-blue-600 transition-colors flex-shrink-0 dark:bg-dk-card dark:text-gray-400 dark:hover:text-accent-soft"
               >
                 {hideAmounts ? <EyeOff size={13}/> : <Eye size={13}/>}
               </button>
@@ -1461,11 +1505,11 @@ export default function Invoices() {
             </div>
           </div>
 
-          <div className="px-3 pt-3">
-            <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl px-2.5 py-1.5 focus-within:border-blue-400 focus-within:bg-white transition-all">
+          <div className="px-3 pt-3 dark:bg-dk-low">
+            <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl px-2.5 py-1.5 focus-within:border-blue-400 focus-within:bg-white transition-all dark:bg-dk-side dark:border-transparent dark:focus-within:bg-dk-card dark:focus-within:border-accent/50">
               <Search size={12} className="text-gray-400 flex-shrink-0"/>
               <input
-                className="bg-transparent border-none outline-none text-xs text-gray-600 w-full placeholder-gray-400"
+                className="bg-transparent border-none outline-none text-xs text-gray-600 w-full placeholder-gray-400 dark:text-gray-200 dark:placeholder-gray-500"
                 placeholder="Kërko..."
                 value={search}
                 onChange={e => setSearch(e.target.value)}
@@ -1482,12 +1526,13 @@ export default function Invoices() {
             </div>
           </div>
 
-          <div className="flex gap-2 px-3 py-2 border-b border-gray-100">
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatus(e.target.value)}
-              className="flex-1 text-[11px] font-semibold bg-gray-50 border border-gray-200 rounded-lg px-2 py-1.5 text-gray-700 outline-none focus:border-blue-400 cursor-pointer"
-            >
+          <div className="flex gap-2 px-3 py-2 border-b border-gray-100 dark:bg-dk-low dark:border-transparent relative z-30">
+            <div className="flex-1 min-w-0">
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatus(e.target.value)}
+                className="w-full text-[11px] font-semibold bg-gray-50 border border-gray-200 rounded-lg px-2 py-1.5 text-gray-700 outline-none focus:border-blue-400 cursor-pointer dark:hidden"
+              >
               <option value="all">Të gjitha</option>
               <option value="pending">Pritje</option>
               <option value="overdue">Vonuar</option>
@@ -1495,21 +1540,36 @@ export default function Invoices() {
               <option value="unpaid">Papaguar (Pritje+Vonuar)</option>
               <option value="draft">Draft</option>
               <option value="void">Void</option>
-            </select>
+              </select>
+              <FilterSelect
+                value={statusFilter}
+                onChange={setStatus}
+                alignRight={false}
+                options={[{ value: 'all', label: 'Të gjitha' }, { value: 'pending', label: 'Pritje' }, { value: 'overdue', label: 'Vonuar' }, { value: 'paid', label: 'Paguar' }, { value: 'unpaid', label: 'Papaguar (Pritje+Vonuar)' }, { value: 'draft', label: 'Draft' }, { value: 'void', label: 'Void' }]}
+              />
+            </div>
 
-            <select
-              value={typeFilter}
-              onChange={(e) => setTypeFilter(e.target.value)}
-              className="flex-1 text-[11px] font-semibold bg-gray-50 border border-gray-200 rounded-lg px-2 py-1.5 text-gray-700 outline-none focus:border-blue-400 cursor-pointer"
-            >
+            <div className="flex-1 min-w-0">
+              <select
+                value={typeFilter}
+                onChange={(e) => setTypeFilter(e.target.value)}
+                className="w-full text-[11px] font-semibold bg-gray-50 border border-gray-200 rounded-lg px-2 py-1.5 text-gray-700 outline-none focus:border-blue-400 cursor-pointer dark:hidden"
+              >
               <option value="all">Të gjithë</option>
               <option value="individual">👤 Klientë</option>
               <option value="reseller">🔄 Reseller</option>
-            </select>
+              </select>
+              <FilterSelect
+                value={typeFilter}
+                onChange={setTypeFilter}
+                alignRight={true}
+                options={[{ value: 'all', label: 'Të gjithë' }, { value: 'individual', label: '👤 Klientë' }, { value: 'reseller', label: '🔄 Reseller' }]}
+              />
+            </div>
           </div>
 
           {paged.length > 0 && (
-            <label className="flex items-center gap-2.5 pl-[21px] pr-3 py-1.5 border-b border-gray-100 dark:border-gray-700 cursor-pointer select-none text-[11px] font-semibold text-gray-500 dark:text-gray-400">
+            <label className="flex items-center gap-2.5 pl-[21px] pr-3 py-1.5 border-b border-gray-100 cursor-pointer select-none text-[11px] font-semibold text-gray-500 dark:bg-dk-low dark:border-transparent">
               <input
                 type="checkbox"
                 checked={pageAllSelected}
