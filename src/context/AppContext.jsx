@@ -813,6 +813,9 @@ export function AppProvider({ children }) {
   /* ── Dark mode ── */
   useEffect(() => {
     document.documentElement.classList.toggle('dark', darkMode)
+    // Ngjyra e shiritit të sipërm të telefonit (Android/PWA) ndjek temën
+    const tc = document.querySelector('meta[name="theme-color"]')
+    if (tc) tc.setAttribute('content', darkMode ? '#10141a' : '#f9fafb')
     localStorage.setItem('arestv_dark', darkMode)
   }, [darkMode])
 

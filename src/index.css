@@ -280,3 +280,12 @@
     @apply hidden;
   }
 }
+
+/* ── Telefon / PWA: sfond pa shirita të bardhë, zona e sigurt (iPhone Dynamic Island, shiriti poshtë) ── */
+html { background-color: #f9fafb; }
+html.dark { background-color: theme('colors.dk.bg'); }
+body { min-height: 100vh; min-height: 100dvh; }
+header.safe-top { padding-top: env(safe-area-inset-top); height: calc(3rem + env(safe-area-inset-top)); }
+@media (min-width: 640px) { header.safe-top { height: calc(3.5rem + env(safe-area-inset-top)); } }
+aside.safe-top-pad { padding-top: env(safe-area-inset-top); }
+.fab { bottom: calc(1.5rem + env(safe-area-inset-bottom)); }

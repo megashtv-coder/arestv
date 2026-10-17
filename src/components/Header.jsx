@@ -148,7 +148,7 @@ export default function Header() {
   }, [invoices, payments, expenses, actualCurrentYear])
 
   return (
-    <header className="h-12 sm:h-14 bg-blue-50 dark:bg-dk-bg/90 dark:backdrop-blur-xl border-b border-blue-100 dark:border-transparent dark:shadow-[0_1px_8px_rgba(0,0,0,0.25)] flex items-center px-3 sm:px-5 dark:md:px-6 gap-2 sm:gap-4 sticky top-0 z-30 transition-colors">
+    <header className="safe-top h-12 sm:h-14 bg-blue-50 dark:bg-dk-bg/90 dark:backdrop-blur-xl border-b border-blue-100 dark:border-transparent dark:shadow-[0_1px_8px_rgba(0,0,0,0.25)] flex items-center px-3 sm:px-5 dark:md:px-6 gap-2 sm:gap-4 sticky top-0 z-30 transition-colors">
       {/* Mobile menu */}
       <button className="icon-btn lg:hidden flex-shrink-0 p-1.5 sm:p-2" onClick={() => setSidebarOpen(true)}>
         <Menu size={18} />

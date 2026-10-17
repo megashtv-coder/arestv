@@ -135,7 +135,7 @@ export default function Sidebar() {
       )}
 
       <aside className={`
-        fixed top-0 left-0 h-full bg-blue-50 dark:bg-dk-side border-r border-blue-100 dark:border-white/5 flex flex-col z-50
+        safe-top-pad fixed top-0 left-0 h-full bg-blue-50 dark:bg-dk-side border-r border-blue-100 dark:border-white/5 flex flex-col z-50
         transition-all duration-300
         rounded-br-[28px] dark:rounded-br-none overflow-hidden
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}

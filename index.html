@@ -7,12 +7,23 @@
     <meta name="description" content="App moderne për menaxhimin e financave, faturave dhe shpenzimeve" />
 
     <!-- PWA / Theme -->
-    <meta name="theme-color" content="#ef4444" />
+    <meta name="theme-color" content="#f9fafb" />
+    <!-- Tema para ngarkimit: ngjyra e shiritit të sipërm dhe klasa .dark vendosen para se të shfaqet faqja -->
+    <script>
+      (function () {
+        try {
+          var dark = localStorage.getItem('arestv_dark') === 'true';
+          if (dark) document.documentElement.classList.add('dark');
+          var m = document.querySelector('meta[name="theme-color"]');
+          if (m) m.setAttribute('content', dark ? '#10141a' : '#f9fafb');
+        } catch (e) {}
+      })();
+    </script>
     <meta name="mobile-web-app-capable" content="yes" />
 
     <!-- iOS Safari PWA -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <meta name="apple-mobile-web-app-title" content="A Flow" />
 
     <!-- Icons -->
