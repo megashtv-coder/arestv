@@ -304,18 +304,18 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer, customerMap, hi
     <div className="flex flex-col h-full overflow-hidden">
 
       {/* ── Action toolbar ── */}
-      <div className="flex items-center gap-1.5 px-4 py-3 border-b border-gray-100 bg-white flex-wrap lg:flex-nowrap">
+      <div className="flex items-center gap-1.5 px-4 py-3 border-b border-gray-100 bg-white flex-wrap lg:flex-nowrap dark:border-gray-700 dark:bg-gray-800">
         {/* Mobile back button */}
         <button className="md:hidden icon-btn mr-1 text-blue-500" onClick={onClose} title="Kthehu">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
         </button>
         <div className="flex items-center gap-2.5 mr-1">
-          <span className="font-black text-gray-900 text-base font-mono">{inv.id}</span>
+          <span className="font-black text-gray-900 text-base font-mono dark:text-gray-100">{inv.id}</span>
           <StatusBadge status={isOverdue && inv.status !== 'paid' && inv.status !== 'void' ? 'overdue' : inv.status}/>
         </div>
 
         <button
-          className={`${TB} border-gray-200 hover:bg-gray-50 text-gray-600`}
+          className={`${TB} border-gray-200 hover:bg-gray-50 text-gray-600 dark:border-transparent dark:bg-dk-card dark:hover:bg-dk-high dark:text-gray-200`}
           onClick={() => navigate(`invoices:${inv.id}:edit`)}
         >
           <Pencil size={13}/> Ndrysho
@@ -323,7 +323,7 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer, customerMap, hi
 
         {inv.status === 'draft' && (
           <button
-            className={`${TB} border-blue-200 text-blue-500 hover:bg-blue-50`}
+            className={`${TB} border-blue-200 text-blue-500 hover:bg-blue-50 dark:border-blue-900/40 dark:hover:bg-blue-900/20`}
             onClick={() => {
               setInvoices(prev => prev.map(i => i.id === inv.id ? { ...i, status: 'pending' } : i))
               showToast('Fatura kaloi në pritje ✓')
@@ -337,7 +337,7 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer, customerMap, hi
           <a
             href={`https://wa.me/${rawPhone}?text=${msgEncoded}`}
             target="_blank" rel="noopener noreferrer"
-            className={`${TB} ${isOverdue ? 'border-orange-200 text-orange-600 hover:bg-orange-50' : 'border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100'}`}
+            className={`${TB} ${isOverdue ? 'border-orange-200 text-orange-600 hover:bg-orange-50 dark:border-orange-900/40 dark:hover:bg-orange-900/20' : 'border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:border-emerald-900/40 dark:bg-emerald-900/20 dark:hover:bg-emerald-900/40'}`}
           >
             <MessageCircle size={13}/> WhatsApp{isOverdue ? ' 🔔' : ''}
           </a>
@@ -347,7 +347,7 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer, customerMap, hi
           <a
             href={`https://t.me/+${rawPhone}`}
             target="_blank" rel="noopener noreferrer"
-            className={`${TB} border-sky-200 bg-sky-50 text-sky-700 hover:bg-sky-100`}
+            className={`${TB} border-sky-200 bg-sky-50 text-sky-700 hover:bg-sky-100 dark:border-sky-900/40 dark:bg-sky-900/20 dark:text-sky-400 dark:hover:bg-sky-900/40`}
           >
             <Send size={13}/> Telegram
           </a>
@@ -355,7 +355,7 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer, customerMap, hi
 
         {canPay && (
           <button
-            className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm transition-colors"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm dark:bg-[#00a572] dark:hover:bg-[#00a572]/90 dark:text-[#00311f] dark:shadow-[0_0_16px_-4px_rgba(0,165,114,0.6)] transition-colors"
             onClick={() => setModal(<PaymentModal invoice={inv} onClose={closeModal}/>)}
           >
             <CreditCard size={13}/> Regjistro Pagesën
@@ -364,7 +364,7 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer, customerMap, hi
 
         {canVoid && (
           <button
-            className={`${TB} border-gray-200 text-gray-500 hover:text-amber-600 hover:bg-amber-50`}
+            className={`${TB} border-gray-200 text-gray-500 hover:text-amber-600 hover:bg-amber-50 dark:border-transparent dark:bg-dk-card dark:text-gray-400 dark:hover:bg-dk-high dark:hover:text-amber-400`}
             onClick={() => setConfirmVoid(true)}
           >
             <XCircle size={13}/> Void
@@ -372,7 +372,7 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer, customerMap, hi
         )}
 
         <button
-          className={`${TB} border-blue-200 text-blue-600 hover:bg-blue-50`}
+          className={`${TB} border-blue-200 text-blue-600 hover:bg-blue-50 dark:border-transparent dark:bg-[#93000a]/20 dark:text-[#ffb4ab] dark:hover:bg-[#93000a]/40`}
           onClick={() => setConfirmDel(true)}
         >
           <Trash2 size={13}/> Fshi
@@ -382,26 +382,26 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer, customerMap, hi
       </div>
 
       {confirmVoid && (
-        <div className="flex items-center gap-3 bg-amber-50 border-b border-amber-100 px-4 py-2 text-xs">
-          <span className="text-amber-700 font-semibold">Dëshiron ta anulosh (Void) këtë faturë?</span>
+        <div className="flex items-center gap-3 bg-amber-50 dark:bg-amber-900/20 border-b border-amber-100 dark:border-amber-900/40 px-4 py-2 text-xs">
+          <span className="text-amber-700 dark:text-amber-400 font-semibold">Dëshiron ta anulosh (Void) këtë faturë?</span>
           <button className="px-3 py-1 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-lg" onClick={doVoid}>Po</button>
-          <button className="px-3 py-1 border border-gray-200 text-gray-600 font-bold rounded-lg hover:bg-gray-50" onClick={() => setConfirmVoid(false)}>Jo</button>
+          <button className="px-3 py-1 border border-gray-200 text-gray-600 font-bold rounded-lg hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-900/50" onClick={() => setConfirmVoid(false)}>Jo</button>
         </div>
       )}
 
       {confirmDel && (
-        <div className="flex items-center gap-3 bg-blue-50 border-b border-blue-100 px-4 py-2 text-xs">
-          <span className="text-blue-700 font-semibold">Fshij përgjithmonë faturën {inv.id}?</span>
+        <div className="flex items-center gap-3 bg-blue-50 dark:bg-blue-900/20 border-b border-blue-100 dark:border-blue-900/40 px-4 py-2 text-xs">
+          <span className="text-blue-700 dark:text-blue-400 font-semibold">Fshij përgjithmonë faturën {inv.id}?</span>
           <button className="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-lg" onClick={doDelete}>Po, fshij</button>
-          <button className="px-3 py-1 border border-gray-200 text-gray-600 font-bold rounded-lg hover:bg-gray-50" onClick={() => setConfirmDel(false)}>Jo</button>
+          <button className="px-3 py-1 border border-gray-200 text-gray-600 font-bold rounded-lg hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-900/50" onClick={() => setConfirmDel(false)}>Jo</button>
         </div>
       )}
 
       {isOverdue && canContact && (
-        <div className="flex items-center justify-between gap-3 bg-red-50 border-b border-red-100 px-4 py-2">
+        <div className="flex items-center justify-between gap-3 bg-red-50 dark:bg-red-900/20 border-b border-red-100 dark:border-red-900/40 px-4 py-2">
           <div className="min-w-0">
-            <p className="text-xs font-semibold text-red-600">⚠ Fatura ka kaluar afatin e pagesës — {formatDate(inv.due)}</p>
-            <p className="text-[11px] text-red-400 mt-0.5 truncate italic">"{buildReminderMsg(inv).slice(0, 90)}…"</p>
+            <p className="text-xs font-semibold text-red-600 dark:text-red-400">⚠ Fatura ka kaluar afatin e pagesës — {formatDate(inv.due)}</p>
+            <p className="text-[11px] text-red-400 dark:text-red-500 mt-0.5 truncate italic">"{buildReminderMsg(inv).slice(0, 90)}…"</p>
           </div>
           <a
             href={`https://wa.me/${rawPhone}?text=${msgEncoded}`}
@@ -413,34 +413,34 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer, customerMap, hi
         </div>
       )}
 
-      <div className="flex-1 overflow-y-auto bg-gray-50 p-4 space-y-4">
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-          <div className="flex justify-end px-6 pt-5 pb-4 border-b border-gray-100">
+      <div className="flex-1 overflow-y-auto bg-gray-50 p-4 space-y-4 dark:bg-dk-bg">
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700">
+          <div className="flex justify-end px-6 pt-5 pb-4 border-b border-gray-100 dark:border-gray-700">
             <div className="text-right">
-              <h2 className="text-3xl font-black tracking-wider text-blue-500 font-mono">Faturë</h2>
-              <p className="text-xs font-semibold text-gray-500 mt-0.5 font-mono">Numri i faturës {inv.id}</p>
+              <h2 className="text-3xl font-black tracking-wider text-blue-500 font-mono dark:text-accent">Faturë</h2>
+              <p className="text-xs font-semibold text-gray-500 mt-0.5 font-mono dark:text-gray-400">Numri i faturës {inv.id}</p>
             </div>
           </div>
 
           {/* Top section: Customer info and Total */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 px-6 pt-5">
-            <div className="flex-1 bg-gray-50 rounded-xl border border-gray-100 p-4">
-              <p className="text-[10px] text-gray-400 uppercase tracking-widest font-bold mb-1">Fatura për</p>
+            <div className="flex-1 bg-gray-50 rounded-xl border border-gray-100 p-4 dark:bg-gray-900/50 dark:border-gray-700">
+              <p className="text-[10px] text-gray-400 uppercase tracking-widest font-bold mb-1 dark:text-gray-500">Fatura për</p>
               <button
                 onClick={() => setSelectedCustomer(custObj)}
-                className="font-black text-blue-600 text-lg leading-tight hover:text-blue-800 hover:underline cursor-pointer transition-colors text-left"
+                className="font-black text-blue-600 text-lg leading-tight hover:text-blue-800 hover:underline cursor-pointer transition-colors text-left dark:text-blue-400 dark:hover:text-blue-300"
               >
                 {inv.customer}
               </button>
-              {inv.country && <p className="text-xs text-gray-600 mt-1">📍 {inv.country}</p>}
-              {inv.email   && <p className="text-xs text-gray-400 mt-0.5">{inv.email}</p>}
-              {custObj?.phone && <p className="text-xs text-gray-600 font-mono mt-0.5">📞 {custObj.phone}</p>}
+              {inv.country && <p className="text-xs text-gray-600 mt-1 dark:text-gray-300">📍 {inv.country}</p>}
+              {inv.email   && <p className="text-xs text-gray-400 mt-0.5 dark:text-gray-500">{inv.email}</p>}
+              {custObj?.phone && <p className="text-xs text-gray-600 font-mono mt-0.5 dark:text-gray-300">📞 {custObj.phone}</p>}
               {inv.referent && <p className="text-xs text-purple-600 mt-0.5 font-semibold">👤 Referent: {inv.referent}</p>}
             </div>
-            <div className="flex-1 bg-gray-50 rounded-xl border border-gray-100 p-4 flex flex-col justify-between gap-2">
+            <div className="flex-1 bg-gray-50 rounded-xl border border-gray-100 p-4 flex flex-col justify-between gap-2 dark:bg-gray-900/50 dark:border-gray-700">
               <div>
-                <p className="text-[10px] text-gray-400 uppercase tracking-widest font-bold mb-1">Totali për pagesë</p>
-                <p className="text-3xl font-black text-gray-900 leading-tight mt-1 font-mono">{fmt(inv.amount)}</p>
+                <p className="text-[10px] text-gray-400 uppercase tracking-widest font-bold mb-1 dark:text-gray-500">Totali për pagesë</p>
+                <p className="text-3xl font-black text-gray-900 leading-tight mt-1 font-mono dark:text-gray-100">{fmt(inv.amount)}</p>
               </div>
               <div className="flex items-center gap-2">
                 <StatusBadge status={isOverdue && inv.status !== 'paid' && inv.status !== 'void' ? 'overdue' : inv.status}/>
@@ -448,16 +448,16 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer, customerMap, hi
 
               {/* Shfaq shumin e paguar dhe balancën për faturat e paguara pjesërisht */}
               {inv.status === 'partial' && inv.paidAmount > 0 && (
-                <div className="p-2 bg-blue-50 rounded-lg border border-blue-100">
+                <div className="p-2 bg-blue-50 rounded-lg border border-blue-100 dark:bg-blue-900/20 dark:border-blue-900/40">
                   <div className="flex items-center justify-between gap-2 text-xs mb-0.5">
-                    <span className="text-blue-500 font-semibold text-[11px]">Paguar:</span>
-                    <span className="font-bold text-blue-600 text-[11px] font-mono">{fmt(inv.paidAmount)}</span>
+                    <span className="text-blue-500 dark:text-blue-400 font-semibold text-[11px]">Paguar:</span>
+                    <span className="font-bold text-blue-600 dark:text-blue-400 text-[11px] font-mono">{fmt(inv.paidAmount)}</span>
                   </div>
                   <div className="flex items-center justify-between gap-2 text-xs">
-                    <span className="text-amber-600 font-semibold text-[11px]">Mbetur:</span>
-                    <span className="font-bold text-amber-700 text-[11px] font-mono">{fmt(inv.amount - inv.paidAmount)}</span>
+                    <span className="text-amber-600 dark:text-amber-400 font-semibold text-[11px]">Mbetur:</span>
+                    <span className="font-bold text-amber-700 dark:text-amber-400 text-[11px] font-mono">{fmt(inv.amount - inv.paidAmount)}</span>
                   </div>
-                  <div className="mt-1 w-full bg-gray-200 rounded-full h-1">
+                  <div className="mt-1 w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1">
                     <div
                       className="bg-blue-500 h-1 rounded-full transition-all"
                       style={{ width: `${(inv.paidAmount / inv.amount) * 100}%` }}
@@ -470,38 +470,38 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer, customerMap, hi
 
           {/* Bottom section: Dates in grid (2 cols on mobile, 2 rows on desktop) */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 px-6 py-5">
-            <div className="bg-gray-50 rounded-xl border border-gray-100 p-3">
-              <span className="text-gray-400 text-[10px] mb-1 font-bold uppercase tracking-wide block">Data e faturës:</span>
-              <span className="font-bold text-gray-900 text-sm block font-mono">{formatDate(inv.date)}</span>
+            <div className="bg-gray-50 rounded-xl border border-gray-100 p-3 dark:bg-gray-900/50 dark:border-gray-700">
+              <span className="text-gray-400 text-[10px] mb-1 font-bold uppercase tracking-wide block dark:text-gray-500">Data e faturës:</span>
+              <span className="font-bold text-gray-900 text-sm block font-mono dark:text-gray-100">{formatDate(inv.date)}</span>
             </div>
-            <div className={`rounded-xl border p-3 ${isOverdue ? 'bg-red-50 border-red-200' : 'bg-gray-50 border-gray-100'}`}>
-              <span className={`text-[10px] mb-1 font-bold uppercase tracking-wide block ${isOverdue ? 'text-red-600' : 'text-gray-400'}`}>Afati i pagesës:</span>
-              <span className={`font-bold text-sm block font-mono ${isOverdue ? 'text-red-600' : 'text-gray-900'}`}>
+            <div className={`rounded-xl border p-3 ${isOverdue ? 'bg-red-50 border-red-200 dark:bg-red-900/20 dark:border-red-900/40' : 'bg-gray-50 border-gray-100 dark:bg-gray-900/50 dark:border-gray-700'}`}>
+              <span className={`text-[10px] mb-1 font-bold uppercase tracking-wide block ${isOverdue ? 'text-red-600 dark:text-red-400' : 'text-gray-400 dark:text-gray-500'}`}>Afati i pagesës:</span>
+              <span className={`font-bold text-sm block font-mono ${isOverdue ? 'text-red-600 dark:text-red-400' : 'text-gray-900 dark:text-gray-100'}`}>
                 {formatDate(inv.due)}
               </span>
             </div>
             {inv.subscriptionExpiry && (
-              <div className="bg-blue-50 rounded-xl border border-blue-100 p-3">
+              <div className="bg-blue-50 rounded-xl border border-blue-100 p-3 dark:bg-blue-900/20 dark:border-blue-900/40">
                 <span className="text-blue-500 font-bold text-[10px] mb-1 uppercase tracking-wide block">📅 Skadimi:</span>
-                <span className="font-bold text-blue-600 text-sm block font-mono">{formatDate(inv.subscriptionExpiry)}</span>
+                <span className="font-bold text-blue-600 text-sm block font-mono dark:text-blue-400">{formatDate(inv.subscriptionExpiry)}</span>
               </div>
             )}
             {inv.notifyDate && (
-              <div className="bg-amber-50 rounded-xl border border-amber-100 p-3">
-                <span className="text-amber-600 text-[10px] mb-1 font-bold uppercase tracking-wide block">🔔 Njoftim:</span>
-                <span className="font-bold text-amber-700 text-sm block font-mono">{inv.notifyDate}</span>
+              <div className="bg-amber-50 rounded-xl border border-amber-100 p-3 dark:bg-amber-900/20 dark:border-amber-900/40">
+                <span className="text-amber-600 text-[10px] mb-1 font-bold uppercase tracking-wide block dark:text-amber-400">🔔 Njoftim:</span>
+                <span className="font-bold text-amber-700 text-sm block font-mono dark:text-amber-400">{inv.notifyDate}</span>
               </div>
             )}
           </div>
 
           <div className="px-6 pb-5">
-            <div className="rounded-xl border border-gray-200 overflow-hidden">
+            <div className="rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
 
               {/* Desktop/tablet: full table */}
               <div className="hidden sm:block overflow-x-auto">
                 <table className="w-full text-sm border-collapse min-w-[380px]">
                   <thead>
-                    <tr className="bg-blue-500 text-white">
+                    <tr className="bg-blue-500 text-white dark:bg-accent dark:text-accent-on">
                       <th className="text-center px-3 py-3 w-8 font-bold uppercase text-xs tracking-wide">#</th>
                       <th className="text-left px-3 py-3 font-bold uppercase text-xs tracking-wide">Artikulli &amp; Përshkrimi</th>
                       <th className="text-right px-3 py-3 w-16 font-bold uppercase text-xs tracking-wide">Sasia</th>
@@ -511,15 +511,15 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer, customerMap, hi
                   </thead>
                   <tbody>
                     {inv.items.map((item, i) => (
-                      <tr key={i} className="border-t border-gray-100 hover:bg-gray-50/50">
-                        <td className="px-3 py-3.5 text-center text-gray-400 text-sm font-mono">{i + 1}</td>
+                      <tr key={i} className="border-t border-gray-100 hover:bg-gray-50/50 dark:border-gray-700 dark:hover:bg-gray-900/40">
+                        <td className="px-3 py-3.5 text-center text-gray-400 text-sm font-mono dark:text-gray-500">{i + 1}</td>
                         <td className="px-3 py-3.5">
-                          <p className="text-gray-800 font-semibold text-sm">{item.desc}</p>
-                          {item.note && <p className="text-xs text-gray-400 italic mt-0.5">{item.note}</p>}
+                          <p className="text-gray-800 font-semibold text-sm dark:text-gray-200">{item.desc}</p>
+                          {item.note && <p className="text-xs text-gray-400 italic mt-0.5 dark:text-gray-500">{item.note}</p>}
                         </td>
-                        <td className="px-3 py-3.5 text-right text-gray-700 text-sm font-mono">{item.qty}</td>
-                        <td className="px-3 py-3.5 text-right text-gray-700 text-sm font-mono">{fmt(item.price)}</td>
-                        <td className="px-3 py-3.5 text-right font-bold text-gray-900 text-sm font-mono">{fmt(item.qty * item.price)}</td>
+                        <td className="px-3 py-3.5 text-right text-gray-700 text-sm font-mono dark:text-gray-200">{item.qty}</td>
+                        <td className="px-3 py-3.5 text-right text-gray-700 text-sm font-mono dark:text-gray-200">{fmt(item.price)}</td>
+                        <td className="px-3 py-3.5 text-right font-bold text-gray-900 text-sm font-mono dark:text-gray-50">{fmt(item.qty * item.price)}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -527,35 +527,35 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer, customerMap, hi
               </div>
 
               {/* Mobile: stacked cards -- no horizontal scroll needed */}
-              <div className="sm:hidden divide-y divide-gray-100 rep">
+              <div className="sm:hidden divide-y divide-gray-100 dark:divide-gray-700 rep">
                 {inv.items.map((item, i) => (
-                  <div key={i} className="px-4 py-3 hover:bg-gray-50/50">
+                  <div key={i} className="px-4 py-3 hover:bg-gray-50/50 dark:hover:bg-gray-900/40">
                     <div className="flex items-start justify-between gap-2">
-                      <p className="text-gray-800 font-semibold text-sm min-w-0">{item.desc}</p>
-                      <p className="font-bold text-gray-900 text-sm font-mono flex-shrink-0">{fmt(item.qty * item.price)}</p>
+                      <p className="text-gray-800 font-semibold text-sm dark:text-gray-200 min-w-0">{item.desc}</p>
+                      <p className="font-bold text-gray-900 text-sm font-mono dark:text-gray-50 flex-shrink-0">{fmt(item.qty * item.price)}</p>
                     </div>
-                    {item.note && <p className="text-xs text-gray-400 italic mt-0.5">{item.note}</p>}
-                    <p className="text-xs text-gray-400 font-mono mt-1">{item.qty} × {fmt(item.price)}</p>
+                    {item.note && <p className="text-xs text-gray-400 italic mt-0.5 dark:text-gray-500">{item.note}</p>}
+                    <p className="text-xs text-gray-400 dark:text-gray-500 font-mono mt-1">{item.qty} × {fmt(item.price)}</p>
                   </div>
                 ))}
               </div>
 
-              <div className="bg-gray-50 border-t border-gray-200 px-5 py-3 flex items-center justify-between">
-                <span className="font-bold text-blue-500 uppercase tracking-wide text-sm">Totali</span>
-                <span className="font-black text-gray-900 text-base font-mono">{fmt(inv.amount)}</span>
+              <div className="bg-gray-50 dark:bg-gray-900/50 border-t border-gray-200 dark:border-gray-700 px-5 py-3 flex items-center justify-between">
+                <span className="font-bold text-blue-500 dark:text-blue-400 uppercase tracking-wide text-sm">Totali</span>
+                <span className="font-black text-gray-900 text-base font-mono dark:text-gray-50">{fmt(inv.amount)}</span>
               </div>
             </div>
           </div>
 
-          <div className="mx-6 mb-6 bg-blue-50 border border-blue-100 rounded-xl py-3 px-4 text-center">
-            <p className="text-xs font-bold text-blue-600">Faleminderit për besimin tuaj!</p>
+          <div className="mx-6 mb-6 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-900/40 rounded-xl py-3 px-4 text-center">
+            <p className="text-xs font-bold text-blue-600 dark:text-blue-400">Faleminderit për besimin tuaj!</p>
           </div>
         </div>
 
         {linkedPayment && (
-          <div className="bg-emerald-50 rounded-2xl border border-emerald-100 p-5">
+          <div className="bg-emerald-50 dark:bg-emerald-900/20 rounded-2xl border border-emerald-100 dark:border-emerald-900/40 p-5">
             <div className="flex items-center justify-between mb-4">
-              <p className="text-sm font-bold text-emerald-700 flex items-center gap-1.5">
+              <p className="text-sm font-bold text-emerald-700 dark:text-emerald-400 flex items-center gap-1.5">
                 <CreditCard size={15}/> Pagesa e regjistruar
               </p>
               <div className="flex items-center gap-1">
@@ -569,11 +569,11 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer, customerMap, hi
                 {confirmDelPayment ? (
                   <div className="flex items-center gap-1">
                     <button className="px-2 py-1 bg-blue-500 text-white text-xs font-bold rounded-lg" onClick={doDeletePayment}>Po</button>
-                    <button className="px-2 py-1 border border-gray-200 text-gray-600 text-xs font-bold rounded-lg hover:bg-gray-50" onClick={() => setConfirmDelPayment(false)}>Jo</button>
+                    <button className="px-2 py-1 border border-gray-200 text-gray-600 text-xs font-bold rounded-lg hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-900/50" onClick={() => setConfirmDelPayment(false)}>Jo</button>
                   </div>
                 ) : (
                   <button
-                    className="icon-btn text-blue-400 hover:bg-blue-50"
+                    className="icon-btn text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20"
                     title="Fshij pagesën"
                     onClick={() => setConfirmDelPayment(true)}
                   >
@@ -583,43 +583,43 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer, customerMap, hi
               </div>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center text-sm">
-              <div><p className="text-gray-500 mb-1 font-semibold text-xs">Data</p><p className="font-semibold text-gray-800 font-mono">{formatDate(linkedPayment.date)}</p></div>
-              <div><p className="text-gray-500 mb-1 font-semibold text-xs">Shuma</p><p className="font-bold text-emerald-700 font-mono">{fmt(linkedPayment.amount)}</p></div>
-              <div><p className="text-gray-500 mb-1 font-semibold text-xs">Metoda</p><p className="font-semibold text-gray-800">{linkedPayment.method}</p></div>
+              <div><p className="text-gray-500 dark:text-gray-400 mb-1 font-semibold text-xs">Data</p><p className="font-semibold text-gray-800 dark:text-gray-100 font-mono">{formatDate(linkedPayment.date)}</p></div>
+              <div><p className="text-gray-500 dark:text-gray-400 mb-1 font-semibold text-xs">Shuma</p><p className="font-bold text-emerald-700 dark:text-emerald-400 font-mono">{fmt(linkedPayment.amount)}</p></div>
+              <div><p className="text-gray-500 dark:text-gray-400 mb-1 font-semibold text-xs">Metoda</p><p className="font-semibold text-gray-800 dark:text-gray-100">{linkedPayment.method}</p></div>
               <div>
-                <p className="text-gray-500 mb-1 font-semibold text-xs">Tek</p>
-                <p className={`font-bold text-sm ${linkedPayment.depositedTo === 'Enndy' ? 'text-blue-600' : 'text-purple-700'}`}>
+                <p className="text-gray-500 dark:text-gray-400 mb-1 font-semibold text-xs">Tek</p>
+                <p className={`font-bold text-sm ${linkedPayment.depositedTo === 'Enndy' ? 'text-blue-600 dark:text-blue-400' : 'text-purple-700 dark:text-purple-400'}`}>
                   {linkedPayment.depositedTo}
                 </p>
               </div>
             </div>
             {linkedPayment.fee > 0 && (
-              <p className="text-sm text-amber-700 mt-3 text-center font-medium font-mono">
+              <p className="text-sm text-amber-700 dark:text-amber-400 mt-3 text-center font-medium font-mono">
                 Fee: -{fmt(linkedPayment.fee)} · Neto: {fmt(linkedPayment.net)}
               </p>
             )}
           </div>
         )}
 
-        <div className="bg-white rounded-2xl border border-gray-200 p-5">
-          <h4 className="text-xs font-bold text-gray-800 uppercase tracking-widest mb-4 flex items-center gap-1.5">
+        <div className="bg-white rounded-2xl border border-gray-200 p-5 dark:bg-gray-800 dark:border-gray-700">
+          <h4 className="text-xs font-bold text-gray-800 uppercase tracking-widest mb-4 flex items-center gap-1.5 dark:text-gray-100">
             <MessageSquare size={14}/> Komentet e stafit
           </h4>
           {(inv.comments || []).length === 0 ? (
-            <p className="text-xs text-gray-400 italic mb-4">Nuk ka komente ende.</p>
+            <p className="text-xs text-gray-400 italic mb-4 dark:text-gray-500">Nuk ka komente ende.</p>
           ) : (
             <div className="space-y-3 mb-4">
               {(inv.comments || []).map((c, i) => (
                 <div key={i} className="flex gap-2">
-                  <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-xs font-bold text-blue-600 flex-shrink-0 mt-0.5">
+                  <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center text-xs font-bold text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5">
                     {c.author[0]}
                   </div>
-                  <div className="flex-1 bg-gray-50 rounded-xl px-3 py-2.5">
+                  <div className="flex-1 bg-gray-50 rounded-xl px-3 py-2.5 dark:bg-gray-900/50">
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-sm font-semibold text-gray-800">{c.author}</span>
-                      <span className="text-xs text-gray-500 font-mono">{formatDate(c.date)}</span>
+                      <span className="text-sm font-semibold text-gray-800 dark:text-gray-100">{c.author}</span>
+                      <span className="text-xs text-gray-500 dark:text-gray-400 font-mono">{formatDate(c.date)}</span>
                     </div>
-                    <p className="text-sm text-gray-700 leading-relaxed">{c.text}</p>
+                    <p className="text-sm text-gray-700 leading-relaxed dark:text-gray-200">{c.text}</p>
                   </div>
                 </div>
               ))}
@@ -1561,7 +1561,7 @@ export default function Invoices() {
         </div>
 
         {/* Right: invoice side panel */}
-        <div className="flex-1 flex flex-col overflow-hidden lg:max-w-[900px]">
+        <div className="flex-1 flex flex-col overflow-hidden lg:max-w-[900px] dark:lg:max-w-none">
           <InvoiceSidePanel
             key={preview}
             invId={preview}

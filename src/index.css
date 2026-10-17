@@ -216,6 +216,7 @@
 .dark .rep .dark\:hover\:bg-gray-600:hover { background-color: theme('colors.dk.high'); }
 .dark .rep .dark\:hover\:border-blue-900\/40:hover { border-color: theme('colors.accent.DEFAULT / 40%'); }
 .dark .rep .dark\:border-gray-600 { border-color: rgb(255 255 255 / 0.07); }
+.dark .rep .dark\:border-blue-900\/40 { border-color: theme('colors.accent.DEFAULT / 25%'); }
 /* Butonat e përgjithshme brenda .rep (Cilësimet, Pagesat...) */
 .dark .rep .btn-outline { background-color: theme('colors.dk.high'); border-color: rgb(255 255 255 / 0.08); color: #dfe2eb; }
 .dark .rep .btn-outline:hover { background-color: theme('colors.dk.line'); }
