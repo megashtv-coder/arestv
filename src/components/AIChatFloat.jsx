@@ -535,7 +535,7 @@ export default function AIChatFloat() {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 w-14 h-14 bg-blue-500 hover:bg-blue-600 text-white rounded-full shadow-lg flex items-center justify-center transition-all hover:scale-110 z-40"
+          className="fixed bottom-6 right-6 w-14 h-14 bg-blue-500 hover:bg-blue-600 text-white rounded-full shadow-lg dark:bg-gradient-to-tr dark:from-accent dark:to-accent-soft dark:shadow-[0_0_25px_-4px_rgba(59,130,246,0.45)] dark:[&>svg]:text-white dark:[&>svg]:w-7 dark:[&>svg]:h-7 dark:[&>svg]:[stroke-width:2.2] flex items-center justify-center transition-all hover:scale-110 z-40"
           title="Hap AI Chat"
         >
           <MessageCircle size={24} />
@@ -544,11 +544,11 @@ export default function AIChatFloat() {
 
       {/* Chat Panel */}
       {isOpen && (
-        <div className="fixed bottom-6 right-6 w-96 h-[600px] bg-white dark:bg-dk-low rounded-lg dark:rounded-2xl shadow-2xl flex flex-col z-50 border border-gray-200 dark:border-white/[0.08] rep">
+        <div className="fixed bottom-6 right-6 w-96 dark:w-[420px] dark:max-w-[calc(100vw-32px)] h-[600px] bg-white dark:bg-dk-low rounded-lg dark:rounded-2xl shadow-2xl dark:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] flex flex-col z-50 border border-gray-200 dark:border-white/[0.08] rep">
           {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+          <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700 dark:bg-dk-card dark:rounded-t-2xl">
             <div className="flex items-center gap-2">
-              <MessageCircle size={20} className="text-blue-500" />
+              <MessageCircle size={20} className="text-blue-500 dark:text-accent" />
               <h3 className="font-bold text-gray-900 dark:text-white dark:text-gray-50">🤖 AI Asistenti</h3>
             </div>
             <button
@@ -566,7 +566,7 @@ export default function AIChatFloat() {
               <div key={msg.id}>
                 {msg.type === 'user' && (
                   <div className="flex justify-end">
-                    <div className="bg-blue-500 text-white px-4 py-2 rounded-lg max-w-xs break-words">
+                    <div className="bg-blue-500 dark:bg-accent text-white dark:text-accent-on px-4 py-2 rounded-lg max-w-xs break-words">
                       {msg.content}
                     </div>
                   </div>
@@ -702,7 +702,7 @@ export default function AIChatFloat() {
           </div>
 
           {/* Input Form with Customer & Product Suggestions */}
-          <form onSubmit={handleSubmit} className="border-t border-gray-200 dark:border-gray-700 p-3 bg-gray-50 dark:bg-gray-900/50 rounded-b-lg space-y-2">
+          <form onSubmit={handleSubmit} className="border-t border-gray-200 dark:border-gray-700 p-3 bg-gray-50 dark:bg-dk-side rounded-b-lg dark:rounded-b-2xl space-y-2">
             {/* Customer Picker */}
             {customerSuggestions.length > 0 && (
               <div className="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg max-h-32 overflow-y-auto dark:bg-gray-800">
@@ -812,7 +812,7 @@ export default function AIChatFloat() {
                 onChange={handleInputChange}
                 onPaste={handlePaste}
                 placeholder="Shkruaj komandë ose ngjit (Ctrl+V) një screenshot..."
-                className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-gray-50"
+                className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-gray-50 dark:focus:ring-accent/40 dark:focus:border-accent"
                 disabled={loading}
               />
               <button
