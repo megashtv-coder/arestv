@@ -269,6 +269,9 @@
   @apply scale-95;
 }
 
+.dark .fab { background-color: theme('colors.accent.DEFAULT'); color: theme('colors.accent.on'); box-shadow: 0 0 25px -4px theme('colors.accent.DEFAULT / 50%'); }
+.dark .fab:hover { background-color: theme('colors.accent.DEFAULT / 90%'); }
+
 /* Hide on desktop */
 @media (min-width: 640px) {
   .fab {

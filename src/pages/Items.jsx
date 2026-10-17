@@ -434,7 +434,7 @@ export default function Items() {
       ) : (
         <>
         {/* Mobile Card View - Hidden on sm+ */}
-        <div className="sm:hidden space-y-2 mb-4">
+        <div className="sm:hidden space-y-2 mb-4 rep">
           {paged.map(item => {
             const margin = item.purchasePrice > 0
               ? ((item.salePrice - item.purchasePrice) / item.salePrice * 100).toFixed(1)

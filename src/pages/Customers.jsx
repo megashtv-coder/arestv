@@ -890,7 +890,7 @@ export default function Customers() {
           </div>
 
           {/* Mobile: cards */}
-          <div className="sm:hidden grid grid-cols-1 gap-4 mb-6">
+          <div className="sm:hidden grid grid-cols-1 gap-4 mb-6 rep">
             {paginatedCustomers.map(c => (
               <CustomerCard
                 key={c.id}

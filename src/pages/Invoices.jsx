@@ -527,7 +527,7 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer, customerMap, hi
               </div>
 
               {/* Mobile: stacked cards -- no horizontal scroll needed */}
-              <div className="sm:hidden divide-y divide-gray-100">
+              <div className="sm:hidden divide-y divide-gray-100 rep">
                 {inv.items.map((item, i) => (
                   <div key={i} className="px-4 py-3 hover:bg-gray-50/50">
                     <div className="flex items-start justify-between gap-2">
@@ -1918,7 +1918,7 @@ export default function Invoices() {
 
       {/* Mobile Card View - Hidden on sm+ */}
       {paged.length > 0 && (
-        <div className="sm:hidden space-y-2 mb-6">
+        <div className="sm:hidden space-y-2 mb-6 rep">
           {paged.map(inv => {
             const rawPhone = cleanPhone(getPhone(inv.customer))
             const canContact = (inv.status === 'pending' || inv.status === 'overdue') && rawPhone

@@ -193,7 +193,7 @@ const Section = memo(function Section({ title, color, items, today, sentIds, cus
 
       {/* Mobile Card View - Hidden on sm+ */}
       {paginatedItems.length > 0 && (
-        <div className="sm:hidden space-y-2 mb-4">
+        <div className="sm:hidden space-y-2 mb-4 rep">
           {paginatedItems.map(inv => {
             const phone = getPhone(inv.customer)
             const msg = encodeURIComponent(buildRenewalMsg(inv))
