@@ -40,6 +40,13 @@ function diffSync(table, curr, prevRef, orgId) {
     return !old || JSON.stringify(old) !== JSON.stringify(item)
   })
   const toDelete = prev.filter(item => !currMap.has(item.id))
+  // MBROJTJE: produktet fshihen nga UI vetëm një nga një. Nëse sinkronizimi do të fshinte më shumë se 5
+  // produkte njëherësh, s'është fshirje e vërtetë por gjendje lokale e zbrazët/e vjetër (një pajisje që
+  // s'e ngarkoi listën) — nuk e lejojmë, që katalogu të mos humbasë në heshtje (ndodhi në XFlow më 2026-10-17).
+  const blockMassDelete = table === 'items' && toDelete.length > 5
+  if (blockMassDelete) {
+    console.error(`[diffSync] U BLLOKUA fshirja masive e ${toDelete.length} rreshtave nga '${table}' — nuk u fshi asgjë në databazë`)
+  }
 
   prevRef.current = curr
 
@@ -54,7 +61,7 @@ function diffSync(table, curr, prevRef, orgId) {
       console.error(`[diffSync] Error upserting ${table}:`, err)
     })
   }
-  if (toDelete.length) {
+  if (toDelete.length && !blockMassDelete) {
     supabase.from(table).delete().in('id', toDelete.map(d => d.id)).then(result => {
       if (result.error) {
         console.error(`[diffSync] Error deleting from ${table}:`, result.error)
