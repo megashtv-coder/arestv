@@ -301,6 +301,13 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer, customerMap, hi
 
   const TB = 'flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-xl border transition-colors'
 
+  const menuItems = [
+    ...(canContact ? [{ label: 'Rikujto pagesën TG', icon: Send, className: 'xl:hidden', onClick: () => window.open(`https://t.me/+${rawPhone}`, '_blank', 'noopener,noreferrer') }] : []),
+    ...(canVoid ? [{ label: 'Void', icon: XCircle, onClick: () => setConfirmVoid(true) }] : []),
+    // Faturat e paguara e kanë "Fshi" si buton në shirit, pranë "Ndrysho"
+    ...(inv.status !== 'paid' ? [{ label: 'Fshi', icon: Trash2, danger: true, onClick: () => setConfirmDel(true) }] : []),
+  ]
+  
   return (
     <div className="flex flex-col h-full overflow-hidden">
 
@@ -317,7 +324,16 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer, customerMap, hi
           <Pencil size={13}/> Ndrysho
         </button>
 
-        {inv.status === 'draft' && (
+        {inv.status === 'paid' && (
+          <button
+            className={`${TB} border-red-200 text-red-600 hover:bg-red-50 dark:border-transparent dark:bg-[#93000a]/20 dark:text-[#ffb4ab] dark:hover:bg-[#93000a]/40`}
+            onClick={() => setConfirmDel(true)}
+          >
+            <Trash2 size={13}/> Fshi
+          </button>
+        )}
+
+                {inv.status === 'draft' && (
           <button
             className={`${TB} border-blue-200 text-blue-500 hover:bg-blue-50 dark:border-blue-900/40 dark:hover:bg-blue-900/20`}
             onClick={() => {
@@ -334,9 +350,9 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer, customerMap, hi
             href={`https://wa.me/${rawPhone}?text=${msgEncoded}`}
             target="_blank" rel="noopener noreferrer"
             title="Dërgo rikujtim në WhatsApp"
-            className={`${TB} ${isOverdue ? 'border-orange-200 text-orange-600 hover:bg-orange-50 dark:border-transparent dark:bg-orange-500/15 dark:text-orange-300 dark:hover:bg-orange-500/25' : 'border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:border-transparent dark:bg-[#00a572]/20 dark:text-[#4edea3] dark:hover:bg-[#00a572]/30'}`}
+            className={`${TB} border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:border-transparent dark:bg-[#00a572]/20 dark:text-[#4edea3] dark:hover:bg-[#00a572]/30`}
           >
-            <MessageCircle size={13}/> Rikujto pagesën WA{isOverdue ? ' 🔔' : ''}
+            <MessageCircle size={13}/> Rikujto pagesën WA
           </a>
         )}
 
@@ -364,14 +380,7 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer, customerMap, hi
 
 
         <div className="ml-auto flex items-center gap-1">
-          <RowMenu
-            width="w-52"
-            items={[
-              ...(canContact ? [{ label: 'Rikujto pagesën TG', icon: Send, className: 'xl:hidden', onClick: () => window.open(`https://t.me/+${rawPhone}`, '_blank', 'noopener,noreferrer') }] : []),
-              ...(canVoid ? [{ label: 'Void', icon: XCircle, onClick: () => setConfirmVoid(true) }] : []),
-              { label: 'Fshi', icon: Trash2, danger: true, onClick: () => setConfirmDel(true) },
-            ]}
-          />
+          {menuItems.length > 0 && <RowMenu width="w-52" items={menuItems} />}
           <button className="icon-btn" onClick={onClose} title="Mbyll"><X size={16}/></button>
         </div>
       </div>
@@ -396,7 +405,6 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer, customerMap, hi
         <div className="flex items-center justify-between gap-3 bg-red-50 dark:bg-red-900/20 border-b border-red-100 dark:border-red-900/40 px-4 py-2">
           <div className="min-w-0">
             <p className="text-xs font-semibold text-red-600 dark:text-red-400">⚠ Fatura ka kaluar afatin e pagesës — {formatDate(inv.due)}</p>
-            <p className="text-[11px] text-red-400 dark:text-red-500 mt-0.5 truncate italic">"{buildReminderMsg(inv).slice(0, 90)}…"</p>
           </div>
           <a
             href={`https://wa.me/${rawPhone}?text=${msgEncoded}`}
