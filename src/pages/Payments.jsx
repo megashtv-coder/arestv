@@ -1,8 +1,9 @@
 import { useState, useMemo, useEffect, useRef, lazy, Suspense } from 'react'
 import {
   CreditCard, Download, Search, X, ChevronDown, Check,
-  Pencil, Trash2, Plus, Users, CheckCircle2,
+  Pencil, Trash2, MoreVertical, Plus, Users, CheckCircle2,
 } from 'lucide-react'
+import { createPortal } from 'react-dom'
 import { useApp } from '../context/AppContext'
 import { formatDate } from '../utils/dateFormat'
 import { EmptyState, Pagination } from '../components/UI'
@@ -313,6 +314,80 @@ function recomputeAfterDelete(inv, remainingPayments) {
     .reduce((s, x) => s + Number(x.amount || 0), 0) * 100) / 100
   const status = paid >= inv.amount && paid > 0 ? 'paid' : paid > 0 ? 'partial' : 'pending'
   return { ...inv, paidAmount: paid, status }
+}
+
+/* ── Menuja e veprimeve të rreshtit (⋮): Ndrysho / Fshi ──
+   Rendohet me portal jashtë tabelës që të mos priten nga overflow. */
+function PaymentRowMenu({ onEdit, onDelete }) {
+  const [pos, setPos] = useState(null)
+  const btnRef  = useRef(null)
+  const menuRef = useRef(null)
+
+  useEffect(() => {
+    if (!pos) return
+    const onDown = (e) => {
+      if (menuRef.current?.contains(e.target) || btnRef.current?.contains(e.target)) return
+      setPos(null)
+    }
+    const close = () => setPos(null)
+    document.addEventListener('mousedown', onDown)
+    window.addEventListener('scroll', close, true)
+    window.addEventListener('resize', close)
+    return () => {
+      document.removeEventListener('mousedown', onDown)
+      window.removeEventListener('scroll', close, true)
+      window.removeEventListener('resize', close)
+    }
+  }, [pos])
+
+  const toggle = (e) => {
+    e.stopPropagation()
+    if (pos) { setPos(null); return }
+    const r = e.currentTarget.getBoundingClientRect()
+    const openUp = window.innerHeight - r.bottom < 120
+    setPos({
+      left: Math.max(8, r.right - 160),
+      top: openUp ? null : r.bottom + 6,
+      bottom: openUp ? window.innerHeight - r.top + 6 : null,
+    })
+  }
+
+  return (
+    <>
+      <button
+        ref={btnRef}
+        type="button"
+        className="icon-btn text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-500 dark:hover:text-gray-300"
+        title="Veprimet"
+        onClick={toggle}
+      >
+        <MoreVertical size={16} />
+      </button>
+      {pos && createPortal(
+        <div
+          ref={menuRef}
+          className="fixed w-40 bg-white border border-gray-200 rounded-xl shadow-xl z-[9999] overflow-hidden dark:bg-dk-high dark:border-white/10"
+          style={{ left: pos.left, ...(pos.top != null ? { top: pos.top } : { bottom: pos.bottom }) }}
+        >
+          <button
+            type="button"
+            className="w-full text-left px-3.5 py-2 text-[13px] font-medium text-gray-700 hover:bg-gray-50 flex items-center gap-2 border-b border-gray-100 dark:text-gray-200 dark:border-transparent dark:hover:bg-dk-card"
+            onClick={e => { e.stopPropagation(); setPos(null); onEdit() }}
+          >
+            <Pencil size={14} /> Ndrysho
+          </button>
+          <button
+            type="button"
+            className="w-full text-left px-3.5 py-2 text-[13px] font-medium text-red-600 hover:bg-red-50 flex items-center gap-2 dark:text-[#ffb4ab] dark:hover:bg-[#93000a]/30"
+            onClick={e => { e.stopPropagation(); setPos(null); onDelete() }}
+          >
+            <Trash2 size={14} /> Fshi
+          </button>
+        </div>,
+        document.body
+      )}
+    </>
+  )
 }
 
 export default function Payments() {
@@ -638,20 +713,7 @@ export default function Payments() {
 
                 {/* Col 3: Actions - Larger Button */}
                 <div className="relative flex-shrink-0 flex gap-1">
-                  <button
-                    className="w-9 h-9 flex items-center justify-center rounded-xl bg-gray-100 dark:bg-dk-high text-gray-500 dark:text-gray-400 hover:bg-blue-50 dark:hover:bg-dk-line hover:text-blue-600 dark:hover:text-gray-100 transition-colors"
-                    title="Ndrysho"
-                    onClick={() => openEditPayment(p)}
-                  >
-                    <Pencil size={16}/>
-                  </button>
-                  <button
-                    className="w-9 h-9 flex items-center justify-center rounded-xl bg-blue-50 dark:bg-dk-high text-blue-600 dark:text-gray-400 hover:bg-blue-100 dark:hover:bg-[#93000a] dark:hover:text-[#ffdad6] transition-colors"
-                    title="Fshij"
-                    onClick={() => setDeletingId(p.id)}
-                  >
-                    <Trash2 size={16}/>
-                  </button>
+                  <PaymentRowMenu onEdit={() => openEditPayment(p)} onDelete={() => setDeletingId(p.id)} />
                 </div>
               </div>
 
@@ -815,21 +877,8 @@ export default function Payments() {
                         </button>
                       </div>
                     ) : (
-                      <div className="flex items-center justify-end gap-1.5">
-                        <button
-                          className="p-1.5 rounded-lg bg-gray-100 dark:bg-dk-high text-gray-500 dark:text-gray-400 hover:bg-blue-50 dark:hover:bg-dk-line hover:text-blue-600 dark:hover:text-gray-100 transition-colors"
-                          title="Ndrysho pagesën"
-                          onClick={() => openEditPayment(p)}
-                        >
-                          <Pencil size={14} />
-                        </button>
-                        <button
-                          className="p-1.5 rounded-lg bg-blue-50 dark:bg-dk-high text-blue-600 dark:text-gray-400 hover:bg-blue-100 dark:hover:bg-[#93000a] dark:hover:text-[#ffdad6] transition-colors"
-                          title="Fshij pagesën"
-                          onClick={() => setDeletingId(p.id)}
-                        >
-                          <Trash2 size={14} />
-                        </button>
+                      <div className="flex items-center justify-end">
+                        <PaymentRowMenu onEdit={() => openEditPayment(p)} onDelete={() => setDeletingId(p.id)} />
                       </div>
                     )}
                   </td>
