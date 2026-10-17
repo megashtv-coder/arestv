@@ -158,7 +158,7 @@ function Combobox({
 ───────────────────────────────────────────────────────────── */
 const CUST_COLORS = ['#2563eb','#7c3aed','#059669','#d97706','#dc2626','#0891b2','#be185d','#0f766e']
 
-const FLD = 'text-[10px] text-gray-500 font-bold uppercase tracking-wide block mb-1'
+const FLD = 'text-[10px] text-gray-500 font-bold uppercase tracking-wide block mb-1 dark:text-[#8b8e99]'
 
 function QuickAddCustomer({ initialName, onSave, onCancel }) {
   const parts = (initialName || '').trim().split(' ')
@@ -189,15 +189,15 @@ function QuickAddCustomer({ initialName, onSave, onCancel }) {
   }
 
   return (
-    <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 mb-4">
+    <div className="sec bg-emerald-50 border border-emerald-200 dark:bg-dk-card dark:border-white/10 rounded-xl p-4 mb-4">
       {/* Header */}
       <div className="flex items-center gap-1.5 mb-3">
-        <UserPlus size={14} className="text-emerald-600" />
-        <span className="text-xs font-bold text-emerald-700">Klient i ri — plotëso të dhënat</span>
+        <UserPlus size={14} className="text-emerald-600 dark:text-[#4edea3]" />
+        <span className="text-xs font-bold text-emerald-700 dark:text-[#4edea3]">Klient i ri — plotëso të dhënat</span>
       </div>
 
       {err && (
-        <div className="text-xs text-blue-600 bg-blue-50 border border-blue-100 rounded-lg px-3 py-2 mb-3">{err}</div>
+        <div className="text-xs text-blue-600 bg-blue-50 border border-blue-100 dark:bg-[#93000a]/30 dark:border-transparent dark:text-[#ffb4ab] rounded-lg px-3 py-2 mb-3">{err}</div>
       )}
 
       {/* Lloji */}
@@ -206,13 +206,13 @@ function QuickAddCustomer({ initialName, onSave, onCancel }) {
         <div className="flex gap-2">
           <button type="button" onClick={() => set('type', 'individual')}
             className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-bold border-2 transition-all ${
-              !isReseller ? 'border-blue-500 bg-blue-500 text-white' : 'border-gray-200 bg-white text-gray-500 hover:border-blue-300'
+              !isReseller ? 'border-blue-500 bg-blue-500 text-white dark:border-accent dark:bg-accent dark:text-accent-on' : 'border-gray-200 bg-white text-gray-500 hover:border-blue-300 dark:border-transparent dark:bg-dk-low dark:text-gray-300 dark:hover:bg-dk-high'
             }`}>
             <User size={12}/> Individual
           </button>
           <button type="button" onClick={() => set('type', 'reseller')}
             className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-bold border-2 transition-all ${
-              isReseller ? 'border-purple-600 bg-purple-600 text-white' : 'border-gray-200 bg-white text-gray-500 hover:border-purple-300'
+              isReseller ? 'border-purple-600 bg-purple-600 text-white dark:border-[#8083ff] dark:bg-[#8083ff] dark:text-[#0d0096]' : 'border-gray-200 bg-white text-gray-500 hover:border-purple-300 dark:border-transparent dark:bg-dk-low dark:text-gray-300 dark:hover:bg-dk-high'
             }`}>
             <Users size={12}/> Reseller
           </button>
@@ -311,7 +311,7 @@ function QuickAddCustomer({ initialName, onSave, onCancel }) {
       </div>
 
       {/* Veprimet */}
-      <div className="flex gap-2 justify-end pt-3 border-t border-emerald-200">
+      <div className="flex gap-2 justify-end pt-3 border-t border-emerald-200 dark:border-white/10">
         <button className="btn btn-outline text-xs py-1.5 px-3" onClick={onCancel}>Anulo</button>
         <button className="btn btn-primary text-xs py-1.5 px-3" onClick={handleSave}>
           Shto dhe Zgjidh

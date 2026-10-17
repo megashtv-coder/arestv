@@ -75,7 +75,7 @@ export default function ReferredBySelect({ value, onChange, excludeId }) {
     <div ref={wrapRef} className="relative">
       {/* Input */}
       <div className="relative flex items-center">
-        <Search size={14} className="absolute left-3 text-gray-400 pointer-events-none" />
+        <Search size={14} className="absolute left-3 text-gray-400 dark:text-gray-500 pointer-events-none" />
         <input
           ref={inputRef}
           className="form-control pl-8 pr-8"
@@ -87,17 +87,17 @@ export default function ReferredBySelect({ value, onChange, excludeId }) {
           autoComplete="off"
         />
         {query
-          ? <button type="button" onClick={clear} className="absolute right-3 text-gray-300 hover:text-gray-500"><X size={13}/></button>
+          ? <button type="button" onClick={clear} className="absolute right-3 text-gray-300 hover:text-gray-500 dark:hover:text-gray-400"><X size={13}/></button>
           : <ChevronDown size={13} className="absolute right-3 text-gray-300 pointer-events-none"/>
         }
       </div>
 
       {/* Dropdown list */}
       {open && (
-        <div className="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-lg max-h-52 overflow-y-auto">
+        <div className="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-lg max-h-52 overflow-y-auto dark:bg-dk-high dark:border-white/10">
           {/* Opsioni "asnjë" */}
           <div
-            className="px-3 py-2 text-xs text-gray-400 hover:bg-gray-50 cursor-pointer border-b border-gray-100"
+            className="px-3 py-2 text-xs text-gray-400 hover:bg-gray-50 cursor-pointer border-b border-gray-100 dark:text-gray-500 dark:hover:bg-dk-card dark:border-white/10"
             onMouseDown={() => select('')}
           >
             — Asnjë —
@@ -109,7 +109,7 @@ export default function ReferredBySelect({ value, onChange, excludeId }) {
               <div
                 key={name}
                 className={`px-3 py-2 text-sm cursor-pointer flex items-center gap-2 transition-colors ${
-                  i === active ? 'bg-blue-50 text-blue-600' : 'hover:bg-gray-50 text-gray-700'
+                  i === active ? 'bg-blue-50 text-blue-600 dark:bg-accent/10 dark:text-accent-soft' : 'hover:bg-gray-50 text-gray-700 dark:hover:bg-dk-card dark:text-gray-200'
                 }`}
                 onMouseDown={() => select(name)}
                 onMouseEnter={() => setActive(i)}
@@ -123,8 +123,8 @@ export default function ReferredBySelect({ value, onChange, excludeId }) {
           {/* Add new referrer option */}
           {query.trim() && (filtered.length === 0 || !filtered.includes(query.trim())) ? (
             <div
-              className={`px-3 py-2 text-sm cursor-pointer flex items-center gap-2 transition-colors hover:bg-blue-50 text-blue-500 hover:text-blue-600 font-medium ${
-                filtered.length > 0 ? 'border-t border-gray-100' : ''
+              className={`px-3 py-2 text-sm cursor-pointer flex items-center gap-2 transition-colors hover:bg-blue-50 dark:hover:bg-dk-card text-blue-500 dark:text-accent-soft hover:text-blue-600 font-medium ${
+                filtered.length > 0 ? 'border-t border-gray-100 dark:border-white/10' : ''
               }`}
               onMouseDown={() => select(query.trim())}
               onMouseEnter={() => setActive(filtered.length)}
@@ -136,7 +136,7 @@ export default function ReferredBySelect({ value, onChange, excludeId }) {
 
           {/* No results */}
           {filtered.length === 0 && !query.trim() ? (
-            <div className="px-3 py-3 text-xs text-gray-400 text-center">Nuk u gjet asnjë klient</div>
+            <div className="px-3 py-3 text-xs text-gray-400 dark:text-gray-500 text-center">Nuk u gjet asnjë klient</div>
           ) : null}
         </div>
       )}
