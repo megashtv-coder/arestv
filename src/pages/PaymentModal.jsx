@@ -19,7 +19,7 @@ function SlideSelect({ value, onChange, options }) {
       <button
         type="button"
         onClick={() => scroll(-1)}
-        className="flex-shrink-0 w-7 h-7 rounded-full border border-gray-200 flex items-center justify-center text-gray-400 hover:bg-gray-50 hover:text-gray-600 transition-colors dark:hidden"
+        className="flex-shrink-0 w-7 h-7 rounded-full border border-gray-200 flex items-center justify-center text-gray-400 hover:bg-gray-50 hover:text-gray-600 transition-colors dark:border-gray-700 dark:text-gray-500 dark:hover:bg-gray-900/50 dark:hover:text-gray-300 dark:hidden"
       >
         <ChevronLeft size={14} />
       </button>
@@ -48,7 +48,7 @@ function SlideSelect({ value, onChange, options }) {
       <button
         type="button"
         onClick={() => scroll(1)}
-        className="flex-shrink-0 w-7 h-7 rounded-full border border-gray-200 flex items-center justify-center text-gray-400 hover:bg-gray-50 hover:text-gray-600 transition-colors dark:hidden"
+        className="flex-shrink-0 w-7 h-7 rounded-full border border-gray-200 flex items-center justify-center text-gray-400 hover:bg-gray-50 hover:text-gray-600 transition-colors dark:border-gray-700 dark:text-gray-500 dark:hover:bg-gray-900/50 dark:hover:text-gray-300 dark:hidden"
       >
         <ChevronRight size={14} />
       </button>
@@ -329,7 +329,7 @@ export default function PaymentModal({ invoice, payment: editPayment, onClose, i
       <div className="grid grid-cols-2 gap-4">
         <FormGroup label="Shuma e paguar *">
           <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 text-sm select-none">€</span>
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm select-none dark:text-gray-500">€</span>
             <input
               className="form-control pl-7"
               type="number" min="0" step="0.01"
@@ -367,7 +367,7 @@ export default function PaymentModal({ invoice, payment: editPayment, onClose, i
             onChange={e => set('trackingNumber', e.target.value)}
             placeholder="p.sh. 1234567890"
           />
-          <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+          <p className="text-xs text-gray-400 mt-1 dark:text-gray-500">
             Opsionale — kështu e ke gati te "Barazimi" pa e kërkuar prapë
           </p>
         </FormGroup>
@@ -377,7 +377,7 @@ export default function PaymentModal({ invoice, payment: editPayment, onClose, i
       <div className="grid grid-cols-2 gap-4">
         <FormGroup label="Fee transaksioni (€)">
           <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 text-sm select-none">€</span>
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm select-none dark:text-gray-500">€</span>
             <input
               className="form-control pl-7"
               type="number" min="0" step="0.01"
@@ -403,15 +403,15 @@ export default function PaymentModal({ invoice, payment: editPayment, onClose, i
       {form.amount > 0 && (
         <div className="grid grid-cols-3 gap-3 my-1 text-center">
           <div className="bg-gray-50 rounded-xl dark:rounded-2xl py-3 dark:bg-dk-card dark:border dark:border-white/10">
-            <p className="text-xs text-gray-400 dark:text-gray-500 mb-1">Shuma</p>
+            <p className="text-xs text-gray-400 mb-1 dark:text-gray-500">Shuma</p>
             <p className="font-bold text-gray-700 dark:text-gray-200">{fmt(Number(form.amount) || 0)}</p>
           </div>
           <div className="bg-amber-50 rounded-xl dark:rounded-2xl py-3">
-            <p className="text-xs text-gray-400 dark:text-amber-600 mb-1">Fee</p>
+            <p className="text-xs text-gray-400 mb-1 dark:text-amber-600">Fee</p>
             <p className="font-bold text-amber-500">- {fmt(Number(form.fee) || 0)}</p>
           </div>
           <div className="bg-emerald-50 rounded-xl dark:rounded-2xl py-3">
-            <p className="text-xs text-gray-400 dark:text-emerald-600 mb-1">Neto</p>
+            <p className="text-xs text-gray-400 mb-1 dark:text-emerald-600">Neto</p>
             <p className="font-bold text-emerald-600">
               {fmt((Number(form.amount) || 0) - (Number(form.fee) || 0))}
             </p>

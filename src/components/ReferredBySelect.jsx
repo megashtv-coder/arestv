@@ -75,7 +75,7 @@ export default function ReferredBySelect({ value, onChange, excludeId }) {
     <div ref={wrapRef} className="relative">
       {/* Input */}
       <div className="relative flex items-center">
-        <Search size={14} className="absolute left-3 text-gray-400 dark:text-gray-500 pointer-events-none" />
+        <Search size={14} className="absolute left-3 text-gray-400 pointer-events-none dark:text-gray-500" />
         <input
           ref={inputRef}
           className="form-control pl-8 pr-8"
@@ -136,7 +136,7 @@ export default function ReferredBySelect({ value, onChange, excludeId }) {
 
           {/* No results */}
           {filtered.length === 0 && !query.trim() ? (
-            <div className="px-3 py-3 text-xs text-gray-400 dark:text-gray-500 text-center">Nuk u gjet asnjë klient</div>
+            <div className="px-3 py-3 text-xs text-gray-400 text-center dark:text-gray-500">Nuk u gjet asnjë klient</div>
           ) : null}
         </div>
       )}

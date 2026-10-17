@@ -119,7 +119,7 @@ export function CustomerModal({ customer, onClose, isFormPage }) {
             className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold border-2 transition-all ${
               !isReseller
                 ? 'border-blue-500 bg-blue-500 text-white shadow-sm dark:border-accent dark:bg-accent dark:text-accent-on dark:rounded-xl'
-                : 'border-gray-200 bg-white text-gray-500 hover:border-blue-300 dark:border-transparent dark:bg-dk-card dark:text-gray-300 dark:hover:bg-dk-high dark:rounded-xl'
+                : 'border-gray-200 bg-white text-gray-500 hover:border-blue-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-transparent dark:bg-dk-card dark:text-gray-300 dark:hover:bg-dk-high dark:rounded-xl'
             }`}>
             <User size={15}/> Individual
           </button>
@@ -127,7 +127,7 @@ export function CustomerModal({ customer, onClose, isFormPage }) {
             className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold border-2 transition-all ${
               isReseller
                 ? 'border-purple-600 bg-purple-600 text-white shadow-sm dark:border-[#8083ff] dark:bg-[#8083ff] dark:text-[#0d0096] dark:rounded-xl'
-                : 'border-gray-200 bg-white text-gray-500 hover:border-purple-300 dark:border-transparent dark:bg-dk-card dark:text-gray-300 dark:hover:bg-dk-high dark:rounded-xl'
+                : 'border-gray-200 bg-white text-gray-500 hover:border-purple-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-transparent dark:bg-dk-card dark:text-gray-300 dark:hover:bg-dk-high dark:rounded-xl'
             }`}>
             <Users size={15}/> Reseller
           </button>
@@ -282,12 +282,12 @@ const CustomerCard = memo(function CustomerCard({ c, onEdit, fmt, isLatePayer, o
 
   return (
     <div
-      className={`bg-white rounded-2xl border p-4 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between gap-3 cursor-pointer ${
+      className={`bg-white dark:bg-gray-800 rounded-2xl border p-4 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between gap-3 cursor-pointer ${
         checked
-          ? 'border-blue-500'
+          ? 'border-blue-500 dark:border-blue-500'
           : isLatePayer
-            ? 'border-orange-200 hover:border-orange-300'
-            : 'border-gray-200/90'
+            ? 'border-orange-200 dark:border-orange-900/50 hover:border-orange-300'
+            : 'border-gray-200/90 dark:border-gray-700'
       }`}
       onClick={() => onEdit(c)}
     >
@@ -302,25 +302,25 @@ const CustomerCard = memo(function CustomerCard({ c, onEdit, fmt, isLatePayer, o
                 e.stopPropagation()
                 onToggleSelect()
               }}
-              className="w-4 h-4 mt-1.5 rounded border-gray-300 text-blue-500 cursor-pointer flex-shrink-0"
+              className="w-4 h-4 mt-1.5 rounded border-gray-300 dark:border-gray-600 text-blue-500 cursor-pointer flex-shrink-0"
               onClick={(e) => e.stopPropagation()}
             />
             <Avatar name={c.name || c.firstName || '?'} color={c.color} size={36} />
             <div className="min-w-0">
               <div className="flex items-center gap-1.5 flex-wrap">
-                <p className="font-bold text-gray-900 truncate text-sm leading-tight">
+                <p className="font-bold text-gray-900 dark:text-white truncate text-sm leading-tight">
                   {c.name || `${c.firstName} ${c.lastName}`}
                 </p>
                 {isLatePayer && (
                   <span
-                    className="flex items-center gap-0.5 bg-orange-50 text-orange-500 border border-orange-100 text-[10px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0"
+                    className="flex items-center gap-0.5 bg-orange-50 dark:bg-orange-900/30 text-orange-500 dark:text-orange-400 border border-orange-100 dark:border-orange-900/50 text-[10px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0"
                     title="Ky klient ka shfaqur vonesa pagese"
                   >
                     <AlertTriangle size={9}/> Vonues
                   </span>
                 )}
               </div>
-              <div className="flex items-center gap-1 text-[11px] text-gray-400 mt-0.5">
+              <div className="flex items-center gap-1 text-[11px] text-gray-400 dark:text-gray-500 mt-0.5">
                 <Globe size={10} className="flex-shrink-0"/>
                 <span className="truncate">{c.country}</span>
               </div>
@@ -335,16 +335,16 @@ const CustomerCard = memo(function CustomerCard({ c, onEdit, fmt, isLatePayer, o
         </div>
 
         {/* Info rows */}
-        <div className="pl-[26px] mt-3 space-y-1 text-xs text-gray-500">
+        <div className="pl-[26px] mt-3 space-y-1 text-xs text-gray-500 dark:text-gray-400">
           {c.email && (
             <div className="flex items-center gap-1.5">
-              <Mail size={11} className="text-gray-400 flex-shrink-0"/>
+              <Mail size={11} className="text-gray-400 dark:text-gray-500 flex-shrink-0"/>
               <span className="truncate text-[11px]">{c.email}</span>
             </div>
           )}
           {c.phone && (
             <div className="flex items-center gap-1.5 font-mono">
-              <Phone size={11} className="text-gray-400 flex-shrink-0"/>
+              <Phone size={11} className="text-gray-400 dark:text-gray-500 flex-shrink-0"/>
               <span className="text-[11px]">{c.phone}</span>
             </div>
           )}
@@ -352,13 +352,13 @@ const CustomerCard = memo(function CustomerCard({ c, onEdit, fmt, isLatePayer, o
           {/* Individual: App + MAC */}
           {!isReseller && c.app && (
             <div className="flex items-center gap-1.5">
-              <Monitor size={11} className="text-gray-400 flex-shrink-0"/>
-              <span className="truncate text-[11px] font-semibold text-gray-700">{c.app}</span>
+              <Monitor size={11} className="text-gray-400 dark:text-gray-500 flex-shrink-0"/>
+              <span className="truncate text-[11px] font-semibold text-gray-700 dark:text-gray-300">{c.app}</span>
             </div>
           )}
           {!isReseller && c.macAddress && (
             <div className="flex items-center gap-1.5 font-mono">
-              <Wifi size={11} className="text-gray-400 flex-shrink-0"/>
+              <Wifi size={11} className="text-gray-400 dark:text-gray-500 flex-shrink-0"/>
               <span className="text-[11px] truncate">{c.macAddress}</span>
             </div>
           )}
@@ -366,20 +366,20 @@ const CustomerCard = memo(function CustomerCard({ c, onEdit, fmt, isLatePayer, o
           {/* Reseller: Username + Panel */}
           {isReseller && c.username && (
             <div className="flex items-center gap-1.5 font-mono">
-              <User size={11} className="text-gray-400 flex-shrink-0"/>
+              <User size={11} className="text-gray-400 dark:text-gray-500 flex-shrink-0"/>
               <span className="text-[11px]">{c.username}</span>
             </div>
           )}
           {isReseller && c.panel && (
             <div className="flex items-center gap-1.5">
-              <LayoutGrid size={11} className="text-gray-400 flex-shrink-0"/>
+              <LayoutGrid size={11} className="text-gray-400 dark:text-gray-500 flex-shrink-0"/>
               <span className="truncate text-[11px]">{c.panel}</span>
             </div>
           )}
 
           {/* Referral */}
           {c.referredBy && (
-            <div className="text-[11px] font-semibold text-emerald-600 mt-1">
+            <div className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 mt-1">
               Ref: {c.referredBy}
             </div>
           )}
@@ -387,15 +387,15 @@ const CustomerCard = memo(function CustomerCard({ c, onEdit, fmt, isLatePayer, o
       </div>
 
       {/* Footer */}
-      <div className="flex justify-between items-center pt-3 border-t border-gray-100">
+      <div className="flex justify-between items-center pt-3 border-t border-gray-100 dark:border-gray-700">
         <div className="flex items-center gap-4">
           <div>
-            <span className="text-xs font-black font-mono text-blue-600 block">{fmt(c.total)}</span>
-            <span className="text-[9px] font-bold uppercase tracking-wider text-gray-400">Totali</span>
+            <span className="text-xs font-black font-mono text-blue-600 dark:text-blue-400 block">{fmt(c.total)}</span>
+            <span className="text-[9px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Totali</span>
           </div>
           <div>
-            <span className="text-xs font-black font-mono text-gray-800 block">{c.invoices}</span>
-            <span className="text-[9px] font-bold uppercase tracking-wider text-gray-400">Fatura</span>
+            <span className="text-xs font-black font-mono text-gray-800 dark:text-gray-200 block">{c.invoices}</span>
+            <span className="text-[9px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Fatura</span>
           </div>
         </div>
 
@@ -408,7 +408,7 @@ const CustomerCard = memo(function CustomerCard({ c, onEdit, fmt, isLatePayer, o
               target="_blank"
               rel="noopener noreferrer"
               onClick={e => e.stopPropagation()}
-              className="p-1.5 rounded-lg bg-green-50 text-green-600 hover:bg-green-100 border border-green-200/50 transition-colors"
+              className="p-1.5 rounded-lg bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/50 border border-green-200/50 dark:border-green-800/50 transition-colors"
               title="Kontakto në WhatsApp"
             >
               <MessageCircle size={14}/>
@@ -421,7 +421,7 @@ const CustomerCard = memo(function CustomerCard({ c, onEdit, fmt, isLatePayer, o
               target="_blank"
               rel="noopener noreferrer"
               onClick={e => e.stopPropagation()}
-              className="p-1.5 rounded-lg bg-sky-50 text-sky-600 hover:bg-sky-100 border border-sky-200/50 transition-colors"
+              className="p-1.5 rounded-lg bg-sky-50 dark:bg-sky-900/30 text-sky-600 dark:text-sky-400 hover:bg-sky-100 dark:hover:bg-sky-900/50 border border-sky-200/50 dark:border-sky-800/50 transition-colors"
               title="Kontakto në Telegram"
             >
               <Send size={14}/>
@@ -454,7 +454,7 @@ const CustomerRow = memo(function CustomerRow({ c, onEdit, fmt, isLatePayer, onD
           type="checkbox"
           checked={checked}
           onChange={onToggleSelect}
-          className="w-4 h-4 rounded border-gray-300 text-blue-500 cursor-pointer"
+          className="w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-blue-500 cursor-pointer"
         />
       </td>
       <td className="table-td">
@@ -462,7 +462,7 @@ const CustomerRow = memo(function CustomerRow({ c, onEdit, fmt, isLatePayer, onD
           <Avatar name={c.name || c.firstName || '?'} color={c.color} size={34} />
           <div className="min-w-0">
             <div className="flex items-center gap-1.5 flex-wrap">
-              <span className="font-bold text-gray-900 dark:text-gray-100 text-sm truncate">{c.name || `${c.firstName} ${c.lastName}`}</span>
+              <span className="font-bold text-gray-900 dark:text-white text-sm truncate">{c.name || `${c.firstName} ${c.lastName}`}</span>
               {isLatePayer && (
                 <span className="flex items-center gap-0.5 bg-orange-50 dark:bg-orange-900/30 text-orange-500 dark:text-orange-400 border border-orange-100 dark:border-orange-900/50 text-[10px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0" title="Ky klient ka shfaqur vonesa pagese">
                   <AlertTriangle size={9}/> Vonues
@@ -749,7 +749,7 @@ export default function Customers() {
                 type="checkbox"
                 checked={paginatedCustomers.length > 0 && paginatedCustomers.every(c => selected.has(c.id))}
                 onChange={toggleSelectAll}
-                className="cust-cb w-4 h-4 rounded border-gray-300 text-blue-500 cursor-pointer"
+                className="cust-cb w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-blue-500 cursor-pointer"
               />
               <span>{selected.size > 0 ? `${selected.size} zgjedhur` : 'Zgjidh faqen'}</span>
             </label>
@@ -758,7 +758,7 @@ export default function Customers() {
           {selected.size > 0 && (
             <button
               onClick={() => setShowDeleteConfirm({ type: 'multiple' })}
-              className="flex items-center justify-center gap-1.5 bg-blue-50 dark:bg-[#93000a]/30 border border-blue-200 dark:border-transparent text-blue-600 dark:text-[#ffb4ab] hover:bg-blue-100 dark:hover:bg-[#93000a]/50 rounded-xl px-3 py-1.5 text-xs font-bold transition-colors flex-shrink-0"
+              className="flex items-center justify-center gap-1.5 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800/50 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/50 rounded-xl px-3 py-1.5 text-xs font-bold transition-colors flex-shrink-0"
             >
               <Trash2 size={14}/>
               Fshi {selected.size}
@@ -768,7 +768,7 @@ export default function Customers() {
           <div className="relative flex-1">
             <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
             <input
-              className="w-full pl-8 pr-8 py-1.5 text-xs rounded-xl border border-gray-200 dark:border-transparent bg-gray-50 dark:bg-dk-card text-gray-900 dark:text-gray-100 placeholder-gray-400 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-50 dark:focus:ring-accent/30"
+              className="w-full pl-8 pr-8 py-1.5 text-xs rounded-xl border border-gray-200 dark:border-transparent bg-gray-50 dark:bg-dk-card text-gray-900 dark:text-white placeholder-gray-400 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-50 dark:focus:ring-blue-900/20"
               placeholder="Kërko emër, telefon..."
               value={search}
               onChange={e => setSearch(e.target.value)}
@@ -923,7 +923,7 @@ export default function Customers() {
               >
                 Përpara →
               </button>
-              <span className="text-xs text-gray-400 dark:text-gray-500 ml-2">
+              <span className="text-xs text-gray-400 ml-2 dark:text-gray-500">
                 Faqja {currentPage} nga {totalPages}
               </span>
             </div>
@@ -934,9 +934,9 @@ export default function Customers() {
       {/* Delete confirmation dialog */}
       {showDeleteConfirm && (
         <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl p-6 max-w-sm w-full">
-            <p className="text-sm font-bold text-gray-800 mb-2">Fshi {showDeleteConfirm.type === 'single' ? 'klientin' : 'klientët'}?</p>
-            <p className="text-xs text-gray-500 mb-4">
+          <div className="bg-white rounded-xl p-6 max-w-sm w-full dark:bg-gray-800">
+            <p className="text-sm font-bold text-gray-800 mb-2 dark:text-gray-100">Fshi {showDeleteConfirm.type === 'single' ? 'klientin' : 'klientët'}?</p>
+            <p className="text-xs text-gray-500 mb-4 dark:text-gray-400">
               {showDeleteConfirm.type === 'single'
                 ? `Ai klient do të fshihet përgjithmonë.`
                 : `${selected.size} klientë do të fshihen përgjithmonë.`

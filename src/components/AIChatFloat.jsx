@@ -535,7 +535,7 @@ export default function AIChatFloat() {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 w-14 h-14 bg-blue-500 hover:bg-blue-600 text-white rounded-full shadow-lg dark:bg-gradient-to-tr dark:from-accent dark:to-accent-soft dark:shadow-[0_0_25px_-4px_rgba(59,130,246,0.45)] dark:[&>svg]:text-white dark:[&>svg]:w-7 dark:[&>svg]:h-7 dark:[&>svg]:[stroke-width:2.2] flex items-center justify-center transition-all hover:scale-110 z-40"
+          className="fixed bottom-6 right-6 w-14 h-14 bg-blue-500 hover:bg-blue-600 text-white rounded-full shadow-lg dark:bg-gradient-to-tr dark:from-accent dark:to-accent-soft dark:shadow-[0_0_25px_-4px_rgba(255,81,106,0.45)] dark:[&>svg]:text-white dark:[&>svg]:w-7 dark:[&>svg]:h-7 dark:[&>svg]:[stroke-width:2.2] flex items-center justify-center transition-all hover:scale-110 z-40"
           title="Hap AI Chat"
         >
           <MessageCircle size={24} />

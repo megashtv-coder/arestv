@@ -395,20 +395,20 @@ export default function ImportExcelModal({ entity, onImport, onClose }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-      <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-2xl flex flex-col max-h-[90vh]">
+      <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-2xl flex flex-col max-h-[90vh] dark:bg-gray-800">
 
         {/* Header */}
-        <div className="flex items-center justify-between p-5 border-b border-gray-100 dark:border-gray-800">
+        <div className="flex items-center justify-between p-5 border-b border-gray-100 dark:border-gray-800 dark:border-gray-700">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-green-50 dark:bg-green-900/30 flex items-center justify-center">
               <FileSpreadsheet size={20} className="text-green-600 dark:text-green-400" />
             </div>
             <div>
-              <h2 className="font-semibold text-gray-900 dark:text-white">Import nga Excel</h2>
+              <h2 className="font-semibold text-gray-900 dark:text-white dark:text-gray-50">Import nga Excel</h2>
               <p className="text-xs text-gray-500 dark:text-gray-400">{map.label}</p>
             </div>
           </div>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 dark:text-gray-500">
             <X size={20} />
           </button>
         </div>
@@ -456,18 +456,18 @@ export default function ImportExcelModal({ entity, onImport, onClose }) {
               {console.error('🔴🔴🔴 ROWS STATE UPDATED! Length = ' + rows.length + ', First ID = ' + rows[0]?.id + ', Last ID = ' + rows[rows.length-1]?.id)}
               <div className="flex items-center gap-2 mb-3">
                 <CheckCircle2 size={16} className="text-green-500" />
-                <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                <p className="text-sm font-medium text-gray-700 dark:text-gray-300 dark:text-gray-200">
                   U lexuan <span className="text-green-600 font-semibold">{rows.length}</span> regjistrime
                 </p>
               </div>
-              <div className="overflow-x-auto rounded-xl border border-gray-100 dark:border-gray-800 max-h-48">
+              <div className="overflow-x-auto rounded-xl border border-gray-100 dark:border-gray-800 max-h-48 dark:border-gray-700">
                 <table className="w-full text-xs">
                   <tbody>
                     {rows.slice(0, 5).map((r, i) => (
-                      <tr key={i} className="border-b border-gray-50 dark:border-gray-800 last:border-0">
+                      <tr key={i} className="border-b border-gray-50 dark:border-gray-800 last:border-0 dark:border-gray-700">
                         {entity === 'customers' && (
                           <>
-                            <td className="px-3 py-2 font-medium text-gray-700 dark:text-gray-300">{r.name}</td>
+                            <td className="px-3 py-2 font-medium text-gray-700 dark:text-gray-300 dark:text-gray-200">{r.name}</td>
                             <td className="px-3 py-2 text-gray-500 dark:text-gray-400">{r.phone}</td>
                             <td className="px-3 py-2 text-gray-500 dark:text-gray-400">{r.country}</td>
                             <td className="px-3 py-2 text-gray-500 dark:text-gray-400">{r.app}</td>
@@ -475,7 +475,7 @@ export default function ImportExcelModal({ entity, onImport, onClose }) {
                         )}
                         {entity === 'invoices' && (
                           <>
-                            <td className="px-3 py-2 font-medium text-gray-700 dark:text-gray-300">{r.customer}</td>
+                            <td className="px-3 py-2 font-medium text-gray-700 dark:text-gray-300 dark:text-gray-200">{r.customer}</td>
                             <td className="px-3 py-2 text-gray-500 dark:text-gray-400">{r.date}</td>
                             <td className="px-3 py-2 text-gray-500 dark:text-gray-400">€{r.amount}</td>
                             <td className="px-3 py-2">
@@ -489,15 +489,15 @@ export default function ImportExcelModal({ entity, onImport, onClose }) {
                         )}
                         {entity === 'expenses' && (
                           <>
-                            <td className="px-3 py-2 font-medium text-gray-700 dark:text-gray-300">{r.date}</td>
+                            <td className="px-3 py-2 font-medium text-gray-700 dark:text-gray-300 dark:text-gray-200">{r.date}</td>
                             <td className="px-3 py-2 text-gray-500 dark:text-gray-400">{r.category}</td>
                             <td className="px-3 py-2 text-gray-500 dark:text-gray-400">{r.vendor}</td>
-                            <td className="px-3 py-2 font-medium text-gray-700 dark:text-gray-300">€{r.amount}</td>
+                            <td className="px-3 py-2 font-medium text-gray-700 dark:text-gray-300 dark:text-gray-200">€{r.amount}</td>
                           </>
                         )}
                         {entity === 'payments' && (
                           <>
-                            <td className="px-3 py-2 font-medium text-gray-700 dark:text-gray-300">{r.date}</td>
+                            <td className="px-3 py-2 font-medium text-gray-700 dark:text-gray-300 dark:text-gray-200">{r.date}</td>
                             <td className="px-3 py-2 text-gray-500 dark:text-gray-400">{r.customer}</td>
                             <td className="px-3 py-2 text-gray-500 dark:text-gray-400">{r.invoiceId || '—'}</td>
                             <td className="px-3 py-2 font-medium text-green-700">€{r.amount}</td>
@@ -520,8 +520,8 @@ export default function ImportExcelModal({ entity, onImport, onClose }) {
         </div>
 
         {/* Footer */}
-        <div className="flex justify-end gap-3 p-5 border-t border-gray-100 dark:border-gray-800">
-          <button onClick={onClose} className="px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 transition-colors">
+        <div className="flex justify-end gap-3 p-5 border-t border-gray-100 dark:border-gray-800 dark:border-gray-700">
+          <button onClick={onClose} className="px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 transition-colors dark:text-gray-300 dark:hover:text-gray-100">
             Anulo
           </button>
           <button

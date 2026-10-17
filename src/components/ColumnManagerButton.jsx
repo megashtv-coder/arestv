@@ -42,19 +42,19 @@ export default function ColumnManagerButton({ tableKey, defaultColumns }) {
     <div className="relative" ref={ref}>
       <button
         onClick={() => setOpen(o => !o)}
-        className="w-9 h-9 flex items-center justify-center rounded-xl bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
+        className="w-9 h-9 flex items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
         title="Kolonat e tabelës"
       >
         <Columns3 size={16}/>
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-2 w-72 bg-white border border-gray-200 rounded-xl shadow-lg z-30 py-2">
+        <div className="absolute right-0 top-full mt-2 w-72 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg z-30 py-2">
           <div className="flex items-center justify-between px-3 py-1.5">
-            <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Kolonat e tabelës</p>
+            <p className="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Kolonat e tabelës</p>
             <button
               onClick={resetPrefs}
-              className="flex items-center gap-1 text-[11px] font-semibold text-gray-400 hover:text-blue-500 transition-colors"
+              className="flex items-center gap-1 text-[11px] font-semibold text-gray-400 dark:text-gray-500 hover:text-blue-500 dark:hover:text-blue-400 transition-colors"
               title="Rivendos parazgjedhjet"
             >
               <RotateCcw size={11}/> Rivendos
@@ -64,7 +64,7 @@ export default function ColumnManagerButton({ tableKey, defaultColumns }) {
           <div className="max-h-72 overflow-y-auto px-1.5">
             {allColumns.map((col, i) => (
               <div key={col.key}
-                className="flex items-center gap-2 px-1.5 py-1.5 rounded-lg hover:bg-gray-50">
+                className="flex items-center gap-2 px-1.5 py-1.5 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50">
                 <input
                   type="checkbox"
                   checked={!col.hidden}
@@ -72,20 +72,20 @@ export default function ColumnManagerButton({ tableKey, defaultColumns }) {
                   disabled={!col.hidden && visibleCount <= 1}
                   className="w-4 h-4 cursor-pointer flex-shrink-0 accent-blue-500"
                 />
-                <span className={`flex-1 text-sm truncate ${col.hidden ? 'text-gray-400' : 'text-gray-700 font-medium'}`}>
+                <span className={`flex-1 text-sm truncate ${col.hidden ? 'text-gray-400 dark:text-gray-500' : 'text-gray-700 dark:text-gray-200 font-medium'}`}>
                   {col.label}
                 </span>
                 <button
                   onClick={() => move(col.key, -1)}
                   disabled={i === 0}
-                  className="w-6 h-6 flex items-center justify-center rounded text-gray-400 hover:text-gray-700 hover:bg-gray-100 disabled:opacity-25 disabled:hover:bg-transparent transition-colors"
+                  className="w-6 h-6 flex items-center justify-center rounded text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-25 disabled:hover:bg-transparent transition-colors"
                 >
                   <ChevronUp size={13}/>
                 </button>
                 <button
                   onClick={() => move(col.key, 1)}
                   disabled={i === allColumns.length - 1}
-                  className="w-6 h-6 flex items-center justify-center rounded text-gray-400 hover:text-gray-700 hover:bg-gray-100 disabled:opacity-25 disabled:hover:bg-transparent transition-colors"
+                  className="w-6 h-6 flex items-center justify-center rounded text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-25 disabled:hover:bg-transparent transition-colors"
                 >
                   <ChevronDown size={13}/>
                 </button>

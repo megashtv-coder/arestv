@@ -73,7 +73,7 @@ export default function ReferentSelect({ value, onChange }) {
   return (
     <div ref={wrapRef} className="relative">
       <div className="relative flex items-center">
-        <Search size={14} className="absolute left-3 text-gray-400 dark:text-gray-500 pointer-events-none" />
+        <Search size={14} className="absolute left-3 text-gray-400 pointer-events-none dark:text-gray-500" />
         <input
           ref={inputRef}
           className="form-control pl-8 pr-8"
@@ -85,7 +85,7 @@ export default function ReferentSelect({ value, onChange }) {
           autoComplete="off"
         />
         {query
-          ? <button type="button" onClick={clear} className="absolute right-3 text-gray-300 hover:text-gray-500"><X size={13}/></button>
+          ? <button type="button" onClick={clear} className="absolute right-3 text-gray-300 hover:text-gray-500 dark:hover:text-gray-400"><X size={13}/></button>
           : <ChevronDown size={13} className="absolute right-3 text-gray-300 pointer-events-none"/>
         }
       </div>
@@ -97,7 +97,7 @@ export default function ReferentSelect({ value, onChange }) {
               <div
                 key={name}
                 className={`px-3 py-2 text-sm cursor-pointer flex items-center gap-2 transition-colors ${
-                  i === active ? 'bg-blue-50 text-blue-600' : 'hover:bg-gray-50 text-gray-700'
+                  i === active ? 'bg-blue-50 text-blue-600' : 'hover:bg-gray-50 text-gray-700 dark:hover:bg-gray-900/50 dark:text-gray-200'
                 }`}
                 onMouseDown={() => select(name)}
                 onMouseEnter={() => setActive(i)}
@@ -111,7 +111,7 @@ export default function ReferentSelect({ value, onChange }) {
           {query.trim() && !filtered.includes(query.trim()) ? (
             <div
               className={`px-3 py-2 text-sm cursor-pointer flex items-center gap-2 transition-colors hover:bg-blue-50 text-blue-500 hover:text-blue-600 font-medium ${
-                filtered.length > 0 ? 'border-t border-gray-100' : ''
+                filtered.length > 0 ? 'border-t border-gray-100 dark:border-gray-700' : ''
               }`}
               onMouseDown={() => addNew(query.trim())}
               onMouseEnter={() => setActive(filtered.length)}
@@ -122,7 +122,7 @@ export default function ReferentSelect({ value, onChange }) {
           ) : null}
 
           {filtered.length === 0 && !query.trim() ? (
-            <div className="px-3 py-3 text-xs text-gray-400 dark:text-gray-500 text-center">Ende s'ka referentë — fillo duke shkruar</div>
+            <div className="px-3 py-3 text-xs text-gray-400 text-center dark:text-gray-500">Ende s'ka referentë — fillo duke shkruar</div>
           ) : null}
         </div>
       )}

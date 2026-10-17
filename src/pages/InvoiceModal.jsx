@@ -92,7 +92,7 @@ function Combobox({
         <span className={`${textClass} truncate flex-1 ${selected ? 'text-gray-800 dark:text-gray-100' : 'text-gray-400 dark:text-gray-500'}`}>
           {selected ? getLabel(selected) : placeholder}
         </span>
-        <ChevronDown size={14} className={`text-gray-400 dark:text-gray-500 flex-shrink-0 transition-transform duration-150 ${open ? 'rotate-180' : ''}`} />
+        <ChevronDown size={14} className={`text-gray-400 flex-shrink-0 transition-transform duration-150 dark:text-gray-500 ${open ? 'rotate-180' : ''}`} />
       </div>
 
       {open && createPortal(
@@ -103,10 +103,10 @@ function Combobox({
         >
           <div className="p-2 bg-gray-50 border-b border-gray-100 dark:bg-dk-card dark:border-transparent">
             <div className="flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-2.5 py-1.5 dark:bg-dk-low dark:border-transparent">
-              <Search size={12} className="text-gray-400 dark:text-gray-500 flex-shrink-0" />
+              <Search size={12} className="text-gray-400 flex-shrink-0 dark:text-gray-500" />
               <input
                 autoFocus
-                className="bg-transparent outline-none text-xs w-full text-gray-700 dark:text-gray-200 placeholder-gray-400"
+                className="bg-transparent outline-none text-xs w-full text-gray-700 placeholder-gray-400 dark:text-gray-200"
                 placeholder="Kërko..."
                 value={search}
                 onChange={e => setSearch(e.target.value)}
@@ -116,7 +116,7 @@ function Combobox({
           </div>
           <div className="max-h-52 overflow-y-auto">
             {filtered.length === 0 && !onAddNew && (
-              <p className="text-xs text-gray-400 dark:text-gray-500 text-center py-4 italic">Nuk u gjet asgjë</p>
+              <p className="text-xs text-gray-400 text-center py-4 italic dark:text-gray-500">Nuk u gjet asgjë</p>
             )}
             {filtered.map((o, i) => (
               <div
@@ -135,7 +135,7 @@ function Combobox({
             ))}
             {onAddNew && (
               <div
-                className="px-3 py-2.5 cursor-pointer hover:bg-emerald-50 dark:hover:bg-dk-card transition-colors border-t border-gray-100 dark:border-white/10 flex items-center gap-2"
+                className="px-3 py-2.5 cursor-pointer hover:bg-emerald-50 dark:hover:bg-dk-card transition-colors border-t border-gray-100 flex items-center gap-2 dark:border-white/10"
                 onClick={() => { onAddNew(search); setOpen(false); setSearch('') }}
               >
                 <UserPlus size={13} className="text-emerald-600 flex-shrink-0" />
@@ -345,7 +345,7 @@ function ItemRow({ item, products, onUpdate, onRemove, canRemove }) {
           textClass="text-base sm:text-sm"
           renderOption={p => (
             <div className="flex items-center justify-between gap-2">
-              <span className="text-sm text-gray-800 dark:text-gray-100 truncate">{p.name}</span>
+              <span className="text-sm text-gray-800 truncate dark:text-gray-100">{p.name}</span>
               <span className="text-xs font-bold text-blue-500 dark:text-accent-soft flex-shrink-0">€{p.salePrice}</span>
             </div>
           )}
@@ -376,7 +376,7 @@ function ItemRow({ item, products, onUpdate, onRemove, canRemove }) {
       />
 
       {/* Line total */}
-      <div className={`hidden sm:block text-right text-base sm:text-sm font-bold py-2 px-1 mt-0.5 ${lineTotal > 0 ? 'text-gray-800 dark:text-gray-100' : 'text-gray-300 dark:text-gray-600'}`}>
+      <div className={`hidden sm:block text-right text-base sm:text-sm font-bold py-2 px-1 mt-0.5 ${lineTotal > 0 ? 'text-gray-800 dark:text-gray-100' : 'text-gray-300'}`}>
         €{fmtN(lineTotal)}
       </div>
 
@@ -604,7 +604,7 @@ export default function InvoiceModal({ initialData, isFormPage, onClose }) {
               renderOption={c => (
                 <div>
                   <p className="text-sm font-semibold text-gray-800 dark:text-gray-100">{c.name}</p>
-                  <p className="text-[11px] text-gray-400 dark:text-gray-500 mt-0.5">{[c.country, c.email].filter(Boolean).join(' · ')}</p>
+                  <p className="text-[11px] text-gray-400 mt-0.5 dark:text-gray-500">{[c.country, c.email].filter(Boolean).join(' · ')}</p>
                 </div>
               )}
               onAddNew={handleAddNewCustomer}
@@ -665,7 +665,7 @@ export default function InvoiceModal({ initialData, isFormPage, onClose }) {
           getKey={ref => ref.id}
           getLabel={ref => ref.name}
           renderOption={ref => (
-            <span className="text-sm text-gray-800 dark:text-gray-100">{ref.name}</span>
+              <span className="text-sm text-gray-800 dark:text-gray-100">{ref.name}</span>
           )}
           onAddNew={name => {
             // Add new representative to persistent list if not already there
@@ -694,7 +694,7 @@ export default function InvoiceModal({ initialData, isFormPage, onClose }) {
           <label className="form-label mb-0 text-sm sm:text-base font-bold">Artikujt</label>
           {/* Column labels */}
           <div
-            className="hidden sm:grid text-[13px] text-gray-600 dark:text-gray-300 font-bold uppercase tracking-wider gap-2 pr-2 sm:pr-9"
+            className="hidden sm:grid text-[13px] text-gray-600 font-bold uppercase tracking-wider gap-2 pr-2 sm:pr-9 dark:text-gray-300"
             style={{ gridTemplateColumns: '1fr 60px 80px 70px' }}
           >
             <span className="pl-2 sm:pl-3"></span>
@@ -730,11 +730,11 @@ export default function InvoiceModal({ initialData, isFormPage, onClose }) {
       {/* ── Totals block ── */}
       <div className="sec bg-gray-50 rounded-xl border border-gray-100 px-4 py-3 mb-4 space-y-2 dark:bg-dk-card dark:border-transparent">
         <div className="flex items-center justify-between text-base sm:text-sm">
-          <span className="text-gray-500 dark:text-gray-400 font-medium">Sub Total</span>
+          <span className="text-gray-500 font-medium dark:text-gray-400">Sub Total</span>
           <span className="font-semibold text-gray-800 dark:text-gray-100">€{fmtN(subTotal)}</span>
         </div>
         <div className="flex items-center justify-between text-base sm:text-sm">
-          <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400 font-medium">
+          <div className="flex items-center gap-2 text-gray-500 font-medium dark:text-gray-400">
             <span>Zbritja</span>
             <input
               className="w-16 border border-gray-200 rounded-lg px-2 py-1.5 text-base sm:text-xs text-right outline-none focus:border-blue-400 bg-white font-semibold dark:border-transparent dark:bg-dk-low dark:text-gray-100"
@@ -757,7 +757,7 @@ export default function InvoiceModal({ initialData, isFormPage, onClose }) {
           </span>
         </div>
         <div className="flex items-center justify-between pt-2 border-t border-gray-200 dark:border-white/10">
-          <span className="font-bold text-gray-800 dark:text-gray-100 text-base sm:text-sm">Total (€)</span>
+          <span className="font-bold text-gray-800 text-base sm:text-sm dark:text-gray-100">Total (€)</span>
           <span className="text-2xl sm:text-xl font-bold text-blue-600 dark:text-accent">€{fmtN(total)}</span>
         </div>
       </div>
@@ -793,7 +793,7 @@ export default function InvoiceModal({ initialData, isFormPage, onClose }) {
       <div className="sec bg-amber-50 border border-amber-200 dark:bg-dk-card dark:border-white/10 rounded-lg p-3 sm:p-4">
         <FormGroup label="🔔 Rikujtim për riabonimin">
           <input className="form-control text-base sm:text-sm bg-white" type="date" value={form.notifyDate} onChange={e => set('notifyDate', e.target.value)} />
-          <p className="text-[10px] sm:text-[11px] text-gray-500 dark:text-gray-400 mt-1.5">Shfaqet në menunë "Abonimet" si rikujtim për klientin.</p>
+          <p className="text-[10px] sm:text-[11px] text-gray-500 mt-1.5 dark:text-gray-400">Shfaqet në menunë "Abonimet" si rikujtim për klientin.</p>
         </FormGroup>
       </div>
 

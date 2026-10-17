@@ -9,19 +9,19 @@ import { Modal, FormGroup, EmptyState } from '../components/UI'
 
 const STATUS_COLORS = {
   active:   'bg-green-50 text-green-700 border border-green-100',
-  inactive: 'bg-gray-50 text-gray-500 border border-gray-200',
+  inactive: 'bg-gray-50 text-gray-500 border border-gray-200 dark:bg-gray-900/50 dark:text-gray-400 dark:border-gray-700',
   trial:    'bg-amber-50 text-amber-700 border border-amber-100',
 }
 const PLAN_COLORS = {
   pro:   'bg-blue-50 text-blue-600',
-  basic: 'bg-gray-50 text-gray-600',
+  basic: 'bg-gray-50 text-gray-600 dark:bg-gray-900/50 dark:text-gray-300',
   free:  'bg-slate-50 text-slate-500',
 }
 const ORG_COLORS = ['#7c3aed','#2563eb','#059669','#d97706','#dc2626','#0891b2','#be185d','#0f766e']
 const ROLE_META = {
   admin:  { label: 'Admin',  cls: 'bg-purple-50 text-purple-700 border border-purple-100' },
   editor: { label: 'Editor', cls: 'bg-blue-50 text-blue-600 border border-blue-100' },
-  viewer: { label: 'Viewer', cls: 'bg-gray-50 text-gray-500 border border-gray-200' },
+  viewer: { label: 'Viewer', cls: 'bg-gray-50 text-gray-500 border border-gray-200 dark:bg-gray-900/50 dark:text-gray-400 dark:border-gray-700' },
   tester: { label: 'Tester', cls: 'bg-orange-50 text-orange-700 border border-orange-100' },
 }
 
@@ -137,8 +137,8 @@ function DeleteOrgModal({ org, onClose }) {
         </>
       }
     >
-      <p className="text-sm text-gray-600">
-        A jeni i sigurt që dëshironi të fshini <span className="font-bold text-gray-800">"{org.name}"</span>?
+      <p className="text-sm text-gray-600 dark:text-gray-300">
+        A jeni i sigurt që dëshironi të fshini <span className="font-bold text-gray-800 dark:text-gray-100">"{org.name}"</span>?
       </p>
       {orgUsers.length > 0 && (
         <p className="text-xs text-blue-500 mt-2 bg-blue-50 border border-blue-100 rounded-lg px-3 py-2">
@@ -231,17 +231,17 @@ function OrgDetailPanel({ org, onClose }) {
   return (
     <div className="fixed inset-0 z-40 flex items-start justify-end">
       <div className="absolute inset-0 bg-black/20" onClick={onClose} />
-      <div className="relative bg-white dark:bg-gray-900 w-full max-w-sm h-full shadow-2xl flex flex-col overflow-hidden">
+      <div className="relative bg-white dark:bg-gray-900 w-full max-w-sm h-full shadow-2xl flex flex-col overflow-hidden dark:bg-gray-800">
         {/* Header - responsive */}
-        <div className="flex items-center justify-between p-3 sm:p-5 border-b border-gray-100 dark:border-gray-800 gap-2">
+        <div className="flex items-center justify-between p-3 sm:p-5 border-b border-gray-100 dark:border-gray-800 gap-2 dark:border-gray-700">
           <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
             <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flex items-center justify-center text-white font-bold text-xs sm:text-sm flex-shrink-0"
               style={{ background: org.color }}>
               {org.shortName?.slice(0,2)}
             </div>
             <div className="min-w-0 flex-1">
-              <p className="font-bold text-gray-900 dark:text-white text-sm truncate">{org.name}</p>
-              <p className="text-xs text-gray-400">{orgUsers.length} përdorues</p>
+              <p className="font-bold text-gray-900 dark:text-white text-sm truncate dark:text-gray-50">{org.name}</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500">{orgUsers.length} përdorues</p>
             </div>
           </div>
           <button onClick={onClose} className="icon-btn flex-shrink-0"><X size={18}/></button>
@@ -250,7 +250,7 @@ function OrgDetailPanel({ org, onClose }) {
         {/* Users list - responsive */}
         <div className="flex-1 overflow-y-auto p-3 sm:p-5">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-3 mb-4">
-            <p className="text-sm font-semibold text-gray-700 dark:text-gray-300">Përdoruesit</p>
+            <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 dark:text-gray-200">Përdoruesit</p>
             <button
               className="btn btn-primary btn-sm text-xs self-start"
               onClick={() => setModal(<AddUserToOrgModal org={org} onClose={closeModal}/>)}
@@ -260,24 +260,24 @@ function OrgDetailPanel({ org, onClose }) {
           </div>
 
           {orgUsers.length === 0 ? (
-            <div className="text-center py-8 text-gray-400">
+            <div className="text-center py-8 text-gray-400 dark:text-gray-500">
               <Users size={28} className="mx-auto mb-2 opacity-30" />
               <p className="text-sm">Nuk ka përdorues</p>
             </div>
           ) : (
             <div className="space-y-2">
               {orgUsers.map(u => (
-                <div key={u.id} className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-gray-50 dark:bg-gray-800 rounded-lg sm:rounded-xl">
+                <div key={u.id} className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-gray-50 dark:bg-gray-800 rounded-lg sm:rounded-xl dark:bg-gray-900/50">
                   <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
                     style={{ background: u.color || '#2563eb' }}>
                     {u.name?.slice(0,2).toUpperCase()}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1 sm:gap-2">
-                      <p className="text-xs sm:text-sm font-semibold text-gray-800 dark:text-gray-200 truncate">{u.name}</p>
+                      <p className="text-xs sm:text-sm font-semibold text-gray-800 dark:text-gray-200 truncate dark:text-gray-100">{u.name}</p>
                       {u.isSuperAdmin && <Crown size={10} className="text-amber-500 flex-shrink-0" title="Super Admin"/>}
                     </div>
-                    <p className="text-xs text-gray-400 truncate">@{u.username}</p>
+                    <p className="text-xs text-gray-400 truncate dark:text-gray-500">@{u.username}</p>
                   </div>
                   <span className={`text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded-full font-medium flex-shrink-0 whitespace-nowrap ${ROLE_META[u.role]?.cls || ''}`}>
                     {ROLE_META[u.role]?.label || u.role}
@@ -319,11 +319,11 @@ export default function OrgManager() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
         <div className="min-w-0 flex-1">
-          <h2 className="text-lg sm:text-xl font-bold text-gray-800 dark:text-white flex items-center gap-2 truncate">
+          <h2 className="text-lg sm:text-xl font-bold text-gray-800 dark:text-white flex items-center gap-2 truncate dark:text-gray-100">
             <Building2 size={20} className="text-blue-500 flex-shrink-0" />
             <span className="truncate">Menaxhimi i Organizatave</span>
           </h2>
-          <p className="text-xs sm:text-sm text-gray-400 mt-0.5 truncate">{organizations.length} organizata · {totalUsers} përdorues gjithsej</p>
+          <p className="text-xs sm:text-sm text-gray-400 mt-0.5 truncate dark:text-gray-500">{organizations.length} organizata · {totalUsers} përdorues gjithsej</p>
         </div>
         <button
           type="button"
@@ -340,16 +340,16 @@ export default function OrgManager() {
       {/* Stat strip - responsive */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-4 mb-6 sm:mb-8">
         <div className="bg-white dark:bg-gray-800 rounded-lg sm:rounded-xl border border-gray-100 dark:border-gray-700 px-3 sm:px-5 py-3 sm:py-4">
-          <p className="text-lg sm:text-2xl font-bold text-gray-800 dark:text-white">{organizations.length}</p>
-          <p className="text-xs text-gray-400 mt-0.5">Organizata</p>
+          <p className="text-lg sm:text-2xl font-bold text-gray-800 dark:text-white dark:text-gray-100">{organizations.length}</p>
+          <p className="text-xs text-gray-400 mt-0.5 dark:text-gray-500">Organizata</p>
         </div>
         <div className="bg-white dark:bg-gray-800 rounded-lg sm:rounded-xl border border-gray-100 dark:border-gray-700 px-3 sm:px-5 py-3 sm:py-4">
           <p className="text-lg sm:text-2xl font-bold text-green-600">{organizations.filter(o => o.status === 'active').length}</p>
-          <p className="text-xs text-gray-400 mt-0.5">Aktive</p>
+          <p className="text-xs text-gray-400 mt-0.5 dark:text-gray-500">Aktive</p>
         </div>
         <div className="bg-white dark:bg-gray-800 rounded-lg sm:rounded-xl border border-gray-100 dark:border-gray-700 px-3 sm:px-5 py-3 sm:py-4 col-span-2 sm:col-span-1">
           <p className="text-lg sm:text-2xl font-bold text-blue-500">{totalUsers}</p>
-          <p className="text-xs text-gray-400 mt-0.5">Përdorues</p>
+          <p className="text-xs text-gray-400 mt-0.5 dark:text-gray-500">Përdorues</p>
         </div>
       </div>
 
@@ -381,8 +381,8 @@ export default function OrgManager() {
                         {org.shortName?.slice(0,2) || org.name?.slice(0,2)}
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className="font-bold text-gray-900 dark:text-white text-sm leading-tight truncate">{org.name}</p>
-                        <p className="text-xs text-gray-400 truncate">{org.shortName}</p>
+                        <p className="font-bold text-gray-900 dark:text-white text-sm leading-tight truncate dark:text-gray-50">{org.name}</p>
+                        <p className="text-xs text-gray-400 truncate dark:text-gray-500">{org.shortName}</p>
                       </div>
                     </div>
                     <div className="flex gap-1 flex-shrink-0">
@@ -396,7 +396,7 @@ export default function OrgManager() {
                   </div>
 
                   {org.description && (
-                    <p className="text-xs text-gray-400 mb-2 line-clamp-2">{org.description}</p>
+                    <p className="text-xs text-gray-400 mb-2 line-clamp-2 dark:text-gray-500">{org.description}</p>
                   )}
 
                   {/* Users avatars - responsive */}
@@ -412,16 +412,16 @@ export default function OrgManager() {
                         </div>
                       ))}
                       {orgUsers.length > 5 && (
-                        <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 border-white bg-gray-200 flex items-center justify-center text-[8px] sm:text-[9px] font-bold text-gray-500">
+                        <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 border-white bg-gray-200 flex items-center justify-center text-[8px] sm:text-[9px] font-bold text-gray-500 dark:text-gray-400">
                           +{orgUsers.length - 5}
                         </div>
                       )}
                     </div>
-                    <span className="text-xs text-gray-400 whitespace-nowrap">{orgUsers.length} përdorues</span>
+                    <span className="text-xs text-gray-400 whitespace-nowrap dark:text-gray-500">{orgUsers.length} përdorues</span>
                   </div>
 
                   {/* Stats row */}
-                  <div className="text-xs text-gray-400 flex items-center gap-1">
+                  <div className="text-xs text-gray-400 flex items-center gap-1 dark:text-gray-500">
                     <Clock size={10} className="flex-shrink-0" />
                     <span className="truncate">Krijuar {org.createdAt}</span>
                   </div>

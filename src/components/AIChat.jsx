@@ -261,7 +261,7 @@ export default function AIChat() {
   return (
     <div className="max-w-6xl dark:max-w-none mx-auto p-4 sm:p-6 space-y-5 rep">
       {/* Banner */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600 via-blue-500 to-amber-500 p-6 text-white shadow-lg shadow-blue-500/15 dark:from-[#1e3a8a] dark:via-[#2a55c0] dark:to-[#5b3aa8] dark:shadow-none">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600 via-blue-500 to-amber-500 p-6 text-white shadow-lg shadow-blue-500/15 dark:from-[#7a2410] dark:via-[#b5253f] dark:to-[#5f3aa8] dark:shadow-none">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div className="flex items-center gap-3.5">
             <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center shrink-0 border border-white/30">

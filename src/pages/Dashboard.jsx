@@ -147,7 +147,7 @@ function YoYChart({ title, sub, data, curKey, prevKey, color: lightColor, softCo
           <span className="font-semibold text-gray-500 dark:text-gray-400">{fmt(p)}</span>
         </div>
         {d !== null && (
-          <p className={`mt-2 pt-2 border-t border-gray-50 dark:border-white/10 font-bold ${d >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-500 dark:text-red-400'}`}>
+          <p className={`mt-2 pt-2 border-t border-gray-50 dark:border-gray-700 font-bold ${d >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-500 dark:text-red-400'}`}>
             {d >= 0 ? '▲' : '▼'} {Math.abs(d).toFixed(1)}%
           </p>
         )}
@@ -195,7 +195,7 @@ function YoYChart({ title, sub, data, curKey, prevKey, color: lightColor, softCo
         </ResponsiveContainer>
       </div>
 
-      <div className="flex items-center justify-around gap-2 px-4 py-3 border-t border-gray-50 dark:border-transparent dark:bg-dk-low dark:rounded-lg dark:mx-4 dark:mb-4 mt-auto">
+      <div className="flex items-center justify-around gap-2 px-4 py-3 border-t border-gray-50 dark:border-transparent dark:bg-dk-low dark:rounded-lg dark:mx-4 dark:mb-4 dark:mt-auto mt-auto">
         <div className="text-center">
           <p className="text-[10px] text-gray-400 dark:text-gray-500 font-medium">{curLabel}</p>
           <p className="text-sm font-bold mt-0.5" style={{ color }}>{hidden ? '••••••' : fmt(curTotal)}</p>
@@ -219,9 +219,9 @@ function YoYChart({ title, sub, data, curKey, prevKey, color: lightColor, softCo
    Detyrat s'kalojnë nëpër AppContext (Tasks.jsx i merr drejt nga Supabase), prandaj
    ky panel bën fetch/toggle/delete të vetin, i pavarur nga faqja Detyrat. ── */
 const TASK_STATUS_STYLE = {
-  overdue: { label: 'Vonuar', cls: 'bg-red-50 text-red-600 dark:bg-red-900/40 dark:text-red-300', rail: '#dc2626' },
-  today:   { label: 'Sot',    cls: 'bg-amber-50 text-amber-600 dark:bg-amber-500/15 dark:text-amber-300', rail: '#d97706' },
-  soon:    { label: 'Afër',   cls: 'bg-sky-50 text-sky-600 dark:bg-sky-500/15 dark:text-sky-300', rail: '#0284c7' },
+  overdue: { label: 'Vonuar', cls: 'bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400', rail: '#dc2626' },
+  today:   { label: 'Sot',    cls: 'bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400', rail: '#d97706' },
+  soon:    { label: 'Afër',   cls: 'bg-sky-50 dark:bg-sky-900/30 text-sky-600 dark:text-sky-400', rail: '#0284c7' },
 }
 
 function TasksUrgentPanel({ tasks, loading, hidden, onToggle, onDelete, onSeeAll }) {
@@ -270,14 +270,14 @@ function TasksUrgentPanel({ tasks, loading, hidden, onToggle, onDelete, onSeeAll
                     <button
                       onClick={() => onToggle(t.id)}
                       title="Shëno të kryer"
-                      className="w-[21px] h-[21px] flex items-center justify-center rounded-md bg-emerald-50 dark:bg-emerald-500/15 text-emerald-600 dark:text-emerald-300 hover:bg-emerald-500 hover:text-white transition-colors flex-shrink-0"
+                      className="w-[21px] h-[21px] flex items-center justify-center rounded-md bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500 hover:text-white transition-colors flex-shrink-0"
                     >
                       <CheckCircle2 size={12} />
                     </button>
                     <button
                       onClick={() => onDelete(t.id)}
                       title="Fshi detyrën"
-                      className="w-[21px] h-[21px] flex items-center justify-center rounded-md bg-gray-100 dark:bg-dk-high text-gray-400 dark:text-gray-500 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-500 transition-colors flex-shrink-0"
+                      className="w-[21px] h-[21px] flex items-center justify-center rounded-md bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-500 dark:hover:text-red-400 transition-colors flex-shrink-0"
                     >
                       <Trash2 size={12} />
                     </button>
@@ -621,11 +621,11 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         {[
           { icon: FilePlus,    title: 'Krijo Faturë',  sub: 'Faturë e re shpejt',     action: () => navigate('invoices:create'),
-            border: 'border-blue-400 dark:border-white/[0.07]',    hover: 'hover:bg-blue-50 dark:hover:bg-dk-high',    icoBg: 'bg-blue-50 dark:bg-accent/15',    icoFg: 'text-blue-500 dark:text-accent' },
+            border: 'border-blue-400 dark:border-white/[0.07]', hover: 'hover:bg-blue-50 dark:hover:bg-dk-high', icoBg: 'bg-blue-50 dark:bg-accent/15', icoFg: 'text-blue-500 dark:text-accent' },
           { icon: UserPlus,    title: 'Shto Klient',   sub: 'Regjistro klient të ri', action: () => navigate('customers:create'),
             border: 'border-emerald-400 dark:border-white/[0.07]', hover: 'hover:bg-emerald-50 dark:hover:bg-dk-high', icoBg: 'bg-emerald-50 dark:bg-emerald-500/15', icoFg: 'text-emerald-500 dark:text-emerald-300' },
           { icon: ReceiptText, title: 'Shpenzim i ri', sub: 'Regjistro shpenzim',     action: () => navigate('expenses:create'),
-            border: 'border-orange-400 dark:border-white/[0.07]',  hover: 'hover:bg-orange-50 dark:hover:bg-dk-high',  icoBg: 'bg-orange-50 dark:bg-white/10',  icoFg: 'text-orange-500 dark:text-accent-soft' },
+            border: 'border-orange-400 dark:border-white/[0.07]', hover: 'hover:bg-orange-50 dark:hover:bg-dk-high', icoBg: 'bg-orange-50 dark:bg-white/10', icoFg: 'text-orange-500 dark:text-accent-soft' },
         ].map(({ icon: Icon, title, sub, action, border, hover, icoBg, icoFg }) => (
           <button key={title} onClick={action}
             className={`group flex items-center gap-3 bg-white dark:bg-dk-card dark:shadow-[0_2px_6px_rgba(0,0,0,0.35)] border-[1.5px] ${border} ${hover} rounded-2xl p-4 text-left transition-all duration-150 hover:-translate-y-0.5 hover:shadow-md active:scale-95`}>

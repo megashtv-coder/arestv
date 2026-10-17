@@ -214,7 +214,7 @@ export default function Header() {
 
       {/* Search - hidden on mobile */}
       <div className="hidden lg:flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 w-48 focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-50 dark:focus-within:ring-accent/30 transition-all flex-shrink-0 dark:bg-dk-low dark:border-transparent">
-        <Search size={14} className="text-gray-400 flex-shrink-0" />
+        <Search size={14} className="text-gray-400 flex-shrink-0 dark:text-gray-500" />
         <input
           className="bg-transparent border-none outline-none text-sm text-gray-600 dark:text-gray-300 w-full placeholder-gray-400"
           placeholder="Emri i klientit..."
@@ -229,7 +229,7 @@ export default function Header() {
         {searchInput && (
           <button
             onClick={handleSearchClear}
-            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 flex-shrink-0"
+            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 flex-shrink-0 dark:text-gray-500"
           >
             ✕
           </button>
@@ -343,14 +343,14 @@ export default function Header() {
         >
           <span>{currency.symbol}</span>
           <span className="hidden sm:inline">{currency.code}</span>
-          <ChevronDown size={11} className="text-gray-400" />
+          <ChevronDown size={11} className="text-gray-400 dark:text-gray-500" />
         </button>
         {curOpen && (
           <div className="absolute top-full right-0 mt-1.5 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl shadow-lg py-1 w-44 z-50">
             {currencies.map(c => (
               <button
                 key={c.code}
-                className="w-full flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-left"
+                className="w-full flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-left dark:hover:bg-gray-900/50"
                 onClick={() => { setCurrency(c); setCurOpen(false) }}
               >
                 <span className="font-bold text-blue-500 w-5">{c.symbol}</span>
@@ -419,7 +419,7 @@ export default function Header() {
                         navigate('tasks')
                         setNotifOpen(false)
                       }}
-                      className={`w-full px-4 py-3 border-b border-gray-50 dark:border-gray-700 text-left hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors ${
+                      className={`w-full px-4 py-3 border-b border-gray-50 dark:border-gray-700 text-left hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors dark:hover:bg-gray-900/50 ${
                         isRead ? 'opacity-60' : 'opacity-100 bg-blue-50/30 dark:bg-blue-800/10'
                       }`}
                     >

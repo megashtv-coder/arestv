@@ -82,7 +82,7 @@ export function SupplierModal({ supplier, onClose }) {
       {/* Numri i telefonit */}
       <FormGroup label="Numri i telefonit">
         <div className="relative">
-          <Phone size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+          <Phone size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none dark:text-gray-500" />
           <input
             className="form-control pl-9"
             value={form.phone}
@@ -95,7 +95,7 @@ export function SupplierModal({ supplier, onClose }) {
       {/* Linku i panelit */}
       <FormGroup label="Linku i panelit">
         <div className="relative">
-          <Link2 size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+          <Link2 size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none dark:text-gray-500" />
           <input
             className="form-control pl-9"
             value={form.panelLink}

@@ -24,7 +24,7 @@ function PinModal({ onSuccess, onClose }) {
     <Modal
       title={
         <span className="flex items-center gap-2">
-          <Lock size={16} className="text-gray-500" />
+          <Lock size={16} className="text-gray-500 dark:text-gray-400" />
           Fut PIN-in për të parë çmimet
         </span>
       }
@@ -38,7 +38,7 @@ function PinModal({ onSuccess, onClose }) {
         </>
       }
     >
-      <p className="text-xs text-gray-400 mb-4">Fut kodin 4-shifror për të zbuluar çmimin e blerjes dhe marzhën.</p>
+      <p className="text-xs text-gray-400 mb-4 dark:text-gray-500">Fut kodin 4-shifror për të zbuluar çmimin e blerjes dhe marzhën.</p>
       <div className="flex justify-center">
         <input
           className="form-control text-center text-2xl font-mono tracking-[0.5em] w-40"
@@ -243,10 +243,10 @@ function DeleteConfirm({ item, onClose }) {
         </>
       }
     >
-      <p className="text-sm text-gray-600">
-        A jeni i sigurt që dëshironi të fshini <span className="font-bold text-gray-800">"{item.name}"</span>?
+      <p className="text-sm text-gray-600 dark:text-gray-300">
+        A jeni i sigurt që dëshironi të fshini <span className="font-bold text-gray-800 dark:text-gray-100">"{item.name}"</span>?
         <br />
-        <span className="text-gray-400 text-xs">Ky veprim nuk mund të kthehet mbrapsht.</span>
+        <span className="text-gray-400 text-xs dark:text-gray-500">Ky veprim nuk mund të kthehet mbrapsht.</span>
       </p>
     </Modal>
   )
@@ -315,7 +315,7 @@ export default function Items() {
   const openEdit   = item  => navigate(`items:${item.id}:edit`)
   const openDelete = item  => navigate(`items:${item.id}:delete`)
 
-  const masked = <span className="text-gray-300 font-mono text-xs tracking-widest select-none cursor-pointer" onClick={() => setShowPin(true)}>••••</span>
+  const masked = <span className="text-gray-300 dark:text-gray-600 font-mono text-xs tracking-widest select-none cursor-pointer" onClick={() => setShowPin(true)}>••••</span>
 
   // If in form mode, show only the form
   if (isFormMode && pageMatch[2] !== 'delete') {
@@ -384,14 +384,14 @@ export default function Items() {
             }
             {pinUnlocked
               ? <Unlock size={16} className="text-emerald-400"/>
-              : <Lock size={16} className="text-gray-400"/>
+              : <Lock size={16} className="text-gray-400 dark:text-gray-500"/>
             }
           </div>
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-bold flex items-center gap-1">
             Marzha mesatare
             {pinUnlocked
               ? <Unlock size={10} className="text-emerald-400"/>
-              : <Lock size={10} className="text-gray-400"/>
+              : <Lock size={10} className="text-gray-400 dark:text-gray-500"/>
             }
           </p>
         </div>
@@ -445,20 +445,20 @@ export default function Items() {
                 <div className="flex justify-between items-start gap-2">
                   {/* Col 1: Emri + llogaria + furnitori */}
                   <div className="flex-1 min-w-0 cursor-pointer" onClick={() => openEdit(item)}>
-                    <p className="font-bold text-gray-900 dark:text-gray-100 text-sm truncate hover:text-blue-500 transition-colors">{item.name}</p>
+                    <p className="font-bold text-gray-900 dark:text-white text-sm truncate hover:text-blue-500 dark:hover:text-blue-400 transition-colors">{item.name}</p>
                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{accountLabel(item.account)}</p>
                     {item.vendor && <p className="text-xs text-gray-400 dark:text-gray-500 font-semibold">{item.vendor}</p>}
                   </div>
 
                   {/* Col 2: Çmimi + marzha */}
                   <div className="text-right">
-                    <p className="font-mono font-bold text-gray-900 dark:text-gray-100 text-sm">{fmt(item.salePrice)}</p>
+                    <p className="font-mono font-bold text-gray-900 dark:text-white text-sm">{fmt(item.salePrice)}</p>
                     {pinUnlocked ? (
                       margin !== null && (
                         <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold mt-0.5 ${
                           Number(margin) >= 30 ? 'bg-emerald-50 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400'
                           : Number(margin) >= 10 ? 'bg-amber-50 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400'
-                          : 'bg-blue-50 dark:bg-[#93000a]/40 text-blue-500 dark:text-[#ffb4ab]'
+                          : 'bg-blue-50 dark:bg-blue-900/40 text-blue-500 dark:text-blue-400'
                         }`}>{margin}%</span>
                       )
                     ) : (
@@ -560,7 +560,7 @@ export default function Items() {
                           <Package size={14} />
                         </div>
                         <div>
-                          <p className="font-bold text-gray-900 dark:text-gray-100 text-sm">{item.name}</p>
+                          <p className="font-bold text-gray-900 dark:text-white text-sm">{item.name}</p>
                           <p className="text-xs text-gray-400 dark:text-gray-500 lg:hidden">{accountLabel(item.account)}</p>
                         </div>
                       </div>
@@ -568,7 +568,7 @@ export default function Items() {
 
                     {/* Çmimi shitjes */}
                     <td className="table-td text-right">
-                      <span className="font-mono font-bold text-gray-900 dark:text-gray-100">{fmt(item.salePrice)}</span>
+                      <span className="font-mono font-bold text-gray-900 dark:text-white">{fmt(item.salePrice)}</span>
                     </td>
 
                     {/* Çmimi blerjes */}
@@ -588,7 +588,7 @@ export default function Items() {
                           ? <span className={`text-xs font-bold px-2 py-1 rounded-full ${
                               Number(margin) >= 30 ? 'bg-emerald-50 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400'
                               : Number(margin) >= 10 ? 'bg-amber-50 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400'
-                              : 'bg-blue-50 dark:bg-[#93000a]/40 text-blue-500 dark:text-[#ffb4ab]'
+                              : 'bg-blue-50 dark:bg-blue-900/40 text-blue-500 dark:text-blue-400'
                             }`}>{margin}%</span>
                           : <span className="text-gray-300 dark:text-gray-600 text-xs">—</span>
                         : <span onClick={() => setShowPin(true)}>{masked}</span>

@@ -79,7 +79,7 @@ export default function CustomerDetailsModal({ customer, onClose }) {
             onClick={onClose}
             className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
           >
-            <X size={20} className="text-gray-400" />
+            <X size={20} className="text-gray-400 dark:text-gray-500" />
           </button>
         </div>
 
@@ -87,7 +87,7 @@ export default function CustomerDetailsModal({ customer, onClose }) {
         <div className="p-6 space-y-4">
           {/* Emri */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 dark:text-gray-200">
               Emri *
             </label>
             {isEditing ? (
@@ -99,20 +99,20 @@ export default function CustomerDetailsModal({ customer, onClose }) {
                   className={`w-full px-3 py-2 border rounded-lg outline-none transition-colors ${
                     errors.name
                       ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                      : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700'
+                      : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 dark:bg-gray-800'
                   } text-gray-800 dark:text-gray-100`}
                   placeholder="Emri i klientit"
                 />
                 {errors.name && <p className="text-blue-500 text-xs mt-1">{errors.name}</p>}
               </>
             ) : (
-              <p className="text-gray-800 dark:text-gray-200 font-semibold">{customer?.name}</p>
+              <p className="text-gray-800 dark:text-gray-200 font-semibold dark:text-gray-100">{customer?.name}</p>
             )}
           </div>
 
           {/* Email */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 dark:text-gray-200">
               Email
             </label>
             {isEditing ? (
@@ -124,20 +124,20 @@ export default function CustomerDetailsModal({ customer, onClose }) {
                   className={`w-full px-3 py-2 border rounded-lg outline-none transition-colors ${
                     errors.email
                       ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                      : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700'
+                      : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 dark:bg-gray-800'
                   } text-gray-800 dark:text-gray-100`}
                   placeholder="email@example.com"
                 />
                 {errors.email && <p className="text-blue-500 text-xs mt-1">{errors.email}</p>}
               </>
             ) : (
-              <p className="text-gray-600 dark:text-gray-400">{customer?.email || '—'}</p>
+              <p className="text-gray-600 dark:text-gray-400 dark:text-gray-300">{customer?.email || '—'}</p>
             )}
           </div>
 
           {/* Telefon */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 dark:text-gray-200">
               📞 Telefon
             </label>
             {isEditing ? (
@@ -145,36 +145,36 @@ export default function CustomerDetailsModal({ customer, onClose }) {
                 type="text"
                 value={formData.phone}
                 onChange={e => handleChange('phone', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg outline-none bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg outline-none bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 dark:bg-gray-800"
                 placeholder="+355 691234567"
               />
             ) : (
-              <p className="text-gray-600 dark:text-gray-400">{customer?.phone || '—'}</p>
+              <p className="text-gray-600 dark:text-gray-400 dark:text-gray-300">{customer?.phone || '—'}</p>
             )}
           </div>
 
           {/* Vendi */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 dark:text-gray-200">
               🌍 Vendi
             </label>
             {isEditing ? (
               <CountrySelect value={formData.country} onChange={v => handleChange('country', v)} />
             ) : (
-              <p className="text-gray-600 dark:text-gray-400">{customer?.country || '—'}</p>
+              <p className="text-gray-600 dark:text-gray-400 dark:text-gray-300">{customer?.country || '—'}</p>
             )}
           </div>
 
           {/* Lloji */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 dark:text-gray-200">
               Lloji
             </label>
             {isEditing ? (
               <select
                 value={formData.type}
                 onChange={e => handleChange('type', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg outline-none bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg outline-none bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 dark:bg-gray-800"
               >
                 <option value="individual">Individ</option>
                 <option value="reseller">Reseller</option>
@@ -192,7 +192,7 @@ export default function CustomerDetailsModal({ customer, onClose }) {
 
           {/* App */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 dark:text-gray-200">
               Aplikacioni
             </label>
             {isEditing ? (
@@ -200,17 +200,17 @@ export default function CustomerDetailsModal({ customer, onClose }) {
                 type="text"
                 value={formData.app}
                 onChange={e => handleChange('app', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg outline-none bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg outline-none bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 dark:bg-gray-800"
                 placeholder="p.sh. ipos, maniak"
               />
             ) : (
-              <p className="text-gray-600 dark:text-gray-400">{customer?.app || '—'}</p>
+              <p className="text-gray-600 dark:text-gray-400 dark:text-gray-300">{customer?.app || '—'}</p>
             )}
           </div>
 
           {/* MAC ID */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 dark:text-gray-200">
               MAC ID
             </label>
             {isEditing ? (
@@ -218,30 +218,30 @@ export default function CustomerDetailsModal({ customer, onClose }) {
                 type="text"
                 value={formData.macAddress}
                 onChange={e => handleChange('macAddress', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg outline-none bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg outline-none bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 dark:bg-gray-800"
                 placeholder="00:1A:2B:3C:4D:5E"
               />
             ) : (
-              <p className="text-gray-600 dark:text-gray-400">{customer?.macAddress || '—'}</p>
+              <p className="text-gray-600 dark:text-gray-400 dark:text-gray-300">{customer?.macAddress || '—'}</p>
             )}
           </div>
 
           {/* Customer Statistics */}
           {!isEditing && (
             <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
-              <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Statistika</p>
+              <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 dark:text-gray-500">Statistika</p>
               <div className="grid grid-cols-3 gap-3">
                 <div className="bg-blue-50 dark:bg-blue-800/20 rounded-lg p-3 text-center">
                   <p className="text-2xl font-bold text-blue-500 dark:text-blue-400">{subscriptionCount}</p>
-                  <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">Abonime</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400 mt-1 dark:text-gray-300">Abonime</p>
                 </div>
                 <div className="bg-emerald-50 dark:bg-emerald-900/20 rounded-lg p-3 text-center">
                   <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">€{Math.round(totalPaid)}</p>
-                  <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">Paguar</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400 mt-1 dark:text-gray-300">Paguar</p>
                 </div>
                 <div className="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-3 text-center">
                   <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">{referredCount}</p>
-                  <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">Referuar</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400 mt-1 dark:text-gray-300">Referuar</p>
                 </div>
               </div>
             </div>
@@ -249,7 +249,7 @@ export default function CustomerDetailsModal({ customer, onClose }) {
         </div>
 
         {/* Footer */}
-        <div className="flex gap-3 p-6 border-t border-gray-200 dark:border-gray-700 sticky bottom-0 bg-gray-50 dark:bg-gray-700/50">
+        <div className="flex gap-3 p-6 border-t border-gray-200 dark:border-gray-700 sticky bottom-0 bg-gray-50 dark:bg-gray-700/50 dark:bg-gray-900/50">
           {isEditing ? (
             <>
               <button
@@ -264,7 +264,7 @@ export default function CustomerDetailsModal({ customer, onClose }) {
                   setErrors({})
                   setIsEditing(false)
                 }}
-                className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
+                className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors dark:text-gray-200"
               >
                 <XCircle size={16} />
                 Anulo

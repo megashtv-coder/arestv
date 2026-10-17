@@ -31,7 +31,7 @@ const STATUS_ORDER = { overdue: 0, pending: 1, partial: 1.5, draft: 2, paid: 3, 
 // të funksionojë njësoj — draggable s'e prish click-in, vetëm shton edhe tërheqjen.
 function renderInvoiceColHeader(col, { sortField, sortDir, toggleSort, draggedCol, dragOverCol, onColDragStart, onColDragOver, onColDrop, onColDragEnd }) {
   const sortIcon = key => (
-    <span className="text-[10px]">{sortField === key ? (sortDir === 'asc' ? '↑' : '↓') : <span className="text-gray-300">↕</span>}</span>
+    <span className="text-[10px]">{sortField === key ? (sortDir === 'asc' ? '↑' : '↓') : <span className="text-gray-300 dark:text-gray-600">↕</span>}</span>
   )
 
   const respCls = {
@@ -59,7 +59,7 @@ function renderInvoiceColHeader(col, { sortField, sortDir, toggleSort, draggedCo
   return (
     <th
       key={col.key}
-      className={`table-th select-none cursor-move relative ${sortable ? 'cursor-pointer hover:text-blue-500 dark:hover:text-gray-100' : ''} ${respCls} ${isDragging ? 'opacity-30' : ''} ${showDropMark ? 'bg-blue-50' : ''}`}
+      className={`table-th select-none cursor-move relative ${sortable ? 'cursor-pointer hover:text-blue-500 dark:hover:text-gray-100' : ''} ${respCls} ${isDragging ? 'opacity-30' : ''} ${showDropMark ? 'bg-blue-50 dark:bg-blue-900/20' : ''}`}
       onClick={sortable ? () => toggleSort(col.key) : undefined}
       draggable
       onDragStart={() => onColDragStart(col.key)}
@@ -85,7 +85,7 @@ function renderInvoiceColCell(col, inv, { isOverdue, fmt, hasLongOverdue, getCus
       )
     case 'customer':
       return (
-        <td key={col.key} className="table-td font-medium text-gray-800 dark:text-gray-100 cursor-pointer" onClick={() => setPreview(inv.id)}>
+        <td key={col.key} className="table-td font-medium text-gray-800 cursor-pointer dark:text-gray-100" onClick={() => setPreview(inv.id)}>
           <div className="flex items-center gap-1.5">
             {inv.customer}
             {hasLongOverdue(inv.customer) && (
@@ -105,7 +105,7 @@ function renderInvoiceColCell(col, inv, { isOverdue, fmt, hasLongOverdue, getCus
               {inv.referent}
             </span>
           ) : (
-            <span className="text-gray-300 italic text-xs">—</span>
+            <span className="text-gray-300 dark:text-gray-600 italic text-xs">—</span>
           )}
         </td>
       )
@@ -117,7 +117,7 @@ function renderInvoiceColCell(col, inv, { isOverdue, fmt, hasLongOverdue, getCus
               {formatDate(inv.subscriptionExpiry)}
             </span>
           ) : (
-            <span className="text-gray-300 italic text-xs">—</span>
+            <span className="text-gray-300 dark:text-gray-600 italic text-xs">—</span>
           )}
         </td>
       )
@@ -248,7 +248,7 @@ const InvoiceListCard = memo(function InvoiceListCard({ inv, selected, onClick, 
           <div className="flex items-start justify-between gap-2 flex-1 min-w-0">
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-1.5 min-w-0">
-              <p className="font-bold text-gray-900 dark:text-gray-100 text-sm truncate">{inv.customer}</p>
+              <p className="font-bold text-gray-900 text-sm truncate dark:text-gray-100">{inv.customer}</p>
               {isReseller && (
                 <span className="text-[9px] font-bold px-1 py-0.5 bg-purple-100 text-purple-600 rounded flex-shrink-0">R</span>
               )}
@@ -256,7 +256,7 @@ const InvoiceListCard = memo(function InvoiceListCard({ inv, selected, onClick, 
             <p className="text-[11px] text-gray-400 dark:text-gray-500 mt-0.5 font-mono">{inv.id} · {formatDate(inv.date)}</p>
           </div>
           <div className="text-right flex-shrink-0">
-            <p className="font-extrabold text-gray-900 dark:text-gray-100 text-sm font-mono">{fmt(inv.amount)}</p>
+            <p className="font-extrabold text-gray-900 text-sm dark:text-gray-100 font-mono">{fmt(inv.amount)}</p>
             <span className={`inline-block text-[10px] font-bold px-1.5 py-0.5 rounded mt-1 uppercase ${duePillCls}`}>{dueLabel}</span>
           </div>
           </div>
@@ -354,7 +354,7 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer, customerMap, hi
   ]
   
   return (
-    <div className="flex flex-col h-full overflow-hidden">
+    <div className="flex flex-col h-full overflow-hidden rep">
 
       {/* ── Action toolbar ── */}
       <div className="flex items-center gap-1.5 px-4 py-3 border-b border-gray-100 bg-white flex-wrap lg:flex-nowrap dark:border-gray-700 dark:bg-gray-800">
@@ -675,7 +675,7 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer, customerMap, hi
           )}
           <div className="flex gap-2">
             <textarea
-              className="flex-1 px-3.5 py-2 text-xs rounded-xl border border-gray-200 bg-gray-50 text-gray-900 placeholder-gray-400 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 resize-none"
+              className="flex-1 px-3.5 py-2 text-xs rounded-xl border border-gray-200 bg-gray-50 text-gray-900 placeholder-gray-400 dark:border-white/10 dark:bg-dk-card dark:text-gray-100 dark:placeholder-gray-500 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 resize-none"
               rows={1}
               placeholder="Shto koment rreth kësaj fature… (Enter = dërgo)"
               value={comment}
@@ -776,7 +776,7 @@ function ExportPanel({ invoices, customers, onClose, fmt }) {
   const Chip = ({ active, onClick, children }) => (
     <button onClick={onClick}
       className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
-        active ? 'bg-blue-500 text-white shadow-sm' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+        active ? 'bg-blue-500 text-white shadow-sm dark:bg-accent dark:text-accent-on' : 'bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-dk-card dark:text-gray-400 dark:hover:bg-dk-high'
       }`}>
       {children}
     </button>
@@ -784,19 +784,19 @@ function ExportPanel({ invoices, customers, onClose, fmt }) {
 
   return (
     <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
+      <div className="bg-white rounded-2xl shadow-2xl dark:bg-dk-low dark:border dark:border-white/10 w-full max-w-md">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-white/[0.07]">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center">
               <Download size={15} className="text-blue-500"/>
             </div>
             <div>
-              <h2 className="font-bold text-gray-800 text-sm">Eksporto Faturat</h2>
+              <h2 className="font-bold text-gray-800 text-sm dark:text-white">Eksporto Faturat</h2>
               <p className="text-[11px] text-gray-400">Zgjidh filtrat dhe shkarko CSV</p>
             </div>
           </div>
-          <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-400 transition-colors">
+          <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-400 dark:hover:bg-dk-high dark:text-gray-500 transition-colors">
             <X size={16}/>
           </button>
         </div>
@@ -856,7 +856,7 @@ function ExportPanel({ invoices, customers, onClose, fmt }) {
             <Download size={15}/> Shkarko CSV
           </button>
           <button onClick={onClose}
-            className="px-5 py-2.5 border border-gray-200 text-gray-500 text-sm font-semibold rounded-xl hover:bg-gray-50 transition-colors">
+            className="px-5 py-2.5 border border-gray-200 text-gray-500 text-sm font-semibold rounded-xl hover:bg-gray-50 dark:border-white/10 dark:text-gray-300 dark:hover:bg-dk-high transition-colors">
             Anulo
           </button>
         </div>
@@ -885,16 +885,16 @@ function KanbanCard({ inv, onOpen, customerMap, hidden }) {
 
   return (
     <div
-      className="bg-white rounded-xl border border-gray-100 p-4 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 cursor-pointer group"
+      className="bg-white rounded-xl border border-gray-100 dark:bg-dk-low dark:border-white/[0.07] p-4 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 cursor-pointer group"
       onClick={() => onOpen(inv.id)}
     >
       {/* Header */}
       <div className="flex items-start justify-between gap-2 mb-3">
         <div className="min-w-0">
-          <p className="font-bold text-gray-800 text-sm truncate">{inv.customer}</p>
+          <p className="font-bold text-gray-800 text-sm dark:text-white truncate">{inv.customer}</p>
           <p className="text-[11px] text-gray-400 mt-0.5 font-mono">{inv.id}</p>
         </div>
-        <span className="text-base font-bold text-gray-800 flex-shrink-0">{fmt(inv.amount)}</span>
+        <span className="text-base font-bold text-gray-800 dark:text-white flex-shrink-0">{fmt(inv.amount)}</span>
       </div>
 
       {/* Dates */}
@@ -921,7 +921,7 @@ function KanbanCard({ inv, onOpen, customerMap, hidden }) {
 
       {/* Actions */}
       <div
-        className="flex items-center gap-1.5 pt-2 border-t border-gray-50"
+        className="flex items-center gap-1.5 pt-2 border-t border-gray-50 dark:border-white/[0.06]"
         onClick={e => e.stopPropagation()}
       >
         {canContact && (
@@ -1008,8 +1008,8 @@ const RowActions = memo(function RowActions({ inv, canContact, isOverdue, rawPho
       <button
         ref={btnRef}
         className={isMobile
-          ? "w-10 h-10 flex items-center justify-center rounded-lg bg-gray-100 text-gray-600 hover:bg-blue-500 hover:text-white"
-          : "icon-btn text-gray-400 hover:text-gray-600 hover:bg-gray-100"}
+          ? "w-10 h-10 flex items-center justify-center rounded-lg bg-gray-100 text-gray-600 hover:bg-blue-500 hover:text-white dark:bg-dk-high dark:text-gray-300"
+          : "icon-btn text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-500 dark:hover:text-gray-300 dark:hover:bg-dk-high"}
         title="Veprimet"
         onClick={e => { e.stopPropagation(); if (open) { setOpen(false); return }; openMenu(e) }}
       >
@@ -1119,7 +1119,7 @@ function KanbanBoard({ invoices, setPreview, customerMap, hidden }) {
       count:   voidInv.length,
       items:   voidInv,
       accent:  'border-t-gray-400',
-      badge:   'bg-gray-100 text-gray-500',
+      badge:   'bg-gray-100 text-gray-500 dark:bg-dk-high dark:text-gray-400',
       empty:   'Nuk ka fatura void',
     },
   ]
@@ -1127,10 +1127,10 @@ function KanbanBoard({ invoices, setPreview, customerMap, hidden }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
       {columns.map(col => (
-        <div key={col.key} className={`bg-white rounded-xl border border-gray-100 border-t-2 ${col.accent} flex flex-col`}>
+        <div key={col.key} className={`bg-white rounded-xl border border-gray-100 dark:bg-dk-low dark:border-white/[0.07] border-t-2 ${col.accent} flex flex-col`}>
           {/* Column header */}
-          <div className="flex items-center justify-between px-4 py-3 border-b border-gray-50">
-            <h3 className="font-bold text-gray-700 text-sm">{col.label}</h3>
+          <div className="flex items-center justify-between px-4 py-3 border-b border-gray-50 dark:border-white/[0.06]">
+            <h3 className="font-bold text-gray-700 text-sm dark:text-gray-200">{col.label}</h3>
             <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${col.badge}`}>
               {col.count}
             </span>
@@ -1518,7 +1518,7 @@ export default function Invoices() {
               {search && (
                 <button
                   onClick={() => setSearch('')}
-                  className="text-gray-400 hover:text-gray-600 flex-shrink-0 cursor-pointer p-0.5 rounded hover:bg-gray-100 transition-colors"
+                  className="text-gray-400 hover:text-gray-600 flex-shrink-0 cursor-pointer p-0.5 rounded hover:bg-gray-100 dark:text-gray-500 dark:hover:text-gray-300 dark:hover:bg-dk-high transition-colors"
                   title="Fshi kërkimin"
                 >
                   <X size={14}/>
@@ -1656,14 +1656,14 @@ export default function Invoices() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
           <div>
-            <h2 className="text-xl font-bold text-gray-800">Faturat</h2>
+            <h2 className="text-xl font-bold text-gray-800 dark:text-white">Faturat</h2>
             <p className="text-sm text-gray-400 mt-0.5">{invoices.length} fatura gjithsej</p>
           </div>
           <div className="flex items-center gap-1.5">
             {/* Hide/show amounts */}
             <button
               onClick={() => setHideAmounts(h => !h)}
-              className="w-9 h-9 flex items-center justify-center rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
+              className="w-9 h-9 flex items-center justify-center rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-dk-card dark:text-gray-300 dark:hover:bg-dk-high transition-colors"
               title={hideAmounts ? 'Shfaq shumat' : 'Fshih shumat'}
             >
               {hideAmounts ? <EyeOff size={16}/> : <Eye size={16}/>}
@@ -1672,7 +1672,7 @@ export default function Invoices() {
             {/* Switch to table view */}
             <button
               onClick={() => setViewMode('table')}
-              className="w-9 h-9 flex items-center justify-center rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
+              className="w-9 h-9 flex items-center justify-center rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-dk-card dark:text-gray-300 dark:hover:bg-dk-high transition-colors"
               title="Tabela"
             >
               <LayoutList size={16}/>
@@ -1680,7 +1680,7 @@ export default function Invoices() {
 
             {/* Export */}
             <button
-              className="w-9 h-9 flex items-center justify-center rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
+              className="w-9 h-9 flex items-center justify-center rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-dk-card dark:text-gray-300 dark:hover:bg-dk-high transition-colors"
               title="Eksporto"
               onClick={() => setShowExport(true)}
             >
@@ -1931,7 +1931,7 @@ export default function Invoices() {
             {search && (
               <button
                 onClick={() => setSearch('')}
-                className="text-gray-400 hover:text-gray-600 flex-shrink-0 cursor-pointer p-0.5 rounded hover:bg-gray-100 transition-colors"
+                className="text-gray-400 hover:text-gray-600 flex-shrink-0 cursor-pointer p-0.5 rounded hover:bg-gray-100 dark:text-gray-500 dark:hover:text-gray-300 dark:hover:bg-dk-high transition-colors"
                 title="Fshi kërkimin"
               >
                 <X size={14}/>
@@ -1989,11 +1989,11 @@ export default function Invoices() {
             const isOverdue = inv.status === 'overdue' || (inv.due && inv.due < today && inv.status !== 'paid' && inv.status !== 'void')
 
             return (
-              <div key={inv.id} className="bg-white border border-gray-200 rounded-lg p-3">
+              <div key={inv.id} className="bg-white border border-gray-200 rounded-lg p-3 dark:bg-dk-low dark:border-white/[0.07] dark:rounded-2xl">
                 <div className="flex justify-between items-start gap-2">
                   {/* Col 1: Customer + Subscription Expiry */}
                   <div className="flex-1 min-w-0 cursor-pointer" onClick={() => setPreview(inv.id)}>
-                    <p className="font-bold text-gray-800 text-sm truncate hover:text-blue-500 transition-colors">{inv.customer}</p>
+                    <p className="font-bold text-gray-800 text-sm dark:text-white truncate hover:text-blue-500 transition-colors">{inv.customer}</p>
                     <p className="text-xs mt-0.5 flex flex-wrap items-baseline gap-x-2 tabular-nums">
                       <span className="text-gray-400 font-semibold dark:text-gray-500">{formatDate(inv.date)}</span>
                       {inv.subscriptionExpiry && (
@@ -2007,7 +2007,7 @@ export default function Invoices() {
 
                   {/* Col 2: Amount + Status */}
                   <div className="text-right">
-                    <p className="font-bold text-gray-800 text-sm">{fmt(inv.amount)}</p>
+                    <p className="font-bold text-gray-800 text-sm dark:text-white">{fmt(inv.amount)}</p>
                     <div className="mt-0.5">
                       <StatusBadge status={isOverdue && inv.status !== 'paid' && inv.status !== 'void' ? 'overdue' : inv.status}/>
                     </div>

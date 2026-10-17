@@ -29,7 +29,7 @@ const FREQ_OPTIONS = ['Mujore', 'Vjetore', 'Ditore']
 const FREQ_COLOR = {
   Mujore:  'bg-blue-50 dark:bg-accent/10 text-blue-500 dark:text-accent-soft',
   Vjetore: 'bg-purple-50 dark:bg-[#8083ff]/15 text-purple-600 dark:text-[#c0c1ff]',
-  Ditore:  'bg-amber-50 dark:bg-amber-500/15 text-amber-600 dark:text-amber-400',
+  Ditore:  'bg-amber-50 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400',
 }
 
 /* ── Slide-select për llogaritë ── */
@@ -41,7 +41,7 @@ function SlideSelect({ value, onChange, options, placeholder = 'Zgjidh llogarin�
     <div>
       <div className="flex items-center gap-1.5">
         <button type="button" onClick={() => scroll(-1)}
-          className="flex-shrink-0 w-7 h-7 rounded-full border border-gray-200 flex items-center justify-center text-gray-400 hover:bg-gray-50 transition-colors">
+          className="flex-shrink-0 w-7 h-7 rounded-full border border-gray-200 flex items-center justify-center text-gray-400 hover:bg-gray-50 transition-colors dark:border-gray-700 dark:text-gray-500 dark:hover:bg-gray-900/50">
           <ChevronLeft size={14} />
         </button>
         <div ref={ref} className="flex gap-2 overflow-x-auto scroll-smooth flex-1"
@@ -52,14 +52,14 @@ function SlideSelect({ value, onChange, options, placeholder = 'Zgjidh llogarin�
               className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all whitespace-nowrap ${
                 value === opt
                   ? 'bg-blue-500 text-white border-blue-500 shadow-sm'
-                  : 'bg-white text-gray-600 border-gray-200 hover:border-blue-300 hover:text-blue-500'
+                  : 'bg-white text-gray-600 border-gray-200 hover:border-blue-300 hover:text-blue-500 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700'
               }`}>
               {opt}
             </button>
           ))}
         </div>
         <button type="button" onClick={() => scroll(1)}
-          className="flex-shrink-0 w-7 h-7 rounded-full border border-gray-200 flex items-center justify-center text-gray-400 hover:bg-gray-50 transition-colors">
+          className="flex-shrink-0 w-7 h-7 rounded-full border border-gray-200 flex items-center justify-center text-gray-400 hover:bg-gray-50 transition-colors dark:border-gray-700 dark:text-gray-500 dark:hover:bg-gray-900/50">
           <ChevronRight size={14} />
         </button>
       </div>
@@ -133,25 +133,25 @@ function ExportPanel({ expenses, onClose }) {
 
   const Chip = ({ active, onClick, children }) => (
     <button onClick={onClick}
-      className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${active ? 'bg-blue-500 text-white shadow-sm' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}>
+      className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${active ? 'bg-blue-500 text-white shadow-sm dark:bg-accent dark:text-accent-on' : 'bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-dk-card dark:text-gray-400 dark:hover:bg-dk-high'}`}>
       {children}
     </button>
   )
 
   return (
     <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 sticky top-0 bg-white">
+      <div className="bg-white rounded-2xl shadow-2xl dark:bg-dk-low dark:border dark:border-white/10 w-full max-w-md max-h-[90vh] overflow-y-auto">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-white/[0.07] sticky top-0 bg-white dark:bg-dk-low">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center">
               <Download size={15} className="text-blue-500"/>
             </div>
             <div>
-              <h2 className="font-bold text-gray-800 text-sm">Eksporto Shpenzimet</h2>
+              <h2 className="font-bold text-gray-800 text-sm dark:text-white">Eksporto Shpenzimet</h2>
               <p className="text-[11px] text-gray-400">Zgjidh filtrat dhe shkarko CSV</p>
             </div>
           </div>
-          <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-400 transition-colors">
+          <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-400 dark:hover:bg-dk-high dark:text-gray-500 transition-colors">
             <X size={16}/>
           </button>
         </div>
@@ -200,7 +200,7 @@ function ExportPanel({ expenses, onClose }) {
             <Download size={15}/> Shkarko CSV
           </button>
           <button onClick={onClose}
-            className="px-5 py-2.5 border border-gray-200 text-gray-500 text-sm font-semibold rounded-xl hover:bg-gray-50 transition-colors">
+            className="px-5 py-2.5 border border-gray-200 text-gray-500 text-sm font-semibold rounded-xl hover:bg-gray-50 dark:border-white/10 dark:text-gray-300 dark:hover:bg-dk-high transition-colors">
             Anulo
           </button>
         </div>

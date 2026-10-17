@@ -124,7 +124,7 @@ const SubRow = memo(function SubRow({ inv, phone, urgency, today, sentToday }) {
 
       {/* Vlera */}
       <td className="table-td">
-        <span className="font-mono font-bold text-gray-900 dark:text-gray-100">{fmt(inv.amount)}</span>
+        <span className="font-mono font-bold text-gray-900 dark:text-white">{fmt(inv.amount)}</span>
       </td>
 
       {/* Kontakto manualisht */}
@@ -179,15 +179,15 @@ const Section = memo(function Section({ title, color, items, today, sentIds, cus
       <div className="flex items-center gap-2 mb-3 dark:hidden">
         <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${
           color === 'red'   ? 'bg-blue-500 animate-ping' :
-          color === 'amber' ? 'bg-amber-400' : 'bg-gray-400'
+          color === 'amber' ? 'bg-amber-400' : 'bg-gray-400 dark:bg-gray-600'
         }`} />
         <h3 className={`text-sm font-bold tracking-tight ${
-          color === 'red'   ? 'text-blue-600' :
-          color === 'amber' ? 'text-amber-600' : 'text-gray-600'
+          color === 'red'   ? 'text-blue-600 dark:text-blue-400' :
+          color === 'amber' ? 'text-amber-600 dark:text-amber-400' : 'text-gray-600 dark:text-gray-300'
         }`}>{title}</h3>
         <span className={`text-[11px] px-2 py-0.5 rounded-full font-extrabold ${
-          color === 'red'   ? 'bg-blue-100 text-blue-600' :
-          color === 'amber' ? 'bg-amber-100 text-amber-600' : 'bg-gray-100 text-gray-600'
+          color === 'red'   ? 'bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400' :
+          color === 'amber' ? 'bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'
         }`}>{items.length}</span>
       </div>
 
@@ -203,17 +203,17 @@ const Section = memo(function Section({ title, color, items, today, sentIds, cus
               : null
 
             return (
-              <div key={inv.id} className="bg-white border border-gray-200 rounded-2xl p-3 shadow-sm dark:bg-dk-low dark:border-white/[0.07]">
+              <div key={inv.id} className="bg-white border border-gray-200 rounded-2xl p-3 dark:bg-dk-low dark:border-white/[0.07] shadow-sm">
                 <div className="flex justify-between items-start gap-2">
                   {/* Col 1: Avatar + Customer + Expiry + Notify */}
                   <div className="flex items-start gap-2.5 min-w-0 flex-1">
-                    <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-dk-high flex items-center justify-center text-xs font-bold text-blue-600 dark:text-accent-soft flex-shrink-0">
+                    <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center text-xs font-bold text-blue-600 dark:text-blue-400 flex-shrink-0">
                       {inv.customer.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()}
                     </div>
                     <div className="min-w-0">
-                      <p className="font-bold text-gray-900 dark:text-gray-100 text-sm truncate">{inv.customer}</p>
+                      <p className="font-bold text-gray-900 text-sm truncate dark:text-white">{inv.customer}</p>
                       <p className="text-[10px] font-mono text-gray-400 dark:text-gray-500">{inv.id}</p>
-                      <p className="text-xs font-mono font-bold text-blue-600 dark:text-accent-soft mt-1">{formatDate(inv.subscriptionExpiry)}</p>
+                      <p className="text-xs font-mono font-bold text-blue-600 dark:text-blue-400 mt-1">{formatDate(inv.subscriptionExpiry)}</p>
                       {sentToday && (
                         <span className="inline-flex items-center gap-1 text-[10px] text-emerald-600 dark:text-emerald-300 font-bold bg-emerald-50 dark:bg-emerald-500/15 px-1.5 py-0.5 rounded-full mt-1">
                           <CheckCircle2 size={10} /> Dërguar sot
@@ -224,14 +224,14 @@ const Section = memo(function Section({ title, color, items, today, sentIds, cus
 
                   {/* Col 2: Amount + Product */}
                   <div className="text-right flex-shrink-0">
-                    <p className="font-mono font-bold text-gray-900 dark:text-gray-100 text-sm">{fmt(inv.amount)}</p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{inv.type || inv.product || '—'}</p>
+                    <p className="font-mono font-bold text-gray-900 text-sm dark:text-white">{fmt(inv.amount)}</p>
+                    <p className="text-xs text-gray-500 mt-0.5 dark:text-gray-400">{inv.type || inv.product || '—'}</p>
                   </div>
 
                   {/* Col 3: Contact - Dropdown */}
                   <div className="relative flex-shrink-0">
                     <button
-                      className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 dark:bg-dk-high text-gray-600 dark:text-gray-300 hover:bg-blue-500 hover:text-white transition-all"
+                      className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-blue-500 hover:text-white transition-all"
                       onClick={() => setOpenDropdown(openDropdown === inv.id ? null : inv.id)}
                     >
                       ⋮
@@ -239,13 +239,13 @@ const Section = memo(function Section({ title, color, items, today, sentIds, cus
 
                     {/* Dropdown Menu */}
                     {openDropdown === inv.id && (
-                      <div className="absolute right-0 top-full mt-1 w-44 bg-white dark:bg-dk-high border border-gray-200 dark:border-white/10 rounded-xl shadow-xl z-50 overflow-hidden">
+                      <div className="absolute right-0 top-full mt-1 w-44 bg-white border border-gray-200 rounded-xl shadow-xl z-50 dark:bg-gray-800 dark:border-gray-700 overflow-hidden">
                         {phone ? (
                           <>
                             <a
                               href={`https://wa.me/${phone}?text=${msg}`}
                               target="_blank" rel="noopener noreferrer"
-                              className="w-full text-left px-3 py-2 text-sm text-green-600 dark:text-emerald-400 hover:bg-green-50 dark:hover:bg-dk-card flex items-center gap-2 border-b border-gray-100 dark:border-white/10"
+                              className="w-full text-left px-3 py-2 text-sm text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20 flex items-center gap-2 border-b border-gray-100 dark:border-gray-700"
                               onClick={() => setOpenDropdown(null)}
                             >
                               <MessageCircle size={14}/> WhatsApp
@@ -280,7 +280,7 @@ const Section = memo(function Section({ title, color, items, today, sentIds, cus
           <button
             onClick={() => setPage(p => Math.max(1, p - 1))}
             disabled={page === 1}
-            className="px-2 py-1 text-xs rounded border border-gray-200 text-gray-600 disabled:opacity-50 hover:bg-gray-50 dark:border-white/10 dark:text-gray-300 dark:hover:bg-dk-card"
+            className="px-2 py-1 text-xs rounded border border-gray-200 text-gray-600 disabled:opacity-50 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-900/50"
           >
             ←
           </button>
@@ -288,7 +288,7 @@ const Section = memo(function Section({ title, color, items, today, sentIds, cus
           <button
             onClick={() => setPage(p => Math.min(totalPages, p + 1))}
             disabled={page === totalPages}
-            className="px-2 py-1 text-xs rounded border border-gray-200 text-gray-600 disabled:opacity-50 hover:bg-gray-50 dark:border-white/10 dark:text-gray-300 dark:hover:bg-dk-card"
+            className="px-2 py-1 text-xs rounded border border-gray-200 text-gray-600 disabled:opacity-50 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-900/50"
           >
             →
           </button>
@@ -358,7 +358,7 @@ const Section = memo(function Section({ title, color, items, today, sentIds, cus
           <button
             onClick={() => setPage(p => Math.max(1, p - 1))}
             disabled={page === 1}
-            className="px-2 py-1 text-xs rounded border border-gray-200 text-gray-600 disabled:opacity-50 hover:bg-gray-50 dark:border-white/10 dark:text-gray-300 dark:hover:bg-dk-card"
+            className="px-2 py-1 text-xs rounded border border-gray-200 text-gray-600 disabled:opacity-50 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-900/50"
           >
             ←
           </button>
@@ -366,7 +366,7 @@ const Section = memo(function Section({ title, color, items, today, sentIds, cus
           <button
             onClick={() => setPage(p => Math.min(totalPages, p + 1))}
             disabled={page === totalPages}
-            className="px-2 py-1 text-xs rounded border border-gray-200 text-gray-600 disabled:opacity-50 hover:bg-gray-50 dark:border-white/10 dark:text-gray-300 dark:hover:bg-dk-card"
+            className="px-2 py-1 text-xs rounded border border-gray-200 text-gray-600 disabled:opacity-50 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-900/50"
           >
             →
           </button>

@@ -100,25 +100,25 @@ function ExportPanel({ payments, onClose }) {
 
   const Chip = ({ active, onClick, children }) => (
     <button onClick={onClick}
-      className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${active ? 'bg-blue-500 text-white shadow-sm' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}>
+      className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${active ? 'bg-blue-500 text-white shadow-sm dark:bg-accent dark:text-accent-on' : 'bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-dk-card dark:text-gray-400 dark:hover:bg-dk-high'}`}>
       {children}
     </button>
   )
 
   return (
     <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+      <div className="bg-white rounded-2xl shadow-2xl dark:bg-dk-low dark:border dark:border-white/10 w-full max-w-md">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-white/[0.07]">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center">
               <Download size={15} className="text-blue-500"/>
             </div>
             <div>
-              <h2 className="font-bold text-gray-800 text-sm">Eksporto Pagesat</h2>
+              <h2 className="font-bold text-gray-800 text-sm dark:text-white">Eksporto Pagesat</h2>
               <p className="text-[11px] text-gray-400">Zgjidh filtrat dhe shkarko CSV</p>
             </div>
           </div>
-          <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-400 transition-colors">
+          <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-400 dark:hover:bg-dk-high dark:text-gray-500 transition-colors">
             <X size={16}/>
           </button>
         </div>
@@ -160,7 +160,7 @@ function ExportPanel({ payments, onClose }) {
             <Download size={15}/> Shkarko CSV
           </button>
           <button onClick={onClose}
-            className="px-5 py-2.5 border border-gray-200 text-gray-500 text-sm font-semibold rounded-xl hover:bg-gray-50 transition-colors">
+            className="px-5 py-2.5 border border-gray-200 text-gray-500 text-sm font-semibold rounded-xl hover:bg-gray-50 dark:border-white/10 dark:text-gray-300 dark:hover:bg-dk-high transition-colors">
             Anulo
           </button>
         </div>
@@ -719,7 +719,7 @@ export default function Payments() {
 
               {/* Delete confirmation inline */}
               {deletingId === p.id && (
-                <div className="mt-3 pt-3 border-t border-gray-100 flex gap-2 justify-end">
+                <div className="mt-3 pt-3 border-t border-gray-100 dark:border-white/[0.07] flex gap-2 justify-end">
                   <button
                     className="px-3 py-1 text-xs bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-semibold"
                     onClick={() => deletePayment(p)}
@@ -727,7 +727,7 @@ export default function Payments() {
                     Po, fshi
                   </button>
                   <button
-                    className="px-3 py-1 text-xs border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 font-semibold"
+                    className="px-3 py-1 text-xs border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 dark:border-white/10 dark:text-gray-300 dark:hover:bg-dk-high font-semibold"
                     onClick={() => setDeletingId(null)}
                   >
                     Anulo
@@ -938,13 +938,13 @@ export default function Payments() {
       {/* Bulk delete confirmation modal */}
       {confirmDelAll && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="bg-white rounded-2xl shadow-2xl p-6 max-w-sm">
+          <div className="bg-white rounded-2xl shadow-2xl dark:bg-dk-low dark:border dark:border-white/10 p-6 max-w-sm">
             <div className="flex items-start gap-4 mb-4">
               <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
                 <Trash2 size={24} className="text-blue-600" />
               </div>
               <div className="flex-1">
-                <h3 className="font-bold text-gray-900 text-lg">Fshi {selected.size} {selected.size === 1 ? 'pagesën' : 'pagesat'}?</h3>
+                <h3 className="font-bold text-gray-900 dark:text-white text-lg">Fshi {selected.size} {selected.size === 1 ? 'pagesën' : 'pagesat'}?</h3>
                 <p className="text-sm text-gray-600 mt-1">Kjo veprim nuk mund të rikthehej. Faturat përkatëse do të kalojnë në pritje.</p>
               </div>
             </div>
@@ -958,7 +958,7 @@ export default function Payments() {
             <div className="flex gap-3 justify-end">
               <button
                 onClick={() => setConfirmDelAll(false)}
-                className="px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                className="px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg dark:text-gray-300 dark:hover:bg-dk-high transition-colors"
               >
                 Anulo
               </button>

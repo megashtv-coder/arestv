@@ -68,10 +68,10 @@ function TrackingInput({ payment, onCommit }) {
       onClick={selectAndCopy}
       placeholder="MTCN..."
       title={val ? 'Kliko për ta kopjuar numrin' : undefined}
-      className={`w-24 px-2 py-1 text-[11px] font-mono rounded-lg border bg-white text-gray-700 outline-none transition-colors focus:ring-2 ${
+      className={`w-24 px-2 py-1 text-[11px] font-mono rounded-lg border bg-white dark:bg-gray-900/50 text-gray-700 dark:text-gray-200 outline-none transition-colors focus:ring-2 ${
         copied
-          ? 'border-emerald-400 ring-2 ring-emerald-100'
-          : 'border-gray-200 focus:border-blue-400 focus:ring-blue-50'
+          ? 'border-emerald-400 ring-2 ring-emerald-100 dark:ring-emerald-900/30'
+          : 'border-gray-200 dark:border-gray-700 focus:border-blue-400 focus:ring-blue-50 dark:focus:ring-blue-900/20'
       }`}
     />
   )
@@ -178,55 +178,55 @@ export default function Settlement() {
 
       {/* Statistika */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <div className="bg-white rounded-2xl border border-gray-200/90 shadow-sm p-4 border-l-4 border-l-blue-400">
-          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Për t'u marrë prej personave</p>
-          <p className="text-xl font-black font-mono text-blue-600 mt-0.5">{fmt(totals.due)}</p>
-          <p className="text-[11px] text-gray-400 mt-0.5">U tërhoq, ende pa u barazuar</p>
+        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200/90 dark:border-gray-700 shadow-sm p-4 border-l-4 border-l-blue-400 dark:border-l-blue-500">
+          <p className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Për t'u marrë prej personave</p>
+          <p className="text-xl font-black font-mono text-blue-600 dark:text-blue-400 mt-0.5">{fmt(totals.due)}</p>
+          <p className="text-[11px] text-gray-400 dark:text-gray-500 mt-0.5">U tërhoq, ende pa u barazuar</p>
         </div>
-        <div className="bg-white rounded-2xl border border-gray-200/90 shadow-sm p-4 border-l-4 border-l-amber-400">
-          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Ende pa u tërhequr</p>
-          <p className="text-xl font-black font-mono text-amber-600 mt-0.5">{fmt(totals.pending)}</p>
-          <p className="text-[11px] text-gray-400 mt-0.5">S'ka konfirmim akoma</p>
+        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200/90 dark:border-gray-700 shadow-sm p-4 border-l-4 border-l-amber-400 dark:border-l-amber-500">
+          <p className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Ende pa u tërhequr</p>
+          <p className="text-xl font-black font-mono text-amber-600 dark:text-amber-400 mt-0.5">{fmt(totals.pending)}</p>
+          <p className="text-[11px] text-gray-400 dark:text-gray-500 mt-0.5">S'ka konfirmim akoma</p>
         </div>
-        <div className="bg-white rounded-2xl border border-gray-200/90 shadow-sm p-4 border-l-4 border-l-emerald-400">
-          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Barazuar</p>
-          <p className="text-xl font-black font-mono text-emerald-600 mt-0.5">{fmt(totals.settledSum)}</p>
-          <p className="text-[11px] text-gray-400 mt-0.5">{totals.settledCount} {totals.settledCount === 1 ? 'pagesë' : 'pagesa'}</p>
+        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200/90 dark:border-gray-700 shadow-sm p-4 border-l-4 border-l-emerald-400 dark:border-l-emerald-500">
+          <p className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Barazuar</p>
+          <p className="text-xl font-black font-mono text-emerald-600 dark:text-emerald-400 mt-0.5">{fmt(totals.settledSum)}</p>
+          <p className="text-[11px] text-gray-400 dark:text-gray-500 mt-0.5">{totals.settledCount} {totals.settledCount === 1 ? 'pagesë' : 'pagesa'}</p>
         </div>
       </div>
 
       {/* Barazimi me personat */}
-      <div className="bg-white rounded-2xl border border-gray-200/90 shadow-sm overflow-hidden">
-        <div className="flex items-center justify-between px-5 py-3.5 border-b border-gray-100">
-          <h2 className="text-sm font-bold text-gray-800">Barazimi me personat</h2>
-          <span className="text-[11px] text-gray-400">Kliko "Barazo Gjithçka" kur dikush ta sjellë paranë</span>
+      <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200/90 dark:border-gray-700 shadow-sm overflow-hidden">
+        <div className="flex items-center justify-between px-5 py-3.5 border-b border-gray-100 dark:border-gray-700">
+          <h2 className="text-sm font-bold text-gray-800 dark:text-gray-100">Barazimi me personat</h2>
+          <span className="text-[11px] text-gray-400 dark:text-gray-500">Kliko "Barazo Gjithçka" kur dikush ta sjellë paranë</span>
         </div>
         {byAgent.length === 0 ? (
-          <p className="text-xs text-gray-400 text-center py-8">
+          <p className="text-xs text-gray-400 dark:text-gray-500 text-center py-8">
             Asnjë pagesë WU/Ria/MoneyGram s'ka fushën "Referenca (kush pranoi)" të plotësuar ende.
           </p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 p-4">
             {byAgent.map(a => (
-              <div key={a.name} className="border border-gray-200 rounded-2xl p-3.5 bg-gray-50 flex flex-col gap-2.5">
+              <div key={a.name} className="border border-gray-200 dark:border-gray-700 rounded-2xl p-3.5 bg-gray-50 dark:bg-gray-900/40 flex flex-col gap-2.5">
                 <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-[11px] font-extrabold flex-shrink-0">
+                  <div className="w-7 h-7 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center text-[11px] font-extrabold flex-shrink-0">
                     {initials(a.name)}
                   </div>
-                  <span className="font-bold text-sm text-gray-800 truncate">{a.name}</span>
+                  <span className="font-bold text-sm text-gray-800 dark:text-gray-100 truncate">{a.name}</span>
                 </div>
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-gray-500">Për t'u marrë</span>
-                  <span className="font-mono font-bold text-blue-600">{fmt(a.due)}</span>
+                  <span className="text-gray-500 dark:text-gray-400">Për t'u marrë</span>
+                  <span className="font-mono font-bold text-blue-600 dark:text-blue-400">{fmt(a.due)}</span>
                 </div>
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-gray-500">Ende pa u tërhequr</span>
-                  <span className="font-mono font-bold text-amber-600">{fmt(a.waiting)}</span>
+                  <span className="text-gray-500 dark:text-gray-400">Ende pa u tërhequr</span>
+                  <span className="font-mono font-bold text-amber-600 dark:text-amber-400">{fmt(a.waiting)}</span>
                 </div>
                 <button
                   onClick={() => settleAgent(a.name)}
                   disabled={a.due === 0}
-                  className="w-full mt-1 px-3 py-1.5 rounded-xl text-xs font-bold transition-colors bg-blue-500 hover:bg-blue-600 text-white disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
+                  className="w-full mt-1 px-3 py-1.5 rounded-xl text-xs font-bold transition-colors bg-blue-500 hover:bg-blue-600 text-white disabled:bg-gray-100 dark:disabled:bg-gray-800 disabled:text-gray-400 dark:disabled:text-gray-600 disabled:cursor-not-allowed"
                 >
                   Barazo Gjithçka
                 </button>
@@ -237,18 +237,18 @@ export default function Settlement() {
       </div>
 
       {/* Filtrat */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white p-3 rounded-2xl border border-gray-200/90 shadow-sm">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white dark:bg-gray-800 p-3 rounded-2xl border border-gray-200/90 dark:border-gray-700 shadow-sm">
         <div className="relative flex-1 min-w-[160px]">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
           <input
-            className="w-full pl-8 pr-3 py-1.5 text-xs rounded-xl border border-gray-200 bg-gray-50 text-gray-900 placeholder-gray-400 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-50"
+            className="w-full pl-8 pr-3 py-1.5 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 text-gray-900 dark:text-white placeholder-gray-400 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-50 dark:focus:ring-blue-900/20"
             placeholder="Kërko klient, person ose numër tërheqjeje..."
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
         </div>
         <select
-          className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 font-semibold outline-none focus:border-blue-400 cursor-pointer"
+          className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 text-gray-700 dark:text-gray-300 font-semibold outline-none focus:border-blue-400 cursor-pointer"
           value={monthFilt}
           onChange={e => setMonthFilt(e.target.value)}
         >
@@ -265,11 +265,11 @@ export default function Settlement() {
           sub={relevant.length === 0 ? 'Asnjë pagesë Western Union, Ria apo Money Gram ende' : 'Provo kërkim tjetër'}
         />
       ) : (
-        <div className="bg-white rounded-2xl border border-gray-200/90 shadow-sm overflow-hidden">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200/90 dark:border-gray-700 shadow-sm overflow-hidden">
           <div className="overflow-auto" style={{ maxHeight: 'calc(100vh - 420px)' }}>
             <table className="w-full text-sm min-w-[860px]">
               <thead className="sticky top-0 z-10">
-                <tr className="border-b border-gray-200 bg-gray-50">
+                <tr className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/60">
                   <th className="table-th">Data</th>
                   <th className="table-th">Klienti</th>
                   <th className="table-th text-right">Shuma</th>
@@ -285,10 +285,10 @@ export default function Settlement() {
                   const status = p.withdrawalStatus || 'pending'
                   const ref = normalizeAgentName(p.reference)
                   return (
-                    <tr key={p.id} className="hover:bg-gray-50 transition-colors">
+                    <tr key={p.id} className="hover:bg-gray-50 dark:hover:bg-gray-900/40 transition-colors">
                       <td className="table-td font-mono text-xs">{formatDate(p.date)}</td>
-                      <td className="table-td font-bold text-gray-900 text-xs max-w-[140px] truncate">{p.customer}</td>
-                      <td className="table-td text-right font-mono font-bold text-gray-900">{fmt(p.amount)}</td>
+                      <td className="table-td font-bold text-gray-900 dark:text-white text-xs max-w-[140px] truncate">{p.customer}</td>
+                      <td className="table-td text-right font-mono font-bold text-gray-900 dark:text-white">{fmt(p.amount)}</td>
                       <td className="table-td text-xs">{p.method}</td>
                       <td className="table-td">
                         <div className="flex items-center gap-1">
@@ -297,16 +297,16 @@ export default function Settlement() {
                             href={TRACK_URLS[p.method]}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="p-1 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 flex-shrink-0"
+                            className="p-1 rounded-lg text-gray-400 dark:text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 flex-shrink-0"
                             title={`Hap faqen e gjurmimit — ${p.method} (kopjo numrin dhe ngjite atje)`}
                           >
                             <ExternalLink size={13} />
                           </a>
                         </div>
                       </td>
-                      <td className="table-td text-xs text-gray-500">{ref || <span className="text-gray-300">—</span>}</td>
+                      <td className="table-td text-xs text-gray-500 dark:text-gray-400">{ref || <span className="text-gray-300 dark:text-gray-600">—</span>}</td>
                       <td className="table-td">
-                        <div className="inline-flex border border-gray-200 rounded-full p-0.5 gap-0.5 bg-gray-50">
+                        <div className="inline-flex border border-gray-200 dark:border-gray-700 rounded-full p-0.5 gap-0.5 bg-gray-50 dark:bg-gray-900/50">
                           {STATUS_OPTIONS.map(s => (
                             <button
                               key={s.id}
@@ -314,11 +314,11 @@ export default function Settlement() {
                               className={`px-2.5 py-1 rounded-full text-[10px] font-bold whitespace-nowrap transition-colors ${
                                 status === s.id
                                   ? s.id === 'withdrawn'
-                                    ? 'bg-blue-50 text-blue-600'
+                                    ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'
                                     : s.id === 'missing'
-                                      ? 'bg-gray-200 text-gray-600'
-                                      : 'bg-amber-50 text-amber-700'
-                                  : 'text-gray-400 hover:text-gray-600'
+                                      ? 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300'
+                                      : 'bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400'
+                                  : 'text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300'
                               }`}
                             >
                               {s.label}
@@ -328,18 +328,18 @@ export default function Settlement() {
                       </td>
                       <td className="table-td">
                         {p.settled ? (
-                          <span className="text-[10px] font-bold px-2 py-1 rounded-full bg-emerald-50 text-emerald-600">
+                          <span className="text-[10px] font-bold px-2 py-1 rounded-full bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400">
                             ✓ Barazuar
                           </span>
                         ) : status === 'withdrawn' ? (
                           <button
                             onClick={() => settlePayment(p)}
-                            className="text-[10px] font-bold px-2 py-1 rounded-full border border-dashed border-gray-300 text-gray-400 hover:text-blue-600 hover:border-blue-400 transition-colors"
+                            className="text-[10px] font-bold px-2 py-1 rounded-full border border-dashed border-gray-300 dark:border-gray-600 text-gray-400 dark:text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-400 transition-colors"
                           >
                             Barazo
                           </button>
                         ) : (
-                          <span className="text-[10px] text-gray-300">—</span>
+                          <span className="text-[10px] text-gray-300 dark:text-gray-600">—</span>
                         )}
                       </td>
                     </tr>
