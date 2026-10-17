@@ -2,7 +2,7 @@ import { useState, useRef, useMemo, useEffect, lazy, Suspense } from 'react'
 import {
   Receipt, Trash2, Plus, Search, X, RefreshCw,
   ChevronLeft, ChevronRight, ChevronDown, Users, Wallet,
-  Download, CheckCircle2,, Pencil } from 'lucide-react'
+  Download, CheckCircle2, Pencil } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import RowMenu from '../components/RowMenu'
 import { formatDate } from '../utils/dateFormat'
