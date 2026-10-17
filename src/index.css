@@ -133,6 +133,16 @@
 /* Klientët — tabela në dark: vija shumë të holla mes rreshtave, titujt gri, checkbox me ngjyrën e markës */
 .dark .cust-tbl .table-td { border-color: rgb(255 255 255 / 0.04); }
 .dark .cust-tbl .table-th { color: #8b8e99; font-weight: 600; }
+
+/* Forma "Faturë e Re / Ndrysho" në dark: fusha, etiketa dhe butonat sipas dizajnit të ri */
+.dark .inv-form .form-control { background-color: theme('colors.dk.card'); border-color: transparent; color: #e5e7eb; color-scheme: dark; }
+.dark .inv-form .form-control:focus { border-color: theme('colors.accent.DEFAULT / 60%'); --tw-ring-color: theme('colors.accent.DEFAULT / 20%'); }
+.dark .inv-form .sec .form-control { background-color: theme('colors.dk.low'); }
+.dark .inv-form .form-label { color: #8b8e99; font-size: 11px; font-weight: 600; letter-spacing: 0.05em; margin-bottom: 0.375rem; }
+.dark .inv-actions .btn-outline { background-color: theme('colors.dk.card'); border-color: transparent; color: #dfe2eb; }
+.dark .inv-actions .btn-outline:hover { background-color: theme('colors.dk.high'); }
+.dark .inv-actions .btn-primary { background-color: theme('colors.accent.DEFAULT'); color: theme('colors.accent.on'); box-shadow: 0 0 20px -3px theme('colors.accent.DEFAULT / 50%'); }
+.dark .inv-actions .btn-primary:hover { background-color: theme('colors.accent.DEFAULT / 90%'); }
 .dark .cust-tbl input[type='checkbox'], .dark .cust-cb { accent-color: theme('colors.accent.DEFAULT'); color-scheme: dark; }
 
 /* ItemRow grid - Desktop default */
