@@ -43,9 +43,10 @@ export function SupplierModal({ supplier, onClose }) {
 
   return (
     <Modal
+      className="inv-form"
       title={
         <span className="flex items-center gap-2">
-          <Truck size={18} className="text-blue-500" />
+          <Truck size={18} className="text-blue-500 dark:text-accent" />
           {isEdit ? `Edito — ${supplier.name}` : 'Furnitor i ri'}
         </span>
       }
@@ -60,7 +61,7 @@ export function SupplierModal({ supplier, onClose }) {
       }
     >
       {err && (
-        <div className="text-xs text-blue-500 bg-blue-50 border border-blue-100 rounded-lg px-3 py-2 mb-4">
+        <div className="text-xs text-blue-500 bg-blue-50 border border-blue-100 dark:bg-[#93000a]/30 dark:border-transparent dark:text-[#ffb4ab] rounded-lg px-3 py-2 mb-4">
           {err}
         </div>
       )}

@@ -68,9 +68,10 @@ export function UserModal({ user, onClose }) {
 
   return (
     <Modal
+      className="inv-form"
       title={
         <span className="flex items-center gap-2">
-          <UserCog size={18} className="text-blue-500" />
+          <UserCog size={18} className="text-blue-500 dark:text-accent" />
           {isEdit ? `Edito — ${user.name}` : 'Përdorues i ri'}
         </span>
       }
@@ -84,7 +85,7 @@ export function UserModal({ user, onClose }) {
         </>
       }
     >
-      {err && <div className="text-xs text-blue-500 bg-blue-50 border border-blue-100 rounded-lg px-3 py-2 mb-4">{err}</div>}
+      {err && <div className="text-xs text-blue-500 bg-blue-50 border border-blue-100 dark:bg-[#93000a]/30 dark:border-transparent dark:text-[#ffb4ab] rounded-lg px-3 py-2 mb-4">{err}</div>}
 
       {/* Roli */}
       <FormGroup label="Roli *">
@@ -95,10 +96,10 @@ export function UserModal({ user, onClose }) {
               <button key={key} type="button" onClick={() => set('role', key)}
                 className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-bold border-2 transition-all ${
                   form.role === key
-                    ? key === 'admin'  ? 'border-blue-500 bg-blue-500 text-white'
-                    : key === 'editor' ? 'border-emerald-600 bg-emerald-600 text-white'
-                    :                   'border-gray-500 bg-gray-500 text-white'
-                    : 'border-gray-200 bg-white text-gray-500 hover:border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400'
+                    ? key === 'admin'  ? 'border-blue-500 bg-blue-500 text-white dark:border-accent dark:bg-accent dark:text-accent-on'
+                    : key === 'editor' ? 'border-emerald-600 bg-emerald-600 text-white dark:border-[#10b981] dark:bg-[#10b981] dark:text-[#003824]'
+                    :                   'border-gray-500 bg-gray-500 text-white dark:border-gray-400 dark:bg-gray-400 dark:text-gray-900'
+                    : 'border-gray-200 bg-white text-gray-500 hover:border-gray-300 dark:border-transparent dark:bg-dk-card dark:text-gray-300 dark:hover:bg-dk-high'
                 }`}>
                 <Icon size={12} /> {meta.label}
               </button>
@@ -134,10 +135,10 @@ export function UserModal({ user, onClose }) {
 
       {/* Ngjyra */}
       <FormGroup label="Ngjyra e avatit">
-        <div className="flex gap-2 mt-1">
+        <div className="flex flex-wrap gap-2.5 mt-1 p-1">
           {COLORS.map(c => (
             <button key={c} type="button" onClick={() => set('color', c)}
-              className="w-7 h-7 rounded-lg transition-all flex-shrink-0"
+              className="swatch w-7 h-7 dark:w-8 dark:h-8 rounded-lg dark:rounded-xl transition-all flex-shrink-0"
               style={{ background: c, outline: form.color === c ? `3px solid ${c}` : 'none', outlineOffset: 2 }} />
           ))}
         </div>
@@ -149,13 +150,13 @@ export function UserModal({ user, onClose }) {
           <div className="flex gap-2">
             <button type="button" onClick={() => set('active', true)}
               className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-bold border-2 transition-all ${
-                form.active ? 'border-emerald-600 bg-emerald-600 text-white' : 'border-gray-200 bg-white text-gray-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400'
+                form.active ? 'border-emerald-600 bg-emerald-600 text-white dark:border-[#10b981] dark:bg-[#10b981] dark:text-[#003824]' : 'border-gray-200 bg-white text-gray-500 dark:border-transparent dark:bg-dk-card dark:text-gray-300 dark:hover:bg-dk-high'
               }`}>
               <CheckCircle size={12} /> Aktiv
             </button>
             <button type="button" onClick={() => set('active', false)}
               className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-bold border-2 transition-all ${
-                !form.active ? 'border-blue-500 bg-blue-500 text-white' : 'border-gray-200 bg-white text-gray-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400'
+                !form.active ? 'border-blue-500 bg-blue-500 text-white dark:border-accent dark:bg-accent dark:text-accent-on' : 'border-gray-200 bg-white text-gray-500 dark:border-transparent dark:bg-dk-card dark:text-gray-300 dark:hover:bg-dk-high'
               }`}>
               <XCircle size={12} /> Joaktiv
             </button>
