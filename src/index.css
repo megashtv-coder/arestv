@@ -186,6 +186,21 @@
 .dark .rep .recharts-default-tooltip { background-color: theme('colors.dk.high') !important; border-color: rgb(255 255 255 / 0.1) !important; }
 .dark .rep .recharts-tooltip-label, .dark .rep .recharts-tooltip-item { color: #dfe2eb !important; }
 .dark .rep .recharts-tooltip-cursor { fill: rgb(255 255 255 / 0.04); }
+/* .rep — zgjerim për Pagesat (Link pagese, Emrat, Barazim) dhe dritaret e tyre */
+.dark .rep .dark\:bg-gray-900, .dark .rep .dark\:bg-gray-900\/40 { background-color: theme('colors.dk.card'); }
+.dark .rep .dark\:bg-gray-800\/80 { background-color: theme('colors.dk.low'); }
+.dark .rep .dark\:hover\:bg-gray-700:hover, .dark .rep .dark\:hover\:bg-gray-800:hover { background-color: theme('colors.dk.high'); }
+.dark .rep .dark\:border-gray-700\/80, .dark .rep .dark\:border-gray-700\/60 { border-color: rgb(255 255 255 / 0.06); }
+.dark .rep .dark\:hover\:border-gray-600:hover { border-color: rgb(255 255 255 / 0.14); }
+.dark .rep .dark\:hover\:text-blue-400:hover { color: theme('colors.accent.soft'); }
+.dark .rep .dark\:bg-blue-900\/10 { background-color: theme('colors.accent.DEFAULT / 8%'); }
+.dark .rep .dark\:ring-blue-900\/30 { --tw-ring-color: theme('colors.accent.DEFAULT / 25%'); }
+.dark .rep .dark\:hover\:bg-blue-900\/40:hover { background-color: theme('colors.accent.DEFAULT / 25%'); }
+.dark .rep .dark\:border-blue-900\/60 { border-color: theme('colors.accent.DEFAULT / 40%'); }
+.dark .rep .dark\:focus\:ring-blue-900\/20:focus { --tw-ring-color: theme('colors.accent.DEFAULT / 25%'); }
+/* Zgjedhësit në dritaret "pf": pa shigjetën e shfletuesit, me shigjetë të vetën */
+.dark .modal.pf select { appearance: none; -webkit-appearance: none; padding-right: 2.25rem; color-scheme: dark; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238b8e99' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.875rem center; background-size: 16px; }
+.dark .modal.pf textarea { background-color: theme('colors.dk.low'); }
 .dark .cust-tbl input[type='checkbox'], .dark .cust-cb { accent-color: theme('colors.accent.DEFAULT'); color-scheme: dark; }
 
 /* ItemRow grid - Desktop default */

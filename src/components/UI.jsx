@@ -80,6 +80,18 @@ export function StatCard({ icon: Icon, iconBg, iconColor, val, label, badge, bad
   )
 }
 
+/* Titulli i dritareve me ikonë (ikona shfaqet vetëm në dark mode) */
+export function ModalTitle({ icon: Icon, children }) {
+  return (
+    <span className="flex items-center dark:gap-3">
+      <span className="hidden dark:flex w-8 h-8 items-center justify-center rounded-lg bg-accent/15 text-accent flex-shrink-0">
+        <Icon size={18} />
+      </span>
+      {children}
+    </span>
+  )
+}
+
 export function Modal({ title, children, footer, onClose, className = '' }) {
   return (
     <div className="modal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>

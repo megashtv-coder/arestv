@@ -171,7 +171,7 @@ export default function Settlement() {
   }, [relevant])
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 rep">
       {/* Titulli "Barazimi" jeton te header-i global (Header.jsx, kur page === 'settlement'). */}
 
       <PaymentsSubTabs />

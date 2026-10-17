@@ -3,12 +3,12 @@ import {
   Search, Plus, Copy, Check, ExternalLink, Pencil, Trash2, X, FolderPlus, Server,
 } from 'lucide-react'
 import { useApp } from '../context/AppContext'
-import { Modal, FormGroup } from '../components/UI'
+import { Modal, FormGroup, ModalTitle } from '../components/UI'
 import { defaultHostCategories } from '../data/mockData'
 
 const DEFAULT_IDS = new Set(defaultHostCategories.map(c => c.id))
 const FLAG_SUGGESTIONS = ['🌐', '🇮🇹', '🇬🇧', '🇩🇪', '🇫🇷', '🇨🇭', '🇦🇹', '🇺🇸', '🇪🇸', '🇳🇱', '🇧🇪', '🇸🇪']
-const inputCls = 'w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500'
+const inputCls = 'w-full px-3 py-2 border border-gray-200 dark:border-white/10 rounded-lg text-sm bg-white dark:bg-dk-low text-gray-900 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-accent/40 dark:focus:border-accent/60'
 
 // "http://host:8080/" → { domain: 'host', port: '8080' }
 function splitUrl(url = '') {
@@ -35,7 +35,8 @@ function CategoryModal({ onClose }) {
 
   return (
     <Modal
-      title="Kategori e Re"
+      className="inv-form pf rep"
+      title={<ModalTitle icon={FolderPlus}>Kategori e Re</ModalTitle>}
       onClose={onClose}
       footer={
         <>
@@ -93,7 +94,8 @@ function HostModal({ host, defaultCategory, onClose }) {
 
   return (
     <Modal
-      title={host ? 'Ndrysho Host-in' : 'Host i Ri'}
+      className="inv-form pf rep"
+      title={<ModalTitle icon={Server}>{host ? 'Ndrysho Host-in' : 'Host i Ri'}</ModalTitle>}
       onClose={onClose}
       footer={
         <>

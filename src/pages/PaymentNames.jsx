@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react'
-import { Search, Plus, Copy, Check, Pencil, Trash2, X, LayoutGrid, List as ListIcon, Lock, Unlock } from 'lucide-react'
+import { Search, Plus, Copy, Check, Pencil, Trash2, X, LayoutGrid, List as ListIcon, Lock, Unlock, UserPlus } from 'lucide-react'
 import { useApp } from '../context/AppContext'
-import { Modal, FormGroup } from '../components/UI'
+import { Modal, FormGroup, ModalTitle } from '../components/UI'
 import PaymentsSubTabs from '../components/PaymentsSubTabs'
 import { trackingMethods } from '../data/mockData'
 
@@ -16,7 +16,7 @@ const COMBO_LIMIT  = 6
 const METHOD_SHORT = { 'Western Union': 'WU', 'Ria': 'Ria', 'Money Gram': 'MG' }
 const METHOD_DOT   = { 'Western Union': 'bg-amber-500', 'Ria': 'bg-violet-500', 'Money Gram': 'bg-blue-500' }
 const MONTHS = ['Janar', 'Shkurt', 'Mars', 'Prill', 'Maj', 'Qershor', 'Korrik', 'Gusht', 'Shtator', 'Tetor', 'Nëntor', 'Dhjetor']
-const inputCls = 'w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500'
+const inputCls = 'w-full px-3 py-2 border border-gray-200 dark:border-white/10 rounded-lg text-sm bg-white dark:bg-dk-low text-gray-900 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-accent/40 dark:focus:border-accent/60'
 
 const fullName = n => `${n.first} ${n.last}`.trim()
 const keyOf = raw => (raw || '').trim().toLowerCase()
@@ -60,7 +60,8 @@ function NameModal({ item, onClose }) {
 
   return (
     <Modal
-      title={item ? 'Ndrysho Emrin' : 'Emër i Ri'}
+      className="inv-form pf rep"
+      title={<ModalTitle icon={UserPlus}>{item ? 'Ndrysho Emrin' : 'Emër i Ri'}</ModalTitle>}
       onClose={onClose}
       footer={
         <>
@@ -187,7 +188,7 @@ Shteti: ${n.country}`)
   )
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 rep">
       <PaymentsSubTabs />
 
       {/* Rregulli */}

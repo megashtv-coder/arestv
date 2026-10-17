@@ -4,7 +4,7 @@ import {
   ArrowUpDown, Link2, LayoutGrid, List, Landmark,
 } from 'lucide-react'
 import { useApp } from '../context/AppContext'
-import { Modal, FormGroup } from '../components/UI'
+import { Modal, FormGroup, ModalTitle } from '../components/UI'
 import PaymentsSubTabs from '../components/PaymentsSubTabs'
 
 // Handle-i default i PayPal.me që parapopullohet te linku i ri (bosh = pa parapopullim)
@@ -74,7 +74,7 @@ async function copyRich(plain, html) {
   await navigator.clipboard.writeText(plain)
 }
 
-const inputCls = 'w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
+const inputCls = 'w-full px-3 py-2 border border-gray-200 dark:border-white/10 rounded-lg text-sm bg-white dark:bg-dk-low text-gray-900 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-accent/40 dark:focus:border-accent/60'
 
 /* ══════════════════════════════════════════════════════════
    Modal — shto/edito një link pagese (Stripe/PayPal) ose një llogari bankare
@@ -159,9 +159,10 @@ function PaymentLinkModal({ link, defaultProvider, onClose }) {
 
   return (
     <Modal
-      title={link
+      className="inv-form pf rep"
+      title={<ModalTitle icon={bank ? Landmark : Link2}>{link
         ? (bank ? 'Ndrysho Llogarinë Bankare' : 'Ndrysho Linkun e Pagesës')
-        : (bank ? 'Llogari e Re Bankare' : 'Link i Ri Pagese')}
+        : (bank ? 'Llogari e Re Bankare' : 'Link i Ri Pagese')}</ModalTitle>}
       onClose={onClose}
       footer={
         <>
@@ -642,7 +643,7 @@ export default function Stripe() {
   const bankOnly = providerFilter === 'bank'
 
   return (
-    <div className="space-y-3.5">
+    <div className="space-y-3.5 rep">
       {/* Titulli "Link Pagese" jeton te header-i global (Header.jsx, kur page === 'stripe'). */}
 
       <PaymentsSubTabs />
