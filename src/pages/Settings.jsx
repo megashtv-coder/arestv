@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { Save, LogOut, Shield, Building2, Globe, MessageCircle, Download, Upload, Clock, Trash2, Bell, BellOff } from 'lucide-react'
+import { Save, LogOut, Shield, Building2, Globe, MessageCircle, Download, Upload, Clock, Trash2, Bell, BellOff, AlertTriangle } from 'lucide-react'
 import { Toggle } from '../components/UI'
 import { useApp } from '../context/AppContext'
 import BackupService from '../services/BackupService'
@@ -12,14 +12,31 @@ const TIMEZONE_OPTIONS = [
   'UTC+10', 'UTC+11', 'UTC+12', 'UTC+13', 'UTC+14',
 ]
 
+const SETTINGS_TABS = [
+  { id: 'profile',  label: 'Profili & Rajoni',      icon: Building2 },
+  { id: 'notif',    label: 'Njoftimet',             icon: MessageCircle },
+  { id: 'security', label: 'Siguria',               icon: Shield },
+  { id: 'backup',   label: 'Backup & Rivendosje',   icon: Download },
+  { id: 'danger',   label: 'Zona e Rrezikshme',     icon: AlertTriangle },
+]
+const SECTION_TAB = {
+  'Profili i kompanisë': 'profile',
+  'Gjuha & Rajoni': 'profile',
+  'Njoftimet automatike WhatsApp': 'notif',
+  'Siguria': 'security',
+}
+
 export default function Settings() {
   const {
-    showToast, logout, currentUser,
+    showToast, logout, currentUser, darkMode,
     invoices, customers, items, payments, expenses, users, vendors, transfers, activityLog, representatives, organizations,
     paymentModes, setPaymentModes, depositAccounts, setDepositAccounts,
     setInvoices, setCustomers, setItems, setPayments, setExpenses, setUsers, setVendors, setTransfers, setActivityLog, setRepresentatives,
   } = useApp()
   const fileInputRef = useRef(null)
+  // Tab-et e brendshme funksionojnë vetëm në dark mode; në light shfaqet gjithçka si më parë
+  const [tab, setTab] = useState('profile')
+  const show = id => !darkMode || tab === id
   const [editingField, setEditingField] = useState(null)
   const [editValue, setEditValue] = useState('')
   const [companyData, setCompanyData] = useState(() => {
@@ -281,12 +298,34 @@ export default function Settings() {
         </button>
       </div>
 
+      {/* Tab-et e brendshme (vetëm në dark mode; në light faqja mbetet siç ishte) */}
+      <div className="hidden dark:block w-full bg-dk-low rounded-xl p-1.5 mb-6">
+        <nav className="flex items-center gap-1 overflow-x-auto">
+          {SETTINGS_TABS.map(({ id, label, icon: TabIcon }) => (
+            <button key={id} type="button" onClick={() => setTab(id)}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
+                tab === id
+                  ? 'bg-dk-card text-white shadow-sm shadow-black/30'
+                  : id === 'danger'
+                    ? 'text-[#ffb4ab]/80 hover:text-[#ffb4ab] hover:bg-[#93000a]/20'
+                    : 'text-[#8b8e99] hover:text-white hover:bg-dk-card/50'
+              }`}>
+              <TabIcon size={16} className={tab === id && id !== 'danger' ? 'text-accent' : ''} />
+              <span>{label}</span>
+              {id === 'backup' && autoBackups.length > 0 && (
+                <span className="px-1.5 rounded-full text-[10px] font-bold bg-dk-high text-gray-200">{autoBackups.length}</span>
+              )}
+            </button>
+          ))}
+        </nav>
+      </div>
+
       <div className="max-w-2xl dark:max-w-none space-y-5">
         {sections.map(({ title, icon: Icon, rows }) => {
           const isLockedSection = title === 'Profili i kompanisë' || title === 'Gjuha & Rajoni'
           const isAdmin = currentUser?.role === 'admin' || currentUser?.isSuperAdmin
           return (
-          <div key={title}>
+          <div key={title} hidden={!show(SECTION_TAB[title])}>
             <div className="flex items-center gap-2 mb-2 px-1">
               <Icon size={14} className="text-gray-400 dark:text-gray-500"/>
               <p className="text-xs font-bold text-gray-400 uppercase tracking-widest dark:text-gray-500">{title}</p>
@@ -358,7 +397,7 @@ export default function Settings() {
         })}
 
         {/* Auto-notification configuration */}
-        {toggles.autoWhatsApp && (
+        {toggles.autoWhatsApp && show('notif') && (
           <div>
             <div className="flex items-center gap-2 mb-2 px-1">
               <MessageCircle size={14} className="text-gray-400 dark:text-gray-500"/>
@@ -393,7 +432,7 @@ export default function Settings() {
         )}
 
         {/* Njoftime Push — vetëm kjo pajisje */}
-        <div>
+        <div hidden={!show('notif')}>
           <div className="flex items-center gap-2 mb-2 px-1">
             <Bell size={14} className="text-gray-400 dark:text-gray-500"/>
             <p className="text-xs font-bold text-gray-400 uppercase tracking-widest dark:text-gray-500">Njoftime Push</p>
@@ -424,7 +463,7 @@ export default function Settings() {
         </div>
 
         {/* Backup & Restore */}
-        <div>
+        <div hidden={!show('backup')}>
           <div className="flex items-center gap-2 mb-2 px-1">
             <Download size={14} className="text-gray-400 dark:text-gray-500"/>
             <p className="text-xs font-bold text-gray-400 uppercase tracking-widest dark:text-gray-500">Backup & Rivendosje</p>
@@ -479,7 +518,7 @@ export default function Settings() {
         </div>
 
         {/* Restore confirmation */}
-        {showRestoreConfirm && restoreData && (
+        {showRestoreConfirm && restoreData && show('backup') && (
           <div className="bg-amber-50 border border-amber-200 dark:bg-[#b45309]/10 dark:border-[#b45309]/30 rounded-xl p-4">
             <div className="mb-4">
               <p className="text-sm font-semibold text-amber-900 dark:text-amber-200 mb-2">⚠️ Konfirmo Rivendosjen</p>
@@ -523,7 +562,7 @@ export default function Settings() {
         )}
 
         {/* Auto-backups */}
-        <div>
+        <div hidden={!show('backup')}>
           <div className="flex items-center gap-2 mb-2 px-1">
             <Clock size={14} className="text-gray-400 dark:text-gray-500"/>
             <p className="text-xs font-bold text-gray-400 uppercase tracking-widest dark:text-gray-500">Auto-backup-et (çdo 3 ore, {autoBackups.length}/3 të fundit)</p>
@@ -571,7 +610,7 @@ export default function Settings() {
         </div>
 
         {/* Auto-backup restore confirmation */}
-        {showAutoBackupConfirm && restoreData && (
+        {showAutoBackupConfirm && restoreData && show('backup') && (
           <div className="bg-amber-50 border border-amber-200 dark:bg-[#b45309]/10 dark:border-[#b45309]/30 rounded-xl p-4">
             <div className="mb-4">
               <p className="text-sm font-semibold text-amber-900 dark:text-amber-200 mb-2">⚠️ Konfirmo Rivendosjen e Auto-Backup-it</p>
@@ -616,7 +655,7 @@ export default function Settings() {
         )}
 
         {/* Logout */}
-        <div>
+        <div hidden={!show('danger')}>
           <div className="flex items-center gap-2 mb-2 px-1">
             <p className="text-xs font-bold text-blue-400 uppercase tracking-widest">Zona e rrezikshme</p>
           </div>
