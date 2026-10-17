@@ -56,11 +56,11 @@ export default function RowMenu({ items, title = 'Veprimet', width = 'w-40' }) {
           className={`fixed ${width} bg-white border border-gray-200 rounded-xl shadow-xl z-[9999] overflow-hidden dark:bg-dk-high dark:border-white/10`}
           style={{ left: pos.left, ...(pos.top != null ? { top: pos.top } : { bottom: pos.bottom }) }}
         >
-          {items.map(({ label, icon: Icon, onClick, danger }, i) => (
+          {items.map(({ label, icon: Icon, onClick, danger, className }, i) => (
             <button
               key={label}
               type="button"
-              className={`w-full text-left px-3.5 py-2 text-[13px] font-medium flex items-center gap-2 ${i < items.length - 1 ? 'border-b border-gray-100 dark:border-transparent' : ''} ${
+              className={`w-full text-left px-3.5 py-2 text-[13px] font-medium flex items-center gap-2 ${className || ''} ${i < items.length - 1 ? 'border-b border-gray-100 dark:border-transparent' : ''} ${
                 danger
                   ? 'text-red-600 hover:bg-red-50 dark:text-[#ffb4ab] dark:hover:bg-[#93000a]/30'
                   : 'text-gray-700 hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-dk-card'

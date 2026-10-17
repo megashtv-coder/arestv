@@ -341,6 +341,17 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer, customerMap, hi
         )}
 
 
+        {canContact && (
+          <a
+            href={`https://t.me/+${rawPhone}`}
+            target="_blank" rel="noopener noreferrer"
+            title="Dërgo rikujtim në Telegram"
+            className={`${TB} hidden xl:flex border-sky-200 bg-sky-50 text-sky-700 hover:bg-sky-100 dark:border-transparent dark:bg-[#8083ff]/15 dark:text-[#c0c1ff] dark:hover:bg-[#8083ff]/25`}
+          >
+            <Send size={13}/> Rikujto pagesën TG
+          </a>
+        )}
+
         {canPay && (
           <button
             className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm dark:bg-[#00a572] dark:hover:bg-[#00a572]/90 dark:text-[#00311f] dark:shadow-[0_0_16px_-4px_rgba(0,165,114,0.6)] transition-colors"
@@ -350,21 +361,14 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer, customerMap, hi
           </button>
         )}
 
-        {canVoid && (
-          <button
-            className={`${TB} border-gray-200 text-gray-500 hover:text-amber-600 hover:bg-amber-50 dark:border-white/10 dark:bg-dk-card dark:text-gray-400 dark:hover:bg-dk-high dark:hover:text-amber-400`}
-            onClick={() => setConfirmVoid(true)}
-          >
-            <XCircle size={13}/> Void
-          </button>
-        )}
 
 
         <div className="ml-auto flex items-center gap-1">
           <RowMenu
             width="w-52"
             items={[
-              ...(canContact ? [{ label: 'Rikujto pagesën TG', icon: Send, onClick: () => window.open(`https://t.me/+${rawPhone}`, '_blank', 'noopener,noreferrer') }] : []),
+              ...(canContact ? [{ label: 'Rikujto pagesën TG', icon: Send, className: 'xl:hidden', onClick: () => window.open(`https://t.me/+${rawPhone}`, '_blank', 'noopener,noreferrer') }] : []),
+              ...(canVoid ? [{ label: 'Void', icon: XCircle, onClick: () => setConfirmVoid(true) }] : []),
               { label: 'Fshi', icon: Trash2, danger: true, onClick: () => setConfirmDel(true) },
             ]}
           />
