@@ -48,7 +48,7 @@ function countActive(invoices, year, month) {
 ══════════════════════════════════════════════════════════ */
 function FinanciareTab({ invoices, expenses, fmt }) {
   const [tab, setTab] = useState('revenue')
-  const { payments } = useApp()
+  const { payments, darkMode } = useApp()
   const thisYear = new Date().getFullYear().toString()
 
   const paid     = invoices.filter(i => i.status === 'paid').reduce((s, i) => s + i.amount, 0)
@@ -76,9 +76,9 @@ function FinanciareTab({ invoices, expenses, fmt }) {
     { label:'Fitimi neto',       val: fmt(profit),   icon: DollarSign,   cls: 'bg-emerald-50 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400' },
   ]
   const TABS = [
-    { id:'revenue',  label:'Të ardhurat', key:'revenue',  color:'#3b82f6' },
-    { id:'expenses', label:'Shpenzimet',  key:'expenses', color:'#f87171' },
-    { id:'profit',   label:'Fitimi neto', key:'profit',   color:'#10b981' },
+    { id:'revenue',  label:'Të ardhurat', key:'revenue',  color: darkMode ? '#c0c1ff' : '#3b82f6' },
+    { id:'expenses', label:'Shpenzimet',  key:'expenses', color: darkMode ? '#ffb4ab' : '#f87171' },
+    { id:'profit',   label:'Fitimi neto', key:'profit',   color: darkMode ? '#4edea3' : '#10b981' },
   ]
   const activeTab = TABS.find(t => t.id === tab)
 
@@ -105,7 +105,7 @@ function FinanciareTab({ invoices, expenses, fmt }) {
             {TABS.map(t => (
               <button key={t.id} onClick={() => setTab(t.id)}
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                  tab === t.id ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
+                  tab === t.id ? 'bg-white dark:bg-accent text-gray-900 dark:text-accent-on shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
                 }`}>
                 {t.label}
               </button>
@@ -300,7 +300,7 @@ function BarazimiTab({ payments, expenses, fmt }) {
           {['month','quarter'].map(m => (
             <button key={m} onClick={() => setMode(m)}
               className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                mode===m ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm' : 'text-gray-500 dark:text-gray-400'
+                mode===m ? 'bg-white dark:bg-accent text-gray-900 dark:text-accent-on shadow-sm' : 'text-gray-500 dark:text-gray-400'
               }`}>
               {m==='month' ? 'Mujore' : '3-Mujore'}
             </button>
@@ -622,6 +622,7 @@ function BarazimiTab({ payments, expenses, fmt }) {
    TAB 3: Klientët Mujore
 ══════════════════════════════════════════════════════════ */
 function KlientetTab({ invoices }) {
+  const { darkMode } = useApp()
   const [chartYear, setChartYear] = useState(new Date().getFullYear())
   const prevYear = chartYear - 1
 
@@ -687,7 +688,7 @@ function KlientetTab({ invoices }) {
                 contentStyle={{ border:'1px solid #f3f4f6', borderRadius:10, fontSize:12 }}
                 formatter={(val, name) => [val + ' klientë', name]}
               />
-              <Bar dataKey={String(chartYear)} fill="#3b82f6" radius={[6,6,0,0]} barSize={28}/>
+              <Bar dataKey={String(chartYear)} fill={darkMode ? '#c0c1ff' : '#3b82f6'} radius={[6,6,0,0]} barSize={28}/>
               <Line dataKey={String(prevYear)} stroke="#9ca3af" strokeWidth={2} dot={{ r:3, fill:'#9ca3af' }} strokeDasharray="5 4" type="monotone"/>
             </ComposedChart>
           </ResponsiveContainer>
@@ -1283,20 +1284,20 @@ export default function Reports() {
   })
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 rep">
       {/* Titulli "Raportet" tani jeton te header-i global (Header.jsx, kur
          page === 'reports'). Butoni "Eksporto" u hoq — s'kishte handler të lidhur. */}
 
       {/* Main tab switcher */}
-      <div className="flex gap-1 bg-gray-200/60 dark:bg-gray-800/80 rounded-2xl p-1 overflow-x-auto">
+      <div className="flex gap-1 bg-gray-200/60 dark:bg-dk-side dark:rounded-xl rounded-2xl p-1 overflow-x-auto">
         {MAIN_TABS.map(({ id, label, icon: Icon }) => (
           <button key={id} onClick={() => setMainTab(id)}
             className={`flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
               mainTab === id
-                ? 'bg-white dark:bg-gray-900 text-gray-900 dark:text-white shadow-sm'
-                : 'text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
+                ? 'bg-white dark:bg-accent text-gray-900 dark:text-accent-on shadow-sm'
+                : 'text-gray-500 dark:text-[#8b8e99] hover:text-gray-800 dark:hover:text-gray-200 dark:hover:bg-dk-low'
             }`}>
-            <Icon size={14} className={mainTab === id ? 'text-blue-500' : 'text-gray-400'}/>
+            <Icon size={14} className={mainTab === id ? 'text-blue-500 dark:text-accent-on' : 'text-gray-400 dark:text-[#8b8e99]'}/>
             <span className="hidden sm:inline">{label}</span>
           </button>
         ))}
