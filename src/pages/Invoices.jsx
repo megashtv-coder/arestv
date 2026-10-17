@@ -346,6 +346,7 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer, customerMap, hi
   const TB = 'flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-xl border transition-colors'
 
   const menuItems = [
+    ...(canContact ? [{ label: 'Rikujto pagesën WA', icon: MessageCircle, className: 'xl:hidden', onClick: () => window.open(`https://wa.me/${rawPhone}?text=${msgEncoded}`, '_blank', 'noopener,noreferrer') }] : []),
     ...(canContact ? [{ label: 'Rikujto pagesën TG', icon: Send, className: 'xl:hidden', onClick: () => window.open(`https://t.me/+${rawPhone}`, '_blank', 'noopener,noreferrer') }] : []),
     ...(canVoid ? [{ label: 'Void', icon: XCircle, onClick: () => setConfirmVoid(true) }] : []),
     // Faturat e paguara e kanë "Fshi" si buton në shirit, pranë "Ndrysho"
@@ -394,7 +395,7 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer, customerMap, hi
             href={`https://wa.me/${rawPhone}?text=${msgEncoded}`}
             target="_blank" rel="noopener noreferrer"
             title="Dërgo rikujtim në WhatsApp"
-            className={`${TB} border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:border-transparent dark:bg-[#00a572]/20 dark:text-[#4edea3] dark:hover:bg-[#00a572]/30`}
+            className={`${TB} hidden xl:flex border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:border-transparent dark:bg-[#00a572]/20 dark:text-[#4edea3] dark:hover:bg-[#00a572]/30`}
           >
             <MessageCircle size={13}/> Rikujto pagesën WA
           </a>
@@ -470,12 +471,12 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer, customerMap, hi
           </div>
 
           {/* Top section: Customer info and Total */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 px-6 pt-5">
+          <div className="grid grid-cols-2 gap-3 px-6 pt-5">
             <div className="flex-1 bg-gray-50 rounded-xl border border-gray-100 p-4 dark:bg-gray-900/50 dark:border-gray-700">
               <p className="text-[10px] text-gray-400 uppercase tracking-widest font-bold mb-1 dark:text-gray-500">Fatura për</p>
               <button
                 onClick={() => setSelectedCustomer(custObj)}
-                className="font-black text-blue-600 text-lg leading-tight hover:text-blue-800 hover:underline cursor-pointer transition-colors text-left dark:text-blue-400 dark:hover:text-blue-300"
+                className="font-black text-blue-600 text-base sm:text-lg leading-tight break-words hover:text-blue-800 hover:underline cursor-pointer transition-colors text-left dark:text-blue-400 dark:hover:text-blue-300"
               >
                 {inv.customer}
               </button>
@@ -487,7 +488,7 @@ function InvoiceSidePanel({ invId, onClose, setSelectedCustomer, customerMap, hi
             <div className="flex-1 bg-gray-50 rounded-xl border border-gray-100 p-4 flex flex-col justify-between gap-2 dark:bg-gray-900/50 dark:border-gray-700">
               <div>
                 <p className="text-[10px] text-gray-400 uppercase tracking-widest font-bold mb-1 dark:text-gray-500">Totali për pagesë</p>
-                <p className="text-3xl font-black text-gray-900 leading-tight mt-1 font-mono dark:text-gray-100">{fmt(inv.amount)}</p>
+                <p className="text-xl sm:text-3xl font-black text-gray-900 leading-tight mt-1 font-mono dark:text-gray-100">{fmt(inv.amount)}</p>
               </div>
               <div className="flex items-center gap-2">
                 <StatusBadge status={isOverdue && inv.status !== 'paid' && inv.status !== 'void' ? 'overdue' : inv.status}/>
