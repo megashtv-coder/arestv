@@ -28,15 +28,15 @@ const SECTION_TAB = {
 
 export default function Settings() {
   const {
-    showToast, logout, currentUser, darkMode,
+    showToast, logout, currentUser,
     invoices, customers, items, payments, expenses, users, vendors, transfers, activityLog, representatives, organizations,
     paymentModes, setPaymentModes, depositAccounts, setDepositAccounts,
     setInvoices, setCustomers, setItems, setPayments, setExpenses, setUsers, setVendors, setTransfers, setActivityLog, setRepresentatives,
   } = useApp()
   const fileInputRef = useRef(null)
-  // Tab-et e brendshme funksionojnë vetëm në dark mode; në light shfaqet gjithçka si më parë
+  // Tab-et e brendshme: shfaqet vetëm seksioni i tab-it aktiv
   const [tab, setTab] = useState('profile')
-  const show = id => !darkMode || tab === id
+  const show = id => tab === id
   const [editingField, setEditingField] = useState(null)
   const [editValue, setEditValue] = useState('')
   const [companyData, setCompanyData] = useState(() => {
@@ -298,22 +298,22 @@ export default function Settings() {
         </button>
       </div>
 
-      {/* Tab-et e brendshme (vetëm në dark mode; në light faqja mbetet siç ishte) */}
-      <div className="hidden dark:block w-full bg-dk-low rounded-xl p-1.5 mb-6">
+      {/* Tab-et e brendshme */}
+      <div className="w-full bg-gray-100 dark:bg-dk-low rounded-xl p-1.5 mb-6">
         <nav className="flex items-center gap-1 overflow-x-auto">
           {SETTINGS_TABS.map(({ id, label, icon: TabIcon }) => (
             <button key={id} type="button" onClick={() => setTab(id)}
               className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
                 tab === id
-                  ? 'bg-dk-card text-white shadow-sm shadow-black/30'
+                  ? 'bg-white text-gray-900 shadow-sm dark:bg-dk-card dark:text-white dark:shadow-black/30'
                   : id === 'danger'
-                    ? 'text-[#ffb4ab]/80 hover:text-[#ffb4ab] hover:bg-[#93000a]/20'
-                    : 'text-[#8b8e99] hover:text-white hover:bg-dk-card/50'
+                    ? 'text-red-400 hover:text-red-600 hover:bg-red-50 dark:text-[#ffb4ab]/80 dark:hover:text-[#ffb4ab] dark:hover:bg-[#93000a]/20'
+                    : 'text-gray-500 hover:text-gray-800 hover:bg-white/60 dark:text-[#8b8e99] dark:hover:text-white dark:hover:bg-dk-card/50'
               }`}>
-              <TabIcon size={16} className={tab === id && id !== 'danger' ? 'text-accent' : ''} />
+              <TabIcon size={16} className={tab === id && id !== 'danger' ? 'text-blue-500 dark:text-accent' : ''} />
               <span>{label}</span>
               {id === 'backup' && autoBackups.length > 0 && (
-                <span className="px-1.5 rounded-full text-[10px] font-bold bg-dk-high text-gray-200">{autoBackups.length}</span>
+                <span className="px-1.5 rounded-full text-[10px] font-bold bg-gray-200 text-gray-600 dark:bg-dk-high dark:text-gray-200">{autoBackups.length}</span>
               )}
             </button>
           ))}
