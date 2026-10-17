@@ -153,6 +153,16 @@
 .dark .inv-form .swatch { outline-color: #ffffff !important; outline-offset: 3px !important; }
 .dark .modal.inv-form .btn-primary { background-color: theme('colors.accent.DEFAULT'); color: theme('colors.accent.on'); box-shadow: 0 0 20px -3px theme('colors.accent.DEFAULT / 50%'); }
 .dark .modal.inv-form .btn-primary:hover { background-color: theme('colors.accent.DEFAULT / 90%'); }
+/* Koncepti "Produkt i ri" (Modal me className="inv-form pf"): etiketa me shkronja të mëdha, fusha me kontur, X i vogël, butona 8px */
+.dark .modal.pf { border-radius: 14px; box-shadow: 0 25px 50px -12px theme('colors.accent.DEFAULT / 12%'); }
+.dark .modal.pf h2 { font-weight: 600; }
+.dark .modal.pf .icon-btn { width: 28px; height: 28px; padding: 0; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; }
+.dark .modal.pf .icon-btn:hover { background-color: theme('colors.dk.high'); }
+.dark .modal.pf .form-label { text-transform: uppercase; letter-spacing: 0.06em; }
+.dark .modal.pf .form-control { background-color: theme('colors.dk.low'); border: 1px solid rgb(255 255 255 / 0.1); border-radius: 8px; padding-top: 0.75rem; padding-bottom: 0.75rem; }
+.dark .modal.pf .form-control:focus { border-color: theme('colors.accent.DEFAULT / 60%'); }
+.dark .modal.pf .btn-outline { background-color: theme('colors.dk.high'); border-color: rgb(255 255 255 / 0.1); border-radius: 8px; }
+.dark .modal.pf .btn-primary { border-radius: 8px; font-weight: 600; }
 .dark .cust-tbl input[type='checkbox'], .dark .cust-cb { accent-color: theme('colors.accent.DEFAULT'); color-scheme: dark; }
 
 /* ItemRow grid - Desktop default */

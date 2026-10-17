@@ -100,9 +100,12 @@ function ItemModal({ item, onClose, isFormPage }) {
 
   return (
     <Modal
+      className="inv-form pf"
       title={
-        <span className="flex items-center gap-2">
-          <Package size={18} className="text-blue-500" />
+        <span className="flex items-center gap-2 dark:gap-3">
+          <span className="contents dark:flex dark:w-8 dark:h-8 dark:items-center dark:justify-center dark:rounded-lg dark:bg-accent/15">
+            <Package size={18} className="text-blue-500 dark:text-accent" />
+          </span>
           {isEdit ? 'Edito produktin' : 'Produkt / Shërbim i ri'}
         </span>
       }
@@ -117,7 +120,7 @@ function ItemModal({ item, onClose, isFormPage }) {
       }
     >
       {err && (
-        <div className="text-xs text-blue-500 bg-blue-50 border border-blue-100 rounded-lg px-3 py-2 mb-4">
+        <div className="text-xs text-blue-500 bg-blue-50 border border-blue-100 dark:bg-[#93000a]/30 dark:border-transparent dark:text-[#ffb4ab] rounded-lg px-3 py-2 mb-4">
           {err}
         </div>
       )}
@@ -137,9 +140,9 @@ function ItemModal({ item, onClose, isFormPage }) {
       <div className="grid grid-cols-2 gap-4">
         <FormGroup label="Çmimi i shitjes *">
           <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm select-none">€</span>
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm select-none dark:text-gray-500 dark:left-3.5">€</span>
             <input
-              className="form-control pl-7"
+              className="form-control pl-7 dark:pl-8 dark:font-mono"
               type="number"
               min="0"
               step="0.01"
@@ -152,9 +155,9 @@ function ItemModal({ item, onClose, isFormPage }) {
 
         <FormGroup label="Çmimi i blerjes">
           <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm select-none">€</span>
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm select-none dark:text-gray-500 dark:left-3.5">€</span>
             <input
-              className="form-control pl-7"
+              className="form-control pl-7 dark:pl-8 dark:font-mono"
               type="number"
               min="0"
               step="0.01"
@@ -168,8 +171,9 @@ function ItemModal({ item, onClose, isFormPage }) {
 
       {/* Llogaria kontabel */}
       <FormGroup label="Llogaria kontabel (shitje)">
+        <div className="relative">
         <select
-          className="form-control"
+          className="form-control dark:appearance-none dark:pr-10"
           value={form.account}
           onChange={e => set('account', e.target.value)}
         >
@@ -179,12 +183,15 @@ function ItemModal({ item, onClose, isFormPage }) {
             </option>
           ))}
         </select>
+        <ChevronDown size={16} className="hidden dark:block absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
+        </div>
       </FormGroup>
 
       {/* Furnitori */}
       <FormGroup label="Furnitori">
+        <div className="relative">
         <select
-          className="form-control"
+          className="form-control dark:appearance-none dark:pr-10"
           value={form.vendor}
           onChange={e => set('vendor', e.target.value)}
         >
@@ -193,12 +200,14 @@ function ItemModal({ item, onClose, isFormPage }) {
             <option key={v.id} value={v.name}>{v.name}</option>
           ))}
         </select>
+        <ChevronDown size={16} className="hidden dark:block absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
+        </div>
       </FormGroup>
 
       {/* Marzha live */}
       {form.salePrice !== '' && form.purchasePrice !== '' &&
        Number(form.salePrice) > 0 && Number(form.purchasePrice) > 0 && (
-        <div className="mt-1 flex items-center gap-3 text-xs text-gray-400 bg-gray-50 rounded-lg px-4 py-2.5">
+        <div className="mt-1 flex items-center gap-3 text-xs text-gray-400 bg-gray-50 rounded-lg px-4 py-2.5 dark:text-gray-400 dark:bg-dk-card">
           <span>Marzha:</span>
           <span className="font-bold text-emerald-600">
             €{(Number(form.salePrice) - Number(form.purchasePrice)).toFixed(2)}
