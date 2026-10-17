@@ -4,10 +4,10 @@ import { useApp } from '../context/AppContext'
 import { Modal, FormGroup } from './UI'
 
 export const ROLE_META = {
-  admin:  { label: 'Admin',  cls: 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/50',       icon: Shield },
-  editor: { label: 'Editor', cls: 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/50', icon: Edit3 },
-  viewer: { label: 'Viewer', cls: 'bg-gray-100 text-gray-600 border border-gray-200 dark:bg-gray-700/50 dark:text-gray-300 dark:border-gray-700',      icon: Eye },
-  tester: { label: 'Tester', cls: 'bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 border border-amber-100 dark:border-amber-900/50', icon: Package },
+  admin:  { label: 'Admin',  cls: 'bg-blue-50 dark:bg-accent/15 text-blue-600 dark:text-accent-soft border border-blue-100 dark:border-transparent',       icon: Shield },
+  editor: { label: 'Editor', cls: 'bg-emerald-50 dark:bg-[#00a572]/15 text-emerald-600 dark:text-[#4edea3] border border-emerald-100 dark:border-transparent', icon: Edit3 },
+  viewer: { label: 'Viewer', cls: 'bg-gray-100 text-gray-600 border border-gray-200 dark:bg-dk-card dark:text-gray-300 dark:border-transparent',      icon: Eye },
+  tester: { label: 'Tester', cls: 'bg-amber-50 dark:bg-dk-card text-amber-600 dark:text-[#c0c1ff] border border-amber-100 dark:border-transparent', icon: Package },
 }
 
 const COLORS = ['#2563eb','#7c3aed','#059669','#d97706','#dc2626','#0891b2','#be185d','#0f766e']

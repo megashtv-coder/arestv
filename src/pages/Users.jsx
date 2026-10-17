@@ -76,7 +76,7 @@ export default function UsersPage() {
   }, [activityLog, logUserFilter, logSearch])
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 rep">
 
       {/* User cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -92,7 +92,7 @@ export default function UsersPage() {
               className={`bg-white dark:bg-gray-800 rounded-2xl border shadow-sm p-4 transition-all duration-200 flex flex-col gap-4 ${
                 !isActive ? 'opacity-75' : ''
               } ${
-                isMe ? 'border-sky-300 dark:border-sky-700/80 ring-2 ring-sky-500/10 dark:ring-sky-400/10' : 'border-gray-200/90 dark:border-gray-700 hover:shadow-md'
+                isMe ? 'border-sky-300 dark:border-white/[0.07] ring-2 ring-sky-500/10 dark:ring-accent/20' : 'border-gray-200/90 dark:border-gray-700 hover:shadow-md'
               }`}>
               <div className="flex items-start justify-between gap-2">
                 <div className="flex items-center gap-3 min-w-0">
@@ -102,13 +102,13 @@ export default function UsersPage() {
                       style={{ background: isActive ? u.color : '#94a3b8' }}>
                       {initials}
                     </div>
-                    <span className={`absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full border-2 border-white dark:border-gray-800 ${isActive ? 'bg-emerald-500' : 'bg-gray-400'}`} />
+                    <span className={`absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full border-2 border-white dark:border-dk-low ${isActive ? 'bg-emerald-500' : 'bg-gray-400'}`} />
                   </div>
 
                   <div className="min-w-0">
                     <div className="flex items-center gap-1.5 flex-wrap">
                       <p className="font-bold text-gray-900 dark:text-white text-base truncate">{u.name}</p>
-                      {isMe && <span className="bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 text-[11px] font-bold px-2 py-0.5 rounded-full">Unë</span>}
+                      {isMe && <span className="bg-blue-100 dark:bg-accent/15 text-blue-600 dark:text-accent-soft text-[11px] font-bold px-2 py-0.5 rounded-full">Unë</span>}
                     </div>
                     <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 font-mono">@{u.username}</p>
                   </div>
@@ -145,7 +145,7 @@ export default function UsersPage() {
               </div>
 
               {/* Footer: registration date + quick toggle */}
-              <div className="pt-2.5 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between text-xs text-gray-400 dark:text-gray-500 font-medium">
+              <div className="pt-2.5 border-t border-gray-100 dark:border-gray-700 dark:border-t-0 dark:-mx-4 dark:-mb-4 dark:px-4 dark:pb-2.5 dark:bg-dk-side/60 dark:rounded-b-2xl flex items-center justify-between text-xs text-gray-400 dark:text-gray-500 font-medium">
                 <span>Regjistruar: {new Date(u.createdAt).toLocaleDateString('sq-AL')}</span>
                 {currentUser?.role === 'admin' && (
                   <button
@@ -155,7 +155,7 @@ export default function UsersPage() {
                       isMe
                         ? 'opacity-40 cursor-not-allowed bg-gray-100 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-400'
                         : isActive
-                          ? 'bg-blue-50 dark:bg-blue-900/30 border-blue-200 dark:border-blue-900/50 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/50'
+                          ? 'bg-blue-50 dark:bg-transparent border-blue-200 dark:border-transparent text-blue-600 dark:text-[#8b8e99] hover:bg-blue-100 dark:hover:bg-[#93000a]/25 dark:hover:text-[#ffb4ab]'
                           : 'bg-emerald-50 dark:bg-emerald-900/30 border-emerald-200 dark:border-emerald-900/50 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/50'
                     }`}
                     title={isMe ? 'Nuk mund të çaktivizosh vetveten' : isActive ? 'Çaktivizo përdoruesin' : 'Aktivizo përdoruesin'}
@@ -173,8 +173,8 @@ export default function UsersPage() {
       <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200/90 dark:border-gray-700 shadow-sm overflow-hidden">
         <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-4 border-b border-gray-100 dark:border-gray-700">
           <div className="flex items-center gap-2">
-            <span className="w-8 h-8 rounded-xl bg-sky-50 dark:bg-sky-900/30 flex items-center justify-center flex-shrink-0">
-              <Clock size={15} className="text-sky-600 dark:text-sky-400" />
+            <span className="w-8 h-8 rounded-xl bg-sky-50 dark:bg-dk-card flex items-center justify-center flex-shrink-0">
+              <Clock size={15} className="text-sky-600 dark:text-[#8b8e99]" />
             </span>
             <p className="text-sm font-bold text-gray-900 dark:text-white">Historia e aktivitetit</p>
             <span className="text-[11px] font-bold text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded-full">
