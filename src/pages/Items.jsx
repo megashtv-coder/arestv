@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Package, Plus, Search, Pencil, Trash2, X, ChevronUp, ChevronDown, Lock, Unlock } from 'lucide-react'
 import { useApp } from '../context/AppContext'
+import RowMenu from '../components/RowMenu'
 import { Modal, FormGroup, EmptyState, Pagination } from '../components/UI'
 import FormPageWrapper from '../components/FormPageWrapper'
 import { salesAccounts } from '../data/mockData'
@@ -467,20 +468,10 @@ export default function Items() {
 
                   {/* Col 3: Veprimet */}
                   <div className="relative flex-shrink-0 flex gap-1">
-                    <button
-                      className="w-9 h-9 flex items-center justify-center rounded-xl bg-gray-100 dark:bg-dk-high text-gray-500 dark:text-gray-400 hover:bg-blue-50 dark:hover:bg-dk-line hover:text-blue-600 dark:hover:text-gray-100 transition-colors"
-                      title="Edito"
-                      onClick={() => openEdit(item)}
-                    >
-                      <Pencil size={16}/>
-                    </button>
-                    <button
-                      className="w-9 h-9 flex items-center justify-center rounded-xl bg-blue-50 dark:bg-dk-high text-blue-600 dark:text-gray-400 hover:bg-blue-100 dark:hover:bg-[#93000a] dark:hover:text-[#ffdad6] transition-colors"
-                      title="Fshi"
-                      onClick={() => openDelete(item)}
-                    >
-                      <Trash2 size={16}/>
-                    </button>
+                    <RowMenu items={[
+                        { label: 'Edito', icon: Pencil, onClick: () => openEdit(item) },
+                        { label: 'Fshi', icon: Trash2, danger: true, onClick: () => openDelete(item) },
+                      ]} />
                   </div>
                 </div>
               </div>
@@ -619,21 +610,11 @@ export default function Items() {
 
                     {/* Veprimet */}
                     <td className="table-td">
-                      <div className="flex items-center justify-end gap-1.5">
-                        <button
-                          className="p-1.5 rounded-lg bg-gray-100 dark:bg-dk-high text-gray-500 dark:text-gray-400 hover:bg-blue-50 dark:hover:bg-dk-line hover:text-blue-600 dark:hover:text-gray-100 transition-colors"
-                          title="Edito"
-                          onClick={() => openEdit(item)}
-                        >
-                          <Pencil size={14} />
-                        </button>
-                        <button
-                          className="p-1.5 rounded-lg bg-blue-50 dark:bg-dk-high text-blue-600 dark:text-gray-400 hover:bg-blue-100 dark:hover:bg-[#93000a] dark:hover:text-[#ffdad6] transition-colors"
-                          title="Fshi"
-                          onClick={() => openDelete(item)}
-                        >
-                          <Trash2 size={14} />
-                        </button>
+                      <div className="flex items-center justify-end">
+                        <RowMenu items={[
+                        { label: 'Edito', icon: Pencil, onClick: () => openEdit(item) },
+                        { label: 'Fshi', icon: Trash2, danger: true, onClick: () => openDelete(item) },
+                      ]} />
                       </div>
                     </td>
                   </tr>

@@ -6,6 +6,7 @@ import {
   Trash2,
 } from 'lucide-react'
 import { useApp } from '../context/AppContext'
+import RowMenu from '../components/RowMenu'
 import { Avatar, Modal, FormGroup, EmptyState } from '../components/UI'
 import FormPageWrapper from '../components/FormPageWrapper'
 import CustomerDetailsModal from './CustomerDetailsModal'
@@ -426,22 +427,11 @@ const CustomerCard = memo(function CustomerCard({ c, onEdit, fmt, isLatePayer, o
               <Send size={14}/>
             </a>
           )}
-          {/* Edit */}
-          <button
-            className="p-1.5 rounded-lg bg-gray-100 text-gray-500 hover:bg-blue-50 hover:text-blue-600 border border-transparent hover:border-blue-200/50 transition-colors"
-            onClick={e => { e.stopPropagation(); onEdit(c) }}
-            title="Edito"
-          >
-            <Pencil size={14}/>
-          </button>
-          {/* Delete */}
-          <button
-            className="p-1.5 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 border border-blue-200/50 transition-colors"
-            onClick={e => { e.stopPropagation(); onDelete(c.id) }}
-            title="Fshi klientin"
-          >
-            <Trash2 size={14}/>
-          </button>
+          {/* Edito / Fshi */}
+          <RowMenu items={[
+            { label: 'Edito', icon: Pencil, onClick: () => onEdit(c) },
+            { label: 'Fshi', icon: Trash2, danger: true, onClick: () => onDelete(c.id) },
+          ]} />
         </div>
       </div>
     </div>
@@ -512,27 +502,11 @@ const CustomerRow = memo(function CustomerRow({ c, onEdit, fmt, isLatePayer, onD
       <td className="table-td text-right font-mono font-bold text-blue-600 dark:text-gray-300">{fmt(c.total)}</td>
       <td className="table-td text-right font-mono font-bold text-gray-800 dark:text-gray-200">{c.invoices}</td>
       <td className="table-td text-right" onClick={e => e.stopPropagation()}>
-        <div className="flex items-center justify-end gap-1.5">
-          <button
-            onClick={() => onEdit(c)}
-            className="px-2.5 py-1.5 rounded-lg bg-gray-100 dark:bg-dk-high text-gray-600 dark:text-gray-200 font-bold text-[11px] hover:bg-gray-200 dark:hover:bg-dk-line transition-colors"
-          >
-            Detajet
-          </button>
-          <button
-            onClick={() => onEdit(c)}
-            className="p-1.5 rounded-lg bg-gray-100 dark:bg-dk-card text-gray-500 dark:text-gray-400 hover:bg-blue-50 dark:hover:bg-dk-high hover:text-blue-600 dark:hover:text-gray-100 transition-colors"
-            title="Edito"
-          >
-            <Pencil size={13}/>
-          </button>
-          <button
-            onClick={() => onDelete(c.id)}
-            className="p-1.5 rounded-lg bg-blue-50 dark:bg-[#93000a]/30 text-blue-600 dark:text-[#ffb4ab] hover:bg-blue-100 dark:hover:bg-[#93000a]/50 transition-colors"
-            title="Fshi klientin"
-          >
-            <Trash2 size={13}/>
-          </button>
+        <div className="flex items-center justify-end">
+          <RowMenu items={[
+            { label: 'Edito', icon: Pencil, onClick: () => onEdit(c) },
+            { label: 'Fshi', icon: Trash2, danger: true, onClick: () => onDelete(c.id) },
+          ]} />
         </div>
       </td>
     </tr>
