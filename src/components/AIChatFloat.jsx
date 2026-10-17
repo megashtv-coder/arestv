@@ -544,7 +544,7 @@ export default function AIChatFloat() {
 
       {/* Chat Panel */}
       {isOpen && (
-        <div className="fixed bottom-6 right-6 w-96 h-[600px] bg-white dark:bg-gray-800 rounded-lg shadow-2xl flex flex-col z-50 border border-gray-200 dark:border-gray-700">
+        <div className="fixed bottom-6 right-6 w-96 h-[600px] bg-white dark:bg-dk-low rounded-lg dark:rounded-2xl shadow-2xl flex flex-col z-50 border border-gray-200 dark:border-white/[0.08] rep">
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
             <div className="flex items-center gap-2">

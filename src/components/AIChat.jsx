@@ -259,9 +259,9 @@ export default function AIChat() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-4 sm:p-6 space-y-5">
+    <div className="max-w-6xl dark:max-w-none mx-auto p-4 sm:p-6 space-y-5 rep">
       {/* Banner */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600 via-blue-500 to-amber-500 p-6 text-white shadow-lg shadow-blue-500/15">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600 via-blue-500 to-amber-500 p-6 text-white shadow-lg shadow-blue-500/15 dark:from-[#1e3a8a] dark:via-[#2a55c0] dark:to-[#5b3aa8] dark:shadow-none">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div className="flex items-center gap-3.5">
             <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center shrink-0 border border-white/30">
@@ -309,8 +309,8 @@ export default function AIChat() {
           </div>
 
           {/* Business context */}
-          <div className="bg-gray-900 text-white rounded-2xl p-4 space-y-2">
-            <div className="flex items-center justify-between border-b border-gray-800 pb-2 mb-1">
+          <div className="bg-gray-900 text-white rounded-2xl p-4 space-y-2 dark:bg-dk-low dark:border dark:border-white/[0.07]">
+            <div className="flex items-center justify-between border-b border-gray-800 dark:border-white/[0.06] pb-2 mb-1">
               <span className="text-xs font-bold text-gray-300 flex items-center gap-1.5">
                 <BarChart3 size={14} className="text-blue-400" />
                 Konteksti i të Dhënave
@@ -334,7 +334,7 @@ export default function AIChat() {
 
         {/* Chat */}
         <div className="lg:col-span-3 flex flex-col h-[620px] bg-white dark:bg-gray-800 rounded-2xl border border-gray-200/90 dark:border-gray-700 shadow-sm overflow-hidden">
-          <div className="px-5 py-3.5 border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/50 flex items-center justify-between">
+          <div className="px-5 py-3.5 border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-dk-side flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-xl bg-blue-500 text-white flex items-center justify-center">
                 <Bot size={16} />
