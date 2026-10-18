@@ -104,7 +104,7 @@
 
 /* Dark mode — vetëm klasa custom, jo utility-t e Tailwind si selektorë */
 .dark body { @apply bg-dk-bg text-gray-100; }
-.dark .card { @apply bg-gray-800 border-gray-700; }
+.dark .card { background-color: theme('colors.dk.low'); border-color: rgb(255 255 255 / 0.07); }
 .dark .btn-outline { background-color: theme('colors.dk.high'); color: #dfe2eb; border-color: rgb(255 255 255 / 0.08); }
 .dark .btn-outline:hover { background-color: theme('colors.dk.line'); }
 .dark .btn-primary { background-color: theme('colors.accent.DEFAULT'); color: theme('colors.accent.on'); box-shadow: 0 0 18px -4px theme('colors.accent.DEFAULT / 45%'); }
@@ -118,7 +118,9 @@
 /* Detajet e klientit: fusha të errëta (klasat e vjetra kishin dark:bg-gray-700 dhe dark:bg-gray-800 njëkohësisht) */
 .dark .cdm input, .dark .cdm select, .dark .cdm textarea { background-color: theme('colors.dk.card') !important; border-color: rgb(255 255 255 / 0.1) !important; color: #e5e7eb; color-scheme: dark; }
 .dark .form-control { @apply bg-gray-800 border-gray-600 text-gray-200; }
-.dark .stat-card { @apply bg-gray-800 border-gray-700; }
+.dark .stat-card { background-color: theme('colors.dk.low'); border-color: rgb(255 255 255 / 0.07); }
+/* Skeleton-i i ngarkimit (shfaqet shkurt kur hapet një faqe): pa shirita të bardhë në dark */
+.dark .skeleton { background-image: linear-gradient(90deg, theme('colors.dk.card') 0%, theme('colors.dk.high') 50%, theme('colors.dk.card') 100%); }
 .dark .sidebar-item { @apply text-gray-400; }
 .dark .sidebar-item:hover { @apply bg-gray-700 text-gray-200; }
 .dark .table-td { @apply border-gray-700 text-gray-300; }
