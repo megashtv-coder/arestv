@@ -8,6 +8,7 @@ import { useState, useEffect, useRef, useMemo } from 'react'
 import ColumnManagerButton from './ColumnManagerButton'
 import { INVOICE_TABLE_COLUMNS } from '../constants/invoiceColumns'
 import QuickAddMenu from './QuickAddMenu'
+import DarkSelect from './DarkSelect'
 import ProfileMenu from './ProfileMenu'
 import { supabase } from '../lib/supabase'
 
@@ -173,8 +174,8 @@ export default function Header() {
 
       {/* Filtri i periudhës së Dashboard-it — shfaqet vetëm kur page === 'dashboard' */}
       {page === 'dashboard' && (
-        <div className="flex items-center gap-1 sm:gap-1.5 flex-shrink-0 pr-1 sm:pr-2 mr-0.5 border-r border-blue-200/70 dark:border-gray-700">
-          <div className="flex items-center gap-1.5 bg-white dark:bg-dk-low border border-gray-200 dark:border-transparent rounded-lg px-2 py-1">
+        <div className="flex items-center gap-1 sm:gap-1.5 flex-shrink-0 pr-1 sm:pr-2 mr-0.5 border-r border-blue-200/70 dark:border-white/10">
+          <div className="dark:hidden flex items-center gap-1.5 bg-white dark:bg-dk-low border border-gray-200 dark:border-transparent rounded-lg px-2 py-1">
             <CalendarDays size={13} className="hidden sm:block text-gray-400 dark:text-gray-500 flex-shrink-0" />
             <select
               value={dashboardMonth ?? 'all'}
@@ -185,7 +186,13 @@ export default function Header() {
               {MONTH_FULL.map((m, i) => <option key={i} value={i}>{m}</option>)}
             </select>
           </div>
-          <div className="flex items-center gap-1.5 bg-white dark:bg-dk-low border border-gray-200 dark:border-transparent rounded-lg px-2 py-1">
+          <DarkSelect
+            icon={CalendarDays}
+            value={dashboardMonth ?? 'all'}
+            onChange={v => setDashboardMonth(v === 'all' ? null : parseInt(v))}
+            options={[{ value: 'all', label: 'Krejt vitin' }, ...MONTH_FULL.map((m, i) => ({ value: String(i), label: m }))]}
+          />
+          <div className="dark:hidden flex items-center gap-1.5 bg-white dark:bg-dk-low border border-gray-200 dark:border-transparent rounded-lg px-2 py-1">
             <select
               value={dashboardYear}
               onChange={e => setDashboardYear(e.target.value)}
@@ -194,10 +201,15 @@ export default function Header() {
               {dashboardAvailableYears.map(y => <option key={y} value={y}>{y}</option>)}
             </select>
           </div>
+          <DarkSelect
+            value={dashboardYear}
+            onChange={v => setDashboardYear(v)}
+            options={dashboardAvailableYears.map(y => ({ value: String(y), label: String(y) }))}
+          />
           <button
             onClick={() => setDashboardHidden(h => !h)}
             title={dashboardHidden ? 'Shfaq të dhënat' : 'Fshih të dhënat'}
-            className="icon-btn p-1.5 sm:p-2"
+            className="icon-btn p-1.5 sm:p-2 dark:w-9 dark:h-9 dark:rounded-lg dark:!bg-dk-low dark:hover:!bg-dk-card dark:!text-gray-300 dark:hover:!text-white"
           >
             {dashboardHidden ? <EyeOff size={16} /> : <Eye size={16} />}
           </button>
