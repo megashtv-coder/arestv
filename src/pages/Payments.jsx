@@ -5,6 +5,7 @@ import {
 } from 'lucide-react'
 import { createPortal } from 'react-dom'
 import { useApp } from '../context/AppContext'
+import { DualSelect } from '../components/DarkSelect'
 import { formatDate } from '../utils/dateFormat'
 import { EmptyState, Pagination } from '../components/UI'
 import PaymentsSubTabs from '../components/PaymentsSubTabs'
@@ -642,16 +643,16 @@ export default function Payments() {
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          <select
+          <DualSelect
             className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 dark:border-transparent bg-gray-50 dark:bg-dk-card text-gray-700 dark:text-gray-300 font-semibold outline-none focus:border-blue-400 cursor-pointer"
             value={monthFilt}
             onChange={e => { setMonthFilt(e.target.value); setPg(1) }}
           >
             <option value="all">Të gjitha muajt</option>
             {months.map(m => <option key={m} value={m}>{m}</option>)}
-          </select>
+          </DualSelect>
 
-          <select
+          <DualSelect
             className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 dark:border-transparent bg-gray-50 dark:bg-dk-card text-gray-700 dark:text-gray-300 font-semibold outline-none focus:border-blue-400 cursor-pointer"
             value={partnerFilt}
             onChange={e => { setPartner(e.target.value); setPg(1) }}
@@ -659,7 +660,7 @@ export default function Payments() {
             <option value="all">Të dy partnerët</option>
             <option value="Enndy">Tek Enndy</option>
             <option value="Belti">Tek Belti</option>
-          </select>
+          </DualSelect>
 
           <MethodFilterDropdown
             methods={methods}
@@ -667,7 +668,7 @@ export default function Payments() {
             onChange={updater => { setMethod(updater); setPg(1) }}
           />
 
-          <select
+          <DualSelect
             className="hidden sm:block text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 dark:border-transparent bg-gray-50 dark:bg-dk-card text-gray-700 dark:text-gray-300 font-semibold outline-none focus:border-blue-400 cursor-pointer"
             value={perPage}
             onChange={e => { setPerPage(Number(e.target.value)); setPg(1) }}
@@ -677,7 +678,7 @@ export default function Payments() {
             <option value={100}>100 / faqe</option>
             <option value={200}>200 / faqe</option>
             <option value={300}>300 / faqe</option>
-          </select>
+          </DualSelect>
 
           <span className="text-xs font-bold text-gray-400 font-mono px-2 dark:bg-dk-card dark:rounded-lg dark:py-1.5 dark:px-2.5">
             {filtered.length}

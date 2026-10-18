@@ -9,6 +9,7 @@ import {
   ResponsiveContainer, LineChart, Line, ComposedChart, Cell,
 } from 'recharts'
 import { useApp } from '../context/AppContext'
+import { DualSelect } from '../components/DarkSelect'
 import { useFeatures } from '../features/useFeatures'
 import { formatDate } from '../utils/dateFormat'
 import { feeCountedViaNet, FEE_RULE_START } from '../utils/feeExpenses'
@@ -306,20 +307,20 @@ function BarazimiTab({ payments, expenses, fmt }) {
             </button>
           ))}
         </div>
-        <select value={year} onChange={e => setYear(+e.target.value)}
+        <DualSelect value={year} onChange={e => setYear(+e.target.value)}
           className="text-xs px-3 py-1.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 text-gray-900 dark:text-white font-bold outline-none focus:border-blue-400 cursor-pointer">
           {YEARS.map(y => <option key={y}>{y}</option>)}
-        </select>
+        </DualSelect>
         {mode === 'month' ? (
-          <select value={month} onChange={e => setMonth(+e.target.value)}
+          <DualSelect value={month} onChange={e => setMonth(+e.target.value)}
             className="text-xs px-3 py-1.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 text-gray-900 dark:text-white font-bold outline-none focus:border-blue-400 cursor-pointer">
             {MONTHS_FULL.map((m, i) => <option key={i+1} value={i+1}>{m}</option>)}
-          </select>
+          </DualSelect>
         ) : (
-          <select value={quarter} onChange={e => setQuarter(+e.target.value)}
+          <DualSelect value={quarter} onChange={e => setQuarter(+e.target.value)}
             className="text-xs px-3 py-1.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 text-gray-900 dark:text-white font-bold outline-none focus:border-blue-400 cursor-pointer">
             {QUARTERS.map((q, i) => <option key={i+1} value={i+1}>{q}</option>)}
-          </select>
+          </DualSelect>
         )}
         <span className="text-xs font-mono text-gray-400 dark:text-gray-500 ml-auto">{from} → {to}</span>
       </div>
@@ -659,10 +660,10 @@ function KlientetTab({ invoices }) {
               {growth >= 0 ? '+' : ''}{growth}% vs {prevYear}
             </span>
           )}
-          <select value={chartYear} onChange={e => setChartYear(+e.target.value)}
+          <DualSelect value={chartYear} onChange={e => setChartYear(+e.target.value)}
             className="text-xs px-3 py-1.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 text-gray-900 dark:text-white font-bold outline-none focus:border-blue-400 cursor-pointer">
             {YEARS.map(y => <option key={y}>{y}</option>)}
-          </select>
+          </DualSelect>
         </div>
       </div>
 
@@ -1161,18 +1162,18 @@ function ReferencatPagesaveTab({ payments }) {
     <div className="space-y-4">
       {/* Filter row */}
       <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200/90 dark:border-gray-700 shadow-sm p-4 flex flex-wrap items-center gap-3">
-        <select value={filterMonth} onChange={e => setFilterMonth(e.target.value)}
+        <DualSelect value={filterMonth} onChange={e => setFilterMonth(e.target.value)}
           className="text-xs px-3 py-1.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 text-gray-900 dark:text-white font-bold outline-none focus:border-blue-400 cursor-pointer">
           <option value="all">Të gjithë muajt</option>
           {MONTHS_FULL.map((m, i) => (
             <option key={m} value={String(i + 1).padStart(2, '0')}>{m}</option>
           ))}
-        </select>
-        <select value={filterYear} onChange={e => setFilterYear(e.target.value)}
+        </DualSelect>
+        <DualSelect value={filterYear} onChange={e => setFilterYear(e.target.value)}
           className="text-xs px-3 py-1.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 text-gray-900 dark:text-white font-bold outline-none focus:border-blue-400 cursor-pointer">
           <option value="all">Të gjitha vitet</option>
           {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
-        </select>
+        </DualSelect>
         <span className="text-[11px] text-gray-400 dark:text-gray-500 sm:ml-auto">
           Rreshtat = emrat e pranuesve · Kolonat = format e pagesës
         </span>

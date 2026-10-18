@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from 'react'
 import { Search, Scale, ExternalLink } from 'lucide-react'
 import { useApp } from '../context/AppContext'
+import { DualSelect } from '../components/DarkSelect'
 import { formatDate } from '../utils/dateFormat'
 import { EmptyState } from '../components/UI'
 import PaymentsSubTabs from '../components/PaymentsSubTabs'
@@ -247,14 +248,14 @@ export default function Settlement() {
             onChange={e => setSearch(e.target.value)}
           />
         </div>
-        <select
+        <DualSelect
           className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 text-gray-700 dark:text-gray-300 font-semibold outline-none focus:border-blue-400 cursor-pointer"
           value={monthFilt}
           onChange={e => setMonthFilt(e.target.value)}
         >
           <option value="all">Të gjitha muajt</option>
           {months.map(m => <option key={m} value={m}>{m}</option>)}
-        </select>
+        </DualSelect>
       </div>
 
       {/* Tabela e pagesave */}

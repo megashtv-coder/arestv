@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react'
 import { Search, Plus, Copy, Check, Pencil, Trash2, X, LayoutGrid, List as ListIcon, Lock, Unlock, UserPlus } from 'lucide-react'
 import { useApp } from '../context/AppContext'
+import { DualSelect } from '../components/DarkSelect'
 import { Modal, FormGroup, ModalTitle } from '../components/UI'
 import PaymentsSubTabs from '../components/PaymentsSubTabs'
 import { trackingMethods } from '../data/mockData'
@@ -218,16 +219,16 @@ Shteti: ${n.country}`)
             placeholder="Kërko emrin, qytetin ose shtetin..." value={search} onChange={e => setSearch(e.target.value)} />
           {search && <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"><X size={13} /></button>}
         </div>
-        <select className="px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-xs font-semibold text-gray-700 dark:text-gray-200" value={month} onChange={e => setMonth(e.target.value)}>
+        <DualSelect className="px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-xs font-semibold text-gray-700 dark:text-gray-200" value={month} onChange={e => setMonth(e.target.value)}>
           {MONTHS.map((m, i) => <option key={m} value={String(i + 1).padStart(2, '0')}>{m}</option>)}
-        </select>
-        <select className="px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-xs font-semibold text-gray-700 dark:text-gray-200" value={year} onChange={e => setYear(e.target.value)}>
+        </DualSelect>
+        <DualSelect className="px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-xs font-semibold text-gray-700 dark:text-gray-200" value={year} onChange={e => setYear(e.target.value)}>
           {years.map(y => <option key={y} value={y}>{y}</option>)}
-        </select>
-        <select className="px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-xs font-semibold text-gray-700 dark:text-gray-200" value={method} onChange={e => setMethod(e.target.value)}>
+        </DualSelect>
+        <DualSelect className="px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-xs font-semibold text-gray-700 dark:text-gray-200" value={method} onChange={e => setMethod(e.target.value)}>
           <option value="all">Të gjitha metodat</option>
           {trackingMethods.map(m => <option key={m} value={m}>{m}</option>)}
-        </select>
+        </DualSelect>
         <div className="inline-flex rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden bg-white dark:bg-gray-900">
           <button onClick={() => setViewP('grid')} className={`px-2.5 py-2 ${view === 'grid' ? 'bg-blue-600 text-white' : 'text-gray-500'}`} title="Kartela"><LayoutGrid size={14} /></button>
           <button onClick={() => setViewP('list')} className={`px-2.5 py-2 ${view === 'list' ? 'bg-blue-600 text-white' : 'text-gray-500'}`} title="Tabelë"><ListIcon size={14} /></button>

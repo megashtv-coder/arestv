@@ -6,6 +6,7 @@ import {
   Trash2,
 } from 'lucide-react'
 import { useApp } from '../context/AppContext'
+import { DualSelect } from '../components/DarkSelect'
 import RowMenu from '../components/RowMenu'
 import { Avatar, Modal, FormGroup, EmptyState } from '../components/UI'
 import FormPageWrapper from '../components/FormPageWrapper'
@@ -783,30 +784,30 @@ export default function Customers() {
 
         {/* Right: filters + sort + count */}
         <div className="flex flex-wrap items-center gap-2">
-          <select
+          <DualSelect
             className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 dark:border-transparent bg-gray-50 dark:bg-dk-card text-gray-700 dark:text-gray-300 font-semibold outline-none focus:border-blue-400 cursor-pointer"
             value={typeFilt} onChange={e => setTypeFilt(e.target.value)}
           >
             <option value="all">Të gjitha llojet</option>
             <option value="individual">Individualë</option>
             <option value="reseller">Resellers</option>
-          </select>
+          </DualSelect>
 
-          <select
+          <DualSelect
             className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 dark:border-transparent bg-gray-50 dark:bg-dk-card text-gray-700 dark:text-gray-300 font-semibold outline-none focus:border-blue-400 cursor-pointer"
             value={countryFilt} onChange={e => setCountryFilt(e.target.value)}
           >
             <option value="all">Të gjitha shtetet</option>
             {usedCountries.sort().map(c => <option key={c} value={c}>{c}</option>)}
-          </select>
+          </DualSelect>
 
-          <select
+          <DualSelect
             className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 dark:border-transparent bg-gray-50 dark:bg-dk-card text-gray-700 dark:text-gray-300 font-semibold outline-none focus:border-blue-400 cursor-pointer"
             value={sortBy} onChange={e => setSortBy(e.target.value)}
           >
             <option value="default">Renditja — Parazgjedhur</option>
             <option value="alphabetic">A — Z (Alfabetik)</option>
-          </select>
+          </DualSelect>
 
           <span className="text-xs font-bold text-gray-400 dark:text-gray-200 font-mono px-2 dark:bg-dk-card dark:rounded-lg dark:py-1.5 dark:px-3">
             <span className="hidden dark:inline text-[11px] font-normal font-sans text-[#8b8e99] mr-1.5">Gjithsej:</span>

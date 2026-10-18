@@ -1,9 +1,13 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, Children } from 'react'
 import { ChevronDown, Check } from 'lucide-react'
 
 /* Zgjedhës me menu të personalizuar — shfaqet VETËM në dark mode (në light mbetet <select> i zakonshëm
    që e vendos faqja pranë tij). options: [{ value, label }]; value krahasohet si tekst. */
-export default function DarkSelect({ value, onChange, options, icon: Icon, hideIconOnSmall = true, alignRight = false }) {
+export default function DarkSelect({
+  value, onChange, options, icon: Icon,
+  hideIconOnSmall = true, alignRight = false,
+  compact = false, wide = false, hideOnMobile = false,
+}) {
   const [open, setOpen] = useState(false)
   const ref = useRef(null)
 
@@ -23,14 +27,14 @@ export default function DarkSelect({ value, onChange, options, icon: Icon, hideI
   const cur = options.find(o => same(o.value, value)) || options[0]
 
   return (
-    <div ref={ref} className="hidden dark:block relative flex-shrink-0">
+    <div ref={ref} className={`hidden dark:block ${hideOnMobile ? 'dark:max-sm:hidden ' : ''}relative flex-shrink-0 ${wide ? 'flex-1 min-w-0' : ''}`}>
       <button
         type="button"
         onClick={() => setOpen(o => !o)}
-        className="h-9 px-2.5 rounded-lg bg-dk-low hover:bg-dk-card text-gray-300 hover:text-white text-xs font-medium flex items-center gap-1.5 transition-colors"
+        className={`${compact ? 'h-8' : 'h-9'} ${wide ? 'w-full justify-between ' : ''}px-2.5 rounded-lg bg-dk-low hover:bg-dk-card text-gray-300 hover:text-white text-xs font-medium flex items-center gap-1.5 transition-colors`}
       >
         {Icon && <Icon size={15} className={`${hideIconOnSmall ? 'hidden sm:block ' : ''}text-[#8b8e99] flex-shrink-0`} />}
-        <span className="whitespace-nowrap">{cur?.label}</span>
+        <span className="whitespace-nowrap truncate">{cur?.label}</span>
         <ChevronDown size={15} className="text-[#8b8e99] flex-shrink-0" />
       </button>
       {open && (
@@ -53,5 +57,32 @@ export default function DarkSelect({ value, onChange, options, icon: Icon, hideI
         </div>
       )}
     </div>
+  )
+}
+
+/* Zëvendësim për <select> të filtrave: light mode = <select> i zakonshëm, dark mode = menu e re.
+   Përdoret njësoj si <select> (value, onChange(e) me e.target.value, <option> si fëmijë). */
+export function DualSelect({ children, className = '', value, onChange, ...rest }) {
+  const options = []
+  Children.forEach(children, ch => {
+    if (!ch || ch.type !== 'option') return
+    const c = ch.props.children
+    const label = Array.isArray(c) ? c.join('') : String(c ?? '')
+    options.push({ value: ch.props.value ?? label, label })
+  })
+  const wide = /\b(flex-1|w-full)\b/.test(className)
+  const hideOnMobile = /\bhidden\b/.test(className) && /\bsm:block\b/.test(className)
+  return (
+    <>
+      <select {...rest} value={value} onChange={onChange} className={`${className} dark:hidden`}>{children}</select>
+      <DarkSelect
+        value={value}
+        onChange={v => onChange && onChange({ target: { value: v } })}
+        options={options}
+        compact
+        wide={wide}
+        hideOnMobile={hideOnMobile}
+      />
+    </>
   )
 }

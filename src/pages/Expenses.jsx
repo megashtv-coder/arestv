@@ -4,6 +4,7 @@ import {
   ChevronLeft, ChevronRight, ChevronDown, Users, Wallet,
   Download, CheckCircle2, Pencil } from 'lucide-react'
 import { useApp } from '../context/AppContext'
+import { DualSelect } from '../components/DarkSelect'
 import RowMenu from '../components/RowMenu'
 import { formatDate } from '../utils/dateFormat'
 import { useFeatures } from '../features/useFeatures'
@@ -710,45 +711,45 @@ export default function ExpensesPage() {
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          <select className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 dark:border-transparent bg-gray-50 dark:bg-dk-card text-gray-700 dark:text-gray-300 font-semibold outline-none focus:border-blue-400 cursor-pointer"
+          <DualSelect className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 dark:border-transparent bg-gray-50 dark:bg-dk-card text-gray-700 dark:text-gray-300 font-semibold outline-none focus:border-blue-400 cursor-pointer"
             value={yearFilt} onChange={e => { setYearFilt(e.target.value); setPg(1) }}>
             <option value="all">Të gjitha vitet</option>
             {years.map(y => <option key={y} value={y}>{y}</option>)}
-          </select>
+          </DualSelect>
 
-          <select className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 dark:border-transparent bg-gray-50 dark:bg-dk-card text-gray-700 dark:text-gray-300 font-semibold outline-none focus:border-blue-400 cursor-pointer"
+          <DualSelect className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 dark:border-transparent bg-gray-50 dark:bg-dk-card text-gray-700 dark:text-gray-300 font-semibold outline-none focus:border-blue-400 cursor-pointer"
             value={monthFilt} onChange={e => { setMonthFilt(e.target.value); setPg(1) }}>
             <option value="all">Të gjitha muajt</option>
             {MONTHS.map(m => <option key={m.v} value={m.v}>{m.l}</option>)}
-          </select>
+          </DualSelect>
 
-          <select className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 dark:border-transparent bg-gray-50 dark:bg-dk-card text-gray-700 dark:text-gray-300 font-semibold outline-none focus:border-blue-400 cursor-pointer"
+          <DualSelect className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 dark:border-transparent bg-gray-50 dark:bg-dk-card text-gray-700 dark:text-gray-300 font-semibold outline-none focus:border-blue-400 cursor-pointer"
             value={partnerFilt} onChange={e => { setPartner(e.target.value); setPg(1) }}>
             <option value="all">Të dy partnerët</option>
             <option value="Enndy">Enndy</option>
             <option value="Belti">Belti</option>
-          </select>
+          </DualSelect>
 
-          <select className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 dark:border-transparent bg-gray-50 dark:bg-dk-card text-gray-700 dark:text-gray-300 font-semibold outline-none focus:border-blue-400 cursor-pointer max-w-[200px]"
+          <DualSelect className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 dark:border-transparent bg-gray-50 dark:bg-dk-card text-gray-700 dark:text-gray-300 font-semibold outline-none focus:border-blue-400 cursor-pointer max-w-[200px]"
             value={typeFilt} onChange={e => { setType(e.target.value); setPg(1) }}>
             <option value="all">Të gjitha llojet</option>
             {usedTypes.map(t => <option key={t} value={t}>{t}</option>)}
-          </select>
+          </DualSelect>
 
-          <select className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 dark:border-transparent bg-gray-50 dark:bg-dk-card text-gray-700 dark:text-gray-300 font-semibold outline-none focus:border-blue-400 cursor-pointer"
+          <DualSelect className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 dark:border-transparent bg-gray-50 dark:bg-dk-card text-gray-700 dark:text-gray-300 font-semibold outline-none focus:border-blue-400 cursor-pointer"
             value={recurFilt} onChange={e => { setRecurFilt(e.target.value); setPg(1) }}>
             <option value="all">Të gjitha</option>
             <option value="recurring">Vetëm të rregullta</option>
             <option value="once">Vetëm njëherësh</option>
-          </select>
+          </DualSelect>
 
-          <select className="hidden sm:block text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 dark:border-transparent bg-gray-50 dark:bg-dk-card text-gray-700 dark:text-gray-300 font-semibold outline-none focus:border-blue-400 cursor-pointer"
+          <DualSelect className="hidden sm:block text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 dark:border-transparent bg-gray-50 dark:bg-dk-card text-gray-700 dark:text-gray-300 font-semibold outline-none focus:border-blue-400 cursor-pointer"
             value={perPage} onChange={e => { setPerPage(Number(e.target.value)); setPg(1) }}>
             <option value={25}>25 / faqe</option>
             <option value={50}>50 / faqe</option>
             <option value={100}>100 / faqe</option>
             <option value={200}>200 / faqe</option>
-          </select>
+          </DualSelect>
 
           <span className="text-xs font-bold text-gray-400 font-mono px-2 flex items-center gap-1 dark:text-gray-300">
             {filtered.length}
