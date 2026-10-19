@@ -1494,12 +1494,12 @@ export default function Invoices() {
               <button
                 onClick={() => setHideAmounts(h => !h)}
                 title={hideAmounts ? 'Shfaq shumat' : 'Fshih shumat'}
-                className="w-7 h-7 flex items-center justify-center rounded-lg bg-gray-100 text-gray-500 hover:text-blue-600 transition-colors flex-shrink-0 dark:bg-dk-card dark:text-gray-400 dark:hover:text-accent-soft"
+                className="w-7 h-7 flex items-center justify-center rounded-lg bg-gray-100 text-gray-500 hover:text-blue-600 transition-colors flex-shrink-0 dark:bg-dk-card dark:text-gray-400 dark:hover:text-accent-soft dark:w-8 dark:h-8"
               >
                 {hideAmounts ? <EyeOff size={13}/> : <Eye size={13}/>}
               </button>
               <button
-                className="flex items-center gap-1 px-3 py-1.5 text-xs font-bold rounded-xl bg-blue-500 hover:bg-blue-600 text-white shadow-sm transition-colors"
+                className="flex items-center gap-1 px-3 py-1.5 text-xs font-bold rounded-xl bg-blue-500 hover:bg-blue-600 text-white shadow-sm transition-colors dark:h-8 dark:px-2.5 dark:py-0 dark:rounded-lg dark:font-semibold dark:shadow-[0_0_14px_-4px_theme(colors.accent.DEFAULT)]"
                 onClick={() => navigateWithClearPreview('invoices:create')}
               >
                 <Plus size={12}/> Faturë
