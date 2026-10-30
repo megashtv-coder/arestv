@@ -41,6 +41,10 @@ const formatIban = iban => (iban || '').replace(/\s+/g, '').replace(/(.{4})/g, '
 // (email, Word, Docs...); në aplikacione me tekst të thjeshtë (WhatsApp, SMS) ngjitet si tekst normal.
 const BANK_WARNING = 'Në përshkrimin e pagesës, në asnjë mënyrë mos shkruani ❌ pagesë për IPTV, kanale ose diçka të ngjashme ❌.'
 
+// Pjesa e fundit e mesazhit (pas paralajmërimit): kërkesa për njoftim dhe falënderimi
+const BANK_NOTE = 'Ju lutem më njoftoni kurdo që kryeni pagesën dhe se nga cili emër është bërë transferi.'
+const BANK_THANKS = 'Faleminderit!'
+
 const bankMessageLines = a => [
   'Të dhënat e llogarisë:',
   '',
@@ -53,12 +57,12 @@ const bankMessageLines = a => [
   '',
 ].filter(line => line !== null)
 
-const bankCopyText = a => [...bankMessageLines(a), BANK_WARNING].join('\n')
+const bankCopyText = a => [...bankMessageLines(a), BANK_WARNING, '', BANK_NOTE, '', BANK_THANKS].join('\n')
 
 const escapeHtml = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
 const bankCopyHtml = a =>
-  `<div>${bankMessageLines(a).map(escapeHtml).join('<br>')}<br><b style="color:#dc2626">${escapeHtml(BANK_WARNING)}</b></div>`
+  `<div>${bankMessageLines(a).map(escapeHtml).join('<br>')}<br><b style="color:#dc2626">${escapeHtml(BANK_WARNING)}</b><br><br>${escapeHtml(BANK_NOTE)}<br><br>${escapeHtml(BANK_THANKS)}</div>`
 
 // Kopjon tekst të thjeshtë + HTML bashkë; nëse shfletuesi s'e lejon, bie te teksti i thjeshtë
 async function copyRich(plain, html) {
