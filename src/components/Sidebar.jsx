@@ -13,9 +13,20 @@ import { supabase } from '../lib/supabase'
 export default function Sidebar() {
   const {
     page, navigate, sidebarOpen, setSidebarOpen,
-    invoices, sidebarCollapsed, setSidebarCollapsed, currentUser, logout,
+    invoices, sidebarCollapsed, setSidebarCollapsed, currentUser, logout, darkMode,
   } = useApp()
   const askLogout = useConfirmLogout()
+
+  // Light mode (desktop): menu e ngushtë me ikona vetëm ("rail"). Në dark mode dhe në telefon mbetet siç ishte.
+  const [isLg, setIsLg] = useState(() => typeof window !== 'undefined' && window.matchMedia('(min-width: 1024px)').matches)
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 1024px)')
+    const h = e => setIsLg(e.matches)
+    mq.addEventListener('change', h)
+    return () => mq.removeEventListener('change', h)
+  }, [])
+  const rail = !darkMode && isLg
+  const collapsed = sidebarCollapsed || rail
 
   const { canAccessSuppliers } = useFeatures()
   const [tasks, setTasks] = useState([])
@@ -79,7 +90,7 @@ export default function Sidebar() {
     { id: 'settings', icon: Settings, label: 'Cilësimet' },
   ]
 
-  const w = sidebarCollapsed ? 'w-[64px]' : 'w-60'
+  const w = rail ? 'w-20' : collapsed ? 'w-[64px]' : 'w-60'
 
   /* ── Artikulli i menusë me "kthesën" e harkuar rreth vetes kur është aktiv —
      kthesa përdor ngjyrën reale të përmbajtjes (bg-gray-50/gray-900, njësoj si
@@ -90,35 +101,37 @@ export default function Sidebar() {
       // -mr-2 anulon padding-un e djathtë të <nav> (px-2), që artikulli/kthesa
       // të arrijë saktësisht te buza e sidebar-it — përndryshe mbetej një
       // shirit i hollë me ngjyrën e sidebar-it të pazëvendësuar në cep.
-      <div key={id} className={`relative ${!sidebarCollapsed ? '-mr-2 dark:mr-0' : ''}`}>
-        {isActive && !sidebarCollapsed && (
+      <div key={id} className={`relative ${!collapsed ? '-mr-2 dark:mr-0' : ''}`}>
+        {isActive && !collapsed && (
           <div className="absolute -top-[18px] right-0 w-[18px] h-[18px] bg-gray-50 dark:hidden pointer-events-none overflow-hidden z-10">
             <div className="w-full h-full bg-blue-50 rounded-br-[18px]" />
           </div>
         )}
         <div
-          title={sidebarCollapsed ? label : undefined}
+          title={collapsed ? label : undefined}
           className={`flex items-center gap-3 py-2.5 cursor-pointer relative select-none transition-colors duration-150 ${
-            sidebarCollapsed
-              ? `justify-center px-2 mx-2 rounded-xl ${isActive ? 'bg-blue-500 dark:bg-dk-card dark:text-accent text-white' : 'text-gray-500 dark:text-gray-400 hover:bg-blue-100/70 dark:hover:bg-dk-card'}`
+            collapsed
+              ? rail
+              ? `justify-center mx-auto w-11 h-11 !p-0 rounded-xl ${isActive ? 'bg-blue-500 text-white shadow-sm shadow-blue-200' : 'text-slate-400 hover:text-slate-700 hover:bg-slate-100'}`
+              : `justify-center px-2 mx-2 rounded-xl ${isActive ? 'bg-blue-500 dark:bg-dk-card dark:text-accent text-white' : 'text-gray-500 dark:text-gray-400 hover:bg-blue-100/70 dark:hover:bg-dk-card'}`
               : `pl-4 pr-4 rounded-l-full dark:rounded-lg dark:pl-3 dark:pr-3 ${isActive
                   ? 'bg-gray-50 dark:bg-dk-card text-blue-600 dark:text-gray-100 font-bold z-20 dark:shadow-[inset_2px_0_0_0_theme(colors.accent.DEFAULT)]'
                   : 'text-gray-500 dark:text-gray-400 font-medium hover:bg-blue-100/70 dark:hover:bg-dk-card hover:text-gray-700 dark:hover:text-gray-200'}`
           }`}
           onClick={() => navigate(id)}
         >
-          <Icon size={17} className="flex-shrink-0" />
-          {!sidebarCollapsed && <span className="flex-1 truncate text-sm">{label}</span>}
-          {!sidebarCollapsed && badge ? (
+          <Icon size={rail ? 20 : 17} className="flex-shrink-0" />
+          {!collapsed && <span className="flex-1 truncate text-sm">{label}</span>}
+          {!collapsed && badge ? (
             <span className={`${isActive ? (badgeColor ? badgeColor : 'bg-blue-600') : (badgeColor || 'bg-blue-500')} ${badgeColor === 'bg-blue-500' ? 'dark:bg-accent dark:text-accent-on' : badgeColor ? '' : 'dark:bg-dk-high dark:text-gray-100'} text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[20px] text-center`}>
               {badge}
             </span>
           ) : null}
-          {sidebarCollapsed && badge ? (
+          {collapsed && badge ? (
             <span className={`absolute top-1 right-1 w-2 h-2 rounded-full ${badgeColor || 'bg-blue-500'}`} />
           ) : null}
         </div>
-        {isActive && !sidebarCollapsed && (
+        {isActive && !collapsed && (
           <div className="absolute -bottom-[18px] right-0 w-[18px] h-[18px] bg-gray-50 dark:hidden pointer-events-none overflow-hidden z-10">
             <div className="w-full h-full bg-blue-50 rounded-tr-[18px]" />
           </div>
@@ -135,37 +148,37 @@ export default function Sidebar() {
       )}
 
       <aside className={`
-        safe-top-pad fixed top-0 left-0 h-full bg-blue-50 dark:bg-dk-side border-r border-blue-100 dark:border-white/5 flex flex-col z-50
+        safe-top-pad fixed top-0 left-0 h-full ${rail ? 'bg-white border-slate-200/80' : 'bg-blue-50 border-blue-100 rounded-br-[28px]'} dark:bg-dk-side border-r dark:border-white/5 flex flex-col z-50
         transition-all duration-300
-        rounded-br-[28px] dark:rounded-br-none overflow-hidden
+        dark:rounded-br-none overflow-hidden
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
         lg:translate-x-0 lg:static lg:z-auto
         ${w}
       `}>
         {/* Logo + Collapse Button */}
-        <div className={`flex items-center border-b border-blue-100 h-12 sm:h-14 flex-shrink-0 dark:border-transparent ${sidebarCollapsed ? 'justify-center px-2' : 'gap-2 sm:gap-3 px-3 sm:px-4'}`}>
+        <div className={`flex items-center border-b ${rail ? 'border-transparent h-[76px]' : 'border-blue-100 h-12 sm:h-14'} flex-shrink-0 dark:border-transparent ${collapsed ? 'justify-center px-2' : 'gap-2 sm:gap-3 px-3 sm:px-4'}`}>
           <img
             src="/aflow-logo.svg"
             alt="A Flow"
-            className="w-7 h-7 sm:w-8 sm:h-8 object-contain flex-shrink-0"
+            className={`${rail ? 'w-11 h-11 p-2 rounded-2xl bg-blue-50' : 'w-7 h-7 sm:w-8 sm:h-8'} flex-shrink-0 object-contain`}
           />
-          {!sidebarCollapsed && (
+          {!collapsed && (
             <div className="flex-1 min-w-0">
               <div className="text-xs sm:text-sm font-black text-gray-900 dark:text-gray-100 leading-none tracking-tight">A Flow</div>
             </div>
           )}
-          {!sidebarCollapsed && (
+          {!collapsed && (
             <button className="ml-auto icon-btn lg:hidden p-1" onClick={() => setSidebarOpen(false)}>
               <X size={16} />
             </button>
           )}
           {/* Collapse toggle — visible only on desktop */}
           <button
-            className="hidden lg:flex items-center justify-center p-1 text-gray-400 hover:text-blue-500 transition-colors flex-shrink-0 dark:text-gray-500"
+            className={`${rail ? 'hidden' : 'hidden lg:flex'} items-center justify-center p-1 text-gray-400 hover:text-blue-500 transition-colors flex-shrink-0 dark:text-gray-500`}
             onClick={() => setSidebarCollapsed(v => !v)}
-            title={sidebarCollapsed ? 'Zgjero menunë' : 'Minimizo menunë'}
+            title={collapsed ? 'Zgjero menunë' : 'Minimizo menunë'}
           >
-            {sidebarCollapsed
+            {collapsed
               ? <ChevronRight size={16} />
               : <ChevronLeft size={16} />
             }
@@ -173,30 +186,30 @@ export default function Sidebar() {
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 px-2 py-4 space-y-0.5 overflow-y-auto overflow-x-hidden">
-          {!sidebarCollapsed && (
+        <nav className={`${rail ? 'px-3 space-y-2' : 'px-2 space-y-0.5'} flex-1 py-4 overflow-y-auto overflow-x-hidden`}>
+          {!collapsed && (
             <p className="text-[10px] font-bold text-gray-300 tracking-widest uppercase px-3 mb-2">Kryesore</p>
           )}
           {NAV.map(renderNavItem)}
 
-          {!sidebarCollapsed && (
+          {!collapsed && (
             <p className="text-[10px] font-bold text-gray-300 tracking-widest uppercase px-3 mt-4 mb-2">Sistemi</p>
           )}
-          {sidebarCollapsed && <div className="my-2 border-t border-blue-100 dark:border-white/5" />}
+          {collapsed && <div className={`my-2 border-t ${rail ? 'border-slate-100 mx-2' : 'border-blue-100'} dark:border-white/5`} />}
 
           {SYSTEM_NAV.map(renderNavItem)}
         </nav>
 
         {/* Logout button */}
-        <div className={`px-2 py-3 border-t border-blue-100 mt-auto dark:border-white/5`}>
+        <div className={`${rail ? 'px-3 border-slate-100' : 'px-2 border-blue-100'} py-3 border-t mt-auto dark:border-white/5`}>
           <button
             type="button"
-            className={`sidebar-item w-full text-blue-500 hover:bg-blue-200/70 dark:hover:bg-blue-900/20 hover:text-blue-600 cursor-pointer transition-all ${sidebarCollapsed ? 'justify-center px-2' : ''}`}
+            className={`sidebar-item w-full text-blue-500 hover:bg-blue-200/70 dark:hover:bg-blue-900/20 hover:text-blue-600 cursor-pointer transition-all ${collapsed ? 'justify-center px-2' : ''} ${rail ? '!w-11 !h-11 !p-0 mx-auto rounded-xl' : ''}`}
             onClick={askLogout}
             title="Dilni nga sistemi"
           >
-            <LogOut size={18} className="flex-shrink-0" />
-            {!sidebarCollapsed && <span className="font-medium">Dilni</span>}
+            <LogOut size={rail ? 20 : 18} className="flex-shrink-0" />
+            {!collapsed && <span className="font-medium">Dilni</span>}
           </button>
         </div>
       </aside>
