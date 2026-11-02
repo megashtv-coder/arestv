@@ -11,6 +11,7 @@ import AutoNotificationService from './services/AutoNotificationService'
 import BackupService from './services/BackupService'
 import AIChatFloat from './components/AIChatFloat'
 import AutoTranslate from './i18n/AutoTranslate'
+import WithdrawalFollowUp from './components/WithdrawalFollowUp'
 
 // Lazy load all pages to reduce initial bundle size
 const Dashboard = lazy(() => import('./pages/Dashboard'))
@@ -238,6 +239,7 @@ export default function App() {
     <TenantProvider>
       <AppProvider>
         <AutoTranslate storageKey="arestv_company_data" />
+        <WithdrawalFollowUp />
         <AuthWrapper />
       </AppProvider>
     </TenantProvider>
