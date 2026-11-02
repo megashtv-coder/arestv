@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import { X, Pencil, Save, XCircle } from 'lucide-react'
 import { useApp } from '../context/AppContext'
+import { cascadeCustomerRename } from '../utils/customerRename'
 import CountrySelect from '../components/CountrySelect'
 
 export default function CustomerDetailsModal({ customer, onClose }) {
-  const { customers, setCustomers, showToast, invoices, payments, logActivity } = useApp()
+  const { customers, setCustomers, showToast, invoices, setInvoices, payments, setPayments, logActivity } = useApp()
   const [isEditing, setIsEditing] = useState(false)
 
   // Calculate customer stats
@@ -46,11 +47,15 @@ export default function CustomerDetailsModal({ customer, onClose }) {
       return
     }
 
+    // Përditësohet VETËM klienti i hapur (sipas ID-së) — jo çdo klient me të njëjtin emër
+    const newName = formData.name.trim()
+    const nameParts = newName.split(/\s+/)
     const updatedCustomers = customers.map(c =>
-      c.name === customer.name
+      c.id === customer.id
         ? {
-            ...c,
-            name: formData.name,
+          ...c,
+          name: formData.name,
+          ...(newName !== (customer.name || '').trim() ? { firstName: nameParts[0], lastName: nameParts.slice(1).join(' ') } : null),
             email: formData.email,
             phone: formData.phone,
             country: formData.country,
@@ -62,8 +67,15 @@ export default function CustomerDetailsModal({ customer, onClose }) {
     )
 
     setCustomers(updatedCustomers)
+    // Emri i ndryshuar kalon edhe te faturat/pagesat e këtij klienti
+    const r = cascadeCustomerRename({
+      oldName: customer.name, newName: formData.name, customerId: customer.id,
+      customers, invoices, setInvoices, setPayments, setCustomers,
+    })
     logActivity(`Përditësoi klientin ${formData.name}`, 'Klientët')
-    showToast(`✓ ${formData.name} u përditësua!`)
+    if (r.done && r.invoiceCount > 0) showToast(`✓ ${formData.name} u përditësua! Emri i ri u vendos edhe te ${r.invoiceCount} fatura.`)
+    else if (r.ambiguous && r.invoiceCount > 0) showToast(`${formData.name} u përditësua, por ka klient tjetër me të njëjtin emër — faturat nuk u ndryshuan.`)
+    else showToast(`✓ ${formData.name} u përditësua!`)
     setIsEditing(false)
   }
 

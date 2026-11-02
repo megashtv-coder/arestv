@@ -6,6 +6,7 @@ import {
   Trash2,
 } from 'lucide-react'
 import { useApp } from '../context/AppContext'
+import { cascadeCustomerRename } from '../utils/customerRename'
 import { DualSelect } from '../components/DarkSelect'
 import RowMenu from '../components/RowMenu'
 import { Avatar, Modal, FormGroup, EmptyState } from '../components/UI'
@@ -26,7 +27,7 @@ const cleanPhone = p => (p || '').replace(/[\s\+\-\(\)]/g, '')
    Modal — shto / edito klient
 ══════════════════════════════════════════════════════════ */
 export function CustomerModal({ customer, onClose, isFormPage }) {
-  const { customers, setCustomers, showToast, representatives, setRepresentatives, currentOrgId, logActivity } = useApp()
+  const { customers, setCustomers, showToast, representatives, setRepresentatives, currentOrgId, logActivity, invoices, setInvoices, setPayments } = useApp()
   const isEdit = !!customer
 
   const empty = {
@@ -94,8 +95,15 @@ export function CustomerModal({ customer, onClose, isFormPage }) {
 
     if (isEdit) {
       setCustomers(prev => prev.map(c => c.id === customer.id ? payload : c))
+      // Emri i ndryshuar kalon edhe te faturat/pagesat e këtij klienti
+      const r = cascadeCustomerRename({
+        oldName: customer.name, newName: fullName, customerId: customer.id,
+        customers, invoices, setInvoices, setPayments, setCustomers,
+      })
       logActivity(`Përditësoi klientin ${fullName}`, 'Klientët')
-      showToast('Klienti u përditësua! ✓')
+      if (r.done && r.invoiceCount > 0) showToast(`Klienti u përditësua! ✓ Emri i ri u vendos edhe te ${r.invoiceCount} fatura.`)
+      else if (r.ambiguous && r.invoiceCount > 0) showToast('Klienti u përditësua, por ka klient tjetër me të njëjtin emër — faturat nuk u ndryshuan.')
+      else showToast('Klienti u përditësua! ✓')
     } else {
       setCustomers(prev => [payload, ...prev])
       logActivity(`Shtoi klientin ${fullName}`, 'Klientët')
