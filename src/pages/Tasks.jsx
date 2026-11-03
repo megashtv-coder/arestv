@@ -3,6 +3,7 @@ import { Plus, Trash2, Pencil, X, Calendar, CheckCircle2, ListTodo, Search, Cloc
 import { useApp } from '../context/AppContext'
 import { formatDate } from '../utils/dateFormat'
 import { supabase } from '../lib/supabase'
+import { isWithdrawalTask, parseWithdrawalTask, withdrawalEditPage, withdrawalPaymentId } from '../utils/withdrawalTask'
 
 const COMPLETED_RETENTION_DAYS = 5
 
@@ -120,8 +121,10 @@ function TaskModal({ task, onClose, onSave, customers }) {
   )
 }
 
-function TaskCard({ task, customers, onEdit, onDelete, onToggle }) {
+function TaskCard({ task, customers, onEdit, onDelete, onToggle, onOpenPayment }) {
   const today = new Date().toISOString().slice(0, 10)
+  const wd = isWithdrawalTask(task)
+  const wdInfo = wd ? parseWithdrawalTask(task) : null
   const isOverdue = task.reminderDate < today && !task.completed
   const isToday = task.reminderDate === today
 
@@ -153,9 +156,12 @@ function TaskCard({ task, customers, onEdit, onDelete, onToggle }) {
   }
 
   return (
-    <div className={`relative bg-white dark:bg-dk-low dark:hover:bg-dk-card rounded-2xl dark:rounded-xl border border-gray-200/90 dark:border-transparent shadow-sm hover:shadow-md transition-all flex flex-col justify-between overflow-hidden p-4 ${
+    <div
+      onClick={wd ? () => onOpenPayment(task) : undefined}
+      title={wd ? 'Hap pagesën' : undefined}
+      className={`relative bg-white dark:bg-dk-low dark:hover:bg-dk-card rounded-2xl dark:rounded-xl border border-gray-200/90 dark:border-transparent shadow-sm hover:shadow-md transition-all flex flex-col justify-between overflow-hidden p-4 ${
       task.completed ? 'opacity-60 dark:opacity-80' : ''
-    }`}>
+    } ${wd ? 'cursor-pointer' : ''}`}>
       <div className={`absolute left-0 top-0 bottom-0 w-1 ${railColor}`} />
 
       <div>
@@ -174,9 +180,24 @@ function TaskCard({ task, customers, onEdit, onDelete, onToggle }) {
             {statusBadge}
           </span>
         </div>
+        {wd ? (
+          <div className="text-xs dark:text-[13px] text-gray-500 dark:text-gray-300 pl-1 dark:pl-10 mb-3 dark:mb-4 space-y-1 dark:leading-relaxed">
+            {[
+              ['Nr. tërheqjes', wdInfo.tracking],
+              ['Metoda', wdInfo.method],
+              ['Dërguar në', wdInfo.where],
+              ['Tek', wdInfo.to],
+            ].filter(([, v]) => v && v !== '—').map(([label, v]) => (
+              <p key={label} className="truncate"><span className="font-semibold text-gray-700 dark:text-gray-100">{label}:</span> {v}</p>
+            ))}
+            {wdInfo.payment && <p className="truncate text-gray-400 dark:text-gray-500">{wdInfo.payment}</p>}
+            <p className="text-[11px] font-semibold text-gray-400 dark:text-accent-soft pt-0.5">Kliko për të hapur pagesën →</p>
+          </div>
+        ) : (
         <p className="text-xs dark:text-[13px] text-gray-500 dark:text-gray-300 pl-1 dark:pl-10 mb-3 dark:mb-4 line-clamp-2 dark:[-webkit-line-clamp:3] min-h-[32px] dark:min-h-[56px] dark:leading-relaxed">
           {task.description}
         </p>
+        )}
       </div>
 
       <div className="pt-3 border-t border-gray-100 dark:border-transparent pl-1 space-y-2.5 dark:space-y-2 dark:bg-dk-side/40 dark:-mx-4 dark:-mb-4 dark:p-4 dark:rounded-b-xl">
@@ -187,14 +208,14 @@ function TaskCard({ task, customers, onEdit, onDelete, onToggle }) {
           </div>
           <div className="flex items-center gap-1">
             <button
-              onClick={() => onEdit(task)}
+              onClick={e => { e.stopPropagation(); onEdit(task) }}
               className="p-1 rounded-lg text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-dk-high transition-colors"
               title="Ndrysho"
             >
               <Pencil size={14} />
             </button>
             <button
-              onClick={() => onDelete(task.id)}
+              onClick={e => { e.stopPropagation(); onDelete(task.id) }}
               className="p-1 rounded-lg text-gray-400 dark:text-gray-500 hover:text-blue-600 dark:hover:text-[#ffdad6] hover:bg-blue-50 dark:hover:bg-[#93000a] transition-colors"
               title="Fshi"
             >
@@ -204,7 +225,7 @@ function TaskCard({ task, customers, onEdit, onDelete, onToggle }) {
         </div>
 
         <button
-          onClick={() => onToggle(task.id)}
+          onClick={e => { e.stopPropagation(); onToggle(task.id) }}
           className={`w-full flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-[11px] font-extrabold transition-colors ${
             task.completed
               ? 'bg-emerald-500 dark:bg-[#00a572] text-white dark:text-[#003824] hover:opacity-90'
@@ -221,7 +242,7 @@ function TaskCard({ task, customers, onEdit, onDelete, onToggle }) {
 
 export default function Tasks() {
   const appContext = useApp() || {}
-  const { customers = [], showToast, logActivity, currentOrg, tasksAddOpen, setTasksAddOpen } = appContext
+  const { customers = [], payments = [], navigate, showToast, logActivity, currentOrg, tasksAddOpen, setTasksAddOpen } = appContext
 
   const [tasks, setTasks] = useState([])
   const [showModal, setShowModal] = useState(false)
@@ -229,6 +250,8 @@ export default function Tasks() {
   const [activeFilter, setActiveFilter] = useState('all')
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
+  // Dy ndarje: detyrat e zakonshme dhe kontrollet automatike të tërheqjeve
+  const [section, setSection] = useState('manual')
 
   useEffect(() => { loadTasks() }, [currentOrg?.id])
 
@@ -298,6 +321,13 @@ export default function Tasks() {
     }
   }, [tasksAddOpen])
 
+  // Detyra e kontrollit të tërheqjes → editimi i pagesës së pranuar
+  const handleOpenPayment = (task) => {
+    const pid = withdrawalPaymentId(task)
+    if (pid && payments.some(p => p.id === pid)) navigate(withdrawalEditPage(task))
+    else if (showToast) showToast('Pagesa nuk u gjet — mund të jetë fshirë.')
+  }
+
   const handleEditTask = (task) => {
     setEditingTask(task)
     setShowModal(true)
@@ -348,18 +378,21 @@ export default function Tasks() {
   }
 
   const today = new Date().toISOString().slice(0, 10)
-  const totalTasks = tasks.length
-  const activeTasks = tasks.filter(t => !t.completed).length
-  const completedTasks = tasks.filter(t => t.completed).length
-  const overdueTasks = tasks.filter(t => t.reminderDate < today && !t.completed).length
+  const sectionTasks = useMemo(() => tasks.filter(t => isWithdrawalTask(t) === (section === 'auto')), [tasks, section])
+  const manualOpen = tasks.filter(t => !isWithdrawalTask(t) && !t.completed).length
+  const autoOpen = tasks.filter(t => isWithdrawalTask(t) && !t.completed).length
+  const totalTasks = sectionTasks.length
+  const activeTasks = sectionTasks.filter(t => !t.completed).length
+  const completedTasks = sectionTasks.filter(t => t.completed).length
+  const overdueTasks = sectionTasks.filter(t => t.reminderDate < today && !t.completed).length
   // Dark mode: të dhëna ndihmëse për kartat KPI (përqindje, "sot", muaji aktual)
-  const completedToday = tasks.filter(t => t.completed && t.completedAt && String(t.completedAt).slice(0, 10) === today).length
+  const completedToday = sectionTasks.filter(t => t.completed && t.completedAt && String(t.completedAt).slice(0, 10) === today).length
   const pct = n => totalTasks ? Math.round((n / totalTasks) * 1000) / 10 : 0
   const MONTHS_SQ = ['Janar', 'Shkurt', 'Mars', 'Prill', 'Maj', 'Qershor', 'Korrik', 'Gusht', 'Shtator', 'Tetor', 'Nëntor', 'Dhjetor']
   const monthLabel = `${MONTHS_SQ[new Date().getMonth()]} ${new Date().getFullYear()}`
 
   const filteredTasks = useMemo(() => {
-    let result = tasks
+    let result = sectionTasks
     if (activeFilter === 'active') {
       result = result.filter(t => !t.completed)
     } else if (activeFilter === 'done') {
@@ -391,7 +424,7 @@ export default function Tasks() {
       if (!aIsToday && bIsToday) return 1
       return new Date(a.reminderDate).getTime() - new Date(b.reminderDate).getTime()
     })
-  }, [tasks, activeFilter, search])
+  }, [sectionTasks, activeFilter, search])
 
   const filterOptions = [
     { key: 'all', label: 'Të gjitha', count: totalTasks },
@@ -406,6 +439,29 @@ export default function Tasks() {
          global (Header.jsx, kur page === 'tasks'); "Detyrë e Re" te dropdown-i "+"
          navigon këtu dhe ngre flamurin tasksAddOpen (shih useEffect më lart). */}
       <div className="px-4 sm:px-6 py-5 bg-white dark:bg-transparent border-b border-gray-200 dark:border-transparent dark:px-0 dark:pt-0 dark:pb-6 space-y-4">
+        {/* Ndarja: detyrat e zakonshme / kontrollet automatike të tërheqjeve */}
+        <div className="inline-flex max-w-full overflow-x-auto p-1 gap-1 rounded-xl bg-gray-100 dark:bg-dk-low">
+          {[
+            { key: 'manual', label: 'Detyrat e tjera', count: manualOpen },
+            { key: 'auto', label: 'Kontrolle tërheqjesh (automatike)', count: autoOpen },
+          ].map(s => (
+            <button
+              key={s.key}
+              onClick={() => setSection(s.key)}
+              className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-colors ${
+                section === s.key
+                  ? 'bg-white text-gray-900 shadow-sm dark:bg-accent dark:text-accent-on dark:shadow-lg dark:shadow-accent/30'
+                  : 'text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-100 dark:hover:bg-dk-card'
+              }`}
+            >
+              {s.label}
+              <span className={`px-1.5 py-0.5 rounded-full text-[11px] font-bold ${
+                section === s.key ? 'bg-gray-100 text-gray-700 dark:bg-black/15 dark:text-accent-on' : 'bg-gray-200 text-gray-600 dark:bg-dk-high dark:text-gray-100'
+              }`}>{s.count}</span>
+            </button>
+          ))}
+        </div>
+
         {/* Stats Strip */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 dark:gap-5">
           <div className="relative overflow-hidden bg-sky-50 border border-sky-100 dark:bg-dk-low dark:border-transparent rounded-2xl dark:rounded-xl p-3 dark:p-4">
@@ -528,9 +584,9 @@ export default function Tasks() {
             </div>
             <p className="text-gray-600 font-semibold mb-1 dark:text-gray-300">Nuk ka detyra</p>
             <p className="text-sm text-gray-400 mb-6 dark:text-gray-500">
-              {search ? 'Provo kërkim tjetër.' : activeFilter === 'done' ? 'Nuk keni detyrë të përfunduar.' : activeFilter === 'overdue' ? 'Nuk keni detyrë vonuar. 🎉' : 'Krijo detyrën e parë tënde'}
+              {search ? 'Provo kërkim tjetër.' : activeFilter === 'done' ? 'Nuk keni detyrë të përfunduar.' : activeFilter === 'overdue' ? 'Nuk keni detyrë vonuar. 🎉' : section === 'auto' ? 'Kontrollet krijohen vetë kur një tërheqje mbetet "Në pritje" 10 ditë pas pagesës.' : 'Krijo detyrën e parë tënde'}
             </p>
-            {activeFilter === 'all' && !search && (
+            {activeFilter === 'all' && !search && section === 'manual' && (
               <button
                 onClick={handleAddTask}
                 className="px-5 py-2.5 bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold rounded-lg transition-colors shadow-sm hover:shadow-md"
@@ -549,6 +605,7 @@ export default function Tasks() {
                 onEdit={handleEditTask}
                 onDelete={handleDeleteTask}
                 onToggle={handleToggleTask}
+                onOpenPayment={handleOpenPayment}
               />
             ))}
           </div>

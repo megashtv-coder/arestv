@@ -690,3 +690,12 @@ Shiko | View | Vedi | Ansehen | Voir
 Shiko faturat | View invoices | Vedi fatture | Rechnungen ansehen | Voir les factures
 Të gjithë | Everyone | Tutti | Alle | Tous
 Notifications | Notifications | Notifiche | Benachrichtigungen | Notifications
+Detyrat e tjera | Other tasks | Altre attività | Andere Aufgaben | Autres tâches
+Kontrolle tërheqjesh (automatike) | Withdrawal checks (automatic) | Controlli prelievi (automatici) | Abhebungsprüfungen (automatisch) | Contrôles de retraits (automatiques)
+Nr. tërheqjes | Withdrawal no. | N. prelievo | Abhebungs-Nr. | N° de retrait
+Dërguar në | Sent to | Inviato a | Gesendet nach | Envoyé à
+Kliko për të hapur pagesën → | Click to open the payment → | Clicca per aprire il pagamento → | Klicken, um die Zahlung zu öffnen → | Cliquez pour ouvrir le paiement →
+Hap pagesën | Open payment | Apri pagamento | Zahlung öffnen | Ouvrir le paiement
+Pagesa nuk u gjet — mund të jetë fshirë. | Payment not found — it may have been deleted. | Pagamento non trovato — potrebbe essere stato eliminato. | Zahlung nicht gefunden — möglicherweise gelöscht. | Paiement introuvable — il a peut-être été supprimé.
+Kontrollo tërheqjen | Check the withdrawal | Controlla il prelievo | Abhebung prüfen | Vérifier le retrait
+Kontrollet krijohen vetë kur një tërheqje mbetet "Në pritje" 10 ditë pas pagesës. | Checks are created automatically when a withdrawal stays "Pending" 10 days after the payment. | I controlli vengono creati automaticamente quando un prelievo resta "In attesa" 10 giorni dopo il pagamento. | Prüfungen werden automatisch erstellt, wenn eine Abhebung 10 Tage nach der Zahlung "Ausstehend" bleibt. | Les contrôles sont créés automatiquement quand un retrait reste « En attente » 10 jours après le paiement.
