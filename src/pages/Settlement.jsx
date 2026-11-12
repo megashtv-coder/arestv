@@ -88,6 +88,8 @@ export default function Settlement() {
   const { payments, setPayments, fmt, logActivity, showToast } = useApp()
   const [search, setSearch] = useState('')
   const [monthFilt, setMonthFilt] = useState('all')
+  const [statusFilt, setStatusFilt] = useState('all')   // statusi i tërheqjes: pending | withdrawn | missing
+  const [settleFilt, setSettleFilt] = useState('all')   // statusi i barazimit: settled | unsettled
 
   const relevant = useMemo(
     () => payments.filter(p => WITHDRAWAL_METHODS.includes(p.method) && (p.date || '') >= TRACKING_START_DATE),
@@ -99,6 +101,10 @@ export default function Settlement() {
   const filtered = useMemo(() => {
     let result = relevant
     if (monthFilt !== 'all') result = result.filter(p => (p.date || '').startsWith(monthFilt))
+    if (statusFilt !== 'all') result = result.filter(p => (p.withdrawalStatus || 'pending') === statusFilt)
+    // "Pa barazuar" = u tërhoq por ende pa barazuar me personin (si te totali "Ende pa u tërhequr/Për t'u marrë")
+    if (settleFilt === 'settled') result = result.filter(p => !!p.settled)
+    else if (settleFilt === 'unsettled') result = result.filter(p => (p.withdrawalStatus || 'pending') === 'withdrawn' && !p.settled)
     if (search.trim()) {
       const q = search.trim().toLowerCase()
       // Numri i tërheqjes (MTCN/Ria/MoneyGram) kërkohet pa hapësira e viza: "461 494 6720" = "4614946720"
@@ -110,7 +116,7 @@ export default function Settlement() {
       )
     }
     return [...result].sort((a, b) => (b.date || '').localeCompare(a.date || ''))
-  }, [relevant, monthFilt, search])
+  }, [relevant, monthFilt, statusFilt, settleFilt, search])
 
   const setStatus = (id, status) => {
     setPayments(prev => prev.map(p => {
@@ -248,6 +254,7 @@ export default function Settlement() {
             onChange={e => setSearch(e.target.value)}
           />
         </div>
+        <div className="flex flex-wrap items-center gap-2">
         <DualSelect
           className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 text-gray-700 dark:text-gray-300 font-semibold outline-none focus:border-blue-400 cursor-pointer"
           value={monthFilt}
@@ -256,6 +263,24 @@ export default function Settlement() {
           <option value="all">Të gjitha muajt</option>
           {months.map(m => <option key={m} value={m}>{m}</option>)}
         </DualSelect>
+        <DualSelect
+          className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 text-gray-700 dark:text-gray-300 font-semibold outline-none focus:border-blue-400 cursor-pointer"
+          value={statusFilt}
+          onChange={e => setStatusFilt(e.target.value)}
+        >
+          <option value="all">Të gjitha tërheqjet</option>
+          {STATUS_OPTIONS.map(o => <option key={o.id} value={o.id}>{o.label}</option>)}
+        </DualSelect>
+        <DualSelect
+          className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 text-gray-700 dark:text-gray-300 font-semibold outline-none focus:border-blue-400 cursor-pointer"
+          value={settleFilt}
+          onChange={e => setSettleFilt(e.target.value)}
+        >
+          <option value="all">Të gjitha barazimet</option>
+          <option value="settled">Barazuar</option>
+          <option value="unsettled">Pa barazuar</option>
+        </DualSelect>
+        </div>
       </div>
 
       {/* Tabela e pagesave */}

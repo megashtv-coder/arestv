@@ -699,3 +699,6 @@ Hap pagesën | Open payment | Apri pagamento | Zahlung öffnen | Ouvrir le paiem
 Pagesa nuk u gjet — mund të jetë fshirë. | Payment not found — it may have been deleted. | Pagamento non trovato — potrebbe essere stato eliminato. | Zahlung nicht gefunden — möglicherweise gelöscht. | Paiement introuvable — il a peut-être été supprimé.
 Kontrollo tërheqjen | Check the withdrawal | Controlla il prelievo | Abhebung prüfen | Vérifier le retrait
 Kontrollet krijohen vetë kur një tërheqje mbetet "Në pritje" 10 ditë pas pagesës. | Checks are created automatically when a withdrawal stays "Pending" 10 days after the payment. | I controlli vengono creati automaticamente quando un prelievo resta "In attesa" 10 giorni dopo il pagamento. | Prüfungen werden automatisch erstellt, wenn eine Abhebung 10 Tage nach der Zahlung "Ausstehend" bleibt. | Les contrôles sont créés automatiquement quand un retrait reste « En attente » 10 jours après le paiement.
+Të gjitha tërheqjet | All withdrawals | Tutti i prelievi | Alle Abhebungen | Tous les retraits
+Të gjitha barazimet | All settlements | Tutti i regolamenti | Alle Abrechnungen | Tous les règlements
+Pa barazuar | Not settled | Non regolato | Nicht abgerechnet | Non réglé
