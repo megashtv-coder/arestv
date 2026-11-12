@@ -285,7 +285,7 @@ export function CustomerModal({ customer, onClose, isFormPage }) {
 /* ══════════════════════════════════════════════════════════
    Karta e klientit
 ══════════════════════════════════════════════════════════ */
-const CustomerCard = memo(function CustomerCard({ c, onEdit, fmt, isLatePayer, onDelete, checked, onToggleSelect }) {
+const CustomerCard = memo(function CustomerCard({ c, onOpen, onEdit, fmt, isLatePayer, onDelete, checked, onToggleSelect }) {
   const phone  = cleanPhone(c.phone)
   const isReseller = c.type === 'reseller'
 
@@ -298,7 +298,7 @@ const CustomerCard = memo(function CustomerCard({ c, onEdit, fmt, isLatePayer, o
             ? 'border-orange-200 dark:border-orange-900/50 hover:border-orange-300'
             : 'border-gray-200/90 dark:border-gray-700'
       }`}
-      onClick={() => onEdit(c)}
+      onClick={() => onOpen(c)}
     >
       <div>
         {/* Header */}
@@ -450,13 +450,13 @@ const CustomerCard = memo(function CustomerCard({ c, onEdit, fmt, isLatePayer, o
 /* ══════════════════════════════════════════════════════════
    Tabela e klientëve — vetëm desktop (sm:hidden në mobile)
 ══════════════════════════════════════════════════════════ */
-const CustomerRow = memo(function CustomerRow({ c, onEdit, fmt, isLatePayer, onDelete, checked, onToggleSelect }) {
+const CustomerRow = memo(function CustomerRow({ c, onOpen, onEdit, fmt, isLatePayer, onDelete, checked, onToggleSelect }) {
   const isReseller = c.type === 'reseller'
 
   return (
     <tr
       className="hover:bg-gray-50 dark:hover:bg-dk-card/60 transition-colors cursor-pointer group"
-      onClick={() => onEdit(c)}
+      onClick={() => onOpen(c)}
     >
       <td className="table-td w-10" onClick={e => e.stopPropagation()}>
         <input
@@ -859,7 +859,7 @@ export default function Customers() {
                     <CustomerRow
                       key={c.id}
                       c={c}
-                      onEdit={setSelectedCustomer}
+                      onOpen={setSelectedCustomer} onEdit={openEdit}
                       fmt={fmt}
                       isLatePayer={latePayerNames.has(c.name)}
                       onDelete={handleDeleteCustomer}
@@ -878,7 +878,7 @@ export default function Customers() {
               <CustomerCard
                 key={c.id}
                 c={c}
-                onEdit={setSelectedCustomer}
+                onOpen={setSelectedCustomer} onEdit={openEdit}
                 fmt={fmt}
                 isLatePayer={latePayerNames.has(c.name)}
                 onDelete={handleDeleteCustomer}
@@ -974,6 +974,7 @@ export default function Customers() {
         <CustomerDetailsModal
           customer={selectedCustomer}
           onClose={() => setSelectedCustomer(null)}
+          onEdit={c => { setSelectedCustomer(null); openEdit(c) }}
         />
       )}
 

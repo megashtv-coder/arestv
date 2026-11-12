@@ -4,7 +4,7 @@ import { useApp } from '../context/AppContext'
 import { cascadeCustomerRename } from '../utils/customerRename'
 import CountrySelect from '../components/CountrySelect'
 
-export default function CustomerDetailsModal({ customer, onClose }) {
+export default function CustomerDetailsModal({ customer, onClose, onEdit }) {
   const { customers, setCustomers, showToast, invoices, setInvoices, payments, setPayments, logActivity } = useApp()
   const [isEditing, setIsEditing] = useState(false)
 
@@ -291,7 +291,7 @@ export default function CustomerDetailsModal({ customer, onClose }) {
             </>
           ) : (
             <button
-              onClick={() => setIsEditing(true)}
+              onClick={() => (onEdit ? onEdit(customer) : setIsEditing(true))}
               className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white transition-colors font-semibold"
             >
               <Pencil size={16} />
