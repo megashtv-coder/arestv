@@ -47,12 +47,12 @@ function renderInvoiceColHeader(col, { sortField, sortDir, toggleSort, draggedCo
     referent: <span className="flex items-center gap-1">Referenti {sortIcon('referent')}</span>,
     expiry:   'Skadimi Abonimit',
     amount:   <span className="flex items-center justify-end gap-1">Shuma {sortIcon('amount')}</span>,
-    due:      'Afati',
+    due:      <span className="flex items-center gap-1">Afati {sortIcon('due')}</span>,
     status:   <span className="flex items-center gap-1">Statusi {sortIcon('status')}</span>,
   }[col.key]
   if (content === undefined) return null
 
-  const sortable = ['id', 'customer', 'referent', 'amount', 'status'].includes(col.key)
+  const sortable = ['id', 'customer', 'referent', 'amount', 'status', 'due'].includes(col.key)
   const isDragging = draggedCol === col.key
   // Shenja e vendit ku do të futet kolona — vetëm kur po tërheq një tjetër mbi këtë
   const showDropMark = dragOverCol === col.key && draggedCol && draggedCol !== col.key
@@ -1397,12 +1397,26 @@ export default function Invoices() {
     setPaginationPage(1)
   }
 
+  // Filtri "Vonuar": rendit automatikisht sipas Afatit — fillon fatura që është vonuar më shumë (afati më i vjetër).
+  // Kur filtri hiqet, rendi kthehet te parazgjedhja (ID, më e reja së pari). Mund të ndryshohet pastaj me klikim te kolonat.
+  const prevStatusFilter = useRef(null)
+  useEffect(() => {
+    const prev = prevStatusFilter.current
+    prevStatusFilter.current = statusFilter
+    if (statusFilter === 'overdue') {
+      setSortField('due'); setSortDir('asc'); setPaginationPage(1)
+    } else if (prev === 'overdue') {
+      setSortField('id'); setSortDir('desc'); setPaginationPage(1)
+    }
+  }, [statusFilter])
+
   const sorted = useMemo(() => [...filtered].sort((a, b) => {
     let cmp = 0
     if      (sortField === 'id')       cmp = a.id.localeCompare(b.id)
     else if (sortField === 'customer') cmp = a.customer.localeCompare(b.customer)
     else if (sortField === 'amount')   cmp = a.amount - b.amount
     else if (sortField === 'status')   cmp = (STATUS_ORDER[a.status] ?? 9) - (STATUS_ORDER[b.status] ?? 9)
+    else if (sortField === 'due')      cmp = (a.due || '9999-12-31').localeCompare(b.due || '9999-12-31')
     return sortDir === 'asc' ? cmp : -cmp
   }), [filtered, sortField, sortDir])
 
