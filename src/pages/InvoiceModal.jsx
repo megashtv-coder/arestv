@@ -495,7 +495,17 @@ export default function InvoiceModal({ initialData, isFormPage, onClose }) {
   const fmtN       = v => new Intl.NumberFormat('en-US').format(v)
 
   /* ── Line item actions ── */
-  const addItem    = () => setLineItems(p => [...p, { id: Math.random(), desc: '', note: '', qty: 1, unitPrice: '' }])
+  // Gjithmonë një rresht i zbrazët në fund: sapo fillon të plotësohet i fundit, shfaqet vetë tjetri
+  // (s'ka më "Shto artikull tjetër"). Rreshtat e zbrazët nuk ruhen — save() merr vetëm ata me çmim.
+  const isFilledItem = it => !!((it.desc || '').trim() || String(it.unitPrice ?? '').trim())
+  useEffect(() => {
+    setLineItems(p => {
+      const last = p[p.length - 1]
+      if (last && isFilledItem(last)) return [...p, { id: Math.random(), desc: '', note: '', qty: 1, unitPrice: '' }]
+      if (p.length > 1 && !isFilledItem(p[p.length - 1]) && !isFilledItem(p[p.length - 2])) return p.slice(0, -1)
+      return p
+    })
+  }, [lineItems])
   const removeItem = id  => setLineItems(p => p.filter(it => it.id !== id))
   const updateItem = (id, patch) => {
     setLineItems(p => p.map(it => it.id === id ? { ...it, ...patch } : it))
@@ -720,25 +730,19 @@ export default function InvoiceModal({ initialData, isFormPage, onClose }) {
 
         <div className="sec border border-gray-200 rounded-xl overflow-x-auto bg-white dark:border-transparent dark:bg-dk-card">
           <div className="min-w-[380px]">
-          {lineItems.map(item => (
+          {lineItems.map((item, idx) => (
             <ItemRow
               key={item.id}
               item={item}
               products={products}
               onUpdate={patch => updateItem(item.id, patch)}
               onRemove={() => removeItem(item.id)}
-              canRemove={lineItems.length > 1}
+              canRemove={lineItems.length > 1 && !(idx === lineItems.length - 1 && !isFilledItem(item))}
             />
           ))}
           </div>
         </div>
 
-        <button
-          className="mt-2 flex items-center gap-1.5 text-[13px] font-semibold text-blue-500 hover:text-blue-700 dark:text-accent dark:hover:text-accent-soft px-1 py-1 transition-colors"
-          onClick={addItem}
-        >
-          <Plus size={13} /> Shto artikull tjetër
-        </button>
       </div>
 
       {/* ── Totals block ── */}
