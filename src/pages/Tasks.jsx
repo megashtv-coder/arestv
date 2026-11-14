@@ -242,7 +242,7 @@ function TaskCard({ task, customers, onEdit, onDelete, onToggle, onOpenPayment }
 
 export default function Tasks() {
   const appContext = useApp() || {}
-  const { customers = [], payments = [], navigate, showToast, logActivity, currentOrg, tasksAddOpen, setTasksAddOpen } = appContext
+  const { customers = [], payments = [], navigate, showToast, logActivity, currentOrg, tasksAddOpen, setTasksAddOpen, tasksSectionRequest, setTasksSectionRequest } = appContext
 
   const [tasks, setTasks] = useState([])
   const [showModal, setShowModal] = useState(false)
@@ -251,7 +251,13 @@ export default function Tasks() {
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   // Dy ndarje: detyrat e zakonshme dhe kontrollet automatike të tërheqjeve
-  const [section, setSection] = useState('manual')
+  const [section, setSection] = useState(() => (tasksSectionRequest === 'auto' ? 'auto' : 'manual'))
+  // Hapja nga njoftimet: zgjidh skedën e kërkuar (edhe kur faqja Detyrat është tashmë e hapur)
+  useEffect(() => {
+    if (!tasksSectionRequest) return
+    setSection(tasksSectionRequest)
+    setTasksSectionRequest?.(null)
+  }, [tasksSectionRequest])
 
   useEffect(() => { loadTasks() }, [currentOrg?.id])
 

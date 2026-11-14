@@ -11,6 +11,7 @@ import QuickAddMenu from './QuickAddMenu'
 import DarkSelect from './DarkSelect'
 import ProfileMenu from './ProfileMenu'
 import { supabase } from '../lib/supabase'
+import { isWithdrawalTask } from '../utils/withdrawalTask'
 
 const MONTH_FULL = ['Janar','Shkurt','Mars','Prill','Maj','Qershor','Korrik','Gusht','Shtator','Tetor','Nëntor','Dhjetor']
 
@@ -36,7 +37,7 @@ const PAGE_TITLES = {
 export default function Header() {
   const {
     page, currency, setCurrency, darkMode, setDarkMode,
-    setSidebarOpen, invoices, payments, expenses, customers, navigate, currentUser,
+    setSidebarOpen, invoices, payments, expenses, customers, navigate, currentUser, setTasksSectionRequest,
     invoicesHidden, setInvoicesHidden,
     moneyHidden, toggleMoneyHidden, moneyPages,
     invoicesExportOpen, setInvoicesExportOpen,
@@ -428,6 +429,8 @@ export default function Header() {
                       key={t.id}
                       onClick={() => {
                         setReadNotifications(p => ({ ...p, [t.id]: true }))
+                        // Detyra e kontrollit të tërheqjes → skeda "Kontrolle tërheqjesh (automatike)", jo detyrat e tjera
+                        setTasksSectionRequest(isWithdrawalTask(t) ? 'auto' : 'manual')
                         navigate('tasks')
                         setNotifOpen(false)
                       }}
