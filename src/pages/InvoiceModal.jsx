@@ -39,6 +39,7 @@ function Combobox({
 }) {
   const [open, setOpen]     = useState(false)
   const [search, setSearch] = useState('')
+  const [active, setActive] = useState(0)   // rreshti i theksuar me shigjetat ↑ ↓
   const triggerRef          = useRef(null)
   const dropRef             = useRef(null)
   const [pos, setPos]       = useState({ top: 0, left: 0, width: 200 })
@@ -82,6 +83,16 @@ function Combobox({
   }, [deduplicatedOptions, search, getLabel])
   const selected = options.find(o => getLabel(o) === value)
 
+  // Kur shkruan ose hapet lista, theksohet i pari; ↑ ↓ lëvizin, Enter zgjedh, Esc mbyll
+  useEffect(() => { setActive(0) }, [search, open])
+  const pick = o => { onChange(o); setOpen(false); setSearch('') }
+  const handleKeyDown = e => {
+    if (e.key === 'ArrowDown') { e.preventDefault(); setActive(i => Math.min(i + 1, Math.max(filtered.length - 1, 0))) }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); setActive(i => Math.max(i - 1, 0)) }
+    else if (e.key === 'Enter') { if (filtered[active]) { e.preventDefault(); pick(filtered[active]) } }
+    else if (e.key === 'Escape') { e.stopPropagation(); setOpen(false); setSearch('') }
+  }
+
   return (
     <>
       <div
@@ -108,6 +119,7 @@ function Combobox({
                 autoFocus
                 className="bg-transparent outline-none text-xs w-full text-gray-700 placeholder-gray-400 dark:text-gray-200"
                 placeholder="Kërko..."
+                onKeyDown={handleKeyDown}
                 value={search}
                 onChange={e => setSearch(e.target.value)}
               />
@@ -121,10 +133,12 @@ function Combobox({
             {filtered.map((o, i) => (
               <div
                 key={getKey ? getKey(o) : i}
+                ref={i === active ? (el => el?.scrollIntoView({ block: 'nearest' })) : undefined}
+                onMouseEnter={() => setActive(i)}
                 className={`px-3 py-2.5 cursor-pointer hover:bg-blue-50 dark:hover:bg-dk-card transition-colors border-b border-gray-50 last:border-0 dark:border-white/5 ${
                   getLabel(o) === value ? 'bg-blue-50 dark:bg-accent/10' : ''
-                }`}
-                onClick={() => { onChange(o); setOpen(false); setSearch('') }}
+                } ${i === active ? 'bg-gray-100 dark:bg-white/10 ring-1 ring-inset ring-gray-300 dark:ring-white/20' : ''}`}
+                onClick={() => pick(o)}
               >
                 {renderOption ? renderOption(o) : (
                   <span className={`text-sm ${getLabel(o) === value ? 'text-blue-600 dark:text-accent-soft font-semibold' : 'text-gray-700 dark:text-gray-200'}`}>
