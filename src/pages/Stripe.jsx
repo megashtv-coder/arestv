@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react'
 import {
   Search, Plus, Copy, Check, ExternalLink, Pencil, Trash2, X,
-  ArrowUpDown, Link2, LayoutGrid, List, Landmark,
+  ArrowUpDown, Link2, LayoutGrid, List, Landmark, Lock, Unlock,
 } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import { Modal, FormGroup, ModalTitle } from '../components/UI'
@@ -446,8 +446,11 @@ function LinkRow({ link, onEdit, onDelete, fmt }) {
 }
 
 /* ── Llogari bankare: kartë (pamja rrjetë) dhe rresht (pamja listë) ── */
-function BankCard({ account, onEdit, onDelete }) {
-  const [copied, copy] = useCopyBank(account)
+function BankCard({ account, onEdit, onDelete, onToggleBlock }) {
+  const [copied, copyRaw] = useCopyBank(account)
+  // Llogaria e bllokuar dorazi (si emrat te "Emrat për Pagesa") — s'kopjohet, shfaqet e zbehtë
+  const blocked = !!account.manualBlock
+  const copy = blocked ? () => {} : copyRaw
   const p = PROVIDERS.bank
 
   return (
@@ -456,9 +459,11 @@ function BankCard({ account, onEdit, onDelete }) {
       tabIndex={0}
       onClick={copy}
       onKeyDown={onKeyActivate(copy)}
-      title="Kliko për të kopjuar të dhënat"
-      className={`group col-span-2 bg-white dark:bg-gray-800 rounded-xl border p-2.5 flex flex-col justify-between transition-all cursor-pointer hover:shadow-sm ${
-        copied
+      title={blocked ? 'Llogaria është e bllokuar' : 'Kliko për të kopjuar të dhënat'}
+      className={`group col-span-2 bg-white dark:bg-gray-800 rounded-xl border p-2.5 flex flex-col justify-between transition-all hover:shadow-sm ${blocked ? 'cursor-not-allowed' : 'cursor-pointer'} ${
+        blocked
+          ? 'border-red-300 dark:border-red-900/60'
+          : copied
           ? 'border-emerald-400 dark:border-emerald-600 ring-2 ring-emerald-500/20'
           : 'border-gray-200/90 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
       }`}
@@ -467,8 +472,16 @@ function BankCard({ account, onEdit, onDelete }) {
         <span className={`text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-md flex items-center gap-1 ${p.tag}`}>
           <Landmark size={10} />
           {p.label}
+          {blocked && <span className="ml-1 px-1 rounded bg-red-600 text-white">Bllokuar</span>}
         </span>
         <div className="flex items-center gap-0.5 opacity-60 group-hover:opacity-100 transition-opacity">
+          <button
+            onClick={ev => { ev.stopPropagation(); onToggleBlock(account) }}
+            className={`p-1 rounded ${blocked ? 'text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30' : 'text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700'}`}
+            title={blocked ? 'Zhblloko llogarinë' : 'Blloko llogarinë dorazi'}
+          >
+            {blocked ? <Lock size={11} /> : <Unlock size={11} />}
+          </button>
           <button
             onClick={ev => { ev.stopPropagation(); onEdit(account) }}
             className="p-1 rounded text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -486,8 +499,8 @@ function BankCard({ account, onEdit, onDelete }) {
         </div>
       </div>
 
-      <div className="my-0.5 min-w-0 space-y-0.5">
-        <div className="text-sm font-black text-gray-900 dark:text-gray-100 leading-tight truncate">{account.holder}</div>
+      <div className={`my-0.5 min-w-0 space-y-0.5 ${blocked ? 'opacity-50' : ''}`}>
+        <div className={`text-sm font-black text-gray-900 dark:text-gray-100 leading-tight truncate ${blocked ? 'line-through' : ''}`}>{account.holder}</div>
         <div className="text-[11px] font-mono text-gray-700 dark:text-gray-300 break-all">{formatIban(account.iban)}</div>
         {account.swift && (
           <div className="text-[10px] font-mono text-gray-500 dark:text-gray-400">SWIFT: {account.swift}</div>
@@ -500,21 +513,26 @@ function BankCard({ account, onEdit, onDelete }) {
       <div className="mt-2 pt-1.5 border-t border-gray-100 dark:border-gray-700/80">
         <button
           onClick={ev => { ev.stopPropagation(); copy() }}
+          disabled={blocked}
           className={`w-full py-1.5 px-2 rounded-lg font-bold text-[11px] flex items-center justify-center gap-1 transition-all ${
-            copied
+            blocked
+              ? 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed'
+              : copied
               ? 'bg-emerald-500 text-white'
               : 'bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:hover:bg-blue-900/40 text-blue-600 dark:text-blue-400'
           }`}
         >
-          {copied ? <><Check size={12} /> U kopjua!</> : <><Copy size={12} /> Kopjo të dhënat</>}
+          {blocked ? <><Lock size={12} /> Bllokuar</> : copied ? <><Check size={12} /> U kopjua!</> : <><Copy size={12} /> Kopjo të dhënat</>}
         </button>
       </div>
     </div>
   )
 }
 
-function BankRow({ account, onEdit, onDelete }) {
-  const [copied, copy] = useCopyBank(account)
+function BankRow({ account, onEdit, onDelete, onToggleBlock }) {
+  const [copied, copyRaw] = useCopyBank(account)
+  const blocked = !!account.manualBlock
+  const copy = blocked ? () => {} : copyRaw
   const p = PROVIDERS.bank
 
   return (
@@ -523,8 +541,10 @@ function BankRow({ account, onEdit, onDelete }) {
       tabIndex={0}
       onClick={copy}
       onKeyDown={onKeyActivate(copy)}
-      className={`bg-white dark:bg-gray-800 rounded-xl border p-2 flex items-center justify-between gap-2.5 transition-all cursor-pointer hover:shadow-sm ${
-        copied
+      className={`bg-white dark:bg-gray-800 rounded-xl border p-2 flex items-center justify-between gap-2.5 transition-all hover:shadow-sm ${blocked ? 'cursor-not-allowed' : 'cursor-pointer'} ${
+        blocked
+          ? 'border-red-300 dark:border-red-900/60'
+          : copied
           ? 'border-emerald-400 dark:border-emerald-600 ring-1 ring-emerald-500/20'
           : 'border-gray-200/90 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
       }`}
@@ -533,20 +553,29 @@ function BankRow({ account, onEdit, onDelete }) {
         <span className={`text-[9px] font-black uppercase px-1.5 py-0.5 rounded shrink-0 flex items-center gap-1 ${p.tag}`}>
           <Landmark size={10} />
           Bankë
+          {blocked && <span className="ml-1 px-1 rounded bg-red-600 text-white">Bllokuar</span>}
         </span>
-        <div className="min-w-0">
-          <div className="text-sm font-black text-gray-900 dark:text-gray-100 truncate">{account.holder}</div>
+        <div className={`min-w-0 ${blocked ? 'opacity-50' : ''}`}>
+          <div className={`text-sm font-black text-gray-900 dark:text-gray-100 truncate ${blocked ? 'line-through' : ''}`}>{account.holder}</div>
           <div className="text-[10px] font-mono text-gray-400 truncate">{formatIban(account.iban)}</div>
         </div>
       </div>
       <div className="flex items-center gap-1 shrink-0">
         <button
           onClick={ev => { ev.stopPropagation(); copy() }}
+          disabled={blocked}
           className={`py-1 px-2.5 rounded-lg font-bold text-[11px] flex items-center gap-1 transition-all ${
-            copied ? 'bg-emerald-500 text-white' : 'bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400'
+            blocked ? 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed' : copied ? 'bg-emerald-500 text-white' : 'bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400'
           }`}
         >
-          {copied ? <><Check size={12} /> U kopjua!</> : <><Copy size={12} /> Kopjo</>}
+          {blocked ? <><Lock size={12} /> Bllokuar</> : copied ? <><Check size={12} /> U kopjua!</> : <><Copy size={12} /> Kopjo</>}
+        </button>
+        <button
+          onClick={ev => { ev.stopPropagation(); onToggleBlock(account) }}
+          className={`p-1 ${blocked ? 'text-red-600 dark:text-red-400' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-200'}`}
+          title={blocked ? 'Zhblloko llogarinë' : 'Blloko llogarinë dorazi'}
+        >
+          {blocked ? <Lock size={12} /> : <Unlock size={12} />}
         </button>
         <button onClick={ev => { ev.stopPropagation(); onEdit(account) }} className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200" title="Ndrysho">
           <Pencil size={12} />
@@ -565,7 +594,7 @@ function BankRow({ account, onEdit, onDelete }) {
 const VIEW_KEY = 'arestv_stripe_view'
 
 export default function Stripe() {
-  const { stripeLinks, setStripeLinks, setModal, closeModal, fmt } = useApp()
+  const { stripeLinks, setStripeLinks, setModal, closeModal, fmt, showToast } = useApp()
   const [search, setSearch] = useState('')
   const [sortDir, setSortDir] = useState('asc') // 'asc' | 'desc' — sipas shumës
   const [amountFilter, setAmountFilter] = useState('all')
@@ -620,7 +649,7 @@ export default function Stripe() {
     })
     .sort((a, b) => {
       // Llogaritë bankare vijnë pas linqeve (sipas emrit); linqet rendisen sipas shumës
-      if (isBank(a) && isBank(b)) return (a.holder || '').localeCompare(b.holder || '')
+      if (isBank(a) && isBank(b)) return (!!a.manualBlock - !!b.manualBlock) || (a.holder || '').localeCompare(b.holder || '')
       if (isBank(a)) return 1
       if (isBank(b)) return -1
       return sortDir === 'asc' ? a.amount - b.amount : b.amount - a.amount
@@ -635,6 +664,12 @@ export default function Stripe() {
     const what = isBank(link) ? `llogarinë bankare të "${link.holder}"` : `linkun ${fmt(link.amount)}`
     if (!window.confirm(`A je i sigurt që dëshiron ta fshish ${what}?`)) return
     setStripeLinks(prev => prev.filter(l => l.id !== link.id))
+  }
+
+  // Bllokim dorazi i llogarisë bankare (si te "Emrat për Pagesa") — zbehet, s'kopjohet, shkon në fund; zhbllokohet me të njëjtin buton
+  const toggleBlock = (acc) => {
+    setStripeLinks(prev => prev.map(l => l.id === acc.id ? { ...l, manualBlock: !l.manualBlock } : l))
+    showToast(acc.manualBlock ? `${acc.holder} u zhbllokua ✓` : `${acc.holder} u bllokua ✓`)
   }
 
   const PROVIDER_TABS = [
@@ -773,13 +808,13 @@ export default function Stripe() {
       ) : viewMode === 'grid' ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-2.5">
           {filtered.map(l => isBank(l)
-            ? <BankCard key={l.id} account={l} onEdit={openEdit} onDelete={handleDelete} />
+            ? <BankCard key={l.id} account={l} onEdit={openEdit} onDelete={handleDelete} onToggleBlock={toggleBlock} />
             : <LinkCard key={l.id} link={l} onEdit={openEdit} onDelete={handleDelete} fmt={fmt} />)}
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2">
           {filtered.map(l => isBank(l)
-            ? <BankRow key={l.id} account={l} onEdit={openEdit} onDelete={handleDelete} />
+            ? <BankRow key={l.id} account={l} onEdit={openEdit} onDelete={handleDelete} onToggleBlock={toggleBlock} />
             : <LinkRow key={l.id} link={l} onEdit={openEdit} onDelete={handleDelete} fmt={fmt} />)}
         </div>
       )}

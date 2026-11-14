@@ -702,3 +702,7 @@ Kontrollet krijohen vetë kur një tërheqje mbetet "Në pritje" 10 ditë pas pa
 Të gjitha tërheqjet | All withdrawals | Tutti i prelievi | Alle Abhebungen | Tous les retraits
 Të gjitha barazimet | All settlements | Tutti i regolamenti | Alle Abrechnungen | Tous les règlements
 Pa barazuar | Not settled | Non regolato | Nicht abgerechnet | Non réglé
+Bllokuar | Blocked | Bloccato | Gesperrt | Bloqué
+Blloko llogarinë dorazi | Block the account manually | Blocca il conto manualmente | Konto manuell sperren | Bloquer le compte manuellement
+Zhblloko llogarinë | Unblock the account | Sblocca il conto | Konto entsperren | Débloquer le compte
+Llogaria është e bllokuar | The account is blocked | Il conto è bloccato | Das Konto ist gesperrt | Le compte est bloqué
