@@ -17,6 +17,17 @@ export default function Sidebar() {
   } = useApp()
   const askLogout = useConfirmLogout()
 
+  // Menuja e hapur në telefon: faqja pas saj nuk lëviz kur rrëshqet gishti (zhbllokohet kur mbyllet)
+  useEffect(() => {
+    if (!sidebarOpen || !window.matchMedia('(max-width: 1023px)').matches) return
+    const html = document.documentElement
+    const body = document.body
+    const prev = { html: html.style.overflow, body: body.style.overflow }
+    html.style.overflow = 'hidden'
+    body.style.overflow = 'hidden'
+    return () => { html.style.overflow = prev.html; body.style.overflow = prev.body }
+  }, [sidebarOpen])
+
   const { canAccessSuppliers } = useFeatures()
   const [tasks, setTasks] = useState([])
 
@@ -131,7 +142,7 @@ export default function Sidebar() {
     <>
       {/* Mobile overlay */}
       {sidebarOpen && (
-        <div className="fixed inset-0 bg-black/30 z-40 lg:hidden" onClick={() => setSidebarOpen(false)} />
+        <div className="fixed inset-0 bg-black/30 z-40 lg:hidden touch-none" onClick={() => setSidebarOpen(false)} />
       )}
 
       <aside className={`
@@ -173,7 +184,7 @@ export default function Sidebar() {
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 px-2 py-4 space-y-0.5 overflow-y-auto overflow-x-hidden">
+        <nav className="flex-1 px-2 py-4 space-y-0.5 overflow-y-auto overflow-x-hidden overscroll-contain">
           {!sidebarCollapsed && (
             <p className="text-[10px] font-bold text-gray-300 tracking-widest uppercase px-3 mb-2">Kryesore</p>
           )}
