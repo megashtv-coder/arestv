@@ -53,6 +53,7 @@ export default function AIChatFloat() {
   const [photoDraft, setPhotoDraft] = useState({})
   const messagesEndRef = useRef(null)
   const inputRef = useRef(null)
+  const [suggestIdx, setSuggestIdx] = useState(0)   // rreshti i theksuar te lista e sugjerimeve @ (↑ ↓)
   const fileInputRef = useRef(null)
 
   // Initialize AI processor - only when customers are loaded. On every later
@@ -89,6 +90,12 @@ export default function AIChatFloat() {
     return () => document.removeEventListener('keydown', handleEscape)
   }, [isOpen])
 
+  // Inputi çaktivizohet gjatë përpunimit të komandës (humbet fokusin) — kur mbaron, kursori kthehet vetë
+  // te kutia e shkrimit, pa pasur nevojë të klikosh.
+  useEffect(() => {
+    if (!loading && isOpen) inputRef.current?.focus()
+  }, [loading, isOpen])
+
   // Ctrl+Shift+X hap/mbyll chat-in nga kudo në app — gjithmonë aktiv (jo vetëm
   // kur isOpen), që të funksionojë edhe si "hape" edhe si "mbylle". Qëllimi:
   // një mjet i jashtëm (p.sh. AutoHotkey) mund të fokusojë dritaren e AresTV
@@ -109,6 +116,7 @@ export default function AIChatFloat() {
   const handleInputChange = (e) => {
     const value = e.target.value
     setInput(value)
+    setSuggestIdx(0)
 
     const mentions = value.match(/@([\w\s]+)/g) || []
 
@@ -275,6 +283,40 @@ export default function AIChatFloat() {
     }, 0)
   }
 
+  // Navigimi me tastierë te sugjerimet @. Lista e klientit vlen vetëm kur po shkruhet @ e para (përndryshe
+  // mbetet e vjetër nga fillimi i komandës dhe Enter duhet të dërgojë komandën, jo të zgjedhë klient).
+  const mentionCount = (input.match(/@([\w\s]+)/g) || []).length
+  const customerKb = mentionCount === 1
+  const nCust = customerKb ? customerSuggestions.length : 0
+  const offRef  = nCust
+  const offProd = offRef + referentSuggestions.length
+  const offMode = offProd + productSuggestions.length
+  const offDep  = offMode + paymentModeSuggestions.length
+  const flatSuggestions = [
+    ...(customerKb ? customerSuggestions.map(c => () => selectCustomer(c.name)) : []),
+    ...referentSuggestions.map(r => () => selectReferent(r)),
+    ...productSuggestions.map(pr => () => selectProduct(pr.name)),
+    ...paymentModeSuggestions.map(m => () => selectPaymentMode(m)),
+    ...depositedToSuggestions.map(d => () => selectDepositedTo(d)),
+  ]
+  const activeProps = idx => (suggestIdx === idx
+    ? { 'data-active': true, ref: el => el?.scrollIntoView({ block: 'nearest' }) }
+    : {})
+
+  const handleInputKeyDown = (e) => {
+    const n = flatSuggestions.length
+    if (!n) return
+    if (e.key === 'ArrowDown') { e.preventDefault(); setSuggestIdx(i => (i + 1) % n) }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); setSuggestIdx(i => (i - 1 + n) % n) }
+    else if (e.key === 'Enter' || e.key === 'Tab') { e.preventDefault(); flatSuggestions[Math.min(suggestIdx, n - 1)]() }
+    else if (e.key === 'Escape') {
+      // Esc mbyll vetëm listën (jo chat-in)
+      e.nativeEvent.stopPropagation()
+      setCustomerSuggestions([]); setReferentSuggestions([]); setProductSuggestions([])
+      setPaymentModeSuggestions([]); setDepositedToSuggestions([])
+    }
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!input.trim() || !processorRef.current) return
@@ -406,6 +448,7 @@ export default function AIChatFloat() {
       }
       setMessages(prev => [...prev, resultMsg])
       setCurrentResult(null)
+      setTimeout(() => inputRef.current?.focus(), 0)
     } catch (err) {
       const errorMsg = {
         id: `ai-${Date.now()}`,
@@ -706,12 +749,13 @@ export default function AIChatFloat() {
             {/* Customer Picker */}
             {customerSuggestions.length > 0 && (
               <div className="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg max-h-32 overflow-y-auto dark:bg-gray-800">
-                {customerSuggestions.map(customer => (
+                {customerSuggestions.map((customer, i) => (
                   <button
                     key={customer.id}
+                    {...activeProps(customerKb ? i : -1)}
                     type="button"
                     onClick={() => selectCustomer(customer.name)}
-                    className="w-full text-left px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 text-sm text-gray-900 dark:text-white flex items-center gap-2 border-b border-gray-200 dark:border-gray-600 last:border-0 dark:text-gray-50 dark:border-gray-700"
+                    className="w-full text-left px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 text-sm text-gray-900 dark:text-white flex items-center gap-2 border-b border-gray-200 dark:border-gray-600 last:border-0 dark:text-gray-50 dark:border-gray-700 data-[active=true]:bg-gray-200 dark:data-[active=true]:bg-gray-500"
                   >
                     <Users size={14} className="text-blue-500" />
                     {customer.name}
@@ -723,12 +767,13 @@ export default function AIChatFloat() {
             {/* Referent Picker */}
             {referentSuggestions.length > 0 && (
               <div className="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg max-h-32 overflow-y-auto dark:bg-gray-800">
-                {referentSuggestions.map(rep => (
+                {referentSuggestions.map((rep, i) => (
                   <button
                     key={rep}
+                    {...activeProps(offRef + i)}
                     type="button"
                     onClick={() => selectReferent(rep)}
-                    className="w-full text-left px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 text-sm text-gray-900 dark:text-white flex items-center gap-2 border-b border-gray-200 dark:border-gray-600 last:border-0 dark:text-gray-50 dark:border-gray-700"
+                    className="w-full text-left px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 text-sm text-gray-900 dark:text-white flex items-center gap-2 border-b border-gray-200 dark:border-gray-600 last:border-0 dark:text-gray-50 dark:border-gray-700 data-[active=true]:bg-gray-200 dark:data-[active=true]:bg-gray-500"
                   >
                     <Users size={14} className="text-yellow-500" />
                     {rep}
@@ -740,12 +785,13 @@ export default function AIChatFloat() {
             {/* Product Picker */}
             {productSuggestions.length > 0 && (
               <div className="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg max-h-32 overflow-y-auto dark:bg-gray-800">
-                {productSuggestions.map(product => (
+                {productSuggestions.map((product, i) => (
                   <button
                     key={product.id}
+                    {...activeProps(offProd + i)}
                     type="button"
                     onClick={() => selectProduct(product.name)}
-                    className="w-full text-left px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 text-sm text-gray-900 dark:text-white flex items-center gap-2 border-b border-gray-200 dark:border-gray-600 last:border-0 dark:text-gray-50 dark:border-gray-700"
+                    className="w-full text-left px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 text-sm text-gray-900 dark:text-white flex items-center gap-2 border-b border-gray-200 dark:border-gray-600 last:border-0 dark:text-gray-50 dark:border-gray-700 data-[active=true]:bg-gray-200 dark:data-[active=true]:bg-gray-500"
                   >
                     <Package size={14} className="text-blue-500" />
                     {product.name} - €{product.salePrice}
@@ -757,12 +803,13 @@ export default function AIChatFloat() {
             {/* Payment Mode Picker */}
             {paymentModeSuggestions.length > 0 && (
               <div className="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg max-h-32 overflow-y-auto dark:bg-gray-800">
-                {paymentModeSuggestions.map(mode => (
+                {paymentModeSuggestions.map((mode, i) => (
                   <button
                     key={mode}
+                    {...activeProps(offMode + i)}
                     type="button"
                     onClick={() => selectPaymentMode(mode)}
-                    className="w-full text-left px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 text-sm text-gray-900 dark:text-white flex items-center gap-2 border-b border-gray-200 dark:border-gray-600 last:border-0 dark:text-gray-50 dark:border-gray-700"
+                    className="w-full text-left px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 text-sm text-gray-900 dark:text-white flex items-center gap-2 border-b border-gray-200 dark:border-gray-600 last:border-0 dark:text-gray-50 dark:border-gray-700 data-[active=true]:bg-gray-200 dark:data-[active=true]:bg-gray-500"
                   >
                     <CreditCard size={14} className="text-purple-500" />
                     {mode}
@@ -774,12 +821,13 @@ export default function AIChatFloat() {
             {/* Deposited To Picker */}
             {depositedToSuggestions.length > 0 && (
               <div className="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg max-h-32 overflow-y-auto dark:bg-gray-800">
-                {depositedToSuggestions.map(name => (
+                {depositedToSuggestions.map((name, i) => (
                   <button
                     key={name}
+                    {...activeProps(offDep + i)}
                     type="button"
                     onClick={() => selectDepositedTo(name)}
-                    className="w-full text-left px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 text-sm text-gray-900 dark:text-white flex items-center gap-2 border-b border-gray-200 dark:border-gray-600 last:border-0 dark:text-gray-50 dark:border-gray-700"
+                    className="w-full text-left px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 text-sm text-gray-900 dark:text-white flex items-center gap-2 border-b border-gray-200 dark:border-gray-600 last:border-0 dark:text-gray-50 dark:border-gray-700 data-[active=true]:bg-gray-200 dark:data-[active=true]:bg-gray-500"
                   >
                     <Wallet size={14} className="text-green-500" />
                     {name}
@@ -810,6 +858,7 @@ export default function AIChatFloat() {
                 type="text"
                 value={input}
                 onChange={handleInputChange}
+                onKeyDown={handleInputKeyDown}
                 onPaste={handlePaste}
                 placeholder="Shkruaj komandë ose ngjit (Ctrl+V) një screenshot..."
                 className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-gray-50 dark:focus:ring-accent/40 dark:focus:border-accent"
