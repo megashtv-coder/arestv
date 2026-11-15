@@ -14,6 +14,7 @@ export interface ContactImportButtonProps {
   onError?: (error: string) => void
   className?: string
   variant?: 'primary' | 'secondary' | 'outline'
+  tabIndex?: number
 }
 
 export function ContactImportButton({
@@ -21,6 +22,7 @@ export function ContactImportButton({
   onError,
   className = '',
   variant = 'primary',
+  tabIndex,
 }: ContactImportButtonProps) {
   const { isSupported, loading, error, importContact, clearError } = useContactPicker()
   const [showError, setShowError] = useState(false)
@@ -75,6 +77,7 @@ export function ContactImportButton({
     <div className="flex flex-col gap-2">
       <button
         onClick={handleClick}
+        tabIndex={tabIndex}
         disabled={loading}
         className={`${baseStyles} ${variantStyles[variant]} ${className}`}
         title={loading ? 'Duke ngarku...' : 'Kliko për të zgjedhur kontakt'}

@@ -31,11 +31,21 @@ function useIsMobile() {
 /* ─────────────────────────────────────────────────────────────
    Searchable Combobox  (portal-based, escapes modal overflow)
 ───────────────────────────────────────────────────────────── */
+// Fokusi te elementi tjetër/i mëparshëm i fokusueshëm (Tab/Shift+Tab nga lista që hapet jashtë formës)
+const FOCUSABLE = 'a[href], button, input, select, textarea, [tabindex]'
+function focusSibling(from, dir = 1) {
+  const els = Array.from(document.querySelectorAll(FOCUSABLE))
+    .filter(el => !el.disabled && el.tabIndex >= 0 && el.getClientRects().length > 0)
+  const next = els[els.indexOf(from) + dir]
+  if (next) next.focus()
+}
+
 function Combobox({
   options = [], value = '', onChange, placeholder,
   getKey, getLabel, renderOption,
   onAddNew, addNewLabel = 'Shto të ri',
   textClass = 'text-sm',
+  autoOpen = false,
 }) {
   const [open, setOpen]     = useState(false)
   const [search, setSearch] = useState('')
@@ -44,13 +54,21 @@ function Combobox({
   const dropRef             = useRef(null)
   const [pos, setPos]       = useState({ top: 0, left: 0, width: 200 })
 
-  const openDrop = () => {
+  const placeDrop = () => {
     if (triggerRef.current) {
       const r = triggerRef.current.getBoundingClientRect()
       setPos({ top: r.bottom + 4, left: r.left, width: r.width })
     }
-    setOpen(v => !v)
   }
+  const openDrop = () => { placeDrop(); setOpen(v => !v) }
+  const openList = () => { placeDrop(); setOpen(true) }
+
+  // Fatura e re: lista e klientit hapet vetë dhe kursori është te kërkimi — shkruan emrin direkt
+  useEffect(() => {
+    if (!autoOpen) return
+    const t = setTimeout(openList, 60)
+    return () => clearTimeout(t)
+  }, [])
 
   useEffect(() => {
     if (!open) return
@@ -85,20 +103,42 @@ function Combobox({
 
   // Kur shkruan ose hapet lista, theksohet i pari; ↑ ↓ lëvizin, Enter zgjedh, Esc mbyll
   useEffect(() => { setActive(0) }, [search, open])
-  const pick = o => { onChange(o); setOpen(false); setSearch('') }
+  // Pas zgjedhjes fokusi kthehet te kutia — Tab e çon te fusha tjetër (klient → referent → artikuj → sasia → çmimi)
+  const pick = o => { onChange(o); setOpen(false); setSearch(''); triggerRef.current?.focus() }
   const handleKeyDown = e => {
     if (e.key === 'ArrowDown') { e.preventDefault(); setActive(i => Math.min(i + 1, Math.max(filtered.length - 1, 0))) }
     else if (e.key === 'ArrowUp') { e.preventDefault(); setActive(i => Math.max(i - 1, 0)) }
-    else if (e.key === 'Enter') { if (filtered[active]) { e.preventDefault(); pick(filtered[active]) } }
-    else if (e.key === 'Escape') { e.stopPropagation(); setOpen(false); setSearch('') }
+    else if (e.key === 'Enter') {
+      if (filtered[active]) { e.preventDefault(); pick(filtered[active]) }
+      else if (onAddNew && search.trim()) { e.preventDefault(); onAddNew(search); setOpen(false); setSearch('') }
+    }
+    else if (e.key === 'Tab') {
+      // Tab zgjedh rreshtin e theksuar dhe kalon te fusha tjetër (Shift+Tab te e mëparshmja)
+      e.preventDefault()
+      const trigger = triggerRef.current
+      const dir = e.shiftKey ? -1 : 1
+      if (filtered[active]) pick(filtered[active])
+      else { setOpen(false); setSearch('') }
+      setTimeout(() => focusSibling(trigger, dir), 0)
+    }
+    else if (e.key === 'Escape') { e.stopPropagation(); setOpen(false); setSearch(''); triggerRef.current?.focus() }
   }
 
   return (
     <>
       <div
         ref={triggerRef}
-        className="form-control flex items-center justify-between cursor-pointer select-none gap-2 min-h-[38px]"
+        tabIndex={0}
+        role="combobox"
+        aria-expanded={open}
+        className="form-control flex items-center justify-between cursor-pointer select-none gap-2 min-h-[38px] outline-none focus-visible:ring-2 focus-visible:ring-gray-400/50 dark:focus-visible:ring-accent/40"
         onClick={openDrop}
+        onKeyDown={e => {
+          // Me Tab arrin këtu; Enter/Space/↓ e hapin listën, shkrimi i një shkronje e hap dhe e fillon kërkimin
+          if (open) return
+          if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown') { e.preventDefault(); openList() }
+          else if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) { e.preventDefault(); openList(); setSearch(e.key) }
+        }}
       >
         <span className={`${textClass} truncate flex-1 ${selected ? 'text-gray-800 dark:text-gray-100' : 'text-gray-400 dark:text-gray-500'}`}>
           {selected ? getLabel(selected) : placeholder}
@@ -369,6 +409,7 @@ function ItemRow({ item, products, onUpdate, onRemove, canRemove }) {
           placeholder="Përshkrim (opsional)..."
           value={item.note || ''}
           onChange={e => onUpdate({ note: e.target.value })}
+          tabIndex={-1}
         />
       </div>
 
@@ -398,6 +439,7 @@ function ItemRow({ item, products, onUpdate, onRemove, canRemove }) {
       {canRemove ? (
         <button
           onClick={onRemove}
+          tabIndex={-1}
           className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-blue-50 text-gray-300 hover:text-blue-400 transition-colors mt-0.5"
         >
           <X size={14} />
@@ -621,6 +663,7 @@ export default function InvoiceModal({ initialData, isFormPage, onClose }) {
             <Combobox
               options={customers}
               value={form.customer}
+              autoOpen={!isEdit && !form.customer}
               onChange={c => set('customer', c.name)}
               placeholder="Zgjedh klientin..."
               getKey={c => c.id}
@@ -638,6 +681,7 @@ export default function InvoiceModal({ initialData, isFormPage, onClose }) {
           {/* Contact Import Button - Small Icon Only */}
           <ContactImportButton
             variant="outline"
+            tabIndex={-1}
             className="!px-2 !py-2 !rounded-lg h-[38px] flex-shrink-0"
             onSelect={(contact) => {
               // Try to find existing customer by phone or name
