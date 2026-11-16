@@ -6,6 +6,7 @@ import {
 import { useApp } from '../context/AppContext'
 import { FormAsideContext } from '../components/FormPageWrapper'
 import CustomerHistoryPanel from '../components/CustomerHistoryPanel'
+import SelectField from '../components/SelectField'
 import { Modal, FormGroup } from '../components/UI'
 import ReferredBySelect from '../components/ReferredBySelect'
 import CountrySelect from '../components/CountrySelect'
@@ -832,14 +833,13 @@ export default function InvoiceModal({ initialData, isFormPage, onClose }) {
               onChange={e => setDiscount(p => ({ ...p, value: e.target.value }))}
               placeholder="0"
             />
-            <select
-              className="border border-gray-200 rounded-lg px-2 py-1.5 text-base sm:text-xs outline-none focus:border-blue-400 bg-white text-gray-700 font-semibold dark:border-transparent dark:bg-dk-low dark:text-gray-200"
+            <SelectField
               value={discount.type}
-              onChange={e => setDiscount(p => ({ ...p, type: e.target.value }))}
-            >
-              <option value="%">%</option>
-              <option value="fixed">€</option>
-            </select>
+              onChange={v => setDiscount(p => ({ ...p, type: v }))}
+              options={[{ value: '%', label: '%' }, { value: 'fixed', label: '€' }]}
+              textClass="text-base sm:text-xs"
+              className="border border-gray-200 rounded-lg px-2 py-1.5 bg-white text-gray-700 font-semibold dark:border-transparent dark:bg-dk-low dark:text-gray-200"
+            />
           </div>
           <span className={`font-semibold text-base sm:text-sm ${discAmount > 0 ? 'text-blue-500 dark:text-accent-soft' : 'text-gray-300 dark:text-gray-600'}`}>
             -{discAmount > 0 ? `€${fmtN(discAmount)}` : '€0'}
@@ -880,12 +880,15 @@ export default function InvoiceModal({ initialData, isFormPage, onClose }) {
 
       {/* ── Statusi ── */}
       <FormGroup label="Statusi">
-        <select className="form-control" value={form.status} onChange={e => set('status', e.target.value)}>
-          <option value="draft">Draft — Ruaj si skicë</option>
-          <option value="pending">Dërgo — Në pritje</option>
-          {isEdit && <option value="overdue">Vonuar</option>}
-          {isEdit && <option value="paid">Paguar</option>}
-        </select>
+        <SelectField
+          value={form.status}
+          onChange={v => set('status', v)}
+          options={[
+            { value: 'draft', label: 'Draft — Ruaj si skicë' },
+            { value: 'pending', label: 'Dërgo — Në pritje' },
+            ...(isEdit ? [{ value: 'overdue', label: 'Vonuar' }, { value: 'paid', label: 'Paguar' }] : []),
+          ]}
+        />
       </FormGroup>
     </div>
   )
