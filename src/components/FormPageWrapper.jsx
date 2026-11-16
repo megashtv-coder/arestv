@@ -10,7 +10,7 @@ export const FormAsideContext = createContext(null)
  * Full-page form wrapper (like Zoho)
  * Displays form as full page with header, sidebar remains visible
  */
-export default function FormPageWrapper({ title, subtitle, children, onBack }) {
+export default function FormPageWrapper({ title, subtitle, children, onBack, framed = false }) {
   const { darkMode } = useApp()
   const [asideEl, setAsideEl] = useState(null)
 
@@ -19,12 +19,15 @@ export default function FormPageWrapper({ title, subtitle, children, onBack }) {
       darkMode ? 'bg-dk-bg' : 'bg-gray-50 dark:bg-gray-900/50'
     }`}>
       {/* Content - Full page */}
-      <div className={`flex-1 overflow-y-auto p-0 ${
+      <div className={`flex-1 overflow-y-auto ${framed ? 'p-3 sm:p-4' : 'p-0'} ${
         darkMode ? 'bg-dk-bg' : 'bg-gray-50 dark:bg-gray-900/50'
       }`}>
         <FormAsideContext.Provider value={asideEl}>
           <div className="flex min-h-full">
-            <div className={`flex-1 min-w-0 max-w-2xl ${darkMode ? 'bg-dk-low' : 'bg-white dark:bg-dk-low'} border-0 shadow-none min-h-full`}>
+            {/* framed: kornizë e hollë me ngjyrën e temës (accent) rreth formës */}
+            <div className={`flex-1 min-w-0 max-w-2xl ${darkMode ? 'bg-dk-low' : 'bg-white dark:bg-dk-low'} shadow-none ${
+              framed ? 'border border-accent rounded-2xl self-start' : 'border-0 min-h-full'
+            }`}>
               {/* Close button - top-right corner of the form panel (sticky) */}
               <div className="sticky top-0 z-20 h-0">
                 <button
