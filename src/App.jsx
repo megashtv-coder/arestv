@@ -67,6 +67,18 @@ function OrgAppLayout() {
 
   const PageComponent = ORG_PAGES[basePage] || Dashboard
 
+  // Ctrl+I hap formën e faturës së re nga kudo në app (jo kur një formë fature është tashmë e hapur — s'humbet çka po shkruhet)
+  useEffect(() => {
+    const onKey = (e) => {
+      if (!e.ctrlKey || e.shiftKey || e.altKey || e.metaKey || e.repeat || e.key.toLowerCase() !== 'i') return
+      e.preventDefault()
+      if (page.startsWith('invoices:')) return
+      navigate('invoices:create')
+    }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  }, [page, navigate])
+
   // Check for pending auto-notifications once per session (not on every state change)
   const notifChecked = useRef(false)
   useEffect(() => {
