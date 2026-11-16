@@ -155,7 +155,7 @@ function buildInvoiceMsg(inv) {
 }
 
 /* ── Filtri me menu të personalizuar (light + dark) ── */
-function FilterSelect({ value, onChange, options, alignRight = false }) {
+function FilterSelect({ value, onChange, options, alignRight = false, label }) {
   const [open, setOpen] = useState(false)
   const ref = useRef(null)
   useEffect(() => {
@@ -165,6 +165,8 @@ function FilterSelect({ value, onChange, options, alignRight = false }) {
     return () => document.removeEventListener('mousedown', h)
   }, [open])
   const cur = options.find(o => o.value === value) || options[0]
+  const isDefault = options[0]?.value === value
+  const shown = !label ? cur.label : (isDefault ? label : `${label}: ${cur.label}`)
   return (
     <div ref={ref} className="relative w-full">
       <button
@@ -172,7 +174,7 @@ function FilterSelect({ value, onChange, options, alignRight = false }) {
         onClick={() => setOpen(o => !o)}
         className="w-full h-8 px-2.5 rounded-lg bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-700 dark:bg-dk-card dark:hover:bg-dk-high dark:border-white/[0.08] dark:text-gray-100 text-[11px] font-semibold flex items-center justify-between transition-colors"
       >
-        <span className="truncate">{cur.label}</span>
+        <span className="truncate">{shown}</span>
         <ChevronDown size={14} className="text-gray-400 dark:text-[#8b8e99] flex-shrink-0" />
       </button>
       {open && (
@@ -1546,6 +1548,7 @@ export default function Invoices() {
           <div className="flex gap-2 px-3 py-2 border-b border-gray-100 dark:bg-dk-low dark:border-transparent relative z-30">
             <div className="flex-1 min-w-0">
               <FilterSelect
+                label="Statusi"
                 value={statusFilter}
                 onChange={setStatus}
                 alignRight={false}
@@ -1555,6 +1558,7 @@ export default function Invoices() {
 
             <div className="flex-1 min-w-0">
               <FilterSelect
+                label="Lloji"
                 value={typeFilter}
                 onChange={setTypeFilter}
                 alignRight={true}
@@ -1936,6 +1940,7 @@ export default function Invoices() {
           {/* Status — dropdown */}
           <DualSelect
             className="bg-gray-50 dark:bg-dk-card border border-gray-200 dark:border-transparent rounded-xl px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-300 outline-none focus:border-blue-400 cursor-pointer"
+            label="Statusi"
             value={statusFilter}
             onChange={e => { setStatus(e.target.value); setPaginationPage(1) }}
           >
@@ -1952,6 +1957,7 @@ export default function Invoices() {
           <div className="flex items-center gap-2">
             <DualSelect
               className="bg-gray-50 dark:bg-dk-card border border-gray-200 dark:border-transparent rounded-xl px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-300 outline-none focus:border-blue-400 cursor-pointer"
+              label="Lloji"
               value={typeFilter}
               onChange={e => { setTypeFilter(e.target.value); setPaginationPage(1) }}
             >

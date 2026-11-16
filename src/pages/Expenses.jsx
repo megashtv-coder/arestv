@@ -737,7 +737,7 @@ export default function ExpensesPage() {
           </DualSelect>
 
           <DualSelect className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 dark:border-transparent bg-gray-50 dark:bg-dk-card text-gray-700 dark:text-gray-300 font-semibold outline-none focus:border-blue-400 cursor-pointer"
-            value={recurFilt} onChange={e => { setRecurFilt(e.target.value); setPg(1) }}>
+            label="Frekuenca" value={recurFilt} onChange={e => { setRecurFilt(e.target.value); setPg(1) }}>
             <option value="all">Të gjitha</option>
             <option value="recurring">Vetëm të rregullta</option>
             <option value="once">Vetëm njëherësh</option>
