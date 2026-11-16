@@ -1,9 +1,11 @@
-import { useState, useRef, useEffect, useMemo } from 'react'
+import { useState, useRef, useEffect, useMemo, useContext } from 'react'
 import { createPortal } from 'react-dom'
 import {
   FilePlus, Pencil, Search, ChevronDown, X, Plus, UserPlus, User, Users, Smartphone,
 } from 'lucide-react'
 import { useApp } from '../context/AppContext'
+import { FormAsideContext } from '../components/FormPageWrapper'
+import CustomerHistoryPanel from '../components/CustomerHistoryPanel'
 import { Modal, FormGroup } from '../components/UI'
 import ReferredBySelect from '../components/ReferredBySelect'
 import CountrySelect from '../components/CountrySelect'
@@ -491,7 +493,9 @@ function calculateSubscriptionExpiry(baseDate, months) {
    InvoiceModal
 ══════════════════════════════════════════════════════════ */
 export default function InvoiceModal({ initialData, isFormPage, onClose }) {
-  const { invoices, payments, currentOrgId, customers, setCustomers, items: products, setInvoices, showToast, closeModal, navigate, representatives, setRepresentatives, logActivity } = useApp()
+  const { invoices, payments, currentOrgId, customers, setCustomers, items: products, setInvoices, showToast, closeModal, navigate, representatives, setRepresentatives, logActivity, fmt } = useApp()
+  // Ekrane të mëdha: transaksionet e fundit të klientit të zgjedhur shfaqen djathtas formës
+  const asideSlot = useContext(FormAsideContext)
 
   const isEdit = !!(initialData?.id)
   const due3d  = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10)
@@ -885,6 +889,10 @@ export default function InvoiceModal({ initialData, isFormPage, onClose }) {
 
     return (
       <div className="space-y-4">
+        {asideSlot && createPortal(
+          <CustomerHistoryPanel customer={form.customer} invoices={invoices} payments={payments} excludeId={initialData?.id} fmt={fmt} />,
+          asideSlot
+        )}
         {formContent}
         <div className="inv-actions flex gap-2 pt-4 border-t border-gray-200 dark:border-transparent">
           <button className="btn btn-outline flex-1" onClick={handleCancel}>Anulo</button>
