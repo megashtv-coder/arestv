@@ -176,32 +176,12 @@ export default function Header() {
       {/* Filtri i periudhës së Dashboard-it — shfaqet vetëm kur page === 'dashboard' */}
       {page === 'dashboard' && (
         <div className="flex items-center gap-1 sm:gap-1.5 flex-shrink-0 pr-1 sm:pr-2 mr-0.5 border-r border-blue-200/70 dark:border-white/10">
-          <div className="dark:hidden flex items-center gap-1.5 bg-white dark:bg-dk-low border border-gray-200 dark:border-transparent rounded-lg px-2 py-1">
-            <CalendarDays size={13} className="hidden sm:block text-gray-400 dark:text-gray-500 flex-shrink-0" />
-            <select
-              value={dashboardMonth ?? 'all'}
-              onChange={e => setDashboardMonth(e.target.value === 'all' ? null : parseInt(e.target.value))}
-              className="bg-transparent border-none outline-none text-xs font-semibold text-gray-700 dark:text-gray-200 cursor-pointer"
-            >
-              <option value="all">Krejt vitin</option>
-              {MONTH_FULL.map((m, i) => <option key={i} value={i}>{m}</option>)}
-            </select>
-          </div>
           <DarkSelect
             icon={CalendarDays}
             value={dashboardMonth ?? 'all'}
             onChange={v => setDashboardMonth(v === 'all' ? null : parseInt(v))}
             options={[{ value: 'all', label: 'Krejt vitin' }, ...MONTH_FULL.map((m, i) => ({ value: String(i), label: m }))]}
           />
-          <div className="dark:hidden flex items-center gap-1.5 bg-white dark:bg-dk-low border border-gray-200 dark:border-transparent rounded-lg px-2 py-1">
-            <select
-              value={dashboardYear}
-              onChange={e => setDashboardYear(e.target.value)}
-              className="bg-transparent border-none outline-none text-xs font-semibold text-gray-700 dark:text-gray-200 cursor-pointer"
-            >
-              {dashboardAvailableYears.map(y => <option key={y} value={y}>{y}</option>)}
-            </select>
-          </div>
           <DarkSelect
             value={dashboardYear}
             onChange={v => setDashboardYear(v)}

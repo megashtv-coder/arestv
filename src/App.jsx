@@ -141,7 +141,7 @@ function OrgAppLayout() {
       <Sidebar />
       <div className="flex-1 flex flex-col min-h-screen overflow-hidden">
         <Header />
-        <main className={`flex-1 p-3 sm:p-5 md:p-6 overflow-y-auto ${darkMode ? 'bg-dk-bg' : 'bg-gray-50'}`}>
+        <main className={`flex-1 p-3 sm:p-5 md:p-6 pb-24 sm:pb-24 md:pb-24 overflow-y-auto ${darkMode ? 'bg-dk-bg' : 'bg-gray-50'}`}>
           {loading ? <LoadingSkeleton /> : (
             <Suspense fallback={<LoadingSkeleton />}>
               <PageComponent />

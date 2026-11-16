@@ -1,12 +1,12 @@
 import { useState, useEffect, useRef, Children } from 'react'
 import { ChevronDown, Check } from 'lucide-react'
 
-/* Zgjedhës me menu të personalizuar — shfaqet VETËM në dark mode (në light mbetet <select> i zakonshëm
-   që e vendos faqja pranë tij). options: [{ value, label }]; value krahasohet si tekst. */
+/* Zgjedhës me menu të personalizuar për filtrat — në light dhe dark mode (nuk përdoret më menuja e vjetër e
+   shfletuesit). options: [{ value, label }]; value krahasohet si tekst. */
 export default function DarkSelect({
   value, onChange, options, icon: Icon,
   hideIconOnSmall = true, alignRight = false,
-  compact = false, wide = false, hideOnMobile = false,
+  compact = false, wide = false, hideOnMobile = false, disabled = false,
 }) {
   const [open, setOpen] = useState(false)
   const ref = useRef(null)
@@ -27,18 +27,19 @@ export default function DarkSelect({
   const cur = options.find(o => same(o.value, value)) || options[0]
 
   return (
-    <div ref={ref} className={`hidden dark:block ${hideOnMobile ? 'dark:max-sm:hidden ' : ''}relative flex-shrink-0 ${wide ? 'flex-1 min-w-0' : ''}`}>
+    <div ref={ref} className={`${hideOnMobile ? 'max-sm:hidden ' : ''}relative flex-shrink-0 ${wide ? 'flex-1 min-w-0' : ''}`}>
       <button
         type="button"
+        disabled={disabled}
         onClick={() => setOpen(o => !o)}
-        className={`${compact ? 'h-8' : 'h-9'} ${wide ? 'w-full justify-between ' : ''}px-2.5 rounded-lg bg-dk-low hover:bg-dk-card text-gray-300 hover:text-white text-xs font-medium flex items-center gap-1.5 transition-colors`}
+        className={`${compact ? 'h-8' : 'h-9'} ${wide ? 'w-full justify-between ' : ''}px-2.5 rounded-lg border border-gray-200 bg-gray-50 hover:bg-gray-100 text-gray-700 hover:text-gray-900 dark:border-transparent dark:bg-dk-low dark:hover:bg-dk-card dark:text-gray-300 dark:hover:text-white text-xs font-semibold dark:font-medium flex items-center gap-1.5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed outline-none focus-visible:ring-2 focus-visible:ring-gray-400/40 dark:focus-visible:ring-accent/40`}
       >
-        {Icon && <Icon size={15} className={`${hideIconOnSmall ? 'hidden sm:block ' : ''}text-[#8b8e99] flex-shrink-0`} />}
+        {Icon && <Icon size={15} className={`${hideIconOnSmall ? 'hidden sm:block ' : ''}text-gray-400 dark:text-[#8b8e99] flex-shrink-0`} />}
         <span className="whitespace-nowrap truncate">{cur?.label}</span>
-        <ChevronDown size={15} className="text-[#8b8e99] flex-shrink-0" />
+        <ChevronDown size={15} className={`text-gray-400 dark:text-[#8b8e99] flex-shrink-0 transition-transform duration-150 ${open ? 'rotate-180' : ''}`} />
       </button>
       {open && (
-        <div className={`absolute ${alignRight ? 'right-0' : 'left-0'} top-full mt-1.5 min-w-[9rem] max-h-72 overflow-y-auto rounded-xl bg-dk-high border border-white/10 shadow-xl py-1.5 z-50`}>
+        <div className={`absolute ${alignRight ? 'right-0' : 'left-0'} top-full mt-1.5 min-w-[9rem] max-h-72 overflow-y-auto rounded-xl bg-white border border-gray-200 shadow-xl dark:bg-dk-high dark:border-white/10 py-1.5 z-50`}>
           <div className="px-1.5 space-y-0.5">
             {options.map(o => (
               <button
@@ -46,7 +47,9 @@ export default function DarkSelect({
                 type="button"
                 onClick={() => { onChange(String(o.value)); setOpen(false) }}
                 className={`w-full px-2.5 py-1.5 text-left rounded-lg text-xs font-semibold flex items-center justify-between gap-3 transition-colors ${
-                  same(o.value, value) ? 'bg-accent/15 text-accent-soft' : 'text-gray-300 hover:text-white hover:bg-dk-card'
+                  same(o.value, value)
+                    ? 'bg-accent/10 text-accent dark:bg-accent/15 dark:text-accent-soft'
+                    : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-dk-card'
                 }`}
               >
                 <span className="whitespace-nowrap">{o.label}</span>
@@ -60,9 +63,9 @@ export default function DarkSelect({
   )
 }
 
-/* Zëvendësim për <select> të filtrave: light mode = <select> i zakonshëm, dark mode = menu e re.
+/* Zëvendësim për <select> të filtrave: menu e re në light dhe dark mode.
    Përdoret njësoj si <select> (value, onChange(e) me e.target.value, <option> si fëmijë). */
-export function DualSelect({ children, className = '', value, onChange, ...rest }) {
+export function DualSelect({ children, className = '', value, onChange, disabled }) {
   const options = []
   Children.forEach(children, ch => {
     if (!ch || ch.type !== 'option') return
@@ -73,16 +76,14 @@ export function DualSelect({ children, className = '', value, onChange, ...rest 
   const wide = /\b(flex-1|w-full)\b/.test(className)
   const hideOnMobile = /\bhidden\b/.test(className) && /\bsm:block\b/.test(className)
   return (
-    <>
-      <select {...rest} value={value} onChange={onChange} className={`${className} dark:hidden`}>{children}</select>
-      <DarkSelect
-        value={value}
-        onChange={v => onChange && onChange({ target: { value: v } })}
-        options={options}
-        compact
-        wide={wide}
-        hideOnMobile={hideOnMobile}
-      />
-    </>
+    <DarkSelect
+      value={value}
+      onChange={v => onChange && onChange({ target: { value: v } })}
+      options={options}
+      compact
+      wide={wide}
+      hideOnMobile={hideOnMobile}
+      disabled={disabled}
+    />
   )
 }

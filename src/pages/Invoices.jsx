@@ -154,7 +154,7 @@ function buildInvoiceMsg(inv) {
   return `Fatura per: ${inv.customer}\nData e abonimit: ${inv.date || '—'}\nData e skadimit te abonimit: ${inv.subscriptionExpiry || '—'}\nAfati i pageses: ${inv.due || '—'}\nPer pagese: €${inv.amount}`
 }
 
-/* ── Filtri me menu të personalizuar (vetëm dark mode; në light mbetet <select> i zakonshëm) ── */
+/* ── Filtri me menu të personalizuar (light + dark) ── */
 function FilterSelect({ value, onChange, options, alignRight = false }) {
   const [open, setOpen] = useState(false)
   const ref = useRef(null)
@@ -166,24 +166,24 @@ function FilterSelect({ value, onChange, options, alignRight = false }) {
   }, [open])
   const cur = options.find(o => o.value === value) || options[0]
   return (
-    <div ref={ref} className="hidden dark:block relative w-full">
+    <div ref={ref} className="relative w-full">
       <button
         type="button"
         onClick={() => setOpen(o => !o)}
-        className="w-full h-8 px-2.5 rounded-lg bg-dk-card hover:bg-dk-high border border-white/[0.08] text-gray-100 text-[11px] font-semibold flex items-center justify-between transition-colors"
+        className="w-full h-8 px-2.5 rounded-lg bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-700 dark:bg-dk-card dark:hover:bg-dk-high dark:border-white/[0.08] dark:text-gray-100 text-[11px] font-semibold flex items-center justify-between transition-colors"
       >
         <span className="truncate">{cur.label}</span>
-        <ChevronDown size={14} className="text-[#8b8e99] flex-shrink-0" />
+        <ChevronDown size={14} className="text-gray-400 dark:text-[#8b8e99] flex-shrink-0" />
       </button>
       {open && (
-        <div className={`absolute ${alignRight ? 'right-0' : 'left-0'} top-full mt-1.5 w-48 rounded-xl bg-dk-high border border-white/10 shadow-xl py-1.5 z-50`}>
+        <div className={`absolute ${alignRight ? 'right-0' : 'left-0'} top-full mt-1.5 w-48 rounded-xl bg-white border border-gray-200 dark:bg-dk-high dark:border-white/10 shadow-xl py-1.5 z-50`}>
           <div className="px-1.5 space-y-0.5">
             {options.map(o => (
               <button
                 key={o.value}
                 type="button"
                 onClick={() => { onChange(o.value); setOpen(false) }}
-                className={`w-full px-2.5 py-1.5 text-left rounded-lg text-[11px] font-semibold flex items-center justify-between transition-colors ${o.value === value ? 'bg-accent/15 text-accent-soft' : 'text-gray-300 hover:text-white hover:bg-dk-card'}`}
+                className={`w-full px-2.5 py-1.5 text-left rounded-lg text-[11px] font-semibold flex items-center justify-between transition-colors ${o.value === value ? 'bg-accent/10 text-accent dark:bg-accent/15 dark:text-accent-soft' : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-dk-card'}`}
               >
                 <span>{o.label}</span>
                 {o.value === value && <Check size={14} />}
@@ -1545,19 +1545,6 @@ export default function Invoices() {
 
           <div className="flex gap-2 px-3 py-2 border-b border-gray-100 dark:bg-dk-low dark:border-transparent relative z-30">
             <div className="flex-1 min-w-0">
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatus(e.target.value)}
-                className="w-full text-[11px] font-semibold bg-gray-50 border border-gray-200 rounded-lg px-2 py-1.5 text-gray-700 outline-none focus:border-blue-400 cursor-pointer dark:hidden"
-              >
-              <option value="all">Të gjitha</option>
-              <option value="pending">Pritje</option>
-              <option value="overdue">Vonuar</option>
-              <option value="paid">Paguar</option>
-              <option value="unpaid">Papaguar (Pritje+Vonuar)</option>
-              <option value="draft">Draft</option>
-              <option value="void">Void</option>
-              </select>
               <FilterSelect
                 value={statusFilter}
                 onChange={setStatus}
@@ -1567,15 +1554,6 @@ export default function Invoices() {
             </div>
 
             <div className="flex-1 min-w-0">
-              <select
-                value={typeFilter}
-                onChange={(e) => setTypeFilter(e.target.value)}
-                className="w-full text-[11px] font-semibold bg-gray-50 border border-gray-200 rounded-lg px-2 py-1.5 text-gray-700 outline-none focus:border-blue-400 cursor-pointer dark:hidden"
-              >
-              <option value="all">Të gjithë</option>
-              <option value="individual">👤 Klientë</option>
-              <option value="reseller">🔄 Reseller</option>
-              </select>
               <FilterSelect
                 value={typeFilter}
                 onChange={setTypeFilter}

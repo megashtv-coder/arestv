@@ -19,7 +19,8 @@ export default function FormPageWrapper({ title, subtitle, children, onBack, fra
       darkMode ? 'bg-dk-bg' : 'bg-gray-50 dark:bg-gray-900/50'
     }`}>
       {/* Content - Full page */}
-      <div className={`flex-1 overflow-y-auto ${framed ? 'p-3 sm:p-4' : 'p-0'} ${
+      {/* pb-24: hapësirë poshtë, që butoni float i chat-it të mos mbulojë përmbajtjen e fundit */}
+      <div className={`flex-1 overflow-y-auto ${framed ? 'p-3 sm:p-4 pb-24 sm:pb-24' : 'p-0 pb-24'} ${
         darkMode ? 'bg-dk-bg' : 'bg-gray-50 dark:bg-gray-900/50'
       }`}>
         <FormAsideContext.Provider value={asideEl}>
