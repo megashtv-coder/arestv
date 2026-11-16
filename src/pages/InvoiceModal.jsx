@@ -912,7 +912,7 @@ export default function InvoiceModal({ initialData, isFormPage, onClose }) {
         <div className="inv-actions flex gap-2 pt-4 border-t border-gray-200 dark:border-transparent">
           <button className="btn btn-outline flex-1" onClick={handleCancel}>Anulo</button>
           <button className="btn btn-primary flex-1" onClick={save} title="Ctrl+Enter">
-            {isEdit ? 'Ruaj ndryshimet' : 'Krijo Faturën'}
+            {<>{isEdit ? 'Ruaj ndryshimet' : 'Krijo Faturën'}<kbd className="ml-2 hidden lg:inline-block px-1.5 py-0.5 rounded bg-white/20 text-[11px] font-semibold leading-none align-middle">Ctrl+Enter</kbd></>}
           </button>
         </div>
       </div>
@@ -932,7 +932,7 @@ export default function InvoiceModal({ initialData, isFormPage, onClose }) {
       footer={<>
         <button className="btn btn-outline" onClick={closeModal}>Anulo</button>
         <button className="btn btn-primary" onClick={save} title="Ctrl+Enter">
-          {isEdit ? 'Ruaj ndryshimet' : 'Krijo Faturën'}
+          {<>{isEdit ? 'Ruaj ndryshimet' : 'Krijo Faturën'}<kbd className="ml-2 hidden lg:inline-block px-1.5 py-0.5 rounded bg-white/20 text-[11px] font-semibold leading-none align-middle">Ctrl+Enter</kbd></>}
         </button>
       </>}
     >

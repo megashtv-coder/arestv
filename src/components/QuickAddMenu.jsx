@@ -10,7 +10,7 @@ import { UserModal } from './UserModal'
    Veprimet janë të njëjtat si më parë, vetëm pamja u përditësua.
 ══════════════════════════════════════════════════════════ */
 const ITEMS = [
-  { id: 'invoice',  label: 'Faturë e Re',    icon: FileText,   chip: 'bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-300' },
+  { id: 'invoice',  label: 'Faturë e Re',    icon: FileText,   shortcut: 'Ctrl+I', chip: 'bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-300' },
   { id: 'expense',  label: 'Shpenzim i Ri',  icon: DollarSign, chip: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-300' },
   { id: 'task',     label: 'Detyrë e Re',    icon: ListTodo,   chip: 'bg-amber-50 text-amber-600 dark:bg-amber-900/30 dark:text-amber-300' },
   { id: 'customer', label: 'Klient i Ri',    icon: UserPlus,   chip: 'bg-sky-50 text-sky-600 dark:bg-sky-900/30 dark:text-sky-300' },
@@ -76,7 +76,7 @@ export default function QuickAddMenu() {
           <p className="px-2.5 pt-1.5 pb-1 text-[10px] font-extrabold uppercase tracking-widest text-gray-400 dark:text-gray-500">
             Shto të re
           </p>
-          {items.map(({ id, label, icon: Icon, chip }) => (
+          {items.map(({ id, label, icon: Icon, chip, shortcut }) => (
             <button
               key={id}
               type="button"
@@ -87,7 +87,10 @@ export default function QuickAddMenu() {
               <span className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${chip}`}>
                 <Icon size={16} />
               </span>
-              {label}
+              <span className="flex-1">{label}</span>
+              {shortcut && (
+                <kbd className="hidden lg:inline-block px-1.5 py-0.5 rounded-md border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-[10px] font-semibold text-gray-400 dark:text-gray-400 leading-none">{shortcut}</kbd>
+              )}
             </button>
           ))}
         </div>
