@@ -24,9 +24,9 @@ export default function FormPageWrapper({ title, subtitle, children, onBack, fra
       }`}>
         <FormAsideContext.Provider value={asideEl}>
           <div className="flex min-h-full">
-            {/* framed: kornizë e hollë me ngjyrën e temës (accent) rreth formës */}
+            {/* framed: kornizë e hollë me ngjyrën e sidebar-it rreth formës (në telefon me më pak padding) */}
             <div className={`flex-1 min-w-0 max-w-2xl ${darkMode ? 'bg-dk-low' : 'bg-white dark:bg-dk-low'} shadow-none ${
-              framed ? 'border border-accent rounded-2xl self-start' : 'border-0 min-h-full'
+              framed ? 'border border-blue-200 dark:border-accent/40 rounded-2xl self-start' : 'border-0 min-h-full'
             }`}>
               {/* Close button - top-right corner of the form panel (sticky) */}
               <div className="sticky top-0 z-20 h-0">
@@ -42,7 +42,7 @@ export default function FormPageWrapper({ title, subtitle, children, onBack, fra
                   <X size={18} />
                 </button>
               </div>
-              <div className="p-6">
+              <div className={framed ? 'p-4 sm:p-6' : 'p-6'}>
                 {children}
               </div>
             </div>
