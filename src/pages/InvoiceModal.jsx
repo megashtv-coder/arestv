@@ -871,13 +871,10 @@ export default function InvoiceModal({ initialData, isFormPage, onClose }) {
               if (v) set('notifyDate', addDaysYMD(v, -7))   // vetëm njoftimi; data e faturës mbetet siç është
             }} />
         </FormGroup>
-        {/* Rikujtimi për riabonim — në rresht me datën e skadimit */}
-        <div className="sec bg-blue-50 border border-blue-100 dark:bg-dk-card dark:border-white/10 rounded-lg p-3 sm:p-4">
-          <FormGroup label="🔔 Rikujtim për riabonimin">
-            <input className="form-control text-base sm:text-sm bg-white" type="date" value={form.notifyDate} onChange={e => set('notifyDate', e.target.value)} />
-            <p className="text-[10px] sm:text-[11px] text-gray-500 mt-1.5 dark:text-gray-400">Shfaqet në menunë "Abonimet" si rikujtim për klientin.</p>
-          </FormGroup>
-        </div>
+        {/* Rikujtimi për riabonim — në rresht me datën e skadimit, e njëjta madhësi si fushat e tjera */}
+        <FormGroup label="🔔 Rikujtim për riabonimin">
+          <input className="form-control text-base sm:text-sm" type="date" value={form.notifyDate} onChange={e => set('notifyDate', e.target.value)} />
+        </FormGroup>
       </div>
 
 
