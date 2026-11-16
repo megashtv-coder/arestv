@@ -451,6 +451,12 @@ function extractMonths(name) {
   const m = name.match(/(\d+)\s*muaj/i)
   return m ? parseInt(m[1]) : null
 }
+// Datat si YYYY-MM-DD sipas orës LOKALE (toISOString() i zhvendos në UTC dhe e jep një ditë më herët)
+const pad2 = n => String(n).padStart(2, '0')
+const toYMD = d => `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`
+const parseYMD = str => { const [y, m, d] = str.split('-').map(Number); return new Date(y, m - 1, d) }
+const addDaysYMD = (str, n) => { const d = parseYMD(str); d.setDate(d.getDate() + n); return toYMD(d) }
+
 function calculateSubscriptionExpiry(baseDate, months) {
   // Llogarit datën e skadimit duke shtuar muaj kalendarë
   const date = new Date(baseDate)
@@ -545,18 +551,32 @@ export default function InvoiceModal({ initialData, isFormPage, onClose }) {
   const removeItem = id  => setLineItems(p => p.filter(it => it.id !== id))
   const updateItem = (id, patch) => {
     setLineItems(p => p.map(it => it.id === id ? { ...it, ...patch } : it))
-    // kur selektohet produkt me muaj → auto-set datën e skadimit + njoftimin
+    // kur selektohet produkt me muaj → auto-set datën e skadimit (nga data e faturës) + njoftimin (7 ditë para)
     if (patch.desc !== undefined) {
       const months = extractMonths(patch.desc)
       if (months !== null) {
-        const base = new Date(initialData?.date || new Date())
-        const exp  = calculateSubscriptionExpiry(base, months)
-        const expStr    = exp.toISOString().slice(0, 10)
-        const notifyD   = new Date(exp)
-        notifyD.setDate(notifyD.getDate() - 7)
-        setForm(p => ({ ...p, subscriptionExpiry: expStr, notifyDate: notifyD.toISOString().slice(0, 10) }))
+        const expStr = toYMD(calculateSubscriptionExpiry(parseYMD(form.date || today), months))
+        setForm(p => ({ ...p, subscriptionExpiry: expStr, notifyDate: addDaysYMD(expStr, -7) }))
       }
     }
+  }
+
+  // Data e faturës ndryshohet me dorë → afati i pagesës (+3 ditë), skadimi i abonimit (+muajt e paketës) dhe
+  // njoftimi (7 ditë para skadimit) rillogariten vetë. Anasjelltas JO: ndryshimi manual i skadimit ose i
+  // njoftimit nuk e prek kurrë datën e faturës.
+  const handleDateChange = (v) => {
+    setForm(p => {
+      const next = { ...p, date: v }
+      if (v) {
+        next.due = addDaysYMD(v, 3)
+        const months = lineItems.map(it => extractMonths(it.desc || '')).find(m => m !== null)
+        if (months !== undefined) {
+          next.subscriptionExpiry = toYMD(calculateSubscriptionExpiry(parseYMD(v), months))
+          next.notifyDate = addDaysYMD(next.subscriptionExpiry, -7)
+        }
+      }
+      return next
+    })
   }
 
   /* ── Customer ── */
@@ -720,7 +740,7 @@ export default function InvoiceModal({ initialData, isFormPage, onClose }) {
       </FormGroup>
 
       {/* ── Referenti (Sales Person) ── */}
-      <div className="sec bg-amber-50 border border-amber-200 dark:bg-dk-card dark:border-white/10 rounded-lg p-3 sm:p-4">
+      <div className="sec bg-blue-50 border border-blue-100 dark:bg-dk-card dark:border-white/10 rounded-lg p-3 sm:p-4">
       <FormGroup label="Referenti">
         <Combobox
           options={[
@@ -764,7 +784,7 @@ export default function InvoiceModal({ initialData, isFormPage, onClose }) {
       )}
 
       {/* ── Item Table ── */}
-      <div className="mb-4">
+      <div className="mt-5 mb-4">
         <div className="flex items-center justify-between mb-1.5">
           <label className="form-label mb-0 text-sm sm:text-base font-bold">Artikujt</label>
           {/* Column labels */}
@@ -834,7 +854,7 @@ export default function InvoiceModal({ initialData, isFormPage, onClose }) {
       {/* ── Dates (Horizontal on mobile) ── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4">
         <FormGroup label="Data e faturës *">
-          <input className="form-control text-base sm:text-sm" type="date" value={form.date} onChange={e => set('date', e.target.value)} />
+          <input className="form-control text-base sm:text-sm" type="date" value={form.date} onChange={e => handleDateChange(e.target.value)} />
         </FormGroup>
         <FormGroup label="Afati i pagesës (auto: 3 ditë)">
           <input className="form-control text-base sm:text-sm" type="date" value={form.due} onChange={e => set('due', e.target.value)} />
@@ -848,23 +868,18 @@ export default function InvoiceModal({ initialData, isFormPage, onClose }) {
             onChange={e => {
               const v = e.target.value
               set('subscriptionExpiry', v)
-              if (v) {
-                const d = new Date(v)
-                d.setDate(d.getDate() - 7)
-                set('notifyDate', d.toISOString().slice(0, 10))
-              }
+              if (v) set('notifyDate', addDaysYMD(v, -7))   // vetëm njoftimi; data e faturës mbetet siç është
             }} />
         </FormGroup>
-        <div></div>
+        {/* Rikujtimi për riabonim — në rresht me datën e skadimit */}
+        <div className="sec bg-blue-50 border border-blue-100 dark:bg-dk-card dark:border-white/10 rounded-lg p-3 sm:p-4">
+          <FormGroup label="🔔 Rikujtim për riabonimin">
+            <input className="form-control text-base sm:text-sm bg-white" type="date" value={form.notifyDate} onChange={e => set('notifyDate', e.target.value)} />
+            <p className="text-[10px] sm:text-[11px] text-gray-500 mt-1.5 dark:text-gray-400">Shfaqet në menunë "Abonimet" si rikujtim për klientin.</p>
+          </FormGroup>
+        </div>
       </div>
 
-      {/* ── Notify date (Full width, highlight) ── */}
-      <div className="sec bg-amber-50 border border-amber-200 dark:bg-dk-card dark:border-white/10 rounded-lg p-3 sm:p-4">
-        <FormGroup label="🔔 Rikujtim për riabonimin">
-          <input className="form-control text-base sm:text-sm bg-white" type="date" value={form.notifyDate} onChange={e => set('notifyDate', e.target.value)} />
-          <p className="text-[10px] sm:text-[11px] text-gray-500 mt-1.5 dark:text-gray-400">Shfaqet në menunë "Abonimet" si rikujtim për klientin.</p>
-        </FormGroup>
-      </div>
 
       {/* ── Statusi ── */}
       <FormGroup label="Statusi">
