@@ -706,3 +706,5 @@ Bllokuar | Blocked | Bloccato | Gesperrt | Bloqué
 Blloko llogarinë dorazi | Block the account manually | Blocca il conto manualmente | Konto manuell sperren | Bloquer le compte manuellement
 Zhblloko llogarinë | Unblock the account | Sblocca il conto | Konto entsperren | Débloquer le compte
 Llogaria është e bllokuar | The account is blocked | Il conto è bloccato | Das Konto ist gesperrt | Le compte est bloqué
+👤 Referenti | 👤 Referrer | 👤 Referente | 👤 Empfehler | 👤 Parrain
+Referenti | Referrer | Referente | Empfehler | Parrain
