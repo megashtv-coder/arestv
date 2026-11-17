@@ -1400,26 +1400,28 @@ export default function Invoices() {
     setPaginationPage(1)
   }
 
-  // Filtri "Vonuar": rendit automatikisht sipas Afatit — fillon fatura që është vonuar më shumë (afati më i vjetër).
+  // Filtri "Vonuar": rendit automatikisht sipas Afatit — fillon data më e afërt (afati më i fundit), pastaj më të vjetrat.
   // Kur filtri hiqet, rendi kthehet te parazgjedhja (ID, më e reja së pari). Mund të ndryshohet pastaj me klikim te kolonat.
   const prevStatusFilter = useRef(null)
   useEffect(() => {
     const prev = prevStatusFilter.current
     prevStatusFilter.current = statusFilter
     if (statusFilter === 'overdue') {
-      setSortField('due'); setSortDir('asc'); setPaginationPage(1)
+      setSortField('due'); setSortDir('desc'); setPaginationPage(1)
     } else if (prev === 'overdue') {
       setSortField('id'); setSortDir('desc'); setPaginationPage(1)
     }
   }, [statusFilter])
 
   const sorted = useMemo(() => [...filtered].sort((a, b) => {
+    // Faturat pa afat shkojnë gjithmonë në fund, në çdo drejtim
+    if (sortField === 'due' && (!a.due || !b.due)) return (a.due ? 0 : 1) - (b.due ? 0 : 1)
     let cmp = 0
     if      (sortField === 'id')       cmp = a.id.localeCompare(b.id)
     else if (sortField === 'customer') cmp = a.customer.localeCompare(b.customer)
     else if (sortField === 'amount')   cmp = a.amount - b.amount
     else if (sortField === 'status')   cmp = (STATUS_ORDER[a.status] ?? 9) - (STATUS_ORDER[b.status] ?? 9)
-    else if (sortField === 'due')      cmp = (a.due || '9999-12-31').localeCompare(b.due || '9999-12-31')
+    else if (sortField === 'due')      cmp = a.due.localeCompare(b.due)
     return sortDir === 'asc' ? cmp : -cmp
   }), [filtered, sortField, sortDir])
 
