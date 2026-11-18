@@ -93,6 +93,9 @@ function NameModal({ item, onClose }) {
 }
 
 /* ── Faqja ── */
+// Teksti që shtohet në fund të emrit të kopjuar (si shënimi te llogaritë bankare)
+const NAME_NOTE = 'Ju lutem kur te perfundoni pagesen na dergoni letren me te dhenat e plota dhe emrin mbiemrin e derguesit'
+
 export default function PaymentNames() {
   const { paymentNames, setPaymentNames, payments, setModal, closeModal, showToast } = useApp()
   const now = new Date()
@@ -145,7 +148,9 @@ export default function PaymentNames() {
       await navigator.clipboard.writeText(`Emri: ${n.first}
 Mbiemri: ${n.last}
 Qyteti: ${n.city}
-Shteti: ${n.country}`)
+Shteti: ${n.country}
+
+${NAME_NOTE}`)
       setCopiedId(n.id); showToast(`U kopjua: ${fullName(n)} ✓`)
       setTimeout(() => setCopiedId(null), 1800)
     } catch { showToast("S'mund ta kopjoj — kopjoje dorazi.", 'error') }
