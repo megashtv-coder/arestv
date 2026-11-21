@@ -604,6 +604,9 @@ export default function InvoiceModal({ initialData, isFormPage, onClose }) {
     }
     setCustomers(p => [...p, nc])
     set('customer', fullName)
+    // Referenti i vendosur te forma e klientit të ri ("Referuar nga") kalon vetë edhe te fatura — pa e zgjedhur sërish
+    // (nëse fatura s'ka tashmë referent të zgjedhur)
+    if (formData.referredBy && formData.referredBy.trim() && !form.referent) set('referent', formData.referredBy.trim())
     setAddingCustomer(null)
   }
 
