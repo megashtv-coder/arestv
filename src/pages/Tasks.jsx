@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react'
-import { Plus, Trash2, Pencil, X, Calendar, CheckCircle2, ListTodo, Search, Clock, AlertTriangle, User } from 'lucide-react'
+import { Plus, Trash2, Pencil, X, Calendar, CheckCircle2, ListTodo, Search, Clock, AlertTriangle, User, Copy } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import { formatDate } from '../utils/dateFormat'
 import { supabase } from '../lib/supabase'
@@ -121,7 +121,7 @@ function TaskModal({ task, onClose, onSave, customers }) {
   )
 }
 
-function TaskCard({ task, customers, onEdit, onDelete, onToggle, onOpenPayment }) {
+function TaskCard({ task, customers, onEdit, onDelete, onToggle, onOpenPayment, onCopyTracking, copied }) {
   const today = new Date().toISOString().slice(0, 10)
   const wd = isWithdrawalTask(task)
   const wdInfo = wd ? parseWithdrawalTask(task) : null
@@ -163,6 +163,18 @@ function TaskCard({ task, customers, onEdit, onDelete, onToggle, onOpenPayment }
       task.completed ? 'opacity-60 dark:opacity-80' : ''
     } ${wd ? 'cursor-pointer' : ''}`}>
       <div className={`absolute left-0 top-0 bottom-0 w-1 ${railColor}`} />
+
+      {/* Detyra e kontrollit të tërheqjes: butoni sipër kopjon numrin e tërheqjes */}
+      {wd && wdInfo.tracking && wdInfo.tracking !== '—' && (
+        <button
+          type="button"
+          onClick={e => { e.stopPropagation(); onCopyTracking(task) }}
+          title="Kopjo numrin e tërheqjes"
+          className="relative w-full mb-3 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-dk-card text-[11px] font-bold text-gray-600 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-dk-high transition-colors"
+        >
+          {copied ? <><CheckCircle2 size={12} className="text-emerald-500" /> U kopjua!</> : <><Copy size={12} /> Kopjo nr. tërheqjes</>}
+        </button>
+      )}
 
       <div>
         <div className="flex items-start justify-between gap-2 mb-1 dark:mb-2 pl-1">
@@ -332,6 +344,21 @@ export default function Tasks() {
     const pid = withdrawalPaymentId(task)
     if (pid && payments.some(p => p.id === pid)) navigate(withdrawalEditPage(task))
     else if (showToast) showToast('Pagesa nuk u gjet — mund të jetë fshirë.')
+  }
+
+  // Detyra e kontrollit të tërheqjes: kopjon numrin e tërheqjes (MTCN etj.) te clipboard
+  const [copiedTaskId, setCopiedTaskId] = useState(null)
+  const handleCopyTracking = async (task) => {
+    const num = parseWithdrawalTask(task).tracking
+    if (!num || num === '—') return
+    try {
+      await navigator.clipboard.writeText(num)
+      setCopiedTaskId(task.id)
+      if (showToast) showToast('Numri i tërheqjes u kopjua ✓')
+      setTimeout(() => setCopiedTaskId(null), 1800)
+    } catch {
+      if (showToast) showToast("S'mund ta kopjoj — kopjoje dorazi.", 'error')
+    }
   }
 
   const handleEditTask = (task) => {
@@ -612,6 +639,8 @@ export default function Tasks() {
                 onDelete={handleDeleteTask}
                 onToggle={handleToggleTask}
                 onOpenPayment={handleOpenPayment}
+                onCopyTracking={handleCopyTracking}
+                copied={copiedTaskId === task.id}
               />
             ))}
           </div>
