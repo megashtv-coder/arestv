@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { CreditCard, ChevronLeft, ChevronRight, AlertCircle, Pencil } from 'lucide-react'
+import { CreditCard, ChevronLeft, ChevronRight, AlertCircle, Pencil, Copy, Check } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import { useFeatures } from '../features/useFeatures'
 import { Modal, FormGroup } from '../components/UI'
@@ -133,6 +133,26 @@ export default function PaymentModal({ invoice, payment: editPayment, onClose, i
   })
 
   const [err, setErr] = useState('')
+
+  // Butoni "Kopjo" te shënimet: kopjon përmbledhjen e pagesës (pranuesi, metoda, nr. i tërheqjes, shuma, shënime)
+  const [copied, setCopied] = useState(false)
+  const copyDetails = async () => {
+    const lines = [
+      `Emri i pranusit: ${form.reference || ''}`,
+      `Metoda e pageses: ${form.method || ''}`,
+      ...(trackingMethods.includes(form.method) ? [`Nr. i terheqjes: ${form.trackingNumber || ''}`] : []),
+      `Shuma: ${form.amount !== '' && form.amount != null ? fmt(Number(form.amount) || 0) : ''}`,
+      `Shenime: ${form.notes || ''}`,
+    ]
+    try {
+      await navigator.clipboard.writeText(lines.join('\n'))
+      setCopied(true)
+      showToast('Të dhënat e pagesës u kopjuan ✓')
+      setTimeout(() => setCopied(false), 1800)
+    } catch {
+      showToast("S'mund ta kopjoj — kopjoje dorazi.", 'error')
+    }
+  }
   const set = (k, v) => setForm(p => ({ ...p, [k]: v }))
 
   const unpaidInvoices = invoices.filter(i => {
@@ -434,7 +454,18 @@ export default function PaymentModal({ invoice, payment: editPayment, onClose, i
       )}
 
       {/* Shënime */}
-      <FormGroup label="Shënime (opsionale)">
+      <div className="mb-4">
+        <div className="flex items-center justify-between mb-2.5">
+          <label className="form-label !mb-0">Shënime (opsionale)</label>
+          <button
+            type="button"
+            onClick={copyDetails}
+            title="Kopjo të dhënat e pagesës (pranuesi, metoda, nr. i tërheqjes, shuma, shënime)"
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-dk-card text-[11px] font-bold text-gray-600 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-dk-high transition-colors"
+          >
+            {copied ? <><Check size={12} className="text-emerald-500" /> U kopjua!</> : <><Copy size={12} /> Kopjo</>}
+          </button>
+        </div>
         <textarea
           className="form-control resize-none"
           rows={2}
@@ -442,7 +473,7 @@ export default function PaymentModal({ invoice, payment: editPayment, onClose, i
           onChange={e => set('notes', e.target.value)}
           placeholder="Çdo shënim shtesë..."
         />
-      </FormGroup>
+      </div>
     </Modal>
   )
 }
